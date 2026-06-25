@@ -251,42 +251,53 @@ main {
     height: 100%;
 }
 
+/* Deep Navy-Slate Corporate Footer Makeover */
 .footer {
-    background: linear-gradient(135deg, #00a2ff 0%, #4dbfff 50%, #008ae0 100%);
+    background: linear-gradient(180deg, #101c2c 0%, #070d18 100%) !important;
     color: #fff;
     margin-top: 0;
     flex-shrink: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative;
+}
+
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 0%, #00a2ff 20%, #00a2ff 80%, transparent 100%);
 }
 
 .footer-main {
-    padding: 45px 0 30px;
+    padding: 70px 0 45px !important;
 }
 
 .footer h5 {
-    color: #fff;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: #4dbfff !important; /* Beautiful light celestial blue */
+    font-weight: 800 !important;
+    margin-bottom: 1.5rem !important;
+    font-size: 0.85rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1.5px !important;
 }
 
 .footer p {
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.72) !important;
     line-height: 1.75;
-    font-size: 0.92rem;
+    font-size: 0.9rem;
 }
 
 .footer a {
-    color: rgba(255, 255, 255, 0.85);
-    text-decoration: none;
-    transition: color 0.2s ease, padding-left 0.2s ease;
+    color: rgba(255, 255, 255, 0.75) !important;
+    text-decoration: none !important;
+    transition: all 0.25s ease !important;
 }
 
 .footer a:hover {
-    color: #fff;
-    padding-left: 3px;
+    color: #00a2ff !important;
+    padding-left: 4px !important;
 }
 
 .footer-brand {
@@ -306,64 +317,117 @@ main {
     box-shadow: 0 6px 18px rgba(0,0,0,0.12);
 }
 
-.footer-links,
-.footer-contact {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* Social media buttons */
+.social-links-container {
+    margin-top: 1.5rem;
+}
+
+.social-link-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.75) !important;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    transition: all 0.3s ease !important;
+}
+
+.social-link-btn:hover {
+    background: #00a2ff !important;
+    border-color: #00a2ff !important;
+    color: #fff !important;
+    transform: translateY(-3px) scale(1.08);
+    box-shadow: 0 4px 12px rgba(0, 162, 255, 0.3);
+    padding-left: 0 !important; /* cancel shifting default a:hover */
+}
+
+/* Footer links styling */
+.footer-links {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .footer-links li {
-    margin-bottom: 0.55rem;
-    color: rgba(255, 255, 255, 0.9);
-    line-height: 1.5;
-    font-size: 0.9rem;
+    margin-bottom: 0.75rem !important;
+    font-size: 0.9rem !important;
 }
 
-.footer-contact li {
-    margin-bottom: 0.65rem;
-    color: rgba(255, 255, 255, 0.9);
-    line-height: 1.5;
-    font-size: 0.88rem;
-    padding-left: 1.5rem;
-    position: relative;
+.footer-links li a {
+    display: inline-flex;
+    align-items: center;
 }
 
-.footer-contact li::before {
-    position: absolute;
-    left: 0;
-    top: 0.15rem;
-    font-family: 'bootstrap-icons';
-    font-size: 0.9rem;
-    color: #fff;
+.text-primary-light {
+    color: #00a2ff;
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
 }
 
-.footer-contact li:nth-child(1)::before { content: '\f3e8'; }
-.footer-contact li:nth-child(2)::before { content: '\f5c1'; }
-.footer-contact li:nth-child(3)::before { content: '\f32f'; }
-.footer-contact li:nth-child(4)::before { content: '\f293'; }
-
-.footer .btn-agecso {
-    font-size: 0.85rem;
-    padding: 0.5rem 1.1rem;
-    border-radius: 8px;
-    margin-top: 0.5rem;
-    background: #fff !important;
-    color: #008ae0 !important;
-    border-color: #fff !important;
-    font-weight: 700;
+.footer-links li:hover .text-primary-light {
+    transform: translateX(2px);
 }
 
-.footer .btn-agecso:hover {
-    background: #f0f9ff !important;
+/* Footer contact list with proper bootstrap icons */
+.footer-contact-list {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.footer-contact-list li {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.75rem !important;
+    margin-bottom: 1rem !important;
+    font-size: 0.9rem !important;
+    color: rgba(255, 255, 255, 0.72) !important;
+    line-height: 1.6 !important;
+}
+
+.footer-contact-list li a {
+    color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.footer-contact-list li a:hover {
     color: #00a2ff !important;
+    padding-left: 0 !important; /* Override standard text link shift */
 }
 
+.contact-icon {
+    color: #00a2ff !important;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+/* Contact Button */
+.btn-footer-cta {
+    background: linear-gradient(135deg, #00a2ff 0%, #008ae0 100%) !important;
+    color: #fff !important;
+    border: none !important;
+    font-weight: 750 !important;
+    font-size: 0.88rem !important;
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    box-shadow: 0 4px 15px rgba(0, 162, 255, 0.2) !important;
+}
+
+.btn-footer-cta:hover {
+    background: linear-gradient(135deg, #33b5ff 0%, #0099ff 100%) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 8px 24px rgba(0, 162, 255, 0.4) !important;
+}
+
+/* Footer Bottom */
 .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 0.82rem;
-    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 25px 0 !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 0.8rem !important;
 }
 
 /* Page Loader */
@@ -1219,4 +1283,101 @@ html {
         right: 10px;
         bottom: -15px;
     }
+}
+
+/* Contact Page Advanced Styles */
+.contact-hero-banner {
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-info-block {
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.01);
+}
+
+.contact-info-block:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 162, 255, 0.06) !important;
+    border-color: rgba(0, 162, 255, 0.15) !important;
+}
+
+.contact-info-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 162, 255, 0.04);
+}
+
+/* Custom form wrapper */
+.card-contact-form {
+    background: #fff;
+    border-radius: 24px !important;
+    border-top: 4px solid #00a2ff !important;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.04) !important;
+}
+
+.card-contact-form .input-group {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-contact-form .input-group-text {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #00a2ff !important;
+}
+
+.card-contact-form .form-control {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 0.7rem 1rem;
+    font-size: 0.92rem;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+}
+
+.card-contact-form .form-control:focus {
+    background: #fff !important;
+    border-color: #00a2ff !important;
+    box-shadow: 0 0 0 4px rgba(0, 162, 255, 0.12) !important;
+}
+
+.card-contact-form textarea.form-control {
+    border-radius: 12px !important;
+}
+
+/* Somos AGECSO Sector Directory Styles */
+.card-sector-directory {
+    background: #fff;
+    border-radius: 16px !important;
+    border-left: 4px solid #00a2ff !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02) !important;
+    transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+}
+
+.card-sector-directory:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 162, 255, 0.08) !important;
+    border-left-color: #005fa3 !important;
+}
+
+.sector-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+.card-sector-directory:hover .sector-icon-box {
+    transform: scale(1.1) rotate(5deg);
 }

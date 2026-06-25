@@ -73,42 +73,69 @@ $menu = [
         <div class="container">
             <div class="footer-main">
                 <div class="row g-5">
-                    <div class="col-lg-4">
+                    <!-- Brand Column -->
+                    <div class="col-lg-4 text-start">
                         <div class="footer-brand align-items-center mb-3">
                             <img class="footer-logo" src="<?= APP_URL ?>/assets/img/AGECSO.jpg" alt="Logo AGECSO">
                             <span class="brand-text text-white">AGECSO</span>
                         </div>
-                        <p class="text-white-50">Conectamos empresas y oportunidades de crecimiento en Sabana de Occidente.</p>
+                        <p class="text-white-50 mb-3" style="font-size: 0.92rem; line-height: 1.7;">Conectamos el tejido empresarial, fomentamos el crecimiento sostenible y generamos sinergias comerciales en toda la provincia de Sabana Occidente.</p>
+                        <!-- Social links -->
+                        <div class="d-flex gap-2 mt-3 social-links-container">
+                            <a href="https://www.facebook.com/" target="_blank" class="social-link-btn" title="Facebook"><i class="bi bi-facebook"></i></a>
+                            <a href="https://www.instagram.com/" target="_blank" class="social-link-btn" title="Instagram"><i class="bi bi-instagram"></i></a>
+                            <a href="https://www.linkedin.com/" target="_blank" class="social-link-btn" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                            <a href="https://www.youtube.com/" target="_blank" class="social-link-btn" title="YouTube"><i class="bi bi-youtube"></i></a>
+                        </div>
                     </div>
-                    <div class="col-6 col-lg-2">
+                    
+                    <!-- Institutional Column -->
+                    <div class="col-6 col-lg-2 text-start">
                         <h5>Institucional</h5>
                         <ul class="footer-links">
-                            <li><a href="<?= APP_URL ?>/?page=nosotros">Nosotros</a></li>
-                            <li><a href="<?= APP_URL ?>/?page=servicios">Servicios</a></li>
-                            <li><a href="<?= APP_URL ?>/?page=aliados">Aliados</a></li>
+                            <li><a href="<?= APP_URL ?>/?page=nosotros"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Nosotros</a></li>
+                            <li><a href="<?= APP_URL ?>/?page=servicios"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Servicios</a></li>
+                            <li><a href="<?= APP_URL ?>/?page=cursos-webinar"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Cursos</a></li>
+                            <li><a href="<?= APP_URL ?>/?page=contacto"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Contacto</a></li>
                         </ul>
                     </div>
-                    <div class="col-6 col-lg-2">
+                    
+                    <!-- Actualidad Column -->
+                    <div class="col-6 col-lg-2 text-start">
                         <h5>Actualidad</h5>
                         <ul class="footer-links">
-                            <li><a href="<?= APP_URL ?>/?page=eventos">Eventos</a></li>
-                            <li><a href="<?= APP_URL ?>/?page=noticias">Noticias</a></li>
+                            <li><a href="<?= APP_URL ?>/?page=eventos"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Eventos</a></li>
+                            <li><a href="<?= APP_URL ?>/?page=agenda"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Agenda</a></li>
+                            <li><a href="<?= APP_URL ?>/?page=noticias"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Noticias</a></li>
                         </ul>
                     </div>
-                    <div class="col-lg-4">
+                    
+                    <!-- Contact Column -->
+                    <div class="col-lg-4 text-start">
                         <h5>Contacto</h5>
-                        <ul class="footer-contact">
-                            <li>Parque Industrial Santo Domingo, Mosquera, Cundinamarca.</li>
-                            <li>+57 311 8772577</li>
-                            <li>info@agecso.org</li>
+                        <ul class="footer-contact-list">
+                            <li>
+                                <i class="bi bi-geo-alt-fill contact-icon"></i>
+                                <span>Avenida Troncal Occidente # 18-76, Parque Industrial Santo Domingo, Bodega J3, Mosquera, Cundinamarca.</span>
+                            </li>
+                            <li>
+                                <i class="bi bi-telephone-fill contact-icon"></i>
+                                <a href="tel:+573118772577">+57 311 877 2577</a>
+                            </li>
+                            <li>
+                                <i class="bi bi-envelope-fill contact-icon"></i>
+                                <a href="mailto:info@agecso.org">info@agecso.org</a>
+                            </li>
                         </ul>
-                        <a class="btn btn-agecso mt-2" href="<?= APP_URL ?>/?page=contacto">Contáctenos</a>
+                        <a class="btn btn-footer-cta rounded-pill mt-3 shadow-sm px-4 py-2" href="<?= APP_URL ?>/?page=contacto">
+                            <i class="bi bi-chat-dots-fill me-2"></i>Escríbenos
+                        </a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-                <span>© <?= date('Y') ?> AGECSO. Todos los derechos reservados.</span>
-                <span>Desarrollo web institucional</span>
+                <span>© <?= date('Y') ?> <strong>AGECSO</strong>. Todos los derechos reservados.</span>
+                <span>Desarrollo Web Institucional Premium</span>
             </div>
         </div>
     </footer>
