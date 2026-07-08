@@ -116,7 +116,7 @@ $menu = [
                         <ul class="footer-contact-list">
                             <li>
                                 <i class="bi bi-geo-alt-fill contact-icon"></i>
-                                <span>Avenida Troncal Occidente # 18-76, Parque Industrial Santo Domingo, Bodega J3, Mosquera, Cundinamarca.</span>
+                                <span>Calle 2 # 18-93, Parque Industrial San Jorge, Oficina 244, Mosquera, Cundinamarca, Colombia.</span>
                             </li>
                             <li>
                                 <i class="bi bi-telephone-fill contact-icon"></i>

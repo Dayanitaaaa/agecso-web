@@ -47,7 +47,7 @@
                     <div>
                         <span class="d-block text-muted text-uppercase tracking-wider fw-bold" style="font-size: 0.72rem; letter-spacing: 0.5px;">Ubicación Física</span>
                         <h5 class="fw-bold text-dark mt-1 mb-1" style="font-size: 1.1rem;">Visítanos</h5>
-                        <p class="text-muted mb-0" style="font-size: 0.92rem; line-height: 1.6;">Avenida Troncal Occidente # 18-76, Parque Industrial Santo Domingo, Bodega J3, Mosquera, Cundinamarca.</p>
+                        <p class="text-muted mb-0" style="font-size: 0.92rem; line-height: 1.6;">Calle 2 # 18-93, Parque Industrial San Jorge, Oficina 244, Mosquera, Cundinamarca, Colombia.</p>
                     </div>
                 </div>
             </div>
