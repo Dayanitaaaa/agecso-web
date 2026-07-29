@@ -1,5 +1,5 @@
 <?php
 
 const APP_NAME = 'AGECSO';
-const APP_URL = '/AGECSO-web/public';
-const BUSINESS_PLATFORM_URL = '/AGESCO-produccion/public';
+const APP_URL = 'https://agecso.org';
+const BUSINESS_PLATFORM_URL = 'https://rueda.agecso.org';

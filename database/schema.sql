@@ -1,8 +1,4 @@
--- Base de datos: agecso_web
--- Para ejecutar en phpMyAdmin o terminal MySQL
-
-CREATE DATABASE IF NOT EXISTS agecso_web CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE agecso_web;
+-- Esquema de base de datos para AGECSO-web
 
 -- Tabla de administradores
 CREATE TABLE IF NOT EXISTS usuarios_admin (

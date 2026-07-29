@@ -1,18 +1,13 @@
 <?php
 // Configuración de la base de datos para AGECSO-web
-$host = "127.0.0.1";
+$host = "localhost"; // En Hostinger casi siempre es localhost
 $port = 3306;
-$socket = "/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock";
-$db_name = "agecso_web";
-$username = "root";
-$password = ""; // Por defecto en XAMPP está vacío
+$db_name = "u152451479_agecso_web";
+$username = "u152451479_admin";
+$password = "Lopez1007645229*"; // Pon aquí la clave que creaste en Hostinger
 
 try {
-    try {
-        $pdo = new PDO("mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4", $username, $password);
-    } catch (PDOException $e) {
-        $pdo = new PDO("mysql:unix_socket=$socket;dbname=$db_name;charset=utf8mb4", $username, $password);
-    }
+    $pdo = new PDO("mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {

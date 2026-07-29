@@ -1,0 +1,11 @@
+# Archivos de configuración sensible
+config/db.php
+
+# Archivos temporales y de sistema
+.DS_Store
+Thumbs.db
+Archivo.zip
+__MACOSX/
+
+# Carpeta git
+.git/
