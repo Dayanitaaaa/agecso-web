@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Asegurarse de que no afecte a la carpeta rueda
+    RewriteCond %{REQUEST_URI} !^/rueda/
+    # Redirigir el resto al public del sitio principal
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
