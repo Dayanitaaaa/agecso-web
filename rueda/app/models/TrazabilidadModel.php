@@ -85,7 +85,7 @@ class TrazabilidadModel {
                            WHEN r.compradorId = ? THEN e_vend.razon_social
                            ELSE e_comp.razon_social
                        END as nombre_contraparte,
-                       rn.tituloRueda
+                       rn.nombreRueda as tituloRueda
                 FROM trazabilidad_seguimiento ts
                 JOIN reuniones r ON ts.reunionId = r.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
@@ -130,7 +130,7 @@ class TrazabilidadModel {
         $sql = "SELECT es.*, 
                        r.fechaHora as fecha_reunion,
                        e.razon_social as contraparte,
-                       rn.tituloRueda,
+                       rn.nombreRueda as tituloRueda,
                        CASE 
                            WHEN es.tipo_encuesta = 'trazabilidad_3_meses' THEN '3 Meses'
                            WHEN es.tipo_encuesta = 'trazabilidad_6_meses' THEN '6 Meses'
