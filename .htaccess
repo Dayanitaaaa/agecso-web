@@ -1,9 +1,1 @@
-RewriteEngine On
-
-# Si la carpeta rueda existe físicamente, no aplicar redirección
-RewriteCond %{REQUEST_URI} ^/rueda/
-RewriteRule ^rueda/(.*)$ rueda/$1 [L]
-
-# Para todo lo demás, ir a la carpeta public del sitio principal
-RewriteCond %{REQUEST_URI} !^/rueda/
-RewriteRule ^(.*)$ public/$1 [L]
+# Temporalmente vacío para corregir error 500
