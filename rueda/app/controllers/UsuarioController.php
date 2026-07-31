@@ -35,11 +35,10 @@ class UsuarioController {
                         s.id,
                         s.nombreSector,
                         s.ciiu_clase,
-                        s.seccion,
                         CONCAT(s.ciiu_clase, ' - ', s.nombreSector) as display_text
                     FROM sectores s
-                    WHERE s.is_active = 1 AND s.ciiu_clase IS NOT NULL
-                    ORDER BY s.seccion, s.orden_visual, s.ciiu_clase
+                    WHERE s.ciiu_clase IS NOT NULL
+                    ORDER BY s.ciiu_clase ASC
                 ");
                 $sectores = $stmt_sectores->fetchAll();
             } catch (PDOException $e) {
