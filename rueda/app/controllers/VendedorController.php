@@ -47,7 +47,7 @@ class VendedorController {
 
             // SEGURIDAD: Solo mostrar requerimientos de ruedas donde el vendedor está inscrito y ACEPTADO
             $stmt_reqs = $this->pdo->prepare("
-                SELECT d.*, e.razon_social, rn.tituloRueda as rueda_titulo 
+                SELECT d.*, e.razon_social, COALESCE(rn.tituloRueda, rn.nombreRueda) as rueda_titulo 
                 FROM demandas d 
                 JOIN empresas e ON d.empresaId = e.id 
                 JOIN ruedas_negocios rn ON d.ruedaId = rn.id
@@ -60,7 +60,7 @@ class VendedorController {
 
             // Obtener mis citas (como vendedor)
             $stmt_mis_citas = $this->pdo->prepare("
-                SELECT r.*, e.razon_social as nombre_comprador, rn.tituloRueda as rueda_titulo
+                SELECT r.*, e.razon_social as nombre_comprador, COALESCE(rn.tituloRueda, rn.nombreRueda) as rueda_titulo
                 FROM reuniones r
                 JOIN empresas e ON r.compradorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
@@ -72,7 +72,7 @@ class VendedorController {
 
             // Verificar si hay encuestas pendientes para el vendedor (Citas realizadas o pasadas sin calificar)
             $stmt_encuestas_pendientes = $this->pdo->prepare("
-                SELECT r.id, e.razon_social as nombre_comprador, r.fechaHora, rn.tituloRueda
+                SELECT r.id, e.razon_social as nombre_comprador, r.fechaHora, COALESCE(rn.tituloRueda, rn.nombreRueda) as tituloRueda
                 FROM reuniones r
                 JOIN empresas e ON r.compradorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
@@ -313,7 +313,7 @@ class VendedorController {
 
             // Obtener ruedas en las que está inscrito el vendedor
             $stmt_ruedas = $this->pdo->prepare("
-                SELECT rn.id, rn.tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin
+                SELECT rn.id, COALESCE(rn.tituloRueda, rn.nombreRueda) as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ? AND ir.estadoInscripcion = 'aceptada'
@@ -343,7 +343,7 @@ class VendedorController {
 
             // Obtener citas del vendedor FILTRADAS POR RUEDA
             $sql_citas = "
-                SELECT r.*, e.razon_social as nombre_comprador, rn.tituloRueda, rn.id as ruedaId
+                SELECT r.*, e.razon_social as nombre_comprador, COALESCE(rn.tituloRueda, rn.nombreRueda) as tituloRueda, rn.id as ruedaId
                 FROM reuniones r
                 JOIN empresas e ON r.compradorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
@@ -401,7 +401,7 @@ class VendedorController {
             if (!$rueda_id_filtro || empty($ruedas)) {
                 // Obtener conteo de citas por rueda
                 $stmt_resumen = $this->pdo->prepare("
-                    SELECT r.ruedaId, rn.tituloRueda,
+                    SELECT r.ruedaId, COALESCE(rn.tituloRueda, rn.nombreRueda) as tituloRueda,
                            COUNT(*) as total,
                            SUM(CASE WHEN r.estadoCita IN ('pendiente', 'negociando') THEN 1 ELSE 0 END) as pendientes,
                            SUM(CASE WHEN r.estadoCita = 'aceptada' THEN 1 ELSE 0 END) as aceptadas
@@ -667,7 +667,7 @@ class VendedorController {
     public function verEncuestas() {
         try {
             $stmt = $this->pdo->prepare("
-                SELECT s.*, r.fechaHora, e.razon_social as contraparte, rn.tituloRueda
+                SELECT s.*, r.fechaHora, e.razon_social as contraparte, COALESCE(rn.tituloRueda, rn.nombreRueda) as tituloRueda
                 FROM encuestas_satisfaccion s
                 JOIN reuniones r ON s.reunionId = r.id
                 JOIN empresas e ON r.compradorId = e.id
@@ -686,7 +686,7 @@ class VendedorController {
             $encuestas_pendientes = [];
             if ($empresa) {
                 $stmt_p = $this->pdo->prepare("
-                    SELECT r.id, e.razon_social as contraparte, r.fechaHora, rn.tituloRueda
+                    SELECT r.id, e.razon_social as contraparte, r.fechaHora, COALESCE(rn.tituloRueda, rn.nombreRueda) as tituloRueda
                     FROM reuniones r
                     JOIN empresas e ON r.compradorId = e.id
                     JOIN ruedas_negocios rn ON r.ruedaId = rn.id
@@ -1174,7 +1174,7 @@ class VendedorController {
 
             // Obtener todas las ofertas del vendedor con información de la rueda
             $stmt_ofertas = $this->pdo->prepare("
-                SELECT o.*, rn.tituloRueda, rn.estadoRueda, rn.modalidad, rn.fechaInicio, rn.fechaFin
+                SELECT o.*, COALESCE(rn.tituloRueda, rn.nombreRueda) as tituloRueda, rn.estadoRueda, rn.modalidad, rn.fechaInicio, rn.fechaFin
                 FROM ofertas o
                 JOIN ruedas_negocios rn ON o.ruedaId = rn.id
                 WHERE o.empresaId = ?
