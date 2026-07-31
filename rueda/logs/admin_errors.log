@@ -1,0 +1,17 @@
+[2026-04-20 20:54:08] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-04-21 00:23:55] ROLE_ERROR[admin]: Acceso no autorizado al VendedorController | accion=verEncuestas
+[2026-04-22 16:30:23] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-04-24 17:57:18] ROLE_ERROR[admin]: Error al ver estadísticas de rueda | accion=verEstadisticas | rueda_id=13 | error=SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'vendedorId'
+[2026-04-24 17:57:23] ROLE_ERROR[admin]: Error al ver estadísticas de rueda | accion=verEstadisticas | rueda_id=11 | error=SQLSTATE[42S21]: Column already exists: 1060 Duplicate column name 'vendedorId'
+[2026-04-24 17:58:04] ROLE_ERROR[admin]: Error al ver estadísticas de rueda | accion=verEstadisticas | rueda_id=11 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.compradorId' in 'field list'
+[2026-04-24 17:58:06] ROLE_ERROR[admin]: Error al ver estadísticas de rueda | accion=verEstadisticas | rueda_id=11 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'r.compradorId' in 'field list'
+[2026-04-27 06:15:30] ROLE_ERROR[admin]: Acceso no autorizado al CompradorController | accion=verReuniones
+[2026-05-04 22:28:55] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-05-04 22:56:38] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-05-04 23:21:17] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-05-04 23:38:02] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-05-04 23:38:50] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-05-05 14:58:32] ROLE_ERROR[admin]: Error al crear rueda de negocio | accion=crearRueda | error=No puedes crear una rueda de negocios en una fecha pasada. | usuario_id=2
+[2026-05-06 17:28:04] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-05-07 20:58:20] ROLE_ERROR[admin]: Contraseña incorrecta | email=dayana@agecso.com
+[2026-07-06 16:35:52] ROLE_ERROR[admin]: Acceso no autorizado al VendedorController | accion=misOfertas

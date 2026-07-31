@@ -1,0 +1,17 @@
+[2026-04-16 18:52:16] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@prueba.com
+[2026-04-16 18:57:25] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@prueba.com
+[2026-04-19 15:23:32] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@prueba.com
+[2026-04-20 20:30:13] ROLE_ERROR[proveedor]: Error al solicitar cita | accion=solicitarCita | error=Ambas empresas deben estar inscritas y aceptadas en la rueda de negocios.
+[2026-04-21 17:53:35] ROLE_ERROR[proveedor]: Error al registrar oferta | accion=registrarOferta | empresa_id=4 | error=Debes estar inscrito y aceptado en la rueda de negocios para publicar ofertas.
+[2026-04-21 18:23:07] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@prueba.com
+[2026-04-21 18:23:23] ROLE_ERROR[proveedor]: Error al registrar oferta | accion=registrarOferta | empresa_id=4 | error=Debes estar inscrito y aceptado en la rueda de negocios para publicar ofertas.
+[2026-05-04 23:40:23] ROLE_ERROR[proveedor]: Error al solicitar cita | accion=solicitarCita | error=Ya existe una solicitud de cita pendiente o activa con esta empresa para esta rueda.
+[2026-05-05 15:14:48] ROLE_ERROR[proveedor]: Error al ver mis ofertas | accion=verMisOfertas | usuario_id=47 | error=No tienes permisos para ver esta rueda. Tu inscripción debe estar aceptada.
+[2026-06-19 18:11:53] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@prueba.com
+[2026-06-19 18:13:12] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@prueba.com
+[2026-06-19 18:13:21] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@prueba.com
+[2026-06-22 17:35:23] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@prueba.com
+[2026-06-22 18:46:45] ROLE_ERROR[proveedor]: Error al ver mis ofertas | accion=verMisOfertas | usuario_id=67 | error=No tienes permisos para ver esta rueda. Tu inscripción debe estar aceptada.
+[2026-06-23 10:59:48] ROLE_ERROR[proveedor]: Contraseña incorrecta | email=vendedor@agecso.com
+[2026-06-30 16:07:18] ROLE_ERROR[proveedor]: Error al ver mis ofertas | accion=verMisOfertas | usuario_id=67 | error=No tienes permisos para ver esta rueda. Tu inscripción debe estar aceptada.
+[2026-07-06 15:59:45] ROLE_ERROR[proveedor]: Error al agregar link de reunión | accion=agregarLinkReunion | cita_id=n/a | error=Debes proporcionar un link de reunión válido.

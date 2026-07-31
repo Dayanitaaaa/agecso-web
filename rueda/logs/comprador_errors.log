@@ -1,0 +1,42 @@
+[2026-04-16 18:50:03] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-16 18:51:55] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-16 18:52:01] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-16 18:53:57] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-16 18:55:34] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-16 18:55:39] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-16 18:58:24] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-16 20:50:09] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-16 20:53:56] ROLE_ERROR[comprador]: Error al gestionar cita | accion=gestionarCita | cita_id=1 | estado=aceptada | error=SQLSTATE[01000]: Warning: 1265 Data truncated for column 'estadoCita' at row 1
+[2026-04-16 21:59:16] ROLE_ERROR[comprador]: Error cargando dashboard comprador | accion=dashboard | usuario_id=3 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'o.isActive' in 'where clause'
+[2026-04-16 22:25:02] ROLE_ERROR[comprador]: Error cargando dashboard comprador | accion=dashboard | usuario_id=3 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'o.isActive' in 'where clause'
+[2026-04-16 22:25:03] ROLE_ERROR[comprador]: Error cargando dashboard comprador | accion=dashboard | usuario_id=3 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'o.isActive' in 'where clause'
+[2026-04-16 22:25:08] ROLE_ERROR[comprador]: Error cargando dashboard comprador | accion=dashboard | usuario_id=3 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'o.isActive' in 'where clause'
+[2026-04-16 22:25:17] ROLE_ERROR[comprador]: Error cargando dashboard comprador | accion=dashboard | usuario_id=3 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'o.isActive' in 'where clause'
+[2026-04-19 15:43:04] ROLE_ERROR[comprador]: Error al solicitar reunión desde comprador | accion=solicitarReunion | vendedor_id=4 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'linkReunion' in 'field list'
+[2026-04-20 14:41:13] ROLE_ERROR[comprador]: Error al solicitar reunión desde comprador | accion=solicitarReunion | vendedor_id=4 | error=SQLSTATE[42S22]: Column not found: 1054 Unknown column 'linkReunion' in 'field list'
+[2026-04-20 20:52:28] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-21 16:19:11] ROLE_ERROR[comprador]: Error al gestionar cita comprador | accion=gestionarCita | error=SQLSTATE[01000]: Warning: 1265 Data truncated for column 'estadoCita' at row 1
+[2026-04-21 16:23:02] ROLE_ERROR[comprador]: Error al gestionar cita comprador | accion=gestionarCita | error=SQLSTATE[01000]: Warning: 1265 Data truncated for column 'estadoCita' at row 1
+[2026-04-21 16:25:16] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador1@demo.com
+[2026-04-21 16:40:04] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador1@demo.com
+[2026-04-21 16:51:19] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-27 05:40:35] ROLE_ERROR[comprador]: Error al gestionar cita comprador | accion=gestionarCita | error=La fecha propuesta no puede ser después de que termine la rueda de negocios.
+[2026-04-27 07:10:55] ROLE_ERROR[comprador]: Error al gestionar cita comprador | accion=gestionarCita | error=Debes proporcionar un link de reunión para aceptar la cita.
+[2026-04-27 07:11:47] ROLE_ERROR[comprador]: Error al gestionar cita comprador | accion=gestionarCita | error=Debes proporcionar un link de reunión para aceptar la cita.
+[2026-04-27 07:13:03] ROLE_ERROR[comprador]: Error al gestionar cita comprador | accion=gestionarCita | error=Debes proporcionar un link de reunión para aceptar la cita.
+[2026-04-27 07:13:50] ROLE_ERROR[comprador]: Error al gestionar cita comprador | accion=gestionarCita | error=Debes proporcionar un link de reunión para aceptar la cita.
+[2026-04-27 16:49:07] ROLE_ERROR[comprador]: Error al solicitar reunión desde comprador | accion=solicitarReunion | vendedor_id=4 | error=No se pueden agendar citas en fechas u horas pasadas.
+[2026-04-27 17:00:07] ROLE_ERROR[comprador]: Error al solicitar reunión desde comprador | accion=solicitarReunion | vendedor_id=4 | error=SQLSTATE[01000]: Warning: 1265 Data truncated for column 'estadoCita' at row 1
+[2026-04-27 21:53:31] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-27 23:35:47] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@prueba.com
+[2026-04-29 23:38:30] ROLE_ERROR[comprador]: Error al solicitar reunión desde comprador | accion=solicitarReunion | vendedor_id=4 | error=No se pueden agendar citas en fechas u horas pasadas.
+[2026-05-05 00:04:13] ROLE_ERROR[comprador]: Error al solicitar reunión desde comprador | accion=solicitarReunion | vendedor_id=4 | error=No se pueden agendar citas en fechas u horas pasadas.
+[2026-05-05 18:55:34] ROLE_ERROR[comprador]: Error cargando dashboard comprador | accion=dashboard | usuario_id=3 | error=SQLSTATE[42S02]: Base table or view not found: 1146 Table 'agecso_prueba5.trazabilidad_seguimiento' doesn't exist
+[2026-05-06 16:42:50] ROLE_ERROR[comprador]: Acceso no autorizado al AdminController | accion=configTime
+[2026-06-19 17:56:18] ROLE_ERROR[comprador]: Error cargando dashboard comprador | accion=dashboard | usuario_id=66 | error=No se encontró información de la empresa para este usuario.
+[2026-06-22 21:49:14] ROLE_ERROR[comprador]: Contraseña incorrecta | email=comprador@agecso.com
+[2026-06-23 17:53:57] ROLE_ERROR[comprador]: Error al solicitar reunión desde comprador | accion=solicitarReunion | vendedor_id=64 | error=No se pueden agendar citas en fechas u horas pasadas.
+[2026-06-23 14:53:37] ROLE_ERROR[comprador]: Acceso no autorizado al VendedorController | accion=registrarEncuesta
+[2026-06-23 15:38:15] ROLE_ERROR[comprador]: Acceso no autorizado al VendedorController | accion=registrarEncuesta
+[2026-06-23 15:45:38] ROLE_ERROR[comprador]: Acceso no autorizado al VendedorController | accion=registrarEncuesta
+[2026-07-01 11:25:09] ROLE_ERROR[comprador]: Acceso no autorizado al AdminController | accion=getMesasDisponibles
