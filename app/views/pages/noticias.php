@@ -9,7 +9,7 @@
                     <div class="col-md-6 col-lg-4">
                         <div class="card h-100">
                             <?php if ($item['imagen']): ?>
-                                <img src="<?= htmlspecialchars($item['imagen']) ?>" class="card-img-top" alt="" style="height: 180px; object-fit: cover;">
+                                <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" class="card-img-top" alt="" style="height: 180px; object-fit: cover;">
                             <?php endif; ?>
                             <div class="card-body">
                                 <small class="text-muted"><?= date('d/m/Y', strtotime($item['fecha_publicacion'])) ?></small>
