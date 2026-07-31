@@ -1,1 +1,8 @@
-# Temporalmente vacío para corregir error 500
+RewriteEngine On
+
+# 1. Si la petición es para la rueda, no hacer nada aquí y dejar que el .htaccess de /rueda se encargue
+RewriteRule ^rueda/ - [L]
+
+# 2. Si la petición NO es para la rueda, redirigir a la carpeta public del sitio principal
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/$1 [L]
