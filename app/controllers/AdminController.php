@@ -534,21 +534,32 @@ class AdminController {
         $maxSize = 5 * 1024 * 1024; // 5MB
 
         if (!in_array($file['type'], $allowedTypes)) {
+            error_log("Error en subida: Tipo de archivo no permitido: " . $file['type']);
             return $currentImage;
         }
 
         if ($file['size'] > $maxSize) {
+            error_log("Error en subida: Archivo demasiado grande: " . $file['size']);
             return $currentImage;
         }
 
         $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = uniqid() . '_' . time() . '.' . $extension;
-        $uploadPath = __DIR__ . '/../../public/uploads/' . $filename;
+        
+        $uploadDir = __DIR__ . '/../../public/uploads/';
+        
+        // Crear directorio si no existe
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        $uploadPath = $uploadDir . $filename;
 
         if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
             return $filename;
         }
 
+        error_log("Error en subida: No se pudo mover el archivo a " . $uploadPath);
         return $currentImage;
     }
 }
