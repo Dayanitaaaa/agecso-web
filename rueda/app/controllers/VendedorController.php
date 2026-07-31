@@ -86,9 +86,14 @@ class VendedorController {
             $encuestas_pendientes = $stmt_encuestas_pendientes->fetchAll();
 
             // Obtener seguimientos de trazabilidad pendientes (3 y 6 meses)
-            require_once '../app/models/TrazabilidadModel.php';
-            $trazabilidadModel = new TrazabilidadModel($this->pdo);
-            $trazabilidad_pendientes = $trazabilidadModel->getSeguimientosPendientes($_SESSION['usuario_id'], SYSTEM_TIME);
+            $trazabilidad_pendientes = [];
+            try {
+                require_once '../app/models/TrazabilidadModel.php';
+                $trazabilidadModel = new TrazabilidadModel($this->pdo);
+                $trazabilidad_pendientes = $trazabilidadModel->getSeguimientosPendientes($_SESSION['usuario_id'], SYSTEM_TIME);
+            } catch (Exception $e) {
+                Logger::logRoleError('vendedor', 'Error silencioso en trazabilidad dashboard', ['error' => $e->getMessage()]);
+            }
 
             $stmt_ruedas = $this->pdo->query("SELECT * FROM ruedas_negocios WHERE estadoRueda IN ('inscripciones', 'activa')");
             $ruedas = $stmt_ruedas->fetchAll();
