@@ -374,8 +374,15 @@ class VendedorController {
 
             foreach ($todas_citas as $c) {
                 // Lógica de turnos: ¿Quién debe actuar?
-                $debeActuarVendedor = ($c['estadoCita'] == 'negociando' || $c['estadoCita'] == 'pendiente') && $c['ultimaAccionPor'] == 'comprador';
-                $esperandoComprador = ($c['estadoCita'] == 'negociando' || $c['estadoCita'] == 'pendiente') && $c['ultimaAccionPor'] == 'vendedor';
+                $debeActuarVendedor = false;
+                $esperandoComprador = false;
+                
+                try {
+                    $debeActuarVendedor = ($c['estadoCita'] == 'negociando' || $c['estadoCita'] == 'pendiente') && ($c['ultimaAccionPor'] ?? '') == 'comprador';
+                    $esperandoComprador = ($c['estadoCita'] == 'negociando' || $c['estadoCita'] == 'pendiente') && ($c['ultimaAccionPor'] ?? '') == 'vendedor';
+                } catch (Exception $e) {
+                    // Fallback si fallan las columnas de turno
+                }
 
                 if ($debeActuarVendedor) {
                     // El comprador envió una propuesta o contraoferta que el vendedor debe responder
