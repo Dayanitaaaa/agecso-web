@@ -34,20 +34,45 @@
                 <input type="date" name="fecha_publicacion" class="form-control" value="<?= $item['fecha_publicacion'] ?? date('Y-m-d') ?>">
             </div>
             <div class="col-12">
-                <label class="form-label">Imagen</label>
+                <label class="form-label">Imagen Principal (Miniatura)</label>
                 <input type="file" name="imagen" class="form-control" accept="image/*" id="imagenInput">
                 <?php if (!empty($item['imagen'])): ?>
                     <div class="mt-2">
-                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-thumbnail" style="max-height: 150px;">
+                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-thumbnail" style="max-height: 100px;">
                         <div class="form-check mt-1">
                             <input class="form-check-input" type="checkbox" name="eliminar_imagen" value="1" id="eliminarImagen">
-                            <label class="form-check-label" for="eliminarImagen">Eliminar imagen actual</label>
+                            <label class="form-check-label" for="eliminarImagen">Eliminar imagen principal</label>
                         </div>
                     </div>
                 <?php endif; ?>
                 <div id="imagenPreview" class="mt-2" style="display: none;">
-                    <img src="" alt="Vista previa" class="img-thumbnail" style="max-height: 150px;">
+                    <img src="" alt="Vista previa" class="img-thumbnail" style="max-height: 100px;">
                 </div>
+            </div>
+
+            <div class="col-12 mt-4">
+                <label class="form-label">Carrusel de Imágenes (Fotos adicionales)</label>
+                <input type="file" name="imagenes[]" class="form-control" accept="image/*" multiple id="imagenesInput">
+                <small class="text-muted">Puedes seleccionar varias fotos a la vez.</small>
+                
+                <?php 
+                $extraImages = json_decode($item['imagenes'] ?? '[]', true);
+                if (!empty($extraImages)): 
+                ?>
+                    <div class="row g-2 mt-2">
+                        <?php foreach ($extraImages as $img): ?>
+                            <div class="col-6 col-md-3 col-lg-2">
+                                <div class="position-relative">
+                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="img-thumbnail w-100" style="height: 80px; object-fit: cover;">
+                                    <div class="form-check mt-1">
+                                        <input class="form-check-input" type="checkbox" name="eliminar_imagenes[]" value="<?= htmlspecialchars($img) ?>">
+                                        <small class="form-check-label">Eliminar</small>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="col-12">
                 <label class="form-label">Resumen</label>

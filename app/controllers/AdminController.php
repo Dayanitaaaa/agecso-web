@@ -172,29 +172,32 @@ class AdminController {
         $error = '';
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $currentImage = $item['imagen'] ?? null;
-            
-            // Handle image upload
-            $imagen = $this->handleImageUpload('imagen', $currentImage);
-            
-            // Handle image deletion
-            if (isset($_POST['eliminar_imagen']) && $_POST['eliminar_imagen'] == '1') {
-                $imagen = null;
-                if ($currentImage && file_exists(__DIR__ . '/../../public/uploads/' . $currentImage)) {
-                    unlink(__DIR__ . '/../../public/uploads/' . $currentImage);
-                }
-            }
-            
             $data = [
-                'titulo' => trim($_POST['titulo'] ?? ''),
-                'slug' => $this->createSlug(trim($_POST['titulo'] ?? '')),
-                'resumen' => trim($_POST['resumen'] ?? ''),
-                'contenido' => trim($_POST['contenido'] ?? ''),
-                'estado' => $_POST['estado'] ?? 'borrador',
+                'titulo' => $_POST['titulo'] ?? '',
+                'resumen' => $_POST['resumen'] ?? null,
+                'contenido' => $_POST['contenido'] ?? '',
                 'fecha_publicacion' => $_POST['fecha_publicacion'] ?? date('Y-m-d'),
-                'imagen' => $imagen
+                'estado' => $_POST['estado'] ?? 'borrador'
             ];
-            
+
+            // Manejar imagen principal
+            if (isset($_POST['eliminar_imagen']) && $_POST['eliminar_imagen'] == '1') {
+                $data['imagen'] = null;
+            } else {
+                $data['imagen'] = $this->handleImageUpload('imagen', $item['imagen'] ?? null);
+            }
+
+            // Manejar carrusel de imágenes
+            $currentImagesJson = $item['imagenes'] ?? '[]';
+            if (isset($_POST['eliminar_imagenes']) && is_array($_POST['eliminar_imagenes'])) {
+                $currentImages = json_decode($currentImagesJson, true);
+                $remainingImages = array_filter($currentImages, function($img) {
+                    return !in_array($img, $_POST['eliminar_imagenes']);
+                });
+                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : null;
+            }
+            $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
+
             if (empty($data['titulo'])) {
                 $error = 'El título es obligatorio.';
             } else {
@@ -222,19 +225,6 @@ class AdminController {
         $error = '';
         
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $currentImage = $item['imagen'] ?? null;
-            
-            // Handle image upload
-            $imagen = $this->handleImageUpload('imagen', $currentImage);
-            
-            // Handle image deletion
-            if (isset($_POST['eliminar_imagen']) && $_POST['eliminar_imagen'] == '1') {
-                $imagen = null;
-                if ($currentImage && file_exists(__DIR__ . '/../../public/uploads/' . $currentImage)) {
-                    unlink(__DIR__ . '/../../public/uploads/' . $currentImage);
-                }
-            }
-            
             $data = [
                 'titulo' => trim($_POST['titulo'] ?? ''),
                 'slug' => $this->createSlug(trim($_POST['titulo'] ?? '')),
@@ -244,9 +234,26 @@ class AdminController {
                 'hora_fin' => $_POST['hora_fin'] ?? null,
                 'lugar' => trim($_POST['lugar'] ?? ''),
                 'estado' => $_POST['estado'] ?? 'programado',
-                'tipo' => $_POST['tipo'] ?? 'evento',
-                'imagen' => $imagen
+                'tipo' => $_POST['tipo'] ?? 'evento'
             ];
+
+            // Manejar imagen principal
+            if (isset($_POST['eliminar_imagen']) && $_POST['eliminar_imagen'] == '1') {
+                $data['imagen'] = null;
+            } else {
+                $data['imagen'] = $this->handleImageUpload('imagen', $item['imagen'] ?? null);
+            }
+
+            // Manejar carrusel de imágenes
+            $currentImagesJson = $item['imagenes'] ?? '[]';
+            if (isset($_POST['eliminar_imagenes']) && is_array($_POST['eliminar_imagenes'])) {
+                $currentImages = json_decode($currentImagesJson, true);
+                $remainingImages = array_filter($currentImages, function($img) {
+                    return !in_array($img, $_POST['eliminar_imagenes']);
+                });
+                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : null;
+            }
+            $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
             
             if (empty($data['titulo'])) {
                 $error = 'El título es obligatorio.';
@@ -519,6 +526,44 @@ class AdminController {
     private function setFlash($message, $type = 'success') {
         $_SESSION['flash_message'] = $message;
         $_SESSION['flash_type'] = $type;
+    }
+
+    /**
+     * Manejar subida de múltiples imágenes
+     */
+    private function handleMultipleImagesUpload($fileInput, $currentImagesJson = null) {
+        if (!isset($_FILES[$fileInput]) || empty($_FILES[$fileInput]['name'][0])) {
+            return $currentImagesJson;
+        }
+
+        $files = $_FILES[$fileInput];
+        $uploadedFilenames = $currentImagesJson ? json_decode($currentImagesJson, true) : [];
+        if (!is_array($uploadedFilenames)) $uploadedFilenames = [];
+
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        $maxSize = 5 * 1024 * 1024; // 5MB
+        $uploadDir = __DIR__ . '/../../public/uploads/';
+
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        for ($i = 0; $i < count($files['name']); $i++) {
+            if ($files['error'][$i] !== UPLOAD_ERR_OK) continue;
+            
+            if (!in_array($files['type'][$i], $allowedTypes)) continue;
+            if ($files['size'][$i] > $maxSize) continue;
+
+            $extension = pathinfo($files['name'][$i], PATHINFO_EXTENSION);
+            $filename = uniqid() . '_' . time() . '_' . $i . '.' . $extension;
+            $uploadPath = $uploadDir . $filename;
+
+            if (move_uploaded_file($files['tmp_name'][$i], $uploadPath)) {
+                $uploadedFilenames[] = $filename;
+            }
+        }
+
+        return !empty($uploadedFilenames) ? json_encode($uploadedFilenames) : null;
     }
 
     /**

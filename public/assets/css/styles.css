@@ -1381,3 +1381,38 @@ html {
 .card-sector-directory:hover .sector-icon-box {
     transform: scale(1.1) rotate(5deg);
 }
+
+/* ====== News Enhancement Styles ====== */
+.news-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.news-content p {
+    line-height: 1.8;
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+}
+
+.bg-soft-primary {
+    background-color: rgba(0, 162, 255, 0.1);
+}
+
+.card-img-top .carousel-item img {
+    border-radius: 16px 16px 0 0;
+}
+
+.carousel-control-prev, .carousel-control-next {
+    width: 10%;
+    opacity: 0.8;
+}
+
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    padding: 15px;
+}
