@@ -169,7 +169,7 @@ class CompradorController {
                     s.ciiu_clase,
                     CONCAT(s.ciiu_clase, ' - ', s.nombreSector) as display_text
                 FROM sectores s 
-                WHERE s.is_active = 1 AND s.ciiu_clase IS NOT NULL
+                WHERE s.ciiu_clase IS NOT NULL
                 ORDER BY s.ciiu_clase
             ");
             $todos_sectores = $stmt_all_sectores->fetchAll();
@@ -327,7 +327,7 @@ class CompradorController {
                     s.ciiu_clase,
                     CONCAT(s.ciiu_clase, ' - ', s.nombreSector) as display_text
                 FROM sectores s 
-                WHERE s.is_active = 1 AND s.ciiu_clase IS NOT NULL
+                WHERE s.ciiu_clase IS NOT NULL
                 ORDER BY s.ciiu_clase
             ");
             $todos_sectores = $stmt_sectores->fetchAll();
