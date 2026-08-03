@@ -1184,7 +1184,7 @@ class VendedorController {
 
             // Obtener todas las ofertas del vendedor con información de la rueda
             $stmt_ofertas = $this->pdo->prepare("
-                SELECT o.*, rn.nombreRueda as tituloRueda, rn.estadoRueda, rn.modalidad, rn.fechaInicio, rn.fechaFin
+                SELECT o.*, rn.nombreRueda as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin
                 FROM ofertas o
                 JOIN ruedas_negocios rn ON o.ruedaId = rn.id
                 WHERE o.empresaId = ?
@@ -1202,7 +1202,6 @@ class VendedorController {
                         'rueda_id' => $rueda_id,
                         'tituloRueda' => $oferta['tituloRueda'],
                         'estadoRueda' => $oferta['estadoRueda'],
-                        'modalidad' => $oferta['modalidad'],
                         'fechaInicio' => $oferta['fechaInicio'],
                         'fechaFin' => $oferta['fechaFin'],
                         'ofertas' => []
