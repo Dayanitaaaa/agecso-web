@@ -1,7 +1,10 @@
 <section class="section-padding">
     <div class="container">
-        <h1 class="mb-4">Noticias</h1>
-        <p class="lead">Espacio para publicar noticias, comunicados y avances de gestión institucional.</p>
+        <div class="text-center mb-5 animate-fade-in">
+            <span class="text-uppercase tracking-wider fw-bold text-primary" style="font-size: 0.85rem; letter-spacing: 0.15em;">Actualidad</span>
+            <h2 class="display-5 fw-bold text-dark mt-2">Noticias</h2>
+            <div class="mx-auto mt-3" style="width: 60px; height: 4px; background: linear-gradient(90deg, #00a2ff, #008ae0); border-radius: 2px;"></div>
+        </div>
 
         <?php if (!empty($data)): ?>
             <div class="row g-4">
