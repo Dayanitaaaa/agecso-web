@@ -1425,24 +1425,23 @@ html {
     transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
     display: flex;
     flex-direction: column;
-}
-
-.news-modern-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1) !important;
+    height: 100%; /* Asegura altura completa */
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
 .news-card-media {
     position: relative;
-    height: 220px;
+    height: 240px !important; /* Altura fija obligatoria */
+    width: 100%;
     overflow: hidden;
+    background: #f8fafc;
 }
 
 .news-card-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* Corta la imagen para que llene el espacio sin deformarse */
+    display: block;
 }
 
 .news-modern-card:hover .news-card-media img {
