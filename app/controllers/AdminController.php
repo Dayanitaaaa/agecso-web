@@ -59,6 +59,14 @@ class AdminController {
      * Gestión de noticias
      */
     public function noticias() {
+        // Auto-reparación de base de datos: intentar crear la columna 'imagenes' si no existe
+        try {
+            $this->pdo->exec("ALTER TABLE noticias ADD COLUMN imagenes LONGTEXT DEFAULT NULL AFTER imagen");
+            $this->pdo->exec("ALTER TABLE eventos ADD COLUMN imagenes LONGTEXT DEFAULT NULL AFTER imagen");
+        } catch (Exception $e) {
+            // Silencioso si ya existe o falla
+        }
+
         $action = $_GET['action'] ?? 'list';
         $id = $_GET['id'] ?? null;
         
