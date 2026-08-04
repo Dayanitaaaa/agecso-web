@@ -1433,9 +1433,14 @@ html {
 
 .news-media-wrapper img {
     width: 100%;
-    height: auto;
-    max-height: 550px;
-    object-fit: cover;
+    height: 500px; /* Altura fija para que todas sean iguales */
+    object-fit: cover; /* Recorte inteligente para no deformar la imagen */
+}
+
+@media (max-width: 767px) {
+    .news-media-wrapper img {
+        height: 300px; /* Altura más pequeña para celulares */
+    }
 }
 
 .news-content-wrapper {
