@@ -198,6 +198,12 @@ class AdminController {
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
 
+            // Verificar si la columna existe antes de intentar guardar (evita Fatal Error)
+            $stmt_check = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'imagenes'");
+            if (!$stmt_check->fetch()) {
+                unset($data['imagenes']);
+            }
+
             if (empty($data['titulo'])) {
                 $error = 'El título es obligatorio.';
             } else {
@@ -254,6 +260,12 @@ class AdminController {
                 $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : null;
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
+            
+            // Verificar si la columna existe antes de intentar guardar (evita Fatal Error)
+            $stmt_check_ev = $this->pdo->query("SHOW COLUMNS FROM eventos LIKE 'imagenes'");
+            if (!$stmt_check_ev->fetch()) {
+                unset($data['imagenes']);
+            }
             
             if (empty($data['titulo'])) {
                 $error = 'El título es obligatorio.';
