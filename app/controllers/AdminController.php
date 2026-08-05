@@ -182,6 +182,7 @@ class AdminController {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data = [
                 'titulo' => $_POST['titulo'] ?? '',
+                'slug' => $this->createSlug($_POST['titulo'] ?? ''),
                 'resumen' => $_POST['resumen'] ?? null,
                 'contenido' => $_POST['contenido'] ?? '',
                 'fecha_publicacion' => $_POST['fecha_publicacion'] ?? date('Y-m-d'),
