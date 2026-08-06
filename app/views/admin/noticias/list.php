@@ -40,9 +40,11 @@
                             <a href="<?= APP_URL ?>/?page=admin&section=noticias&action=edit&id=<?= $item['id'] ?>" class="btn-action">
                                 <i class="bi bi-pencil"></i>
                             </a>
-                            <a href="<?= APP_URL ?>/?page=admin&section=noticias&action=delete&id=<?= $item['id'] ?>" class="btn-action btn-delete" onclick="return confirm('¿Eliminar esta noticia?')">
+                            <button type="button" class="btn-action btn-delete delete-btn" 
+                                    data-url="<?= APP_URL ?>/?page=admin&section=noticias&action=delete&id=<?= $item['id'] ?>"
+                                    data-title="<?= htmlspecialchars($item['titulo']) ?>">
                                 <i class="bi bi-trash"></i>
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
