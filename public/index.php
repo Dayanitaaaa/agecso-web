@@ -5,6 +5,27 @@ error_reporting(E_ALL);
 require_once __DIR__ . '/../config/app.php';
 require_once __DIR__ . '/../config/db.php';
 
+// Obtener la ruta limpia
+$request = $_SERVER['REQUEST_URI'];
+$base_path = parse_url(APP_URL, PHP_URL_PATH) ?: '';
+$request = str_replace($base_path, '', $request);
+$request = parse_url($request, PHP_URL_PATH);
+$request = trim($request, '/');
+
+$parts = explode('/', $request);
+
+// Mapeo básico de rutas para soporte de URLs limpias
+if (!empty($parts[0])) {
+    if ($parts[0] === 'admin') {
+        $_GET['page'] = 'admin';
+        if (!empty($parts[1])) $_GET['section'] = $parts[1];
+        if (!empty($parts[2])) $_GET['action'] = $parts[2];
+        if (!empty($parts[3])) $_GET['id'] = $parts[3];
+    } elseif (in_array($parts[0], ['login', 'logout', 'noticias', 'eventos', 'contacto', 'somos-agecso', 'aliados', 'servicios', 'cursos-webinar'])) {
+        $_GET['page'] = $parts[0];
+    }
+}
+
 $page = $_GET['page'] ?? 'inicio';
 
 // Rutas de administración

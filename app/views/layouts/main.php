@@ -34,7 +34,7 @@ $menu = [
 
     <nav class="navbar navbar-expand-xl main-navbar sticky-top">
         <div class="container">
-            <a class="navbar-brand brand-wrap" href="<?= APP_URL ?>/?page=inicio">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="<?= APP_URL ?>/inicio">
                 <img class="brand-logo" src="<?= APP_URL ?>/assets/img/AGECSO.jpg" alt="Logo AGECSO">
                 <span class="brand-text text-white">AGECSO</span>
             </a>
@@ -45,14 +45,14 @@ $menu = [
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                     <?php foreach ($menu as $slug => $label): ?>
                         <li class="nav-item">
-                            <a class="nav-link <?= $currentPage === $slug ? 'active fw-bold' : '' ?>" href="<?= APP_URL ?>/?page=<?= $slug ?>"><?= $label ?></a>
+                            <a class="nav-link <?= $currentPage === $slug ? 'active fw-bold' : '' ?>" href="<?= APP_URL ?>/<?= $slug ?>"><?= $label ?></a>
                         </li>
                     <?php endforeach; ?>
                     <li class="nav-item ms-lg-3">
                         <a class="btn btn-agecso btn-header" href="<?= BUSINESS_PLATFORM_URL ?>">Rueda de Negocios</a>
                     </li>
                     <li class="nav-item ms-lg-2">
-                        <a class="nav-link nav-link-user d-flex align-items-center justify-content-center" href="<?= APP_URL ?>/?page=login" title="Panel Admin">
+                        <a class="nav-link nav-link-user d-flex align-items-center justify-content-center" href="<?= APP_URL ?>/login" title="Panel Admin">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
                             </svg>
@@ -94,11 +94,11 @@ $menu = [
                     <!-- Institutional Column -->
                     <div class="col-6 col-lg-2 text-start">
                         <h5>Institucional</h5>
-                        <ul class="footer-links">
-                            <li><a href="<?= APP_URL ?>/?page=nosotros"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Nosotros</a></li>
-                            <li><a href="<?= APP_URL ?>/?page=servicios"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Servicios</a></li>
-                            <li><a href="<?= APP_URL ?>/?page=cursos-webinar"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Cursos</a></li>
-                            <li><a href="<?= APP_URL ?>/?page=contacto"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Contacto</a></li>
+                        <ul class="list-unstyled footer-links">
+                            <li><a href="<?= APP_URL ?>/inicio">Inicio</a></li>
+                            <li><a href="<?= APP_URL ?>/somos-agecso">Somos AGECSO</a></li>
+                            <li><a href="<?= APP_URL ?>/noticias">Noticias</a></li>
+                            <li><a href="<?= APP_URL ?>/contacto">Contacto</a></li>
                         </ul>
                     </div>
                     
@@ -106,9 +106,9 @@ $menu = [
                     <div class="col-6 col-lg-2 text-start">
                         <h5>Actualidad</h5>
                         <ul class="footer-links">
-                            <li><a href="<?= APP_URL ?>/?page=eventos"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Eventos</a></li>
-                            <li><a href="<?= APP_URL ?>/?page=agenda"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Agenda</a></li>
-                            <li><a href="<?= APP_URL ?>/?page=noticias"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Noticias</a></li>
+                            <li><a href="<?= APP_URL ?>/eventos"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Eventos</a></li>
+                            <li><a href="<?= APP_URL ?>/agenda"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Agenda</a></li>
+                            <li><a href="<?= APP_URL ?>/noticias"><i class="bi bi-chevron-right me-1 text-primary-light"></i> Noticias</a></li>
                         </ul>
                     </div>
                     

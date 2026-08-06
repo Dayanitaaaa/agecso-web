@@ -3,7 +3,7 @@
 
 <div class="page-header">
     <h5><i class="bi bi-newspaper"></i> Noticias <span class="badge bg-secondary ms-2" style="font-size:0.7rem;"><?= count($items) ?></span></h5>
-    <a href="<?= APP_URL ?>/?page=admin&section=noticias&action=create" class="btn btn-admin-success">
+    <a href="<?= APP_URL ?>/admin/noticias/create" class="btn btn-admin-success">
         <i class="bi bi-plus-lg"></i> Nueva
     </a>
 </div>
@@ -37,11 +37,11 @@
                         </td>
                         <td><?= date('d/m/Y', strtotime($item['fecha_publicacion'])) ?></td>
                         <td>
-                            <a href="<?= APP_URL ?>/?page=admin&section=noticias&action=edit&id=<?= $item['id'] ?>" class="btn-action">
+                            <a href="<?= APP_URL ?>/admin/noticias/edit/<?= $item['id'] ?>" class="btn-action">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             <button type="button" class="btn-action btn-delete delete-btn" 
-                                    data-url="<?= APP_URL ?>/?page=admin&section=noticias&action=delete&id=<?= $item['id'] ?>"
+                                    data-url="<?= APP_URL ?>/admin/noticias/delete/<?= $item['id'] ?>"
                                     data-title="<?= htmlspecialchars($item['titulo']) ?>">
                                 <i class="bi bi-trash"></i>
                             </button>

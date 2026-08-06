@@ -3,7 +3,7 @@
 
 <div class="page-header">
     <h5><i class="bi bi-newspaper"></i> <?= $item ? 'Editar Noticia' : 'Nueva Noticia' ?></h5>
-    <a href="<?= APP_URL ?>/?page=admin&section=noticias" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= APP_URL ?>/admin/noticias" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i> Volver
     </a>
 </div>
@@ -92,7 +92,7 @@
                 <button type="submit" class="btn btn-admin-success">
                     <i class="bi bi-check-lg"></i> <?= $item ? 'Actualizar' : 'Guardar' ?>
                 </button>
-                <a href="<?= APP_URL ?>/?page=admin&section=noticias" class="btn btn-outline-secondary">Cancelar</a>
+                <a href="<?= APP_URL ?>/admin/noticias" class="btn btn-outline-secondary">Cancelar</a>
             </div>
         </div>
     </form>

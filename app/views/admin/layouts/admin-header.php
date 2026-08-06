@@ -42,7 +42,7 @@ $sections = [
         </div>
         <nav class="nav flex-column py-3">
             <?php foreach ($sections as $slug => $label): ?>
-                <a class="nav-link <?= $section === $slug ? 'active' : '' ?>" href="<?= APP_URL ?>/?page=admin&section=<?= $slug ?>">
+                <a class="nav-link <?= $section === $slug ? 'active' : '' ?>" href="<?= APP_URL ?>/admin/<?= $slug ?>">
                     <i class="bi bi-<?= $slug === 'dashboard' ? 'speedometer2' : ($slug === 'noticias' ? 'newspaper' : ($slug === 'eventos' ? 'calendar-event' : ($slug === 'cursos' ? 'mortarboard' : ($slug === 'aliados' ? 'people' : ($slug === 'servicios' ? 'briefcase' : 'envelope'))))) ?>"></i>
                     <?= $label ?>
                 </a>
@@ -50,7 +50,7 @@ $sections = [
         </nav>
         <div class="mt-auto p-3 border-top border-secondary">
             <div class="text-white-50 small mb-2"><?= htmlspecialchars($_SESSION['admin_nombre'] ?? '') ?></div>
-            <a href="<?= APP_URL ?>/?page=logout" class="btn btn-sm btn-outline-light w-100">
+            <a href="<?= APP_URL ?>/logout" class="btn btn-sm btn-outline-light w-100">
                 <i class="bi bi-box-arrow-right"></i> Cerrar sesión
             </a>
         </div>
@@ -63,7 +63,7 @@ $sections = [
                 <small class="text-muted">AGECSO - Panel de Administración</small>
             </div>
             <div class="d-flex align-items-center gap-3">
-                <a href="<?= APP_URL ?>/?page=inicio" target="_blank" class="btn btn-sm btn-outline-primary">
+                <a href="<?= APP_URL ?>/inicio" target="_blank" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-eye"></i> Ver sitio
                 </a>
                 <button class="btn btn-sm btn-outline-secondary d-lg-none" onclick="document.getElementById('adminSidebar').classList.toggle('show')">

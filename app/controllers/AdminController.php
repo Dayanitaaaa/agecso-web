@@ -14,7 +14,7 @@ class AdminController {
         }
         
         if (!isset($_SESSION['admin_id'])) {
-            header("Location: " . APP_URL . "/?page=login");
+            header("Location: " . APP_URL . "/login");
             exit();
         }
 
@@ -96,11 +96,11 @@ class AdminController {
                     $this->models['noticias']->delete($id);
                     $this->setFlash('Noticia eliminada correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=noticias");
+                header("Location: " . APP_URL . "/admin/noticias");
                 exit();
                 
             default:
-                header("Location: " . APP_URL . "/?page=admin&section=noticias");
+                header("Location: " . APP_URL . "/admin/noticias");
                 exit();
         }
     }
@@ -132,11 +132,11 @@ class AdminController {
                     $this->models['eventos']->delete($id);
                     $this->setFlash('Evento eliminado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=eventos");
+                header("Location: " . APP_URL . "/admin/eventos");
                 exit();
                 
             default:
-                header("Location: " . APP_URL . "/?page=admin&section=eventos");
+                header("Location: " . APP_URL . "/admin/eventos");
                 exit();
         }
     }
@@ -169,11 +169,11 @@ class AdminController {
                     $this->models['mensajes']->delete($id);
                     $this->setFlash('Mensaje eliminado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=mensajes");
+                header("Location: " . APP_URL . "/admin/mensajes");
                 exit();
                 
             default:
-                header("Location: " . APP_URL . "/?page=admin&section=mensajes");
+                header("Location: " . APP_URL . "/admin/mensajes");
                 exit();
         }
     }
@@ -230,7 +230,7 @@ class AdminController {
                     $this->models['noticias']->insert($data);
                     $this->setFlash('Noticia creada correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=noticias");
+                header("Location: " . APP_URL . "/admin/noticias");
                 exit();
             }
         }
@@ -299,7 +299,7 @@ class AdminController {
                     $this->models['eventos']->insert($data);
                     $this->setFlash('Evento creado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=eventos");
+                header("Location: " . APP_URL . "/admin/eventos");
                 exit();
             }
         }
@@ -335,11 +335,11 @@ class AdminController {
                     $this->models['cursos']->delete($id);
                     $this->setFlash('Curso/Webinar eliminado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=cursos");
+                header("Location: " . APP_URL . "/admin/cursos");
                 exit();
                 
             default:
-                header("Location: " . APP_URL . "/?page=admin&section=cursos");
+                header("Location: " . APP_URL . "/admin/cursos");
                 exit();
         }
     }
@@ -371,11 +371,11 @@ class AdminController {
                     $this->models['aliados']->delete($id);
                     $this->setFlash('Aliado eliminado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=aliados");
+                header("Location: " . APP_URL . "/admin/aliados");
                 exit();
                 
             default:
-                header("Location: " . APP_URL . "/?page=admin&section=aliados");
+                header("Location: " . APP_URL . "/admin/aliados");
                 exit();
         }
     }
@@ -407,11 +407,11 @@ class AdminController {
                     $this->models['servicios']->delete($id);
                     $this->setFlash('Servicio eliminado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=servicios");
+                header("Location: " . APP_URL . "/admin/servicios");
                 exit();
                 
             default:
-                header("Location: " . APP_URL . "/?page=admin&section=servicios");
+                header("Location: " . APP_URL . "/admin/servicios");
                 exit();
         }
     }
@@ -446,7 +446,7 @@ class AdminController {
                     $this->models['cursos']->insert($data);
                     $this->setFlash('Curso/Webinar creado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=cursos");
+                header("Location: " . APP_URL . "/admin/cursos");
                 exit();
             }
         }
@@ -497,7 +497,7 @@ class AdminController {
                     $this->models['aliados']->insert($data);
                     $this->setFlash('Aliado creado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=aliados");
+                header("Location: " . APP_URL . "/admin/aliados");
                 exit();
             }
         }
@@ -534,7 +534,7 @@ class AdminController {
                     $this->models['servicios']->insert($data);
                     $this->setFlash('Servicio creado correctamente');
                 }
-                header("Location: " . APP_URL . "/?page=admin&section=servicios");
+                header("Location: " . APP_URL . "/admin/servicios");
                 exit();
             }
         }

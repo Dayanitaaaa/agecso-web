@@ -20,7 +20,7 @@ class AuthController {
         
         // Si ya está logueado, redirigir al panel
         if (isset($_SESSION['admin_id'])) {
-            header("Location: " . APP_URL . "/?page=admin");
+            header("Location: " . APP_URL . "/admin");
             exit();
         }
 
@@ -47,7 +47,7 @@ class AuthController {
                     $_SESSION['admin_email'] = $usuario['email'];
                     $_SESSION['admin_rol'] = $usuario['rol'];
                     
-                    header("Location: " . APP_URL . "/?page=admin");
+                    header("Location: " . APP_URL . "/admin");
                     exit();
                 }
             }
@@ -64,7 +64,7 @@ class AuthController {
     public function logout() {
         session_start();
         session_destroy();
-        header("Location: " . APP_URL . "/?page=login");
+        header("Location: " . APP_URL . "/login");
         exit();
     }
 }
