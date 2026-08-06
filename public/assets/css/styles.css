@@ -1431,10 +1431,8 @@ html {
 
 .news-card-media {
     position: relative;
-    height: 240px !important; /* Altura fija obligatoria */
-    width: 100%;
+    height: 250px;
     overflow: hidden;
-    background: #f8fafc;
 }
 
 .news-card-media img {

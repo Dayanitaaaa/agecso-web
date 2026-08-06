@@ -13,10 +13,19 @@
                         <div class="news-modern-card h-100 shadow-sm border-0">
                             <!-- News Media -->
                             <div class="news-card-media">
-                                <?php if ($item['imagen']): ?>
-                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" class="card-img-top" alt="">
+                                <?php 
+                                $mainImg = $item['imagen'];
+                                if (!$mainImg && !empty($item['imagenes'])) {
+                                    $galeria = json_decode($item['imagenes'], true);
+                                    if (!empty($galeria)) $mainImg = $galeria[0];
+                                }
+                                
+                                if ($mainImg): ?>
+                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($mainImg) ?>" class="card-img-top" alt="">
                                 <?php else: ?>
-                                    <div class="no-image-placeholder"><i class="bi bi-newspaper"></i></div>
+                                    <div class="no-image-placeholder d-flex align-items-center justify-content-center bg-light" style="height: 250px;">
+                                        <i class="bi bi-image text-muted opacity-50" style="font-size: 3rem;"></i>
+                                    </div>
                                 <?php endif; ?>
                                 <div class="news-card-date"><?= date('d/m/Y', strtotime($item['fecha_publicacion'])) ?></div>
                             </div>
