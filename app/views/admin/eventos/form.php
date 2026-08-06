@@ -55,6 +55,11 @@
                 <label class="form-label">Lugar</label>
                 <input type="text" name="lugar" class="form-control" value="<?= htmlspecialchars($item['lugar'] ?? '') ?>">
             </div>
+            <div class="col-md-6">
+                <label class="form-label">Orden de visualización</label>
+                <input type="number" name="orden" class="form-control" value="<?= $item['orden'] ?? 999 ?>" min="1">
+                <small class="text-muted">1 es primero, 2 segundo, etc. Por defecto: 999</small>
+            </div>
             <div class="col-12">
                 <label class="form-label">Imagen</label>
                 <input type="file" name="imagen" class="form-control" accept="image/*" id="imagenInput">

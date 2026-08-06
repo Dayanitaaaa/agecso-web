@@ -33,6 +33,11 @@
                 <label class="form-label">Fecha de publicación</label>
                 <input type="date" name="fecha_publicacion" class="form-control" value="<?= $item['fecha_publicacion'] ?? date('Y-m-d') ?>">
             </div>
+            <div class="col-md-6">
+                <label class="form-label">Orden de visualización</label>
+                <input type="number" name="orden" class="form-control" value="<?= $item['orden'] ?? 999 ?>" min="1">
+                <small class="text-muted">1 es primero, 2 segundo, etc. Por defecto: 999</small>
+            </div>
             <div class="col-12">
                 <label class="form-label">Imagen Principal (Miniatura)</label>
                 <input type="file" name="imagen" class="form-control" accept="image/*" id="imagenInput">

@@ -59,10 +59,12 @@ class AdminController {
      * Gestión de noticias
      */
     public function noticias() {
-        // Auto-reparación de base de datos: intentar crear la columna 'imagenes' si no existe
+        // Auto-reparación de base de datos: intentar crear la columna 'imagenes' y 'orden' si no existen
         try {
             $this->pdo->exec("ALTER TABLE noticias ADD COLUMN imagenes LONGTEXT DEFAULT NULL AFTER imagen");
+            $this->pdo->exec("ALTER TABLE noticias ADD COLUMN orden INT DEFAULT 999 AFTER estado");
             $this->pdo->exec("ALTER TABLE eventos ADD COLUMN imagenes LONGTEXT DEFAULT NULL AFTER imagen");
+            $this->pdo->exec("ALTER TABLE eventos ADD COLUMN orden INT DEFAULT 999 AFTER estado");
         } catch (Exception $e) {
             // Silencioso si ya existe o falla
         }
@@ -72,7 +74,7 @@ class AdminController {
         
         switch ($action) {
             case 'list':
-                $items = $this->models['noticias']->getAll('created_at DESC');
+                $items = $this->models['noticias']->getAll('orden ASC, created_at DESC');
                 $title = 'Gestión de Noticias';
                 require __DIR__ . '/../views/admin/noticias/list.php';
                 break;
@@ -186,7 +188,8 @@ class AdminController {
                 'resumen' => $_POST['resumen'] ?? null,
                 'contenido' => $_POST['contenido'] ?? '',
                 'fecha_publicacion' => $_POST['fecha_publicacion'] ?? date('Y-m-d'),
-                'estado' => $_POST['estado'] ?? 'borrador'
+                'estado' => $_POST['estado'] ?? 'borrador',
+                'orden' => (int)($_POST['orden'] ?? 999)
             ];
 
             // Manejar imagen principal
@@ -249,7 +252,8 @@ class AdminController {
                 'hora_fin' => $_POST['hora_fin'] ?? null,
                 'lugar' => trim($_POST['lugar'] ?? ''),
                 'estado' => $_POST['estado'] ?? 'programado',
-                'tipo' => $_POST['tipo'] ?? 'evento'
+                'tipo' => $_POST['tipo'] ?? 'evento',
+                'orden' => (int)($_POST['orden'] ?? 999)
             ];
 
             // Manejar imagen principal
