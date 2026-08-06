@@ -29,10 +29,16 @@
                                     </div>
                                 <?php endif; ?>
                                 
-                                <div class="news-card-date bg-success">
-                                    <i class="bi bi-calendar3 me-1"></i>
-                                    <?= ($item['fecha_evento'] && $item['fecha_evento'] !== '0000-00-00') ? date('d/m/Y', strtotime($item['fecha_evento'])) : 'Próximamente' ?>
-                                </div>
+                                <?php if ($item['estado'] === 'realizado'): ?>
+                                    <div class="news-card-date bg-secondary shadow-sm">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Realizado
+                                    </div>
+                                <?php else: ?>
+                                    <div class="news-card-date bg-success">
+                                        <i class="bi bi-calendar3 me-1"></i>
+                                        <?= ($item['fecha_evento'] && $item['fecha_evento'] !== '0000-00-00') ? date('d/m/Y', strtotime($item['fecha_evento'])) : 'Próximamente' ?>
+                                    </div>
+                                <?php endif; ?>
                                 
                                 <div class="event-type-badge shadow-sm">
                                     <?= ucfirst($item['tipo'] ?? 'Evento') ?>
@@ -51,7 +57,7 @@
                                         </div>
                                     <?php endif; ?>
                                     
-                                    <?php if ($item['hora_inicio']): ?>
+                                    <?php if ($item['estado'] !== 'realizado' && $item['hora_inicio']): ?>
                                         <div class="event-info-item mt-1">
                                             <i class="bi bi-clock text-success me-2"></i>
                                             <span><?= date('g:i A', strtotime($item['hora_inicio'])) ?> <?= $item['hora_fin'] ? ' - ' . date('g:i A', strtotime($item['hora_fin'])) : '' ?></span>
@@ -111,9 +117,15 @@
                                         <span class="badge bg-soft-success text-success px-3 py-2 rounded-pill">
                                             <i class="bi bi-tag me-1"></i> <?= ucfirst($item['tipo'] ?? 'Evento') ?>
                                         </span>
+                                        <?php if ($item['estado'] !== 'realizado'): ?>
                                         <span class="badge bg-soft-success text-success px-3 py-2 rounded-pill">
                                             <i class="bi bi-calendar3 me-1"></i> <?= ($item['fecha_evento'] && $item['fecha_evento'] !== '0000-00-00') ? date('d/M/Y', strtotime($item['fecha_evento'])) : 'Próximamente' ?>
                                         </span>
+                                        <?php else: ?>
+                                        <span class="badge bg-soft-secondary text-secondary px-3 py-2 rounded-pill">
+                                            <i class="bi bi-check-circle me-1"></i> Finalizado
+                                        </span>
+                                        <?php endif; ?>
                                     </div>
                                     
                                     <h2 class="news-modal-title mb-4"><?= htmlspecialchars($item['titulo']) ?></h2>
@@ -132,7 +144,7 @@
                                             </div>
                                             <?php endif; ?>
                                             
-                                            <?php if ($item['hora_inicio']): ?>
+                                            <?php if ($item['estado'] !== 'realizado' && $item['hora_inicio']): ?>
                                             <div class="col-sm-6">
                                                 <div class="d-flex align-items-center">
                                                     <i class="bi bi-clock-fill text-success fs-4 me-3"></i>
