@@ -1439,6 +1439,7 @@ html {
     width: 100% !important;
     height: 100% !important;
     object-fit: cover !important; /* Corta la imagen para que llene el espacio sin deformarse */
+    object-position: top !important; /* Muestra siempre la parte de arriba (evita "sin cabeza") */
     display: block;
 }
 

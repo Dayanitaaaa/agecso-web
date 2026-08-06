@@ -66,7 +66,7 @@
                                             <div class="carousel-inner rounded-4 shadow-sm">
                                                 <?php foreach ($allImages as $index => $img): ?>
                                                     <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="d-block w-100" style="height: 400px; object-fit: cover;">
+                                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="d-block w-100" style="height: 400px; object-fit: cover; object-position: top;">
                                                     </div>
                                                 <?php endforeach; ?>
                                             </div>
@@ -78,7 +78,7 @@
                                             </button>
                                         </div>
                                     <?php elseif (!empty($allImages)): ?>
-                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($allImages[0]) ?>" class="img-fluid rounded-4 shadow-sm mb-4 w-100" style="height: 400px; object-fit: cover;">
+                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($allImages[0]) ?>" class="img-fluid rounded-4 shadow-sm mb-4 w-100" style="height: 400px; object-fit: cover; object-position: top;">
                                     <?php endif; ?>
 
                                     <div class="news-modal-meta mb-3">
