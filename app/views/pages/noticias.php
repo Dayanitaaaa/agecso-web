@@ -21,7 +21,7 @@
                                 }
                                 
                                 if ($mainImg): ?>
-                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($mainImg) ?>" class="card-img-top" alt="">
+                                    <img src="<?= APP_URL ?>/public/uploads/<?= htmlspecialchars($mainImg) ?>" class="card-img-top" alt="">
                                 <?php else: ?>
                                     <div class="no-image-placeholder d-flex align-items-center justify-content-center bg-light" style="height: 250px;">
                                         <i class="bi bi-image text-muted opacity-50" style="font-size: 3rem;"></i>
@@ -66,7 +66,7 @@
                                             <div class="carousel-inner rounded-4 shadow-sm">
                                                 <?php foreach ($allImages as $index => $img): ?>
                                                     <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="d-block w-100" style="height: 400px; object-fit: cover; object-position: top;">
+                                                        <img src="<?= APP_URL ?>/public/uploads/<?= htmlspecialchars($img) ?>" class="d-block w-100" style="height: 400px; object-fit: cover; object-position: top;">
                                                     </div>
                                                 <?php endforeach; ?>
                                             </div>
@@ -78,7 +78,7 @@
                                             </button>
                                         </div>
                                     <?php elseif (!empty($allImages)): ?>
-                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($allImages[0]) ?>" class="img-fluid rounded-4 shadow-sm mb-4 w-100" style="height: 400px; object-fit: cover; object-position: top;">
+                                        <img src="<?= APP_URL ?>/public/uploads/<?= htmlspecialchars($allImages[0]) ?>" class="img-fluid rounded-4 shadow-sm mb-4 w-100" style="height: 400px; object-fit: cover; object-position: top;">
                                     <?php endif; ?>
 
                                     <div class="news-modal-meta mb-3">

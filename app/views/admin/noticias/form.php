@@ -9,7 +9,12 @@
 </div>
 
 <div class="admin-card">
-    <h5 class="mb-4"><?= $item ? 'Editar Noticia' : 'Nueva Noticia' ?></h5>
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
+            <i class="bi bi-newspaper fs-4"></i>
+        </div>
+        <h5 class="mb-0 fw-bold"><?= $item ? 'Editar Noticia' : 'Nueva Noticia' ?></h5>
+    </div>
     
     <?php if ($error): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
@@ -39,45 +44,56 @@
                 <small class="text-muted">1 es primero, 2 segundo, etc. Por defecto: 999</small>
             </div>
             <div class="col-12">
-                <label class="form-label">Imagen Principal (Miniatura)</label>
-                <input type="file" name="imagen" class="form-control" accept="image/*" id="imagenInput">
-                <?php if (!empty($item['imagen'])): ?>
-                    <div class="mt-2">
-                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-thumbnail" style="max-height: 100px;">
-                        <div class="form-check mt-1">
-                            <input class="form-check-input" type="checkbox" name="eliminar_imagen" value="1" id="eliminarImagen">
-                            <label class="form-check-label" for="eliminarImagen">Eliminar imagen principal</label>
+                <div class="image-preview-container">
+                    <label class="form-label d-block text-center mb-3">Imagen Principal (Miniatura)</label>
+                    <input type="file" name="imagen" class="form-control" accept="image/*" id="imagenInput" style="display: none;">
+                    <button type="button" class="btn btn-outline-primary mb-3" onclick="document.getElementById('imagenInput').click()">
+                        <i class="bi bi-cloud-upload me-2"></i> Seleccionar Imagen
+                    </button>
+                    
+                    <?php if (!empty($item['imagen'])): ?>
+                        <div class="mt-2" id="currentImagen">
+                            <img src="<?= APP_URL ?>/public/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-thumbnail" style="max-height: 150px;">
+                            <div class="form-check mt-2 d-flex justify-content-center">
+                                <input class="form-check-input me-2" type="checkbox" name="eliminar_imagen" value="1" id="eliminarImagen">
+                                <label class="form-check-label text-danger fw-bold" for="eliminarImagen">Eliminar imagen actual</label>
+                            </div>
                         </div>
+                    <?php endif; ?>
+                    <div id="imagenPreview" class="mt-2" style="display: none;">
+                        <img src="" alt="Vista previa" class="img-thumbnail" style="max-height: 150px;">
+                        <p class="small text-muted mt-2">Nueva imagen seleccionada</p>
                     </div>
-                <?php endif; ?>
-                <div id="imagenPreview" class="mt-2" style="display: none;">
-                    <img src="" alt="Vista previa" class="img-thumbnail" style="max-height: 100px;">
                 </div>
             </div>
 
             <div class="col-12 mt-4">
-                <label class="form-label">Carrusel de Imágenes (Fotos adicionales)</label>
-                <input type="file" name="imagenes[]" class="form-control" accept="image/*" multiple id="imagenesInput">
-                <small class="text-muted">Puedes seleccionar varias fotos a la vez.</small>
-                
-                <?php 
-                $extraImages = json_decode($item['imagenes'] ?? '[]', true);
-                if (!empty($extraImages)): 
-                ?>
-                    <div class="row g-2 mt-2">
-                        <?php foreach ($extraImages as $img): ?>
-                            <div class="col-6 col-md-3 col-lg-2">
-                                <div class="position-relative">
-                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="img-thumbnail w-100" style="height: 80px; object-fit: cover;">
-                                    <div class="form-check mt-1">
-                                        <input class="form-check-input" type="checkbox" name="eliminar_imagenes[]" value="<?= htmlspecialchars($img) ?>">
-                                        <small class="form-check-label">Eliminar</small>
+                <div class="p-3 border rounded-3 bg-light">
+                    <label class="form-label d-flex align-items-center gap-2">
+                        <i class="bi bi-images text-primary"></i> Carrusel de Imágenes (Fotos adicionales)
+                    </label>
+                    <input type="file" name="imagenes[]" class="form-control" accept="image/*" multiple id="imagenesInput">
+                    <small class="text-muted"><i class="bi bi-info-circle me-1"></i> Puedes seleccionar varias fotos a la vez para crear una galería.</small>
+                    
+                    <?php 
+                    $extraImages = json_decode($item['imagenes'] ?? '[]', true);
+                    if (!empty($extraImages)): 
+                    ?>
+                        <div class="row g-3 mt-3">
+                            <?php foreach ($extraImages as $img): ?>
+                                <div class="col-6 col-md-3 col-lg-2">
+                                    <div class="position-relative border rounded-3 p-1 bg-white shadow-sm">
+                                        <img src="<?= APP_URL ?>/public/uploads/<?= htmlspecialchars($img) ?>" class="img-thumbnail w-100 border-0" style="height: 100px; object-fit: cover;">
+                                        <div class="form-check mt-2 px-4">
+                                            <input class="form-check-input" type="checkbox" name="eliminar_imagenes[]" value="<?= htmlspecialchars($img) ?>">
+                                            <small class="form-check-label text-danger">Eliminar</small>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="col-12">
                 <label class="form-label">Resumen</label>

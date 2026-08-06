@@ -75,7 +75,7 @@
                     
                     <?php if (!empty($item['imagen'])): ?>
                         <div class="mt-2" id="currentImagen">
-                            <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-thumbnail" style="max-height: 150px;">
+                            <img src="<?= APP_URL ?>/public/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-thumbnail" style="max-height: 150px;">
                             <div class="form-check mt-2 d-flex justify-content-center">
                                 <input class="form-check-input me-2" type="checkbox" name="eliminar_imagen" value="1" id="eliminarImagen">
                                 <label class="form-check-label text-danger fw-bold" for="eliminarImagen">Eliminar imagen actual</label>
@@ -105,7 +105,7 @@
                             <?php foreach ($extraImages as $img): ?>
                                 <div class="col-6 col-md-3 col-lg-2">
                                     <div class="position-relative border rounded-3 p-1 bg-white shadow-sm">
-                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="img-thumbnail w-100 border-0" style="height: 100px; object-fit: cover;">
+                                        <img src="<?= APP_URL ?>/public/uploads/<?= htmlspecialchars($img) ?>" class="img-thumbnail w-100 border-0" style="height: 100px; object-fit: cover;">
                                         <div class="form-check mt-2 px-4">
                                             <input class="form-check-input" type="checkbox" name="eliminar_imagenes[]" value="<?= htmlspecialchars($img) ?>">
                                             <small class="form-check-label text-danger">Eliminar</small>
