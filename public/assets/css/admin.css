@@ -98,13 +98,41 @@ body {
 }
 
 .admin-topbar {
-    background: #fff;
-    padding: 1rem 2rem;
-    border-bottom: 1px solid #e9ecef;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    padding: 1.25rem 2.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
     margin: -2rem -2rem 2rem -2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 990;
+}
+
+.admin-topbar h4 {
+    font-weight: 800;
+    color: #1a2b3c;
+    letter-spacing: -0.5px;
+}
+
+.admin-topbar .btn-outline-primary {
+    border: 2px solid #e2e8f0;
+    color: #475569;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 8px 18px;
+    background: #fff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.admin-topbar .btn-outline-primary:hover {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+    background: #f0f7ff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(15, 76, 129, 0.1);
 }
 
 /* Stat Cards */
@@ -297,31 +325,53 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid rgba(0,0,0,0.02);
 }
 
 .page-header h5 {
-    font-weight: 700;
-    font-size: 1.1rem;
+    font-weight: 800;
+    font-size: 1.25rem;
     color: #1e293b;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 1rem;
     margin: 0;
 }
 
 .page-header h5 i {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--admin-primary), #1a6cb8);
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--admin-primary) 0%, #1a6cb8 100%);
     color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    box-shadow: 0 8px 16px rgba(15, 76, 129, 0.2);
+}
+
+.page-header .btn-outline-secondary {
+    border: 2px solid #f1f5f9;
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 10px 20px;
+    transition: all 0.3s;
+}
+
+.page-header .btn-outline-secondary:hover {
+    background: #fff;
+    border-color: #e2e8f0;
+    color: #1e293b;
+    transform: translateX(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 /* Tables */
