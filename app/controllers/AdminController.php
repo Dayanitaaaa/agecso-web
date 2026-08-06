@@ -74,7 +74,13 @@ class AdminController {
         
         switch ($action) {
             case 'list':
-                $items = $this->models['noticias']->getAll('orden ASC, created_at DESC');
+                // Verificar si la columna 'orden' existe antes de ordenar por ella
+                $orderClause = 'created_at DESC';
+                $stmt_check_order = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'orden'");
+                if ($stmt_check_order->fetch()) {
+                    $orderClause = 'orden ASC, created_at DESC';
+                }
+                $items = $this->models['noticias']->getAll($orderClause);
                 $title = 'Gestión de Noticias';
                 require __DIR__ . '/../views/admin/noticias/list.php';
                 break;
@@ -210,10 +216,15 @@ class AdminController {
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
 
-            // Verificar si la columna existe antes de intentar guardar (evita Fatal Error)
-            $stmt_check = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'imagenes'");
-            if (!$stmt_check->fetch()) {
+            // Verificar si las columnas existen antes de intentar guardar (evita Fatal Error)
+            $stmt_check_img = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'imagenes'");
+            if (!$stmt_check_img->fetch()) {
                 unset($data['imagenes']);
+            }
+            
+            $stmt_check_ord = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'orden'");
+            if (!$stmt_check_ord->fetch()) {
+                unset($data['orden']);
             }
 
             if (empty($data['titulo'])) {
@@ -274,10 +285,15 @@ class AdminController {
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
             
-            // Verificar si la columna existe antes de intentar guardar (evita Fatal Error)
-            $stmt_check_ev = $this->pdo->query("SHOW COLUMNS FROM eventos LIKE 'imagenes'");
-            if (!$stmt_check_ev->fetch()) {
+            // Verificar si las columnas existen antes de intentar guardar (evita Fatal Error)
+            $stmt_check_ev_img = $this->pdo->query("SHOW COLUMNS FROM eventos LIKE 'imagenes'");
+            if (!$stmt_check_ev_img->fetch()) {
                 unset($data['imagenes']);
+            }
+
+            $stmt_check_ev_ord = $this->pdo->query("SHOW COLUMNS FROM eventos LIKE 'orden'");
+            if (!$stmt_check_ev_ord->fetch()) {
+                unset($data['orden']);
             }
             
             if (empty($data['titulo'])) {
