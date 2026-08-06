@@ -69,7 +69,16 @@ class PageController
     }
 
     private function getNoticias(int $limit = 0) {
-        $sql = "SELECT * FROM noticias WHERE estado = 'publicado' ORDER BY orden ASC, fecha_publicacion DESC, id DESC";
+        // Verificar si la columna orden existe
+        $orderClause = "fecha_publicacion DESC, id DESC";
+        try {
+            $stmt_check = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'orden'");
+            if ($stmt_check->fetch()) {
+                $orderClause = "orden ASC, " . $orderClause;
+            }
+        } catch (Exception $e) {}
+
+        $sql = "SELECT * FROM noticias WHERE estado = 'publicado' ORDER BY $orderClause";
         if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
