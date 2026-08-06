@@ -12,6 +12,7 @@
     <table class="table mb-0">
         <thead>
             <tr>
+                <th width="50">#</th>
                 <th>Título</th>
                 <th width="90">Tipo</th>
                 <th width="100">Fecha</th>
@@ -23,6 +24,7 @@
             <?php if (!empty($items)): ?>
                 <?php foreach ($items as $item): ?>
                     <tr>
+                        <td class="text-center fw-bold text-primary"><?= $item['orden'] ?? '999' ?></td>
                         <td>
                             <strong><?= htmlspecialchars($item['titulo']) ?></strong>
                             <?php if ($item['lugar']): ?>

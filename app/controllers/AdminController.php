@@ -59,14 +59,15 @@ class AdminController {
      * Gestión de noticias
      */
     public function noticias() {
-        // Auto-reparación de base de datos: intentar crear la columna 'imagenes' y 'orden' si no existen
+        // Auto-reparación de base de datos
         try {
-            $this->pdo->exec("ALTER TABLE noticias ADD COLUMN imagenes LONGTEXT DEFAULT NULL AFTER imagen");
-            $this->pdo->exec("ALTER TABLE noticias ADD COLUMN orden INT DEFAULT 999 AFTER estado");
-            $this->pdo->exec("ALTER TABLE eventos ADD COLUMN imagenes LONGTEXT DEFAULT NULL AFTER imagen");
-            $this->pdo->exec("ALTER TABLE eventos ADD COLUMN orden INT DEFAULT 999 AFTER estado");
+            $cols = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'orden'")->fetch();
+            if (!$cols) {
+                $this->pdo->exec("ALTER TABLE noticias ADD COLUMN orden INT DEFAULT 999 AFTER estado");
+                $this->pdo->exec("ALTER TABLE eventos ADD COLUMN orden INT DEFAULT 999 AFTER estado");
+            }
         } catch (Exception $e) {
-            // Silencioso si ya existe o falla
+            // Si falla el exec, al menos no rompemos el flujo
         }
 
         $action = $_GET['action'] ?? 'list';
@@ -224,7 +225,12 @@ class AdminController {
             
             $stmt_check_ord = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'orden'");
             if (!$stmt_check_ord->fetch()) {
-                unset($data['orden']);
+                // Forzar creación si por alguna razón no se creó en la entrada
+                try {
+                    $this->pdo->exec("ALTER TABLE noticias ADD COLUMN orden INT DEFAULT 999 AFTER estado");
+                } catch(Exception $ex) {
+                    unset($data['orden']);
+                }
             }
 
             if (empty($data['titulo'])) {
