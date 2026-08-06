@@ -59,15 +59,12 @@ class AdminController {
      * Gestión de noticias
      */
     public function noticias() {
-        // Auto-reparación de base de datos
-        try {
-            $cols = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'orden'")->fetch();
-            if (!$cols) {
-                $this->pdo->exec("ALTER TABLE noticias ADD COLUMN orden INT DEFAULT 999 AFTER estado");
-                $this->pdo->exec("ALTER TABLE eventos ADD COLUMN orden INT DEFAULT 999 AFTER estado");
-            }
-        } catch (Exception $e) {
-            // Si falla el exec, al menos no rompemos el flujo
+        // Intentar asegurar que las columnas existen solo al cargar la lista (GET)
+        if (!$_POST) {
+            try {
+                $this->pdo->exec("ALTER TABLE noticias ADD COLUMN IF NOT EXISTS orden INT DEFAULT 999 AFTER estado");
+                $this->pdo->exec("ALTER TABLE eventos ADD COLUMN IF NOT EXISTS orden INT DEFAULT 999 AFTER estado");
+            } catch (Exception $e) { }
         }
 
         $action = $_GET['action'] ?? 'list';
@@ -217,21 +214,11 @@ class AdminController {
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
 
-            // Verificar si las columnas existen antes de intentar guardar (evita Fatal Error)
-            $stmt_check_img = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'imagenes'");
-            if (!$stmt_check_img->fetch()) {
-                unset($data['imagenes']);
-            }
+            // Verificar si las columnas existen antes de intentar guardar
+            $cols = $this->pdo->query("SHOW COLUMNS FROM noticias")->fetchAll(PDO::FETCH_COLUMN);
             
-            $stmt_check_ord = $this->pdo->query("SHOW COLUMNS FROM noticias LIKE 'orden'");
-            if (!$stmt_check_ord->fetch()) {
-                // Forzar creación si por alguna razón no se creó en la entrada
-                try {
-                    $this->pdo->exec("ALTER TABLE noticias ADD COLUMN orden INT DEFAULT 999 AFTER estado");
-                } catch(Exception $ex) {
-                    unset($data['orden']);
-                }
-            }
+            if (!in_array('imagenes', $cols)) unset($data['imagenes']);
+            if (!in_array('orden', $cols)) unset($data['orden']);
 
             if (empty($data['titulo'])) {
                 $error = 'El título es obligatorio.';
