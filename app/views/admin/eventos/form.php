@@ -3,13 +3,18 @@
 
 <div class="page-header">
     <h5><i class="bi bi-calendar-event"></i> <?= $item ? 'Editar Evento' : 'Nuevo Evento' ?></h5>
-    <a href="<?= APP_URL ?>/?page=admin&section=eventos" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= APP_URL ?>/admin/eventos" class="btn btn-sm btn-outline-secondary">
         <i class="bi bi-arrow-left"></i> Volver
     </a>
 </div>
 
 <div class="admin-card">
-    <h5 class="mb-4"><?= $item ? 'Editar Evento' : 'Nuevo Evento' ?></h5>
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="bg-primary bg-opacity-10 p-2 rounded-3 text-primary">
+            <i class="bi bi-calendar-event fs-4"></i>
+        </div>
+        <h5 class="mb-0 fw-bold"><?= $item ? 'Editar Evento' : 'Nuevo Evento' ?></h5>
+    </div>
     
     <?php if ($error): ?>
         <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
@@ -60,20 +65,59 @@
                 <input type="number" name="orden" class="form-control" value="<?= $item['orden'] ?? 999 ?>" min="1">
                 <small class="text-muted">1 es primero, 2 segundo, etc. Por defecto: 999</small>
             </div>
-            <div class="col-12">
-                <label class="form-label">Imagen</label>
-                <input type="file" name="imagen" class="form-control" accept="image/*" id="imagenInput">
-                <?php if (!empty($item['imagen'])): ?>
-                    <div class="mt-2">
-                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-thumbnail" style="max-height: 150px;">
-                        <div class="form-check mt-1">
-                            <input class="form-check-input" type="checkbox" name="eliminar_imagen" value="1" id="eliminarImagen">
-                            <label class="form-check-label" for="eliminarImagen">Eliminar imagen actual</label>
-                        </div>
+            <div class="col-md-6">
+                <div class="image-upload-wrapper h-100">
+                    <label class="form-label fw-bold">Imagen Principal</label>
+                    <div class="image-preview-box main-preview mb-3" id="mainImagePreview">
+                        <?php if (!empty($item['imagen'])): ?>
+                            <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" class="preview-img">
+                            <div class="image-overlay">
+                                <label for="imagenInput" class="btn btn-sm btn-light">Cambiar</label>
+                            </div>
+                        <?php else: ?>
+                            <div class="no-image">
+                                <i class="bi bi-image fs-1 opacity-25"></i>
+                                <p class="small text-muted mt-2">Imagen de portada</p>
+                            </div>
+                        <?php endif; ?>
                     </div>
-                <?php endif; ?>
-                <div id="imagenPreview" class="mt-2" style="display: none;">
-                    <img src="" alt="Vista previa" class="img-thumbnail" style="max-height: 150px;">
+                    <input type="file" name="imagen" id="imagenInput" class="form-control d-none" accept="image/*">
+                    <button type="button" class="btn btn-outline-primary w-100" onclick="document.getElementById('imagenInput').click()">
+                        <i class="bi bi-cloud-upload me-2"></i> Seleccionar Portada
+                    </button>
+                    <?php if (!empty($item['imagen'])): ?>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" name="eliminar_imagen" value="1" id="delMain">
+                            <label class="form-check-label text-danger" for="delMain small">Eliminar imagen actual</label>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="image-upload-wrapper h-100">
+                    <label class="form-label fw-bold">Galería / Carrusel (Múltiples)</label>
+                    <div class="gallery-upload-area" id="galleryDropArea">
+                        <i class="bi bi-images fs-2 opacity-25"></i>
+                        <p class="small text-muted mb-0">Subir varias imágenes</p>
+                        <input type="file" name="imagenes[]" id="galleryInput" class="d-none" multiple accept="image/*">
+                        <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="document.getElementById('galleryInput').click()">
+                            Añadir Fotos
+                        </button>
+                    </div>
+                    <div id="galleryPreview" class="gallery-preview-grid mt-3">
+                        <?php 
+                        $extraImages = json_decode($item['imagenes'] ?? '[]', true);
+                        foreach ($extraImages as $img): ?>
+                            <div class="gallery-item">
+                                <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>">
+                                <div class="gallery-item-remove">
+                                    <input type="checkbox" name="eliminar_imagenes[]" value="<?= htmlspecialchars($img) ?>" class="btn-check" id="del_<?= md5($img) ?>">
+                                    <label class="btn btn-sm btn-danger p-0 rounded-circle" for="del_<?= md5($img) ?>"><i class="bi bi-x"></i></label>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
             <div class="col-12">
@@ -85,25 +129,51 @@
                 <button type="submit" class="btn btn-admin-success">
                     <i class="bi bi-check-lg"></i> <?= $item ? 'Actualizar' : 'Guardar' ?>
                 </button>
-                <a href="<?= APP_URL ?>/?page=admin&section=eventos" class="btn btn-outline-secondary">Cancelar</a>
+                <a href="<?= APP_URL ?>/admin/eventos" class="btn btn-outline-secondary">Cancelar</a>
             </div>
         </div>
     </form>
 </div>
 
 <script>
+// Previsualización de Imagen Principal
 document.getElementById('imagenInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
-    const preview = document.getElementById('imagenPreview');
+    const previewBox = document.getElementById('mainImagePreview');
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            preview.querySelector('img').src = e.target.result;
-            preview.style.display = 'block';
+            previewBox.innerHTML = `
+                <img src="${e.target.result}" class="preview-img">
+                <div class="image-overlay">
+                    <label for="imagenInput" class="btn btn-sm btn-light">Cambiar</label>
+                </div>
+            `;
         }
         reader.readAsDataURL(file);
-    } else {
-        preview.style.display = 'none';
+    }
+});
+
+// Previsualización de Galería
+document.getElementById('galleryInput').addEventListener('change', function(e) {
+    const files = e.target.files;
+    const previewGrid = document.getElementById('galleryPreview');
+    
+    // No borramos las imágenes existentes (las que vienen de DB)
+    // Solo añadimos las nuevas para previsualización
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const div = document.createElement('div');
+            div.className = 'gallery-item new-upload';
+            div.innerHTML = `
+                <img src="${e.target.result}">
+                <div class="gallery-badge">Nuevo</div>
+            `;
+            previewGrid.appendChild(div);
+        }
+        reader.readAsDataURL(file);
     }
 });
 
