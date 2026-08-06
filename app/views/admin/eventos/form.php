@@ -68,7 +68,7 @@
             <div class="col-md-6">
                 <div class="image-upload-wrapper h-100">
                     <label class="form-label fw-bold">Imagen Principal</label>
-                    <div class="image-preview-box main-preview mb-3" id="mainImagePreview">
+                    <div class="image-preview-box main-preview mb-3" id="mainImagePreview" style="height: 200px; overflow: hidden;">
                         <?php if (!empty($item['imagen'])): ?>
                             <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" class="preview-img">
                             <div class="image-overlay">
