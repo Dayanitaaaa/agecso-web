@@ -595,7 +595,12 @@ class AdminController {
         $uploadDir = __DIR__ . '/../../public/uploads/';
 
         if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+            mkdir($uploadDir, 0777, true);
+        }
+
+        if (!is_writable($uploadDir)) {
+            $this->setFlash("Error: La carpeta de galería no tiene permisos de escritura.", 'danger');
+            return $currentImagesJson;
         }
 
         for ($i = 0; $i < count($files['name']); $i++) {
@@ -629,12 +634,12 @@ class AdminController {
         $maxSize = 5 * 1024 * 1024; // 5MB
 
         if (!in_array($file['type'], $allowedTypes)) {
-            error_log("Error en subida: Tipo de archivo no permitido: " . $file['type']);
+            $this->setFlash("Tipo de archivo no permitido: " . $file['type'], 'danger');
             return $currentImage;
         }
 
         if ($file['size'] > $maxSize) {
-            error_log("Error en subida: Archivo demasiado grande: " . $file['size']);
+            $this->setFlash("El archivo es demasiado grande (máx 5MB)", 'danger');
             return $currentImage;
         }
 
@@ -645,7 +650,16 @@ class AdminController {
         
         // Crear directorio si no existe
         if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+            if (!mkdir($uploadDir, 0777, true)) {
+                $this->setFlash("Error crítico: No se pudo crear la carpeta de subidas. Revisa los permisos en el servidor.", 'danger');
+                return $currentImage;
+            }
+        }
+
+        // Verificar si la carpeta tiene permisos de escritura
+        if (!is_writable($uploadDir)) {
+            $this->setFlash("Error: La carpeta de subidas no tiene permisos de escritura (777/755).", 'danger');
+            return $currentImage;
         }
         
         $uploadPath = $uploadDir . $filename;
@@ -654,7 +668,7 @@ class AdminController {
             return $filename;
         }
 
-        error_log("Error en subida: No se pudo mover el archivo a " . $uploadPath);
+        $this->setFlash("Error al guardar el archivo en el servidor. Revisa los permisos de carpeta.", 'danger');
         return $currentImage;
     }
 }
