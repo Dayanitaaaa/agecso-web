@@ -69,7 +69,7 @@ class PageController
     }
 
     private function getNoticias(int $limit = 0) {
-        $sql = "SELECT * FROM noticias WHERE estado = 'publicado' ORDER BY fecha_publicacion DESC";
+        $sql = "SELECT * FROM noticias WHERE estado = 'publicado' ORDER BY fecha_publicacion DESC, id DESC";
         if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
