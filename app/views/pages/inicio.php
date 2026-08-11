@@ -331,6 +331,33 @@
     </div>
 </section>
 
+<section class="logo-marquee-section pt-0">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h4 class="text-uppercase tracking-wider fw-bold text-secondary" style="font-size: 0.9rem; letter-spacing: 0.15em;">Consejo Directivo</h4>
+            <div class="mx-auto mt-2" style="width: 50px; height: 3px; background: linear-gradient(90deg, #00a2ff, #008ae0); border-radius: 2px;"></div>
+        </div>
+        <div class="logo-slider-container">
+            <div class="logo-slider-track">
+                <?php
+                $consejo_logos = [
+                    '1concejod.jpeg', '2concejod..jpeg', '3concejod..jpeg', 
+                    '4concejod..jpeg', '5concejod..png', '6concejod..jpeg', '8concejod..jpeg'
+                ];
+                // Loop twice to ensure infinite, seamless scrolling
+                for ($i = 0; $i < 2; $i++) {
+                    foreach ($consejo_logos as $logo) {
+                        echo '<div class="logo-slide">';
+                        echo '<img src="' . APP_URL . '/assets/img/' . $logo . '" alt="Logo Consejo Directivo">';
+                        echo '</div>';
+                    }
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</section>
+
 <?php if (!empty($data['noticias'])): ?>
 <section class="section-padding">
     <div class="container">
