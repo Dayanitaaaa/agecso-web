@@ -6,11 +6,12 @@
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
             <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
         </div>
 
         <div class="carousel-inner">
             <!-- Slide 1 -->
-            <div class="carousel-item active" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/1principal.jpeg');">
+            <div class="carousel-item active" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel1.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
@@ -27,7 +28,7 @@
             </div>
 
             <!-- Slide 2 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/2principal.jpeg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel2.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
@@ -44,7 +45,7 @@
             </div>
 
             <!-- Slide 3 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/3principal.jpeg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel3.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
@@ -61,7 +62,7 @@
             </div>
 
             <!-- Slide 4 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/4principal.jpeg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel4.jpeg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
@@ -71,6 +72,23 @@
                             <div class="d-flex flex-wrap gap-3">
                                 <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-light btn-lg px-4 py-2">Ingresar a Rueda</a>
                                 <a href="<?= APP_URL ?>/?page=contacto" class="btn btn-agecso btn-lg px-4 py-2">Contáctanos</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5 -->
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel5.jpeg');">
+                <div class="container hero-content-container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-9 col-xl-8 text-start">
+                            <span class="badge bg-danger mb-3 text-uppercase px-3 py-2" style="font-weight: 700; letter-spacing: 1px;">Unidad y Liderazgo</span>
+                            <h1 class="display-3 fw-black mb-4 text-white">Lideramos el <span class="highlight-text">futuro empresarial</span></h1>
+                            <p class="lead mb-4 text-white-50">Somos la voz de los empresarios en la región, trabajando por un entorno competitivo y sostenible.</p>
+                            <div class="d-flex flex-wrap gap-3">
+                                <a href="<?= APP_URL ?>/?page=nosotros" class="btn btn-light btn-lg px-4 py-2">Conoce más</a>
+                                <a href="<?= APP_URL ?>/?page=contacto" class="btn btn-agecso btn-lg px-4 py-2">Hablar con un asesor</a>
                             </div>
                         </div>
                     </div>
