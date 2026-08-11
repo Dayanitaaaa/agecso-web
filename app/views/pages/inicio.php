@@ -155,146 +155,152 @@
     </div>
 </section>
 
-<section class="rueda-cta-section py-5 bg-white border-bottom">
-    <div class="container py-4">
+<section class="rueda-cta-section section-padding position-relative overflow-hidden">
+    <!-- Decorative background elements -->
+    <div class="rueda-bg-shape shape-1"></div>
+    <div class="rueda-bg-shape shape-2"></div>
+    
+    <div class="container position-relative z-2">
         <div class="row align-items-center g-5">
             <!-- Left Column: Content and benefits -->
             <div class="col-lg-6 text-start">
-                <span class="text-uppercase tracking-wider fw-bold text-primary" style="font-size: 0.85rem; letter-spacing: 0.15em;">Plataforma de Matchmaking</span>
-                <h2 class="display-5 fw-bold text-dark mt-2 mb-3">Rueda de Negocios AGECSO</h2>
-                <p class="text-muted leading-relaxed mb-4" style="font-size: 1.05rem;">
-                    Nuestra plataforma digital está diseñada para que <strong>empresarios, de todo nivel, compradores y vendedores</strong> de Sabana Occidente conecten, agenden reuniones comerciales y cierren alianzas estratégicas de alto valor.
-                </p>
+                <div class="animate-fade-in-up">
+                    <span class="text-uppercase tracking-wider fw-bold text-primary mb-2 d-inline-block" style="font-size: 0.85rem; letter-spacing: 0.15em;">Plataforma de Matchmaking</span>
+                    <h2 class="display-4 fw-black text-dark mb-4">Potencia tu red con la <span class="highlight-text-blue">Rueda de Negocios</span></h2>
+                    <p class="text-muted leading-relaxed mb-5" style="font-size: 1.1rem; max-width: 540px;">
+                        Nuestra plataforma digital está diseñada para que <strong>empresarios, compradores y vendedores</strong> de Sabana Occidente conecten, agenden reuniones comerciales y cierren alianzas estratégicas de alto valor.
+                    </p>
+                </div>
                 
-                <!-- Benefit list -->
-                <div class="d-flex flex-column gap-3 mb-4">
-                    <div class="d-flex align-items-start gap-3">
-                        <div class="benefit-icon">
-                            <i class="bi bi-people-fill"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Conexión Estratégica</h5>
-                            <p class="text-muted mb-0" style="font-size: 0.92rem;">Establece relaciones comerciales directas con grandes compradores y proveedores de la región.</p>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-start gap-3">
-                        <div class="benefit-icon">
-                            <i class="bi bi-calendar-check-fill"></i>
-                        </div>
-                        <div>
-                            <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Agendamiento Inteligente</h5>
-                            <p class="text-muted mb-0" style="font-size: 0.92rem;">Programa citas de negocios automáticas de 20 minutos según los perfiles de tu interés.</p>
+                <!-- Improved Benefit Grid -->
+                <div class="row g-4 mb-5">
+                    <div class="col-md-12">
+                        <div class="benefit-item-modern d-flex align-items-start gap-3">
+                            <div class="benefit-icon-box">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">Conexión Estratégica</h5>
+                                <p class="text-muted mb-0 small">Establece relaciones comerciales directas con grandes compradores y proveedores locales.</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="d-flex align-items-start gap-3">
-                        <div class="benefit-icon">
-                            <i class="bi bi-graph-up-arrow"></i>
+                    <div class="col-md-12">
+                        <div class="benefit-item-modern d-flex align-items-start gap-3">
+                            <div class="benefit-icon-box blue-box">
+                                <i class="bi bi-calendar-check-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">Agendamiento Inteligente</h5>
+                                <p class="text-muted mb-0 small">Programa citas de negocios automáticas según los perfiles de tu interés.</p>
+                            </div>
                         </div>
-                        <div>
-                            <h5 class="fw-bold text-dark mb-1" style="font-size: 1.05rem;">Visibilidad y Crecimiento</h5>
-                            <p class="text-muted mb-0" style="font-size: 0.92rem;">Publica tus ofertas y demandas comerciales, y haz seguimiento a tus reuniones agendadas.</p>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="benefit-item-modern d-flex align-items-start gap-3">
+                            <div class="benefit-icon-box green-box">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <div>
+                                <h5 class="fw-bold text-dark mb-1">Visibilidad y Crecimiento</h5>
+                                <p class="text-muted mb-0 small">Publica tus ofertas y demandas comerciales para todo el gremio.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- CTA Buttons -->
-                <div class="d-flex flex-wrap gap-3">
-                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro" class="btn btn-primary btn-lg rounded-pill px-4 py-2.5 fw-bold shadow-lg" style="background: linear-gradient(135deg, #00a2ff 0%, #008ae0 100%); border: none;">
-                        <i class="bi bi-user-plus-fill me-2"></i>Registrar mi Empresa
+                <div class="d-flex flex-wrap gap-3 animate-fade-in-up" style="animation-delay: 0.3s;">
+                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow-blue-lg">
+                        Registrar mi Empresa
                     </a>
-                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=login" class="btn btn-outline-primary btn-lg rounded-pill px-4 py-2.5 fw-bold">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=login" class="btn btn-outline-dark btn-lg rounded-pill px-5 py-3 fw-bold">
+                        Iniciar Sesión
                     </a>
                 </div>
             </div>
 
-            <!-- Right Column: Pure CSS Dashboard Mockup -->
+            <!-- Right Column: Enhanced Mockup -->
             <div class="col-lg-6">
-                <div class="rueda-mockup-wrapper position-relative">
-                    <!-- Ambient Glow in the background -->
-                    <div class="mockup-bg-glow"></div>
+                <div class="rueda-mockup-container">
+                    <div class="mockup-float-element float-1"></div>
+                    <div class="mockup-float-element float-2"></div>
                     
-                    <!-- Dashboard Card -->
-                    <div class="dashboard-mockup-card shadow-2xl rounded-2xl overflow-hidden border">
-                        <!-- Header of mockup -->
-                        <div class="mockup-header d-flex align-items-center justify-content-between p-3 bg-dark text-white">
-                            <div class="d-flex align-items-center gap-2">
-                                <div class="mockup-dot red"></div>
-                                <div class="mockup-dot yellow"></div>
-                                <div class="mockup-dot green"></div>
-                                <span class="text-white-50 ms-2" style="font-size: 0.75rem; letter-spacing: 0.5px;">agecso.org/rueda/panel</span>
+                    <div class="dashboard-mockup-frame">
+                        <!-- Browser Header -->
+                        <div class="mockup-browser-header">
+                            <div class="mockup-dots">
+                                <span class="dot-red"></span>
+                                <span class="dot-yellow"></span>
+                                <span class="dot-green"></span>
                             </div>
-                            <div class="badge bg-primary px-2 py-1" style="font-size: 0.65rem;">EN VIVO</div>
+                            <div class="mockup-url-bar">agecso.org/rueda/panel</div>
+                            <div class="mockup-status">
+                                <span class="pulse-status"></span> EN VIVO
+                            </div>
                         </div>
                         
-                        <!-- Content of mockup -->
-                        <div class="mockup-body p-4 bg-light">
-                            <!-- Welcome Banner -->
-                            <div class="mockup-banner p-3 rounded-xl mb-3 text-white d-flex align-items-center justify-content-between">
-                                <div>
-                                    <h6 class="fw-bold mb-1" style="font-size: 0.9rem;">¡Bienvenido al Panel de Negocios!</h6>
-                                    <p class="mb-0 text-white-50" style="font-size: 0.75rem;">Completa tu perfil para iniciar agendamientos.</p>
+                        <!-- Dashboard UI Mockup -->
+                        <div class="mockup-ui-content">
+                            <div class="ui-welcome-card mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h6>¡Bienvenido al Panel!</h6>
+                                        <div class="ui-progress"></div>
+                                    </div>
+                                    <i class="bi bi-person-circle fs-4 opacity-50"></i>
                                 </div>
-                                <i class="bi bi-star-fill text-warning fs-5"></i>
                             </div>
-
-                            <!-- Stat Grid -->
+                            
                             <div class="row g-2 mb-3">
                                 <div class="col-4">
-                                    <div class="mockup-stat-card p-2 rounded-xl bg-white border text-center">
-                                        <span class="d-block text-muted" style="font-size: 0.65rem;">Empresas</span>
-                                        <strong class="d-block text-primary" style="font-size: 1.1rem;">150+</strong>
+                                    <div class="ui-stat-card">
+                                        <small>Empresas</small>
+                                        <strong>150+</strong>
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="mockup-stat-card p-2 rounded-xl bg-white border text-center">
-                                        <span class="d-block text-muted" style="font-size: 0.65rem;">Ofertas</span>
-                                        <strong class="d-block text-success" style="font-size: 1.1rem;">210+</strong>
+                                    <div class="ui-stat-card">
+                                        <small>Ofertas</small>
+                                        <strong>210+</strong>
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <div class="mockup-stat-card p-2 rounded-xl bg-white border text-center">
-                                        <span class="d-block text-muted" style="font-size: 0.65rem;">Reuniones</span>
-                                        <strong class="d-block text-warning" style="font-size: 1.1rem;">380+</strong>
+                                    <div class="ui-stat-card">
+                                        <small>Match</small>
+                                        <strong>380+</strong>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Meeting Schedule List Mockup -->
-                            <h6 class="fw-bold text-dark mb-2" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px;">Agenda de Reuniones</h6>
-                            <div class="d-flex flex-column gap-2">
-                                <div class="mockup-meeting-row p-2 rounded-xl bg-white border d-flex align-items-center justify-content-between">
+                            
+                            <div class="ui-agenda-list">
+                                <div class="ui-list-header">PRÓXIMAS REUNIONES</div>
+                                <div class="ui-meeting-item mb-2">
                                     <div class="d-flex align-items-center gap-2">
-                                        <div class="mockup-avatar blue">A</div>
-                                        <div>
-                                            <strong class="d-block text-dark" style="font-size: 0.75rem;">Alimentos del Campo S.A.</strong>
-                                            <span class="text-muted" style="font-size: 0.65rem;">Proveedor de Insumos</span>
-                                        </div>
+                                        <div class="ui-avatar ava-blue">A</div>
+                                        <div class="ui-name">Alimentos del Campo</div>
                                     </div>
-                                    <span class="badge bg-success text-white" style="font-size: 0.65rem; border: none;">Aprobada</span>
+                                    <span class="ui-badge bg-soft-success">Aprobada</span>
                                 </div>
-                                <div class="mockup-meeting-row p-2 rounded-xl bg-white border d-flex align-items-center justify-content-between">
+                                <div class="ui-meeting-item">
                                     <div class="d-flex align-items-center gap-2">
-                                        <div class="mockup-avatar green">B</div>
-                                        <div>
-                                            <strong class="d-block text-dark" style="font-size: 0.75rem;">Distribuidora Occidente</strong>
-                                            <span class="text-muted" style="font-size: 0.65rem;">Comprador Mayorista</span>
-                                        </div>
+                                        <div class="ui-avatar ava-green">D</div>
+                                        <div class="ui-name">Distribuidora Occi</div>
                                     </div>
-                                    <span class="badge bg-warning text-dark" style="font-size: 0.65rem; border: none;">Pendiente</span>
+                                    <span class="ui-badge bg-soft-warning">Pendiente</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Floating Glass Badge on top of mockup -->
-                    <div class="mockup-floating-badge shadow-lg rounded-2xl p-3 d-flex align-items-center gap-3">
-                        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
-                            <i class="bi bi-check-circle-fill fs-5 text-white"></i>
+                    
+                    <!-- Floating Match Notification -->
+                    <div class="ui-notification-card">
+                        <div class="notif-icon">
+                            <i class="bi bi-check-circle-fill"></i>
                         </div>
-                        <div>
-                            <span class="d-block text-muted" style="font-size: 0.7rem; font-weight: 600;">Match de Negocio</span>
-                            <strong class="d-block text-dark" style="font-size: 0.85rem;">¡Nueva cita agendada!</strong>
+                        <div class="notif-text">
+                            <strong>Match Exitoso</strong>
+                            <span>¡Nueva cita agendada!</span>
                         </div>
                     </div>
                 </div>
