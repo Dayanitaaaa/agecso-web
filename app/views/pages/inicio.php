@@ -211,10 +211,10 @@
 
                 <!-- CTA Buttons -->
                 <div class="d-flex flex-wrap gap-3 animate-fade-in-up" style="animation-delay: 0.3s;">
-                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow-blue-lg">
+                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro" class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold shadow-blue-lg">
                         Registrar mi Empresa
                     </a>
-                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=login" class="btn btn-outline-dark btn-lg rounded-pill px-5 py-3 fw-bold">
+                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=login" class="btn btn-outline-primary btn-lg rounded-pill px-4 py-3 fw-bold">
                         Iniciar Sesión
                     </a>
                 </div>
