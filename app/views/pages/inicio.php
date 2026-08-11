@@ -108,47 +108,64 @@
     </div>
 </section>
 
-<section class="section-padding bg-light">
+<section class="section-padding bg-modern-light position-relative">
     <div class="container">
         <!-- Section Header -->
         <div class="text-center mb-5 animate-fade-in">
-            <span class="text-uppercase tracking-wider fw-bold text-primary" style="font-size: 0.85rem; letter-spacing: 0.15em;">Nuestros Pilares</span>
-            <h2 class="display-5 fw-bold text-dark mt-2">¿Cómo impulsamos tu empresa?</h2>
-            <div class="mx-auto mt-3" style="width: 60px; height: 4px; background: linear-gradient(90deg, #00a2ff, #008ae0); border-radius: 2px;"></div>
+            <span class="text-uppercase tracking-wider fw-bold text-primary mb-2 d-inline-block" style="font-size: 0.85rem; letter-spacing: 0.2em;">Nuestros Pilares</span>
+            <h2 class="display-5 fw-black text-dark mt-2">¿Cómo impulsamos tu empresa?</h2>
+            <div class="mx-auto mt-3" style="width: 50px; height: 4px; background: linear-gradient(90deg, #00a2ff, #008ae0); border-radius: 2px;"></div>
         </div>
 
         <div class="row g-4 justify-content-center">
-            <!-- Card 1 -->
+            <!-- Card 1: Negocios -->
             <div class="col-md-4">
-                <div class="card card-service p-4 h-100 border-0">
-                    <div class="card-icon-box blue-glow">
-                        <i class="bi bi-briefcase-fill"></i>
+                <div class="card pillar-card h-100 border-0 shadow-sm">
+                    <div class="pillar-line blue"></div>
+                    <div class="card-body p-4 p-xl-5 text-center">
+                        <div class="pillar-icon-wrapper mb-4 mx-auto">
+                            <i class="bi bi-briefcase-fill"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-3">Generamos Negocios</h4>
+                        <p class="text-muted leading-relaxed mb-4">Promovemos conexiones estratégicas y de valor entre empresarios, aliados y entidades públicas de la región.</p>
+                        <a href="<?= APP_URL ?>/?page=servicios" class="pillar-link">
+                            Conocer servicios <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
                     </div>
-                    <h4 class="fw-bold text-dark mt-3 mb-2">Generamos Negocios</h4>
-                    <p class="text-muted leading-relaxed mb-3" style="font-size: 0.95rem;">Promovemos conexiones estratégicas y de valor entre empresarios, aliados y entidades públicas de la región.</p>
-                    <a href="<?= APP_URL ?>/?page=servicios" class="card-link mt-auto">Conocer más <i class="bi bi-arrow-right ms-1"></i></a>
                 </div>
             </div>
-            <!-- Card 2 -->
+
+            <!-- Card 2: Educación -->
             <div class="col-md-4">
-                <div class="card card-service p-4 h-100 border-0">
-                    <div class="card-icon-box blue-glow">
-                        <i class="bi bi-mortarboard-fill"></i>
+                <div class="card pillar-card h-100 border-0 shadow-sm">
+                    <div class="pillar-line light-blue"></div>
+                    <div class="card-body p-4 p-xl-5 text-center">
+                        <div class="pillar-icon-wrapper mb-4 mx-auto light-blue">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-3">Educación Corporativa</h4>
+                        <p class="text-muted leading-relaxed mb-4">Impulsamos cursos prácticos, webinars de actualidad y talleres especializados para fortalecer el capital humano.</p>
+                        <a href="<?= APP_URL ?>/?page=servicios" class="pillar-link">
+                            Ver programas <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
                     </div>
-                    <h4 class="fw-bold text-dark mt-3 mb-2">Educación Corporativa</h4>
-                    <p class="text-muted leading-relaxed mb-3" style="font-size: 0.95rem;">Impulsamos cursos prácticos, webinars de actualidad y talleres especializados para fortalecer el capital humano.</p>
-                    <a href="<?= APP_URL ?>/?page=servicios" class="card-link mt-auto">Conocer más <i class="bi bi-arrow-right ms-1"></i></a>
                 </div>
             </div>
-            <!-- Card 3 -->
+
+            <!-- Card 3: Representación -->
             <div class="col-md-4">
-                <div class="card card-service p-4 h-100 border-0">
-                    <div class="card-icon-box blue-glow">
-                        <i class="bi bi-megaphone-fill"></i>
+                <div class="card pillar-card h-100 border-0 shadow-sm">
+                    <div class="pillar-line dark-blue"></div>
+                    <div class="card-body p-4 p-xl-5 text-center">
+                        <div class="pillar-icon-wrapper mb-4 mx-auto dark-blue">
+                            <i class="bi bi-megaphone-fill"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-3">Representación Gremial</h4>
+                        <p class="text-muted leading-relaxed mb-4">Acompañamos iniciativas gubernamentales y políticas que dinamizan el desarrollo económico local.</p>
+                        <a href="<?= APP_URL ?>/?page=servicios" class="pillar-link">
+                            Nuestro impacto <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
                     </div>
-                    <h4 class="fw-bold text-dark mt-3 mb-2">Representación Gremial</h4>
-                    <p class="text-muted leading-relaxed mb-3" style="font-size: 0.95rem;">Acompañamos iniciativas gubernamentales y políticas que dinamizan el desarrollo económico local.</p>
-                    <a href="<?= APP_URL ?>/?page=servicios" class="card-link mt-auto">Conocer más <i class="bi bi-arrow-right ms-1"></i></a>
                 </div>
             </div>
         </div>
