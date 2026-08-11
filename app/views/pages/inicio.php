@@ -313,9 +313,10 @@
             <div class="logo-slider-track">
                 <?php
                 $logos = [
-                    '1logo.jpeg', '2logo.jpeg', '3logo.jpeg', '4logo.jpeg', '5logo.jpeg',
-                    '6logo.jpeg', '7logo.jpeg', '8logo.jpeg', '9logo.jpeg', '10logo.png',
-                    '11logo.jpg', '12logo.png', '13logo.png'
+                    'aliados1.jpeg', 'aliados2.jpeg', 'aliados3.png', 'aliados4.jpg', 
+                    'aliados5.jpg', 'aliados6.jpg', 'aliados7.png', 'aliados8.png', 
+                    'aliados9.png', 'aliados10.png', 'aliados11.jpeg', 'aliados12.png', 
+                    'aliados13.jpeg'
                 ];
                 // Loop twice to ensure infinite, seamless scrolling
                 for ($i = 0; $i < 2; $i++) {
