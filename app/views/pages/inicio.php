@@ -11,7 +11,7 @@
 
         <div class="carousel-inner">
             <!-- Slide 1 -->
-            <div class="carousel-item active" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel1.jpg');">
+            <div class="carousel-item active" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel1.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
@@ -28,7 +28,7 @@
             </div>
 
             <!-- Slide 2 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel2.jpg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel2.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
@@ -45,7 +45,7 @@
             </div>
 
             <!-- Slide 3 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel3.jpg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel3.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
@@ -62,7 +62,7 @@
             </div>
 
             <!-- Slide 4 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel4.jpeg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel4.jpeg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
@@ -79,7 +79,7 @@
             </div>
 
             <!-- Slide 5 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('<?= APP_URL ?>/assets/img/carrusel5.jpeg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel5.jpeg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
                         <div class="col-lg-9 col-xl-8 text-start">
