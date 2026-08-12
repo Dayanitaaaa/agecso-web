@@ -128,53 +128,6 @@
     </div>
 </section>
 
-<!-- Sección Alianza SENA -->
-<section class="sena-alliance-banner py-5 bg-white position-relative overflow-hidden shadow-sm">
-    <div class="container">
-        <div class="row align-items-center justify-content-center g-4">
-            <div class="col-md-3 text-center animate__animated animate__fadeInLeft">
-                <div class="sena-logo-container p-4 bg-light rounded-4 shadow-sm d-inline-block">
-                    <img src="assets/img/logoSena.png" 
-                         alt="Logo SENA" class="img-fluid" style="max-height: 90px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
-                </div>
-            </div>
-            <div class="col-md-7 text-center text-md-start animate__animated animate__fadeInRight">
-                <div class="ps-md-4 sena-content-border">
-                    <span class="badge bg-success-glass text-success mb-2 px-3 py-2 text-uppercase fw-bold tracking-widest" style="font-size: 0.7rem;">Patrocinio Institucional</span>
-                    <h3 class="fw-black text-dark mb-2">AGECSO & <span class="text-success">SENA</span>: Alianza para el Progreso</h3>
-                    <p class="text-muted leading-relaxed mb-0" style="font-size: 1.1rem;">
-                        Esta plataforma ha sido desarrollada y fortalecida bajo el patrocinio del <strong>SENA</strong>. Juntos impulsamos la transformación digital, el emprendimiento y la competitividad de los empresarios en Sabana Occidente.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Elementos decorativos sutiles -->
-    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-5 pointer-events-none" style="background-image: radial-gradient(#39a900 0.5px, transparent 0.5px); background-size: 20px 20px;"></div>
-</section>
-
-<style>
-    .sena-logo-container {
-        transition: all 0.4s ease;
-        border: 2px solid transparent;
-    }
-    .sena-logo-container:hover {
-        transform: scale(1.05) rotate(2deg);
-        background: #fff !important;
-        border-color: #39a900;
-        box-shadow: 0 15px 30px rgba(57, 169, 0, 0.1) !important;
-    }
-    .sena-content-border {
-        border-left: 0;
-    }
-    @media (min-width: 768px) {
-        .sena-content-border {
-            border-left: 4px solid #39a900 !important;
-        }
-    }
-</style>
-
 <style>
     /* Estilos Premium para el Carrusel */
     .hero-title {
