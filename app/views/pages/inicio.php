@@ -134,7 +134,7 @@
         <div class="row align-items-center justify-content-center g-4">
             <div class="col-md-3 text-center animate__animated animate__fadeInLeft">
                 <div class="sena-logo-container p-4 bg-light rounded-4 shadow-sm d-inline-block">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Sena_Colombia_logo.svg/1024px-Sena_Colombia_logo.svg.png" 
+                    <img src="assets/img/logoSena.png" 
                          alt="Logo SENA" class="img-fluid" style="max-height: 90px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
                 </div>
             </div>
