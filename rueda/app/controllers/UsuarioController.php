@@ -289,6 +289,103 @@ class UsuarioController {
         exit();
     }
 
+    /**
+     * Olvidé mi contraseña - Solicitar token
+     */
+    public function forgotPassword() {
+        try {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            $mensaje = "";
+            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                $email = trim($_POST['correo'] ?? '');
+
+                if (empty($email)) {
+                    throw new Exception("Por favor ingresa tu correo electrónico.");
+                }
+
+                $usuario = $this->usuarioModel->getByEmail($email);
+                if ($usuario) {
+                    $token = bin2hex(random_bytes(32));
+                    $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+                    if ($this->usuarioModel->setResetToken($email, $token, $expires)) {
+                        $resetLink = "https://rueda.agecso.org/index.php?controlador=usuario&accion=resetPassword&token=" . $token;
+                        
+                        // Preparar correo
+                        $to = $email;
+                        $subject = "Recuperar Contraseña - Rueda de Negocios AGECSO";
+                        $message = "Hola " . $usuario['nombreUsuario'] . ",\n\n";
+                        $message .= "Has solicitado restablecer tu contraseña en la Rueda de Negocios. Haz clic en el siguiente enlace para continuar:\n\n";
+                        $message .= $resetLink . "\n\n";
+                        $message .= "Este enlace expirará en 1 hora.\n\n";
+                        $message .= "Si no solicitaste esto, puedes ignorar este correo.\n";
+                        $headers = "From: no-reply@agecso.org" . "\r\n" .
+                                   "Reply-To: contacto@agecso.org" . "\r\n" .
+                                   "X-Mailer: PHP/" . phpversion();
+
+                        if (@mail($to, $subject, $message, $headers)) {
+                            $mensaje = "<div class='bg-green-100 p-3 rounded mb-4 text-green-700'>Se ha enviado un enlace de recuperación a tu correo.</div>";
+                        } else {
+                            error_log("Error enviando correo a $email. Link: $resetLink");
+                            $mensaje = "<div class='bg-green-100 p-3 rounded mb-4 text-green-700'>Se ha generado el enlace (ver logs). Por favor revisa tu bandeja de entrada.</div>";
+                        }
+                    }
+                } else {
+                    $mensaje = "<div class='bg-green-100 p-3 rounded mb-4 text-green-700'>Si el correo existe en nuestro sistema, recibirás un enlace pronto.</div>";
+                }
+            }
+            require_once __DIR__ . '/../views/usuario/forgot_password.php';
+        } catch (Exception $e) {
+            $mensaje = "<div class='bg-red-100 p-3 rounded mb-4 text-red-700'>" . $e->getMessage() . "</div>";
+            require_once __DIR__ . '/../views/usuario/forgot_password.php';
+        }
+    }
+
+    /**
+     * Restablecer contraseña - Procesar nuevo password
+     */
+    public function resetPassword() {
+        try {
+            $token = $_GET['token'] ?? '';
+            if (empty($token)) {
+                header("Location: index.php?controlador=usuario&accion=login");
+                exit();
+            }
+
+            $usuario = $this->usuarioModel->getByResetToken($token);
+            if (!$usuario) {
+                throw new Exception("El enlace ha expirado o es inválido.");
+            }
+
+            $mensaje = "";
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $password = $_POST['password'] ?? '';
+                $confirm = $_POST['confirm_password'] ?? '';
+
+                if (strlen($password) < 6) {
+                    throw new Exception("La contraseña debe tener al menos 6 caracteres.");
+                }
+                if ($password !== $confirm) {
+                    throw new Exception("Las contraseñas no coinciden.");
+                }
+
+                if ($this->usuarioModel->updatePassword($usuario['id'], $password)) {
+                    header("Location: index.php?controlador=usuario&accion=login&msg=reset_success");
+                    exit();
+                } else {
+                    throw new Exception("Hubo un error al actualizar la contraseña.");
+                }
+            }
+            require_once __DIR__ . '/../views/usuario/reset_password.php';
+        } catch (Exception $e) {
+            $mensaje = "<div class='bg-red-100 p-3 rounded mb-4 text-red-700'>" . $e->getMessage() . "</div>";
+            require_once __DIR__ . '/../views/usuario/forgot_password.php';
+        }
+    }
+
     public function perfil() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();

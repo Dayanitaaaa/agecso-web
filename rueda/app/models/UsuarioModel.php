@@ -198,6 +198,41 @@ class UsuarioModel {
         return $stmt->fetch();
     }
 
+    /**
+     * Buscar usuario por email
+     */
+    public function getByEmail($email) {
+        $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE email = ? AND isActive = 1");
+        $stmt->execute([$email]);
+        return $stmt->fetch();
+    }
+
+    /**
+     * Guardar token de recuperación
+     */
+    public function setResetToken($email, $token, $expires) {
+        $stmt = $this->db->prepare("UPDATE usuarios SET reset_token = ?, reset_expires = ? WHERE email = ?");
+        return $stmt->execute([$token, $expires, $email]);
+    }
+
+    /**
+     * Buscar usuario por token de recuperación válido
+     */
+    public function getByResetToken($token) {
+        $stmt = $this->db->prepare("SELECT u.*, r.slugRole FROM usuarios u JOIN roles r ON u.roleId = r.id WHERE u.reset_token = ? AND u.reset_expires > NOW() AND u.isActive = 1");
+        $stmt->execute([$token]);
+        return $stmt->fetch();
+    }
+
+    /**
+     * Actualizar contraseña y limpiar token
+     */
+    public function updatePassword($id, $password) {
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $this->db->prepare("UPDATE usuarios SET password = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?");
+        return $stmt->execute([$hash, $id]);
+    }
+
     private function writeDebugLogin($status, $email, $context = []) {
         $logFile = __DIR__ . '/../../logs/debug_login.txt';
         $timestamp = date('Y-m-d H:i:s');
