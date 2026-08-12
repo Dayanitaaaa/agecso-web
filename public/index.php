@@ -21,7 +21,7 @@ if (!empty($parts[0])) {
         if (!empty($parts[1])) $_GET['section'] = $parts[1];
         if (!empty($parts[2])) $_GET['action'] = $parts[2];
         if (!empty($parts[3])) $_GET['id'] = $parts[3];
-    } elseif (in_array($parts[0], ['login', 'logout', 'forgot-password', 'reset-password', 'noticias', 'eventos', 'contacto', 'somos-agecso', 'aliados', 'servicios', 'cursos-webinar'])) {
+    } elseif (in_array($parts[0], ['login', 'logout', 'forgot-password', 'reset-password', 'noticias', 'eventos', 'contacto', 'nosotros', 'somos-agecso', 'aliados', 'servicios', 'cursos-webinar'])) {
         $_GET['page'] = $parts[0];
     }
 }
