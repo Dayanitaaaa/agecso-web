@@ -11,16 +11,20 @@
 
         <div class="carousel-inner">
             <!-- Slide 1 -->
-            <div class="carousel-item active" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel1.jpg');">
+            <div class="carousel-item active" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.85), rgba(0, 162, 255, 0.25)), url('assets/img/carrusel1.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
-                        <div class="col-lg-9 col-xl-8 text-start">
-                            <span class="badge bg-primary mb-3 text-uppercase px-3 py-2" style="font-weight: 700; letter-spacing: 1px;">Asociación Gremial</span>
-                            <h1 class="display-3 fw-black mb-4 text-white">Crecimiento <span class="highlight-text">sostenible y rentable</span> en Sabana Occidente</h1>
-                            <p class="lead mb-4 text-white-50">AGECSO impulsa la conexión empresarial, la visibilidad, el networking y la generación de oportunidades para sus miembros.</p>
-                            <div class="d-flex flex-wrap gap-3">
-                                <a href="<?= APP_URL ?>/?page=servicios" class="btn btn-light btn-lg px-4 py-2">Conocer servicios</a>
-                                <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-agecso btn-lg px-4 py-2">Rueda de Negocios</a>
+                        <div class="col-lg-10 col-xl-9 text-start">
+                            <span class="hero-badge badge bg-primary-glass mb-3 animate__animated animate__fadeInDown">Asociación Gremial</span>
+                            <h1 class="hero-title display-2 fw-black mb-4 text-white animate__animated animate__fadeInLeft">
+                                Crecimiento <span class="highlight-blue">sostenible y rentable</span> en Sabana Occidente
+                            </h1>
+                            <p class="hero-desc lead mb-5 text-white-75 animate__animated animate__fadeInUp animate__delay-1s">
+                                AGECSO impulsa la conexión empresarial, la visibilidad, el networking y la generación de oportunidades estratégicas para sus miembros.
+                            </p>
+                            <div class="d-flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
+                                <a href="<?= APP_URL ?>/?page=servicios" class="btn btn-premium-light btn-lg px-5 py-3">Conocer servicios</a>
+                                <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-premium-blue btn-lg px-5 py-3">Rueda de Negocios</a>
                             </div>
                         </div>
                     </div>
@@ -28,16 +32,20 @@
             </div>
 
             <!-- Slide 2 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel2.jpg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.85), rgba(0, 162, 255, 0.25)), url('assets/img/carrusel2.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
-                        <div class="col-lg-9 col-xl-8 text-start">
-                            <span class="badge bg-info mb-3 text-uppercase px-3 py-2 text-dark" style="font-weight: 700; letter-spacing: 1px;">Sinergia y Alianzas</span>
-                            <h1 class="display-3 fw-black mb-4 text-white">Conectamos los nodos del <span class="highlight-text">desarrollo económico</span></h1>
-                            <p class="lead mb-4 text-white-50">Facilitamos espacios de integración estratégica y alianzas con agencias públicas y privadas para potenciar tu marca.</p>
-                            <div class="d-flex flex-wrap gap-3">
-                                <a href="<?= APP_URL ?>/?page=nosotros" class="btn btn-light btn-lg px-4 py-2">Quiénes Somos</a>
-                                <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-agecso btn-lg px-4 py-2">Rueda de Negocios</a>
+                        <div class="col-lg-10 col-xl-9 text-start">
+                            <span class="hero-badge badge bg-info-glass mb-3 animate__animated animate__fadeInDown">Sinergia y Alianzas</span>
+                            <h1 class="hero-title display-2 fw-black mb-4 text-white animate__animated animate__fadeInLeft">
+                                Conectamos los nodos del <span class="highlight-info">desarrollo económico</span>
+                            </h1>
+                            <p class="hero-desc lead mb-5 text-white-75 animate__animated animate__fadeInUp animate__delay-1s">
+                                Facilitamos espacios de integración estratégica y alianzas con agencias públicas y privadas para potenciar tu marca a nivel regional.
+                            </p>
+                            <div class="d-flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
+                                <a href="<?= APP_URL ?>/?page=nosotros" class="btn btn-premium-light btn-lg px-5 py-3">Quiénes Somos</a>
+                                <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-premium-blue btn-lg px-5 py-3">Rueda de Negocios</a>
                             </div>
                         </div>
                     </div>
@@ -45,16 +53,20 @@
             </div>
 
             <!-- Slide 3 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel3.jpg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.85), rgba(0, 162, 255, 0.25)), url('assets/img/carrusel3.jpg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
-                        <div class="col-lg-9 col-xl-8 text-start">
-                            <span class="badge bg-success mb-3 text-uppercase px-3 py-2" style="font-weight: 700; letter-spacing: 1px;">Educación Corporativa</span>
-                            <h1 class="display-3 fw-black mb-4 text-white">Fortaleciendo el <span class="highlight-text">tejido empresarial</span></h1>
-                            <p class="lead mb-4 text-white-50">Capacitaciones mensuales, webinars, conferencias y talleres de la mano con agencias y aliados estratégicos del más alto nivel.</p>
-                            <div class="d-flex flex-wrap gap-3">
-                                <a href="<?= APP_URL ?>/?page=servicios" class="btn btn-light btn-lg px-4 py-2">Ver Servicios</a>
-                                <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-agecso btn-lg px-4 py-2">Rueda de Negocios</a>
+                        <div class="col-lg-10 col-xl-9 text-start">
+                            <span class="hero-badge badge bg-success-glass mb-3 animate__animated animate__fadeInDown">Educación Corporativa</span>
+                            <h1 class="hero-title display-2 fw-black mb-4 text-white animate__animated animate__fadeInLeft">
+                                Fortaleciendo el <span class="highlight-green">tejido empresarial</span>
+                            </h1>
+                            <p class="hero-desc lead mb-5 text-white-75 animate__animated animate__fadeInUp animate__delay-1s">
+                                Capacitaciones mensuales, webinars, conferencias y talleres de la mano con agencias y aliados estratégicos del más alto nivel.
+                            </p>
+                            <div class="d-flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
+                                <a href="<?= APP_URL ?>/?page=servicios" class="btn btn-premium-light btn-lg px-5 py-3">Ver Servicios</a>
+                                <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-premium-blue btn-lg px-5 py-3">Rueda de Negocios</a>
                             </div>
                         </div>
                     </div>
@@ -62,16 +74,20 @@
             </div>
 
             <!-- Slide 4 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel4.jpeg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.85), rgba(0, 162, 255, 0.25)), url('assets/img/carrusel4.jpeg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
-                        <div class="col-lg-9 col-xl-8 text-start">
-                            <span class="badge bg-warning mb-3 text-dark text-uppercase px-3 py-2" style="font-weight: 700; letter-spacing: 1px;">Rueda de Negocios</span>
-                            <h1 class="display-3 fw-black mb-4 text-white">El <span class="highlight-text">encuentro comercial</span> del año</h1>
-                            <p class="lead mb-4 text-white-50">Genera sinergia, amplía tu red de contactos y haz negocios reales con grandes empresas compradoras de la región.</p>
-                            <div class="d-flex flex-wrap gap-3">
-                                <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-light btn-lg px-4 py-2">Ingresar a Rueda</a>
-                                <a href="<?= APP_URL ?>/?page=contacto" class="btn btn-agecso btn-lg px-4 py-2">Contáctanos</a>
+                        <div class="col-lg-10 col-xl-9 text-start">
+                            <span class="hero-badge badge bg-warning-glass mb-3 animate__animated animate__fadeInDown">Rueda de Negocios</span>
+                            <h1 class="hero-title display-2 fw-black mb-4 text-white animate__animated animate__fadeInLeft">
+                                El <span class="highlight-warning">encuentro comercial</span> del año
+                            </h1>
+                            <p class="hero-desc lead mb-5 text-white-75 animate__animated animate__fadeInUp animate__delay-1s">
+                                Genera sinergia, amplía tu red de contactos y haz negocios reales con grandes empresas compradoras de toda la región.
+                            </p>
+                            <div class="d-flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
+                                <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-premium-light btn-lg px-5 py-3 text-dark">Ingresar a Rueda</a>
+                                <a href="<?= APP_URL ?>/?page=contacto" class="btn btn-premium-blue btn-lg px-5 py-3">Contáctanos</a>
                             </div>
                         </div>
                     </div>
@@ -79,16 +95,20 @@
             </div>
 
             <!-- Slide 5 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.75), rgba(0, 162, 255, 0.35)), url('assets/img/carrusel5.jpeg');">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.85), rgba(0, 162, 255, 0.25)), url('assets/img/carrusel5.jpeg');">
                 <div class="container hero-content-container">
                     <div class="row align-items-center">
-                        <div class="col-lg-9 col-xl-8 text-start">
-                            <span class="badge bg-danger mb-3 text-uppercase px-3 py-2" style="font-weight: 700; letter-spacing: 1px;">Unidad y Liderazgo</span>
-                            <h1 class="display-3 fw-black mb-4 text-white">Lideramos el <span class="highlight-text">futuro empresarial</span></h1>
-                            <p class="lead mb-4 text-white-50">Somos la voz de los empresarios en la región, trabajando por un entorno competitivo y sostenible.</p>
-                            <div class="d-flex flex-wrap gap-3">
-                                <a href="<?= APP_URL ?>/?page=nosotros" class="btn btn-light btn-lg px-4 py-2">Conoce más</a>
-                                <a href="<?= APP_URL ?>/?page=contacto" class="btn btn-agecso btn-lg px-4 py-2">Hablar con un asesor</a>
+                        <div class="col-lg-10 col-xl-9 text-start">
+                            <span class="hero-badge badge bg-danger-glass mb-3 animate__animated animate__fadeInDown">Unidad y Liderazgo</span>
+                            <h1 class="hero-title display-2 fw-black mb-4 text-white animate__animated animate__fadeInLeft">
+                                Lideramos el <span class="highlight-danger">futuro empresarial</span>
+                            </h1>
+                            <p class="hero-desc lead mb-5 text-white-75 animate__animated animate__fadeInUp animate__delay-1s">
+                                Somos la voz de los empresarios en la región, trabajando por un entorno competitivo, sostenible y colaborativo.
+                            </p>
+                            <div class="d-flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
+                                <a href="<?= APP_URL ?>/?page=nosotros" class="btn btn-premium-light btn-lg px-5 py-3">Conoce más</a>
+                                <a href="<?= APP_URL ?>/?page=contacto" class="btn btn-premium-blue btn-lg px-5 py-3">Hablar con un asesor</a>
                             </div>
                         </div>
                     </div>
@@ -107,6 +127,89 @@
         </button>
     </div>
 </section>
+
+<style>
+    /* Estilos Premium para el Carrusel */
+    .hero-title {
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+    
+    .hero-desc {
+        font-weight: 500;
+        max-width: 650px;
+        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Badges estilo Glassmorphism */
+    .hero-badge {
+        padding: 10px 24px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-radius: 50px;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .bg-primary-glass { background: rgba(0, 162, 255, 0.25); color: #fff; }
+    .bg-info-glass { background: rgba(13, 202, 240, 0.25); color: #fff; }
+    .bg-success-glass { background: rgba(25, 135, 84, 0.25); color: #fff; }
+    .bg-warning-glass { background: rgba(255, 193, 7, 0.25); color: #fff; }
+    .bg-danger-glass { background: rgba(220, 53, 69, 0.25); color: #fff; }
+
+    /* Highlights de Texto */
+    .highlight-blue { color: #00a2ff; font-weight: 900; }
+    .highlight-info { color: #0dcaf0; font-weight: 900; }
+    .highlight-green { color: #198754; font-weight: 900; }
+    .highlight-warning { color: #ffc107; font-weight: 900; }
+    .highlight-danger { color: #dc3545; font-weight: 900; }
+
+    /* Botones Premium */
+    .btn-premium-light {
+        background: #fff;
+        color: #002e53;
+        border: none;
+        font-weight: 800;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-premium-light:hover {
+        background: #f0f9ff;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-premium-blue {
+        background: linear-gradient(135deg, #00a2ff 0%, #008ae0 100%);
+        color: #fff;
+        border: none;
+        font-weight: 800;
+        border-radius: 50px;
+        box-shadow: 0 4px 15px rgba(0, 162, 255, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-premium-blue:hover {
+        background: linear-gradient(135deg, #33b5ff 0%, #0099ff 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 162, 255, 0.5);
+        color: #fff;
+    }
+
+    /* Animaciones suaves para el carrusel */
+    .carousel-item {
+        transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.2s ease-in-out !important;
+    }
+</style>
+
+<!-- Importar Animate.css si no está cargado -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
 
 <section class="section-padding bg-modern-light position-relative">
     <div class="container">
