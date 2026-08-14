@@ -1527,13 +1527,14 @@ html {
     position: relative;
     height: 250px;
     overflow: hidden;
+    background-color: #f8f9fa; /* Fondo neutro para imágenes que no llenen el espacio */
 }
 
 .news-card-media img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important; /* Corta la imagen para que llene el espacio sin deformarse */
-    object-position: top !important; /* Muestra siempre la parte de arriba (evita "sin cabeza") */
+    object-fit: contain !important; /* Muestra la imagen completa sin recortes */
+    transition: transform 0.5s ease;
     display: block;
 }
 

@@ -496,9 +496,9 @@
             <?php foreach ($data['noticias'] as $item): ?>
                 <div class="col-md-4">
                     <div class="card h-100">
-                        <?php if ($item['imagen']): ?>
-                            <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" class="card-img-top" alt="" style="height: 180px; object-fit: cover;">
-                        <?php endif; ?>
+                            <div class="news-card-media" style="height: 200px; background-color: #f8f9fa;">
+                                <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" class="card-img-top" alt="" style="height: 100%; width: 100%; object-fit: contain;">
+                            </div>
                         <div class="card-body">
                             <small class="text-muted"><?= date('d/m/Y', strtotime($item['fecha_publicacion'])) ?></small>
                             <h5 class="card-title mt-2"><?= htmlspecialchars($item['titulo']) ?></h5>

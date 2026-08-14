@@ -62,11 +62,11 @@
                                     $allImages = array_filter(array_merge([$item['imagen']], $extraImages));
                                     
                                     if (count($allImages) > 1): ?>
-                                        <div id="<?= $carouselId ?>" class="carousel slide news-modal-carousel mb-4" data-bs-ride="carousel">
+                                        <div id="<?= $carouselId ?>" class="carousel slide news-modal-carousel mb-4" data-bs-ride="carousel" style="background-color: #000; border-radius: 1rem;">
                                             <div class="carousel-inner rounded-4 shadow-sm">
                                                 <?php foreach ($allImages as $index => $img): ?>
                                                     <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="d-block w-100" style="height: 400px; object-fit: cover; object-position: top;">
+                                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="d-block w-100" style="height: 500px; object-fit: contain;">
                                                     </div>
                                                 <?php endforeach; ?>
                                             </div>
@@ -78,7 +78,9 @@
                                             </button>
                                         </div>
                                     <?php elseif (!empty($allImages)): ?>
-                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($allImages[0]) ?>" class="img-fluid rounded-4 shadow-sm mb-4 w-100" style="height: 400px; object-fit: cover; object-position: top;">
+                                        <div class="rounded-4 shadow-sm mb-4 w-100 overflow-hidden" style="background-color: #000;">
+                                            <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($allImages[0]) ?>" class="img-fluid d-block mx-auto" style="height: 500px; object-fit: contain;">
+                                        </div>
                                     <?php endif; ?>
 
                                     <div class="news-modal-meta mb-3">
