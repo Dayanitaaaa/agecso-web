@@ -9,3 +9,7 @@ __MACOSX/
 
 # Carpeta git
 .git/
+
+# Carpeta de subidas (mantener carpeta pero ignorar contenido)
+public/uploads/*
+!public/uploads/.gitkeep
