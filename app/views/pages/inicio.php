@@ -439,16 +439,32 @@
             <div class="logo-slider-track">
                 <?php
                 $logos = [
-                    'aliados1.jpeg', 'aliados2.jpeg', 'aliados3.png', 'aliados4.jpg', 
-                    'aliados5.jpg', 'aliados6.jpg', 'aliados7.png', 'aliados8.png', 
-                    'aliados9.png', 'aliados10.png', 'aliados11.jpeg', 'aliados12.png', 
-                    'aliados13.jpeg'
+                    ['img' => 'aliados1.jpeg', 'url' => '#'],
+                    ['img' => 'aliados2.jpeg', 'url' => '#'],
+                    ['img' => 'aliados3.png', 'url' => '#'],
+                    ['img' => 'aliados4.jpg', 'url' => '#'],
+                    ['img' => 'aliados5.jpg', 'url' => '#'],
+                    ['img' => 'aliados6.jpg', 'url' => '#'],
+                    ['img' => 'aliados7.png', 'url' => '#'],
+                    ['img' => 'aliados8.png', 'url' => '#'],
+                    ['img' => 'aliados9.png', 'url' => '#'],
+                    ['img' => 'aliados10.png', 'url' => '#'],
+                    ['img' => 'aliados11.jpeg', 'url' => '#'],
+                    ['img' => 'aliados12.png', 'url' => '#'],
+                    ['img' => 'aliados13.jpeg', 'url' => '#'],
+                    ['img' => 'aliados14.jpeg', 'url' => 'https://panaca.co/']
                 ];
                 // Loop twice to ensure infinite, seamless scrolling
                 for ($i = 0; $i < 2; $i++) {
                     foreach ($logos as $logo) {
                         echo '<div class="logo-slide">';
-                        echo '<img src="' . APP_URL . '/assets/img/' . $logo . '" alt="Logo Aliado">';
+                        if ($logo['url'] !== '#') {
+                            echo '<a href="' . $logo['url'] . '" target="_blank">';
+                        }
+                        echo '<img src="' . APP_URL . '/assets/img/' . $logo['img'] . '" alt="Logo Aliado">';
+                        if ($logo['url'] !== '#') {
+                            echo '</a>';
+                        }
                         echo '</div>';
                     }
                 }

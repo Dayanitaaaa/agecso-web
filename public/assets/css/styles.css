@@ -779,8 +779,8 @@ html {
 /* Track holding all slides */
 .logo-slider-track {
     display: flex;
-    /* (180px width + 30px margin) * 26 slides = 5460px */
-    width: calc(210px * 26);
+    /* (180px width + 30px margin) * 28 slides = 5880px */
+    width: calc(210px * 28);
     animation: scrollLogos 45s linear infinite;
 }
 
@@ -824,13 +824,13 @@ html {
     opacity: 1;
 }
 
-/* Infinite loop keyframe calculation for 13 slides */
+/* Infinite loop keyframe calculation for 14 slides */
 @keyframes scrollLogos {
     0% {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(calc(-210px * 13)); /* Slides width + margins to restart seamlessly */
+        transform: translateX(calc(-210px * 14)); /* Slides width + margins to restart seamlessly */
     }
 }
 
