@@ -31,7 +31,9 @@
                         <td>
                             <div class="d-flex align-items-center gap-3">
                                 <?php if ($item['imagen']): ?>
-                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" class="rounded-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
+                                    <div class="bg-dark rounded-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; overflow: hidden;">
+                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                    </div>
                                 <?php else: ?>
                                     <div class="bg-light rounded-3 d-flex align-items-center justify-content-center text-muted" style="width: 50px; height: 50px;">
                                         <i class="bi bi-image fs-4"></i>

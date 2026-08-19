@@ -142,6 +142,68 @@ class AdminController {
     }
 
     /**
+     * Gestión de multimedia
+     */
+    public function multimedia() {
+        $action = $_GET['action'] ?? 'list';
+        $filename = $_GET['id'] ?? null; // En este caso el ID es el nombre del archivo
+        $uploadDir = __DIR__ . '/../../public/uploads/';
+
+        // Asegurar que el directorio existe
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+            file_put_contents($uploadDir . '.gitkeep', '');
+        }
+
+        switch ($action) {
+            case 'list':
+                $files = array_diff(scandir($uploadDir), array('.', '..', '.gitkeep'));
+                $items = [];
+                foreach ($files as $file) {
+                    if (is_file($uploadDir . $file)) {
+                        $items[] = [
+                            'name' => $file,
+                            'size' => filesize($uploadDir . $file),
+                            'date' => filemtime($uploadDir . $file),
+                            'path' => APP_URL . '/uploads/' . $file
+                        ];
+                    }
+                }
+                
+                // Ordenar por fecha descendente
+                usort($items, function($a, $b) {
+                    return $b['date'] <=> $a['date'];
+                });
+
+                $title = 'Biblioteca Multimedia';
+                require __DIR__ . '/../views/admin/multimedia/list.php';
+                break;
+
+            case 'delete':
+                if ($filename && file_exists($uploadDir . $filename)) {
+                    unlink($uploadDir . $filename);
+                    $this->setFlash('Archivo eliminado correctamente');
+                }
+                header("Location: " . APP_URL . "/admin/multimedia");
+                exit();
+
+            case 'upload':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $res = $this->handleImageUpload('file');
+                    if ($res) {
+                        $this->setFlash('Imagen subida correctamente');
+                    }
+                }
+                header("Location: " . APP_URL . "/admin/multimedia");
+                exit();
+                
+            default:
+                header("Location: " . APP_URL . "/admin/multimedia");
+                exit();
+        }
+    }
+
+    /**
      * Gestión de mensajes de contacto
      */
     public function mensajes() {

@@ -53,7 +53,9 @@
                     
                     <?php if (!empty($item['imagen'])): ?>
                         <div class="mt-2" id="currentImagen">
-                            <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-thumbnail" style="max-height: 150px;">
+                            <div class="bg-dark rounded-3 p-2 d-inline-block" style="max-width: 200px;">
+                                <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($item['imagen']) ?>" alt="Imagen actual" class="img-fluid rounded" style="max-height: 150px; object-fit: contain;">
+                            </div>
                             <div class="form-check mt-2 d-flex justify-content-center">
                                 <input class="form-check-input me-2" type="checkbox" name="eliminar_imagen" value="1" id="eliminarImagen">
                                 <label class="form-check-label text-danger fw-bold" for="eliminarImagen">Eliminar imagen actual</label>
@@ -61,7 +63,9 @@
                         </div>
                     <?php endif; ?>
                     <div id="imagenPreview" class="mt-2" style="display: none;">
-                        <img src="" alt="Vista previa" class="img-thumbnail" style="max-height: 150px;">
+                        <div class="bg-dark rounded-3 p-2 d-inline-block" style="max-width: 200px;">
+                            <img src="" alt="Vista previa" class="img-fluid rounded" style="max-height: 150px; object-fit: contain;">
+                        </div>
                         <p class="small text-muted mt-2">Nueva imagen seleccionada</p>
                     </div>
                 </div>
@@ -82,9 +86,11 @@
                         <div class="row g-3 mt-3">
                             <?php foreach ($extraImages as $img): ?>
                                 <div class="col-6 col-md-3 col-lg-2">
-                                    <div class="position-relative border rounded-3 p-1 bg-white shadow-sm">
-                                        <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="img-thumbnail w-100 border-0" style="height: 100px; object-fit: cover;">
-                                        <div class="form-check mt-2 px-4">
+                                    <div class="position-relative border rounded-3 p-1 bg-dark shadow-sm">
+                                        <div class="d-flex align-items-center justify-content-center" style="height: 100px; overflow: hidden;">
+                                            <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($img) ?>" class="img-fluid border-0" style="max-width: 100%; max-height: 100%; object-fit: contain;">
+                                        </div>
+                                        <div class="form-check mt-2 px-4 bg-white rounded-bottom">
                                             <input class="form-check-input" type="checkbox" name="eliminar_imagenes[]" value="<?= htmlspecialchars($img) ?>">
                                             <small class="form-check-label text-danger">Eliminar</small>
                                         </div>

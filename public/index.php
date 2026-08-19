@@ -66,6 +66,9 @@ if ($page === 'login') {
         case 'servicios':
             $controller->servicios();
             break;
+        case 'multimedia':
+            $controller->multimedia();
+            break;
         case 'mensajes':
             $controller->mensajes();
             break;
