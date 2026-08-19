@@ -637,8 +637,11 @@ class AdminController {
         if (!is_array($uploadedFilenames)) $uploadedFilenames = [];
 
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        $maxSize = 10 * 1024 * 1024; // 10MB
-        $uploadDir = __DIR__ . '/../../public/uploads/';
+        $maxSize = 12 * 1024 * 1024; // 12MB
+        $uploadDir = realpath(__DIR__ . '/../../public/uploads') . DIRECTORY_SEPARATOR;
+        if (!$uploadDir || $uploadDir === DIRECTORY_SEPARATOR) {
+            $uploadDir = __DIR__ . '/../../public/uploads/';
+        }
 
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0777, true);
@@ -652,9 +655,8 @@ class AdminController {
             if ($files['size'][$i] > $maxSize) continue;
 
             $filename = uniqid() . '_' . time() . '_' . $i . '.' . $extension;
-            $uploadPath = $uploadDir . $filename;
-
-            if (move_uploaded_file($files['tmp_name'][$i], $uploadPath)) {
+            
+            if (move_uploaded_file($files['tmp_name'][$i], $uploadDir . $filename)) {
                 $uploadedFilenames[] = $filename;
             }
         }
@@ -666,56 +668,58 @@ class AdminController {
      * Manejar subida de imagen
      */
     private function handleImageUpload($fileInput, $currentImage = null) {
+        // Si no se envió el archivo o no se seleccionó nada
         if (!isset($_FILES[$fileInput]) || $_FILES[$fileInput]['error'] === UPLOAD_ERR_NO_FILE) {
             return $currentImage;
         }
 
+        // Si hay algún otro error en la subida
         if ($_FILES[$fileInput]['error'] !== UPLOAD_ERR_OK) {
-            $errorMsg = "Error en la subida: ";
+            $errorMsg = "Error en la subida de la imagen principal: ";
             switch ($_FILES[$fileInput]['error']) {
-                case UPLOAD_ERR_INI_SIZE: $errorMsg .= "El archivo excede el tamaño permitido por el servidor."; break;
-                case UPLOAD_ERR_FORM_SIZE: $errorMsg .= "El archivo es demasiado grande."; break;
+                case UPLOAD_ERR_INI_SIZE: $errorMsg .= "El archivo es demasiado grande para la configuración del servidor."; break;
+                case UPLOAD_ERR_FORM_SIZE: $errorMsg .= "El archivo excede el tamaño del formulario."; break;
                 case UPLOAD_ERR_PARTIAL: $errorMsg .= "La subida se interrumpió."; break;
-                default: $errorMsg .= "Error desconocido."; break;
+                case UPLOAD_ERR_NO_TMP_DIR: $errorMsg .= "Falta carpeta temporal en el servidor."; break;
+                default: $errorMsg .= "Error código " . $_FILES[$fileInput]['error']; break;
             }
-            $this->setFlash($errorMsg, 'danger');
+            $this->setFlash($errorMsg, 'error');
             return $currentImage;
         }
 
         $file = $_FILES[$fileInput];
         $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        $maxSize = 10 * 1024 * 1024; // 10MB
+        $maxSize = 12 * 1024 * 1024; // Aumentar a 12MB
 
         $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($extension, $allowedExtensions)) {
-            $this->setFlash("Tipo de archivo no permitido. Usa JPG, PNG, GIF o WEBP.", 'danger');
+            $this->setFlash("Formato no permitido para '{$file['name']}'. Usa JPG, PNG o WEBP.", 'error');
             return $currentImage;
         }
 
         if ($file['size'] > $maxSize) {
-            $this->setFlash("La imagen es muy pesada (máx 10MB). Por favor, redúcela antes de subir.", 'danger');
+            $this->setFlash("La imagen es demasiado pesada (" . round($file['size']/1024/1024, 2) . "MB). Máximo 12MB.", 'error');
             return $currentImage;
         }
 
+        // Limpiar el nombre del archivo original para evitar problemas con caracteres raros
         $filename = uniqid() . '_' . time() . '.' . $extension;
-        $uploadDir = __DIR__ . '/../../public/uploads/';
+        $uploadDir = realpath(__DIR__ . '/../../public/uploads') . DIRECTORY_SEPARATOR;
         
+        // Si realpath falló, intentar el camino directo
+        if (!$uploadDir || $uploadDir === DIRECTORY_SEPARATOR) {
+            $uploadDir = __DIR__ . '/../../public/uploads/';
+        }
+
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        if (!is_writable($uploadDir)) {
-            $this->setFlash("Error de permisos en el servidor.", 'danger');
-            return $currentImage;
-        }
-        
         if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
-            // Si subimos una nueva y había una anterior, opcionalmente podríamos borrarla
-            // pero por ahora solo retornamos el nuevo nombre
             return $filename;
         }
 
-        $this->setFlash("No se pudo guardar la imagen. Intenta de nuevo.", 'danger');
+        $this->setFlash("Error interno: No se pudo mover el archivo al directorio de destino. Revisa los permisos de la carpeta uploads.", 'error');
         return $currentImage;
     }
 }
