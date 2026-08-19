@@ -1,39 +1,15 @@
-<!-- Hero Carousel for Nosotros -->
-<section class="about-hero-section position-relative">
-    <div id="aboutCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
-        <!-- Indicators -->
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
-            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
-            <button type="button" data-bs-target="#aboutCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+<!-- Hero Section for Nosotros -->
+<section class="about-hero-section position-relative overflow-hidden" style="height: 500px; background-image: linear-gradient(rgba(0, 24, 48, 0.7), rgba(0, 48, 96, 0.5)), url('assets/img/carruselN1.png'); background-size: cover; background-position: center; background-attachment: fixed;">
+    <div class="container h-100 d-flex align-items-center justify-content-center text-center">
+        <div class="animate__animated animate__fadeInDown">
+            <span class="badge bg-info-glass text-white mb-3 px-3 py-2 text-uppercase fw-bold tracking-widest" style="font-size: 0.8rem; backdrop-filter: blur(5px);">Trayectoria y Liderazgo</span>
+            <h1 class="display-2 fw-black text-white text-uppercase tracking-widest mb-0">Nuestra <span class="text-info">Historia</span></h1>
+            <div class="mx-auto mt-3" style="width: 100px; height: 5px; background: #00a2ff; border-radius: 5px; box-shadow: 0 0 15px rgba(0, 162, 255, 0.5);"></div>
         </div>
-
-        <div class="carousel-inner shadow-lg">
-            <?php for($i = 1; $i <= 6; $i++): ?>
-            <div class="carousel-item <?= $i === 1 ? 'active' : '' ?>" style="height: 500px; background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('assets/img/carruselN<?= $i ?>.jpeg'); background-size: cover; background-position: center;">
-                <div class="container h-100 d-flex align-items-center justify-content-center text-center">
-                    <div class="animate__animated animate__fadeIn">
-                        <h1 class="display-3 fw-black text-white text-uppercase tracking-widest mb-0">Nuestra <span class="text-info">Historia</span></h1>
-                        <div class="mx-auto mt-2" style="width: 80px; height: 5px; background: #00a2ff; border-radius: 5px;"></div>
-                    </div>
-                </div>
-            </div>
-            <?php endfor; ?>
-        </div>
-
-        <!-- Controls -->
-        <button class="carousel-control-prev" type="button" data-bs-target="#aboutCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#aboutCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-        </button>
     </div>
+    
+    <!-- Elementos decorativos -->
+    <div class="position-absolute bottom-0 start-0 w-100" style="height: 100px; background: linear-gradient(to top, #fff, transparent);"></div>
 </section>
 
 <!-- Institutional Content -->
@@ -51,18 +27,30 @@
                 </p>
                 
                 <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="card border-0 bg-light p-4 rounded-4 h-100">
-                            <i class="bi bi-eye-fill text-primary fs-2 mb-3"></i>
-                            <h5 class="fw-bold text-dark">Misión</h5>
-                            <p class="text-muted small mb-0">[Aquí va la Misión oficial de AGECSO: El propósito fundamental de la organización.]</p>
+                    <div class="col-md-12">
+                        <div class="card border-0 bg-light p-4 rounded-4 h-100 mission-card">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="icon-box bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+                                    <i class="bi bi-eye-fill fs-3"></i>
+                                </div>
+                                <h4 class="fw-bold text-dark mb-0">MISIÓN</h4>
+                            </div>
+                            <p class="text-muted leading-relaxed mb-0">
+                                En <strong>AGECSO</strong> conectamos empresarios y organizaciones para generar negocios, crear oportunidades y contribuir a su crecimiento. Fortalecemos el tejido empresarial de Sabana de Occidente mediante alianzas estratégicas, cooperación y conexiones comerciales que impulsan la productividad, la competitividad y el desarrollo sostenible de nuestra región.
+                            </p>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card border-0 bg-light p-4 rounded-4 h-100">
-                            <i class="bi bi-bullseye text-primary fs-2 mb-3"></i>
-                            <h5 class="fw-bold text-dark">Visión</h5>
-                            <p class="text-muted small mb-0">[Aquí va la Visión oficial de AGECSO: Hacia dónde quieren llegar en el futuro.]</p>
+                    <div class="col-md-12">
+                        <div class="card border-0 bg-light p-4 rounded-4 h-100 vision-card">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div class="icon-box bg-info bg-opacity-10 p-3 rounded-circle text-info">
+                                    <i class="bi bi-bullseye fs-3"></i>
+                                </div>
+                                <h4 class="fw-bold text-dark mb-0">VISIÓN 2028</h4>
+                            </div>
+                            <p class="text-muted leading-relaxed mb-0">
+                                En <strong>2028</strong>, seremos la agremiación empresarial referente de Sabana de Occidente, reconocida por conectar empresarios, generar oportunidades y facilitar negocios que impulsen el crecimiento de las organizaciones, promoviendo empleo, competitividad, innovación y desarrollo sostenible para transformar positivamente nuestra región.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -85,24 +73,33 @@
     .fw-black { font-weight: 900; }
     .tracking-widest { letter-spacing: 0.2em; }
     .bg-primary-glass { background: rgba(0, 162, 255, 0.1); }
+    .bg-info-glass { background: rgba(13, 202, 240, 0.25); }
     .leading-relaxed { line-height: 1.8; }
     
-    #aboutCarousel .carousel-item {
-        background-attachment: scroll;
+    .mission-card, .vision-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05) !important;
     }
     
-    #aboutCarousel .carousel-indicators [data-bs-target] {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin: 0 5px;
-        background-color: rgba(255,255,255,0.5);
+    .mission-card:hover, .vision-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 162, 255, 0.1) !important;
+        background: #fff !important;
+        border-color: rgba(0, 162, 255, 0.2) !important;
     }
     
-    #aboutCarousel .carousel-indicators .active {
-        background-color: #00a2ff;
-        width: 30px;
-        border-radius: 10px;
+    .icon-box {
+        transition: all 0.3s ease;
+    }
+    
+    .mission-card:hover .icon-box {
+        background-color: var(--bs-primary) !important;
+        color: white !important;
+    }
+    
+    .vision-card:hover .icon-box {
+        background-color: var(--bs-info) !important;
+        color: white !important;
     }
 </style>
 
