@@ -13,92 +13,120 @@
 </section>
 
 <!-- Institutional Content -->
-<section class="section-padding bg-white">
+<section class="section-padding bg-white position-relative">
     <div class="container">
-        <div class="row g-5 align-items-center">
-            <div class="col-lg-6 text-start">
-                <span class="badge bg-primary-glass text-primary mb-3 px-3 py-2 text-uppercase fw-bold tracking-widest" style="font-size: 0.75rem;">¿Quiénes Somos?</span>
-                <h2 class="display-5 fw-black text-dark mb-4">Lideramos el <span class="text-info">Fortalecimiento</span> Empresarial</h2>
-                <p class="lead text-primary fw-bold mb-4">
-                    La Asociación Gremial de Empresarios de Sabana Occidente (AGECSO) es el motor que impulsa el crecimiento colaborativo en nuestra región.
-                </p>
-                <p class="text-muted leading-relaxed mb-5">
-                    Somos una organización comprometida con la transformación del entorno empresarial. Actuamos como un puente estratégico entre el sector privado y las oportunidades de desarrollo, facilitando espacios de networking, capacitación y representación gremial para potenciar la competitividad de nuestros asociados.
-                </p>
-                
-                <div class="row g-4 mb-5">
-                    <div class="col-md-12">
-                        <div class="card border-0 bg-light p-4 rounded-4 mission-card">
-                            <div class="d-flex align-items-center gap-3 mb-3">
-                                <div class="icon-box bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
-                                    <i class="bi bi-eye-fill fs-3"></i>
+        <div class="row g-5 align-items-center mb-5">
+            <div class="col-lg-7">
+                <div class="pe-lg-5">
+                    <span class="badge bg-primary-glass text-primary mb-3 px-3 py-2 text-uppercase fw-bold tracking-widest" style="font-size: 0.75rem;">Nuestra Esencia</span>
+                    <h2 class="display-5 fw-black text-dark mb-4">Lideramos el <span class="text-info">Fortalecimiento</span> Empresarial</h2>
+                    <p class="lead text-primary fw-bold mb-4">
+                        La Asociación Gremial de Empresarios de Sabana Occidente (AGECSO) es el motor que impulsa el crecimiento colaborativo en nuestra región.
+                    </p>
+                    <p class="text-muted leading-relaxed mb-4">
+                        Somos una organización comprometida con la transformación del entorno empresarial. Actuamos como un puente estratégico entre el sector privado y las oportunidades de desarrollo, facilitando espacios de networking, capacitación y representación gremial para potenciar la competitividad de nuestros asociados.
+                    </p>
+                    
+                    <!-- Stats compactos y elegantes -->
+                    <div class="row g-4 mt-2">
+                        <div class="col-sm-4">
+                            <div class="stat-card p-3 rounded-4 border-start border-4 border-primary bg-light shadow-sm">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="stat-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-people-fill"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-black text-dark fs-4 lh-1">+100</div>
+                                        <div class="text-muted small text-uppercase fw-bold mt-1" style="font-size: 0.65rem;">Asociados</div>
+                                    </div>
                                 </div>
-                                <h4 class="fw-bold text-dark mb-0">MISIÓN</h4>
                             </div>
-                            <p class="text-muted leading-relaxed mb-0">
-                                En <strong>AGECSO</strong> conectamos empresarios y organizaciones para generar negocios, crear oportunidades y contribuir a su crecimiento. Fortalecemos el tejido empresarial de Sabana de Occidente mediante alianzas estratégicas, cooperación y conexiones comerciales que impulsan la productividad, la competitividad y el desarrollo sostenible de nuestra región.
-                            </p>
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="card border-0 bg-light p-4 rounded-4 vision-card">
-                            <div class="d-flex align-items-center gap-3 mb-3">
-                                <div class="icon-box bg-info bg-opacity-10 p-3 rounded-circle text-info">
-                                    <i class="bi bi-bullseye fs-3"></i>
+                        <div class="col-sm-4">
+                            <div class="stat-card p-3 rounded-4 border-start border-4 border-info bg-light shadow-sm">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="stat-icon bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-grid-fill"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-black text-dark fs-4 lh-1">+15</div>
+                                        <div class="text-muted small text-uppercase fw-bold mt-1" style="font-size: 0.65rem;">Sectores</div>
+                                    </div>
                                 </div>
-                                <h4 class="fw-bold text-dark mb-0">VISIÓN 2028</h4>
                             </div>
-                            <p class="text-muted leading-relaxed mb-0">
-                                En <strong>2028</strong>, seremos la agremiación empresarial referente de Sabana de Occidente, reconocida por conectar empresarios, generar oportunidades y facilitar negocios que impulsen el crecimiento de las organizaciones, promoviendo empleo, competitividad, innovación y desarrollo sostenible para transformar positivamente nuestra región.
-                            </p>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="stat-card p-3 rounded-4 border-start border-4 border-success bg-light shadow-sm">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="stat-icon bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <i class="bi bi-calendar-check-fill"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-black text-dark fs-4 lh-1">+50</div>
+                                        <div class="text-muted small text-uppercase fw-bold mt-1" style="font-size: 0.65rem;">Eventos</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="col-lg-6">
-                <div class="stats-grid-container position-relative">
-                    <div class="row g-4">
-                        <div class="col-6">
-                            <div class="stat-premium-card p-4 rounded-4 text-center shadow-sm">
-                                <div class="stat-icon-wrap mb-3 mx-auto">
-                                    <i class="bi bi-people-fill text-primary"></i>
-                                </div>
-                                <h2 class="fw-black text-dark mb-1">+100</h2>
-                                <p class="text-muted small text-uppercase tracking-wider mb-0">Asociados</p>
+            <div class="col-lg-5">
+                <div class="position-relative">
+                    <div class="rounded-5 overflow-hidden shadow-lg animate__animated animate__fadeInRight">
+                        <img src="assets/img/carruselN2.png" alt="AGECSO Equipo" class="img-fluid">
+                    </div>
+                    <!-- Elemento decorativo flotante -->
+                    <div class="position-absolute -bottom-10 -left-10 bg-white p-4 rounded-4 shadow-lg d-none d-lg-block animate__animated animate__bounceInUp animate__delay-1s" style="bottom: -20px; left: -20px; z-index: 5;">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-primary text-white p-3 rounded-3">
+                                <i class="bi bi-shield-check fs-3"></i>
                             </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-premium-card p-4 rounded-4 text-center shadow-sm mt-md-4">
-                                <div class="stat-icon-wrap mb-3 mx-auto">
-                                    <i class="bi bi-briefcase-fill text-info"></i>
-                                </div>
-                                <h2 class="fw-black text-dark mb-1">+15</h2>
-                                <p class="text-muted small text-uppercase tracking-wider mb-0">Sectores</p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-premium-card p-4 rounded-4 text-center shadow-sm">
-                                <div class="stat-icon-wrap mb-3 mx-auto">
-                                    <i class="bi bi-calendar-check-fill text-success"></i>
-                                </div>
-                                <h2 class="fw-black text-dark mb-1">+50</h2>
-                                <p class="text-muted small text-uppercase tracking-wider mb-0">Eventos Anuales</p>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="stat-premium-card p-4 rounded-4 text-center shadow-sm mt-md-4">
-                                <div class="stat-icon-wrap mb-3 mx-auto">
-                                    <i class="bi bi-hand-thumbs-up-fill text-warning"></i>
-                                </div>
-                                <h2 class="fw-black text-dark mb-1">100%</h2>
-                                <p class="text-muted small text-uppercase tracking-wider mb-0">Compromiso</p>
+                            <div>
+                                <h4 class="h6 mb-0 fw-bold">Compromiso</h4>
+                                <p class="small text-muted mb-0">Excelencia Gremial</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Decoración de fondo -->
-                    <div class="stats-bg-decoration"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-5">
+            <!-- Misión con diseño más elegante -->
+            <div class="col-md-6">
+                <div class="mission-vision-wrapper mission-bg p-5 rounded-5 shadow-sm h-100 position-relative overflow-hidden">
+                    <div class="bg-icon"><i class="bi bi-rocket-takeoff-fill"></i></div>
+                    <div class="position-relative z-2">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="icon-box bg-primary text-white rounded-4 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="bi bi-rocket-takeoff-fill fs-3"></i>
+                            </div>
+                            <h3 class="fw-black text-dark mb-0">Nuestra Misión</h3>
+                        </div>
+                        <p class="text-muted leading-relaxed mb-0 fs-5">
+                            En <strong>AGECSO</strong> conectamos empresarios y organizaciones para generar negocios, crear oportunidades y contribuir a su crecimiento. Fortalecemos el tejido empresarial de Sabana de Occidente mediante alianzas estratégicas, cooperación y conexiones comerciales que impulsan la productividad, la competitividad y el desarrollo sostenible de nuestra región.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visión con diseño más elegante -->
+            <div class="col-md-6">
+                <div class="mission-vision-wrapper vision-bg p-5 rounded-5 shadow-sm h-100 position-relative overflow-hidden">
+                    <div class="bg-icon"><i class="bi bi-eye-fill"></i></div>
+                    <div class="position-relative z-2">
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="icon-box bg-info text-white rounded-4 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="bi bi-eye-fill fs-3"></i>
+                            </div>
+                            <h3 class="fw-black text-dark mb-0">Visión 2028</h3>
+                        </div>
+                        <p class="text-muted leading-relaxed mb-0 fs-5">
+                            En <strong>2028</strong>, seremos la agremiación empresarial referente de Sabana de Occidente, reconocida por conectar empresarios, generar oportunidades y facilitar negocios que impulsen el crecimiento de las organizaciones, promoviendo empleo, competitividad, innovación y desarrollo sostenible para transformar positivamente nuestra región.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -112,73 +140,60 @@
     .bg-info-glass { background: rgba(13, 202, 240, 0.25); }
     .leading-relaxed { line-height: 1.8; }
     
-    .mission-card, .vision-card {
-        transition: all 0.3s ease;
-        border: 1px solid rgba(0,0,0,0.05) !important;
+    .mission-vision-wrapper {
+        background: #fff;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border-radius: 40px !important;
     }
     
-    .mission-card:hover, .vision-card:hover {
+    .mission-vision-wrapper:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 40px 80px rgba(0, 24, 48, 0.1) !important;
+        border-color: rgba(0, 162, 255, 0.2);
+    }
+
+    .mission-bg {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+    }
+
+    .vision-bg {
+        background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+    }
+
+    .stat-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 15px 30px rgba(0, 162, 255, 0.1) !important;
         background: #fff !important;
-        border-color: rgba(0, 162, 255, 0.2) !important;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.05) !important;
+    }
+    
+    .bg-icon {
+        position: absolute;
+        right: -30px;
+        bottom: -30px;
+        font-size: 200px;
+        color: rgba(0, 162, 255, 0.03);
+        z-index: 1;
+        transition: all 0.6s ease;
     }
     
     .icon-box {
-        transition: all 0.3s ease;
-    }
-    
-    .mission-card:hover .icon-box {
-        background-color: var(--bs-primary) !important;
-        color: white !important;
-    }
-    
-    .vision-card:hover .icon-box {
-        background-color: var(--bs-info) !important;
-        color: white !important;
+        box-shadow: 0 10px 20px rgba(0, 162, 255, 0.2);
     }
 
-    /* Nuevos estilos para Estadísticas */
-    .stat-premium-card {
-        background: #fff;
-        border: 1px solid rgba(0, 162, 255, 0.08) !important;
-        transition: all 0.4s ease;
-        position: relative;
-        z-index: 2;
+    .mission-vision-wrapper:hover .bg-icon {
+        transform: scale(1.1) rotate(-10deg);
+        color: rgba(0, 162, 255, 0.05);
     }
 
-    .stat-premium-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0, 162, 255, 0.12) !important;
-        border-color: rgba(0, 162, 255, 0.2) !important;
-    }
-
-    .stat-icon-wrap {
-        width: 60px;
-        height: 60px;
-        background: #f8fbff;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-    }
-
-    .stats-bg-decoration {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 80%;
-        height: 80%;
-        background: radial-gradient(circle, rgba(0, 162, 255, 0.05) 0%, transparent 70%);
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    @media (max-width: 767px) {
-        .stat-premium-card.mt-md-4 {
-            margin-top: 0 !important;
+    @media (max-width: 991px) {
+        .mission-vision-wrapper {
+            padding: 2.5rem !important;
         }
     }
 </style>
