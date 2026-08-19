@@ -518,7 +518,12 @@
                         <div class="card-body">
                             <small class="text-muted"><?= date('d/m/Y', strtotime($item['fecha_publicacion'])) ?></small>
                             <h5 class="card-title mt-2"><?= htmlspecialchars($item['titulo']) ?></h5>
-                            <p class="card-text"><?= htmlspecialchars(substr($item['resumen'] ?? $item['contenido'], 0, 120)) ?>...</p>
+                            <p class="card-text">
+                                <?php 
+                                $plainText = strip_tags($item['resumen'] ?? $item['contenido']);
+                                echo htmlspecialchars(substr($plainText, 0, 120)) . (strlen($plainText) > 120 ? '...' : ''); 
+                                ?>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -540,9 +545,16 @@
                 <div class="col-md-4">
                     <div class="card card-service p-4 h-100">
                         <h5><?= htmlspecialchars($item['titulo']) ?></h5>
-                        <p><?= htmlspecialchars(substr($item['descripcion'], 0, 100)) ?>...</p>
-                        <?php if ($item['fecha_evento']): ?>
-                            <p class="mb-0"><small class="text-muted"><i class="bi bi-calendar-event"></i> <?= date('d/m/Y', strtotime($item['fecha_evento'])) ?></small></p>
+                        <p class="text-muted small">
+                            <?php 
+                            $plainText = strip_tags($item['descripcion']);
+                            echo htmlspecialchars(substr($plainText, 0, 100)) . (strlen($plainText) > 100 ? '...' : ''); 
+                            ?>
+                        </p>
+                        <?php if (!empty($item['fecha_evento']) && $item['fecha_evento'] !== '0000-00-00'): ?>
+                            <p class="mb-0 mt-auto"><small class="text-muted"><i class="bi bi-calendar-event"></i> <?= date('d/m/Y', strtotime($item['fecha_evento'])) ?></small></p>
+                        <?php else: ?>
+                            <p class="mb-0 mt-auto"><small class="text-muted"><i class="bi bi-calendar-event"></i> Próximamente</small></p>
                         <?php endif; ?>
                     </div>
                 </div>
