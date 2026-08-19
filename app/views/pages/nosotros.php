@@ -19,16 +19,16 @@
             <div class="col-lg-6 text-start">
                 <span class="badge bg-primary-glass text-primary mb-3 px-3 py-2 text-uppercase fw-bold tracking-widest" style="font-size: 0.75rem;">¿Quiénes Somos?</span>
                 <h2 class="display-5 fw-black text-dark mb-4">Lideramos el <span class="text-info">Fortalecimiento</span> Empresarial</h2>
-                <p class="lead text-muted mb-4">
+                <p class="lead text-primary fw-bold mb-4">
                     La Asociación Gremial de Empresarios de Sabana Occidente (AGECSO) es el motor que impulsa el crecimiento colaborativo en nuestra región.
                 </p>
                 <p class="text-muted leading-relaxed mb-5">
-                    [ESPACIO PARA DESCRIPCIÓN DETALLADA DE LA ASOCIACIÓN: Aquí puedes incluir cuándo se fundó, cuál fue el motivo de su creación y qué impacto ha tenido en la región hasta el día de hoy. AGECSO se enfoca en ser el puente entre el sector privado y las oportunidades de desarrollo.]
+                    Somos una organización comprometida con la transformación del entorno empresarial. Actuamos como un puente estratégico entre el sector privado y las oportunidades de desarrollo, facilitando espacios de networking, capacitación y representación gremial para potenciar la competitividad de nuestros asociados.
                 </p>
                 
-                <div class="row g-4">
+                <div class="row g-4 mb-5">
                     <div class="col-md-12">
-                        <div class="card border-0 bg-light p-4 rounded-4 h-100 mission-card">
+                        <div class="card border-0 bg-light p-4 rounded-4 mission-card">
                             <div class="d-flex align-items-center gap-3 mb-3">
                                 <div class="icon-box bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
                                     <i class="bi bi-eye-fill fs-3"></i>
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <div class="card border-0 bg-light p-4 rounded-4 h-100 vision-card">
+                        <div class="card border-0 bg-light p-4 rounded-4 vision-card">
                             <div class="d-flex align-items-center gap-3 mb-3">
                                 <div class="icon-box bg-info bg-opacity-10 p-3 rounded-circle text-info">
                                     <i class="bi bi-bullseye fs-3"></i>
@@ -57,12 +57,48 @@
             </div>
             
             <div class="col-lg-6">
-                <div class="position-relative p-4">
-                    <!-- Imagen decorativa o representativa -->
-                    <img src="assets/img/AGECSO.jpg" alt="AGECSO" class="img-fluid rounded-5 shadow-lg w-100" style="max-height: 450px; object-fit: cover;">
-                    <div class="position-absolute top-0 end-0 bg-primary p-4 rounded-circle shadow-lg d-none d-md-block" style="transform: translate(20%, -20%);">
-                        <span class="text-white fw-bold d-block text-center" style="font-size: 1.2rem;">+100<br><small style="font-size: 0.7rem;">ASOCIADOS</small></span>
+                <div class="stats-grid-container position-relative">
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <div class="stat-premium-card p-4 rounded-4 text-center shadow-sm">
+                                <div class="stat-icon-wrap mb-3 mx-auto">
+                                    <i class="bi bi-people-fill text-primary"></i>
+                                </div>
+                                <h2 class="fw-black text-dark mb-1">+100</h2>
+                                <p class="text-muted small text-uppercase tracking-wider mb-0">Asociados</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-premium-card p-4 rounded-4 text-center shadow-sm mt-md-4">
+                                <div class="stat-icon-wrap mb-3 mx-auto">
+                                    <i class="bi bi-briefcase-fill text-info"></i>
+                                </div>
+                                <h2 class="fw-black text-dark mb-1">+15</h2>
+                                <p class="text-muted small text-uppercase tracking-wider mb-0">Sectores</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-premium-card p-4 rounded-4 text-center shadow-sm">
+                                <div class="stat-icon-wrap mb-3 mx-auto">
+                                    <i class="bi bi-calendar-check-fill text-success"></i>
+                                </div>
+                                <h2 class="fw-black text-dark mb-1">+50</h2>
+                                <p class="text-muted small text-uppercase tracking-wider mb-0">Eventos Anuales</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-premium-card p-4 rounded-4 text-center shadow-sm mt-md-4">
+                                <div class="stat-icon-wrap mb-3 mx-auto">
+                                    <i class="bi bi-hand-thumbs-up-fill text-warning"></i>
+                                </div>
+                                <h2 class="fw-black text-dark mb-1">100%</h2>
+                                <p class="text-muted small text-uppercase tracking-wider mb-0">Compromiso</p>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <!-- Decoración de fondo -->
+                    <div class="stats-bg-decoration"></div>
                 </div>
             </div>
         </div>
@@ -100,6 +136,50 @@
     .vision-card:hover .icon-box {
         background-color: var(--bs-info) !important;
         color: white !important;
+    }
+
+    /* Nuevos estilos para Estadísticas */
+    .stat-premium-card {
+        background: #fff;
+        border: 1px solid rgba(0, 162, 255, 0.08) !important;
+        transition: all 0.4s ease;
+        position: relative;
+        z-index: 2;
+    }
+
+    .stat-premium-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 162, 255, 0.12) !important;
+        border-color: rgba(0, 162, 255, 0.2) !important;
+    }
+
+    .stat-icon-wrap {
+        width: 60px;
+        height: 60px;
+        background: #f8fbff;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+    }
+
+    .stats-bg-decoration {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        height: 80%;
+        background: radial-gradient(circle, rgba(0, 162, 255, 0.05) 0%, transparent 70%);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    @media (max-width: 767px) {
+        .stat-premium-card.mt-md-4 {
+            margin-top: 0 !important;
+        }
     }
 </style>
 
