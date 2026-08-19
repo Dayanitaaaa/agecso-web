@@ -134,6 +134,12 @@ $sectores = [
             ['archivo' => '2construccion.jpg', 'link' => ''],
             ['archivo' => '3construccion.jpg', 'link' => 'https://www.bsingenieriayequipos.com/']
         ]
+    ],
+    [
+        'titulo' => 'Comercio Autopartes, Servicio Automotriz y Concesionarios',
+        'logos' => [
+            ['archivo' => '1automotriz.jpg', 'link' => 'https://daycar.com.co/']
+        ]
     ]
 ];
 ?>
