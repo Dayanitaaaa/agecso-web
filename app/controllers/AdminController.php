@@ -627,35 +627,30 @@ class AdminController {
     /**
      * Manejar subida de múltiples imágenes
      */
-    private function handleMultipleImagesUpload($fileInput, $currentImagesJson = null) {
+    private function handleMultipleImagesUpload($fileInput, $currentImagesJson = '[]') {
         if (!isset($_FILES[$fileInput]) || empty($_FILES[$fileInput]['name'][0])) {
             return $currentImagesJson;
         }
 
         $files = $_FILES[$fileInput];
-        $uploadedFilenames = $currentImagesJson ? json_decode($currentImagesJson, true) : [];
+        $uploadedFilenames = json_decode($currentImagesJson, true);
         if (!is_array($uploadedFilenames)) $uploadedFilenames = [];
 
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 5 * 1024 * 1024; // 5MB
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $maxSize = 10 * 1024 * 1024; // 10MB
         $uploadDir = __DIR__ . '/../../public/uploads/';
 
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        if (!is_writable($uploadDir)) {
-            $this->setFlash("Error: La carpeta de galería no tiene permisos de escritura.", 'danger');
-            return $currentImagesJson;
-        }
-
         for ($i = 0; $i < count($files['name']); $i++) {
             if ($files['error'][$i] !== UPLOAD_ERR_OK) continue;
             
-            if (!in_array($files['type'][$i], $allowedTypes)) continue;
+            $extension = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
+            if (!in_array($extension, $allowedExtensions)) continue;
             if ($files['size'][$i] > $maxSize) continue;
 
-            $extension = pathinfo($files['name'][$i], PATHINFO_EXTENSION);
             $filename = uniqid() . '_' . time() . '_' . $i . '.' . $extension;
             $uploadPath = $uploadDir . $filename;
 
@@ -664,57 +659,63 @@ class AdminController {
             }
         }
 
-        return !empty($uploadedFilenames) ? json_encode($uploadedFilenames) : null;
+        return json_encode(array_values($uploadedFilenames));
     }
 
     /**
      * Manejar subida de imagen
      */
     private function handleImageUpload($fileInput, $currentImage = null) {
-        if (!isset($_FILES[$fileInput]) || $_FILES[$fileInput]['error'] !== UPLOAD_ERR_OK) {
+        if (!isset($_FILES[$fileInput]) || $_FILES[$fileInput]['error'] === UPLOAD_ERR_NO_FILE) {
+            return $currentImage;
+        }
+
+        if ($_FILES[$fileInput]['error'] !== UPLOAD_ERR_OK) {
+            $errorMsg = "Error en la subida: ";
+            switch ($_FILES[$fileInput]['error']) {
+                case UPLOAD_ERR_INI_SIZE: $errorMsg .= "El archivo excede el tamaño permitido por el servidor."; break;
+                case UPLOAD_ERR_FORM_SIZE: $errorMsg .= "El archivo es demasiado grande."; break;
+                case UPLOAD_ERR_PARTIAL: $errorMsg .= "La subida se interrumpió."; break;
+                default: $errorMsg .= "Error desconocido."; break;
+            }
+            $this->setFlash($errorMsg, 'danger');
             return $currentImage;
         }
 
         $file = $_FILES[$fileInput];
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 5 * 1024 * 1024; // 5MB
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $maxSize = 10 * 1024 * 1024; // 10MB
 
-        if (!in_array($file['type'], $allowedTypes)) {
-            $this->setFlash("Tipo de archivo no permitido: " . $file['type'], 'danger');
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($extension, $allowedExtensions)) {
+            $this->setFlash("Tipo de archivo no permitido. Usa JPG, PNG, GIF o WEBP.", 'danger');
             return $currentImage;
         }
 
         if ($file['size'] > $maxSize) {
-            $this->setFlash("El archivo es demasiado grande (máx 5MB)", 'danger');
+            $this->setFlash("La imagen es muy pesada (máx 10MB). Por favor, redúcela antes de subir.", 'danger');
             return $currentImage;
         }
 
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
         $filename = uniqid() . '_' . time() . '.' . $extension;
-        
         $uploadDir = __DIR__ . '/../../public/uploads/';
         
-        // Crear directorio si no existe
         if (!file_exists($uploadDir)) {
-            if (!mkdir($uploadDir, 0777, true)) {
-                $this->setFlash("Error crítico: No se pudo crear la carpeta de subidas. Revisa los permisos en el servidor.", 'danger');
-                return $currentImage;
-            }
+            mkdir($uploadDir, 0777, true);
         }
 
-        // Verificar si la carpeta tiene permisos de escritura
         if (!is_writable($uploadDir)) {
-            $this->setFlash("Error: La carpeta de subidas no tiene permisos de escritura (777/755).", 'danger');
+            $this->setFlash("Error de permisos en el servidor.", 'danger');
             return $currentImage;
         }
         
-        $uploadPath = $uploadDir . $filename;
-
-        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+        if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
+            // Si subimos una nueva y había una anterior, opcionalmente podríamos borrarla
+            // pero por ahora solo retornamos el nuevo nombre
             return $filename;
         }
 
-        $this->setFlash("Error al guardar el archivo en el servidor. Revisa los permisos de carpeta.", 'danger');
+        $this->setFlash("No se pudo guardar la imagen. Intenta de nuevo.", 'danger');
         return $currentImage;
     }
 }
