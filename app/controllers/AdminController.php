@@ -272,17 +272,9 @@ class AdminController {
                 $remainingImages = array_filter($currentImages, function($img) {
                     return !in_array($img, $_POST['eliminar_imagenes']);
                 });
-                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : null;
+                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : '[]';
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
-
-            // Fallback: Si no hay imagen principal pero hay imágenes en el carrusel, usar la primera como principal
-            if (empty($data['imagen']) && !empty($data['imagenes'])) {
-                $galeria = json_decode($data['imagenes'], true);
-                if (!empty($galeria)) {
-                    $data['imagen'] = $galeria[0];
-                }
-            }
 
             // Verificar si las columnas existen antes de intentar guardar
             $cols = $this->pdo->query("SHOW COLUMNS FROM noticias")->fetchAll(PDO::FETCH_COLUMN);
@@ -344,18 +336,10 @@ class AdminController {
                 $remainingImages = array_filter($currentImages, function($img) {
                     return !in_array($img, $_POST['eliminar_imagenes']);
                 });
-                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : null;
+                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : '[]';
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
             
-            // Fallback: Si no hay imagen principal pero hay imágenes en el carrusel, usar la primera como principal
-            if (empty($data['imagen']) && !empty($data['imagenes'])) {
-                $galeria = json_decode($data['imagenes'], true);
-                if (!empty($galeria)) {
-                    $data['imagen'] = $galeria[0];
-                }
-            }
-
             // Verificar si las columnas existen antes de intentar guardar (evita Fatal Error)
             $stmt_check_ev_img = $this->pdo->query("SHOW COLUMNS FROM eventos LIKE 'imagenes'");
             if (!$stmt_check_ev_img->fetch()) {
