@@ -107,11 +107,23 @@ class PageController
     }
 
     private function saveContacto(): array {
+        // Antispam Honeypot check
+        if (!empty($_POST['website_verification_code'])) {
+            // Es un bot, ignoramos silenciosamente o damos error
+            return ['message' => 'Error de validación antispam.', 'type' => 'danger'];
+        }
+
         $nombre = trim($_POST['nombre'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $telefono = trim($_POST['telefono'] ?? '');
         $asunto = trim($_POST['asunto'] ?? '');
         $mensaje = trim($_POST['mensaje'] ?? '');
+
+        // Validación extra: Si el mensaje contiene muchos enlaces, probablemente es spam
+        $linkCount = preg_match_all('/http|www|<a href/i', $mensaje);
+        if ($linkCount > 3) {
+            return ['message' => 'Tu mensaje contiene demasiados enlaces y ha sido bloqueado por seguridad.', 'type' => 'danger'];
+        }
 
         if (empty($nombre) || empty($email) || empty($mensaje)) {
             return ['message' => 'Por favor completa los campos obligatorios.', 'type' => 'danger'];

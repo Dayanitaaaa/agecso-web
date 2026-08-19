@@ -128,6 +128,11 @@
                                 <textarea name="mensaje" class="form-control bg-light border-0 py-3 px-4 rounded-3" rows="5" placeholder="Cuéntanos más detalles sobre tu solicitud..." required></textarea>
                             </div>
 
+                            <!-- Honeypot field (Antispam) - Invisible para humanos -->
+                            <div style="display:none !important;">
+                                <input type="text" name="website_verification_code" tabindex="-1" autocomplete="off">
+                            </div>
+
                             <div class="col-12 pt-3">
                                 <button type="submit" class="btn btn-footer-cta w-100 py-3 rounded-pill text-uppercase fw-black tracking-widest shadow-lg">
                                     <i class="bi bi-send-fill me-2"></i>Enviar Solicitud
