@@ -140,6 +140,12 @@ $sectores = [
         'logos' => [
             ['archivo' => '1automotriz.jpg', 'link' => 'https://daycar.com.co/']
         ]
+    ],
+    [
+        'titulo' => 'Farmacéutico y Cosmético',
+        'logos' => [
+            ['archivo' => 'carruselF1.jpeg', 'link' => 'https://pharmatrading.co/']
+        ]
     ]
 ];
 ?>
