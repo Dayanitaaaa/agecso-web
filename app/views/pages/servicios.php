@@ -7,15 +7,15 @@ $title = 'Servicios - AGECSO';
     /* Estilos Premium para el Carrusel de Servicios */
     .hero-carousel-section {
         overflow: hidden;
-        min-height: 650px !important; /* Aumentar altura significativamente */
+        min-height: 700px !important; /* Altura aumentada para mostrar mejor las fotos */
         background: #fff !important; 
     }
     
     .carousel-item {
         background-repeat: no-repeat;
         background-size: cover;
-        background-position: top center; /* Priorizar la parte superior */
-        min-height: 650px !important; 
+        background-position: center center; /* Centrado total para no cortar partes importantes */
+        min-height: 700px !important; 
         transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.2s ease-in-out !important;
     }
 
@@ -95,8 +95,8 @@ $title = 'Servicios - AGECSO';
 
         <div class="carousel-inner">
             <!-- Slide 1 -->
-            <div class="carousel-item active" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.5), rgba(0, 95, 163, 0.1)), url('assets/img/2principal.jpeg'); background-size: cover; background-position: top center; min-height: 650px;">
-                <div class="container py-5 d-flex align-items-center" style="min-height: 650px;">
+            <div class="carousel-item active" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.4), rgba(0, 95, 163, 0.1)), url('assets/img/2principal.jpeg'); background-size: cover; background-position: center center; min-height: 700px;">
+                <div class="container py-5 d-flex align-items-center" style="min-height: 700px;">
                     <div class="text-white animate__animated animate__fadeInLeft">
                         <span class="badge bg-primary-glass mb-3 px-3 py-2 text-uppercase tracking-wider">Crecimiento Empresarial</span>
                         <h2 class="display-4 fw-bold mb-3">Servicios Estratégicos</h2>
@@ -107,8 +107,8 @@ $title = 'Servicios - AGECSO';
             </div>
 
             <!-- Slide 2 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.5), rgba(0, 162, 255, 0.1)), url('assets/img/3principal.jpeg'); background-size: cover; background-position: top center; min-height: 650px;">
-                <div class="container py-5 d-flex align-items-center" style="min-height: 650px;">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.4), rgba(0, 162, 255, 0.1)), url('assets/img/3principal.jpeg'); background-size: cover; background-position: center center; min-height: 700px;">
+                <div class="container py-5 d-flex align-items-center" style="min-height: 700px;">
                     <div class="text-white animate__animated animate__fadeInLeft">
                         <span class="badge bg-info-glass mb-3 px-3 py-2 text-uppercase tracking-wider">Networking de Valor</span>
                         <h2 class="display-4 fw-bold mb-3">Conexiones Reales</h2>
@@ -119,8 +119,8 @@ $title = 'Servicios - AGECSO';
             </div>
 
             <!-- Slide 3 -->
-            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.5), rgba(0, 162, 255, 0.1)), url('assets/img/4principal.jpeg'); background-size: cover; background-position: top center; min-height: 650px;">
-                <div class="container py-5 d-flex align-items-center" style="min-height: 650px;">
+            <div class="carousel-item" style="background-image: linear-gradient(to right, rgba(0, 24, 48, 0.4), rgba(0, 162, 255, 0.1)), url('assets/img/4principal.jpeg'); background-size: cover; background-position: center center; min-height: 700px;">
+                <div class="container py-5 d-flex align-items-center" style="min-height: 700px;">
                     <div class="text-white animate__animated animate__fadeInLeft">
                         <span class="badge bg-success-glass mb-3 px-3 py-2 text-uppercase tracking-wider">Formación Continua</span>
                         <h2 class="display-4 fw-bold mb-3">Educación de Alto Nivel</h2>
