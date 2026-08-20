@@ -58,7 +58,17 @@ $sectores = [
     ],
     [
         'titulo' => 'Talento Humano, Salud y Bienestar',
-        'logos' => ['9logo.jpeg', '10logo.png', '11logo.jpg', '12logo.png']
+        'logos' => [
+            ['archivo' => '1salud.png', 'link' => ''],
+            ['archivo' => '2salud.jpeg', 'link' => ''],
+            ['archivo' => '3salud.jpg', 'link' => ''],
+            ['archivo' => '4salud.jpeg', 'link' => ''],
+            ['archivo' => '5salud.jpeg', 'link' => ''],
+            ['archivo' => '6salud.jpg', 'link' => ''],
+            ['archivo' => '7salud.jpeg', 'link' => ''],
+            ['archivo' => '8salud.png', 'link' => ''],
+            ['archivo' => '9salud.jpg', 'link' => '']
+        ]
     ],
     [
         'titulo' => 'Suministros y Dotaciones',
