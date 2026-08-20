@@ -206,24 +206,70 @@ class CompradorController {
             // Si no llega ID por URL, buscar la primera rueda inscrita y aceptada del comprador
             // (necesario para que funcione el menú "Mercado de Ofertas" del sidebar)
             if (empty($ruedaId)) {
+                // Primero buscamos en qué ruedas está inscrita la empresa
+                $stmt_empresa = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
+                $stmt_empresa->execute([$_SESSION['usuario_id']]);
+                $miEmpresa = $stmt_empresa->fetch();
+
+                if (!$miEmpresa) {
+                    throw new Exception("No se encontró información de tu empresa. Por favor completa tu perfil.");
+                }
+
+                $miEmpresaId = $miEmpresa['id'];
+
+                // Buscamos una rueda activa donde esté aceptado
                 $stmt_primera_rueda = $this->pdo->prepare("
                     SELECT rn.id
                     FROM ruedas_negocios rn
                     JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
-                    WHERE ir.empresaId = (SELECT id FROM empresas WHERE usuarioId = ?)
+                    WHERE ir.empresaId = ?
                       AND ir.estadoInscripcion = 'aceptada'
                       AND rn.estadoRueda IN ('activa', 'inscripciones', 'planeacion')
                     ORDER BY rn.fechaInicio DESC
                     LIMIT 1
                 ");
-                $stmt_primera_rueda->execute([$_SESSION['usuario_id']]);
+                $stmt_primera_rueda->execute([$miEmpresaId]);
                 $primera_rueda = $stmt_primera_rueda->fetch();
 
                 if (!$primera_rueda) {
-                    throw new Exception("No estás inscrito en ninguna rueda activa. Inscríbete primero para acceder al mercado de ofertas.");
-                }
+                    // Si no hay activa, buscamos cualquiera donde esté aceptado (histórico)
+                    $stmt_cualquier_rueda = $this->pdo->prepare("
+                        SELECT rn.id
+                        FROM ruedas_negocios rn
+                        JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
+                        WHERE ir.empresaId = ?
+                          AND ir.estadoInscripcion = 'aceptada'
+                        ORDER BY rn.fechaInicio DESC
+                        LIMIT 1
+                    ");
+                    $stmt_cualquier_rueda->execute([$miEmpresaId]);
+                    $cualquier_rueda = $stmt_cualquier_rueda->fetch();
 
-                $ruedaId = $primera_rueda['id'];
+                    if (!$cualquier_rueda) {
+                        // Si no está aceptado en ninguna, ver si tiene alguna pendiente
+                        $stmt_pendiente = $this->pdo->prepare("
+                            SELECT ir.estadoInscripcion 
+                            FROM inscripciones_ruedas ir
+                            WHERE ir.empresaId = ?
+                            LIMIT 1
+                        ");
+                        $stmt_pendiente->execute([$miEmpresaId]);
+                        $inscripcion_status = $stmt_pendiente->fetch();
+
+                        if ($inscripcion_status) {
+                            if ($inscripcion_status['estadoInscripcion'] === 'pendiente') {
+                                throw new Exception("Tu inscripción a la rueda de negocios aún está pendiente de aprobación por el administrador.");
+                            } else {
+                                throw new Exception("Tu inscripción a la rueda de negocios ha sido rechazada o está inactiva.");
+                            }
+                        }
+
+                        throw new Exception("No estás inscrito en ninguna rueda de negocios. Por favor, inscríbete a una rueda desde el Panel Principal.");
+                    }
+                    $ruedaId = $cualquier_rueda['id'];
+                } else {
+                    $ruedaId = $primera_rueda['id'];
+                }
             }
             
             // SEGURIDAD: Validar que el comprador está inscrito y ACEPTADO
