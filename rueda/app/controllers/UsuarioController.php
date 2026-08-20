@@ -131,11 +131,21 @@ class UsuarioController {
                         throw new Exception("El correo debe incluir una extensión válida (ej: .com, .co, .org)");
                     }
 
+                    // Resolver el ID real del rol dinámicamente desde la BD
+                    $rolInput = $regData['rol_id'] ?? 'comprador';
+                    $isVendedor = ($rolInput === 'vendedor' || $rolInput === 'proveedor' || $rolInput == 3 || $rolInput == '3' || $rolInput == 4 || $rolInput == '4' && ($regData['rol_id_nombre'] ?? '') === 'vendedor');
+                    
+                    // Si viene como 'vendedor' o 'comprador' o ID
+                    $slugsBuscar = ($rolInput === 'vendedor' || $rolInput === 'proveedor' || $rolInput == 4 || $rolInput == '4') ? "('vendedor', 'proveedor')" : "('comprador')";
+                    $stmt_role = $this->pdo->query("SELECT id FROM roles WHERE slugRole IN $slugsBuscar LIMIT 1");
+                    $roleRow = $stmt_role ? $stmt_role->fetch() : null;
+                    $realRoleId = $roleRow ? (int)$roleRow['id'] : ($slugsBuscar === "('comprador')" ? 3 : 4);
+
                     $registro = $this->usuarioModel->registrar(
                         $regData['representante_legal'], 
                         $email, 
                         $password, 
-                        $regData['rol_id'], 
+                        $realRoleId, 
                         $regData['sector_id'],
                         $regData['razon_social'],
                         $regData['tipo_asociacion'],

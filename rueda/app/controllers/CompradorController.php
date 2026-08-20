@@ -1109,33 +1109,48 @@ class CompradorController {
 
                 $this->pdo->beginTransaction();
 
-                // 1. Cambiar roleId en la tabla usuarios a 3 (Proveedor / Vendedor)
-                $stmt_user = $this->pdo->prepare("UPDATE usuarios SET roleId = 3 WHERE id = ?");
-                $stmt_user->execute([$usuario_id]);
+                // 1. Obtener el ID del rol de vendedor/proveedor en la base de datos
+                $stmt_r = $this->pdo->prepare("SELECT id, slugRole, nombreRole FROM roles WHERE slugRole IN ('vendedor', 'proveedor') LIMIT 1");
+                $stmt_r->execute();
+                $rolVendedor = $stmt_r->fetch();
 
-                // 2. Inicializar membresía si la columna existe en la base de datos
+                $vendedorRoleId = $rolVendedor ? (int)$rolVendedor['id'] : 4;
+                $slugRole = $rolVendedor ? $rolVendedor['slugRole'] : 'vendedor';
+                $nombreRole = $rolVendedor ? $rolVendedor['nombreRole'] : 'Vendedor / Proveedor';
+
+                // 2. Cambiar roleId en la tabla usuarios
+                $stmt_user = $this->pdo->prepare("UPDATE usuarios SET roleId = ? WHERE id = ?");
+                $stmt_user->execute([$vendedorRoleId, $usuario_id]);
+
+                // 3. Asegurar columnas de membresía en empresas si no existen y actualizar
                 try {
                     $stmt_check = $this->pdo->query("SHOW COLUMNS FROM empresas LIKE 'membresia_plan'");
-                    if ($stmt_check && $stmt_check->fetch()) {
-                        $stmt_emp = $this->pdo->prepare("
-                            UPDATE empresas 
-                            SET membresia_plan = 'ninguno', 
-                                membresia_estado = 'inactivo', 
-                                membresia_vencimiento = NULL 
-                            WHERE usuarioId = ?
+                    if ($stmt_check && !$stmt_check->fetch()) {
+                        $this->pdo->exec("
+                            ALTER TABLE empresas 
+                            ADD COLUMN membresia_plan VARCHAR(50) DEFAULT 'ninguno',
+                            ADD COLUMN membresia_estado VARCHAR(50) DEFAULT 'inactivo',
+                            ADD COLUMN membresia_vencimiento DATETIME NULL
                         ");
-                        $stmt_emp->execute([$usuario_id]);
                     }
+                    $stmt_emp = $this->pdo->prepare("
+                        UPDATE empresas 
+                        SET membresia_plan = 'ninguno', 
+                            membresia_estado = 'inactivo', 
+                            membresia_vencimiento = NULL 
+                        WHERE usuarioId = ?
+                    ");
+                    $stmt_emp->execute([$usuario_id]);
                 } catch (Exception $e) {
-                    // Ignorar si la tabla no tiene las columnas de membresía
+                    // Si no se pueden agregar columnas, continuar
                 }
 
                 $this->pdo->commit();
 
-                // 3. Actualizar variables de sesión para que el cambio de rol tenga efecto de inmediato
-                $_SESSION['roleId'] = 3;
-                $_SESSION['slugRole'] = 'proveedor';
-                $_SESSION['nombreRole'] = 'Proveedor';
+                // 4. Actualizar variables de sesión para que el cambio de rol tenga efecto de inmediato
+                $_SESSION['roleId'] = $vendedorRoleId;
+                $_SESSION['slugRole'] = $slugRole;
+                $_SESSION['nombreRole'] = $nombreRole;
 
                 Logger::log("Usuario ID $usuario_id actualizó su cuenta de Comprador a Vendedor", 'business');
 
