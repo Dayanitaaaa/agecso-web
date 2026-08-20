@@ -551,10 +551,19 @@
                             echo htmlspecialchars(substr($plainText, 0, 100)) . (strlen($plainText) > 100 ? '...' : ''); 
                             ?>
                         </p>
-                        <?php if (!empty($item['fecha_evento']) && $item['fecha_evento'] !== '0000-00-00'): ?>
+                        <?php 
+                        $eventDate = $item['fecha_evento'];
+                        $isPast = false;
+                        if (!empty($eventDate) && $eventDate !== '0000-00-00') {
+                            $isPast = strtotime($eventDate) < strtotime(date('Y-m-d'));
+                        }
+                        
+                        if (!$isPast && !empty($eventDate) && $eventDate !== '0000-00-00'): ?>
                             <p class="mb-0 mt-auto"><small class="text-muted"><i class="bi bi-calendar-event"></i> <?= date('d/m/Y', strtotime($item['fecha_evento'])) ?></small></p>
-                        <?php else: ?>
+                        <?php elseif (!$isPast): ?>
                             <p class="mb-0 mt-auto"><small class="text-muted"><i class="bi bi-calendar-event"></i> Próximamente</small></p>
+                        <?php else: ?>
+                            <p class="mb-0 mt-auto"><small class="text-danger fw-bold"><i class="bi bi-check-circle-fill"></i> Realizado</small></p>
                         <?php endif; ?>
                     </div>
                 </div>

@@ -60,7 +60,7 @@ class PageController
                 break;
             case 'inicio':
                 $data['noticias'] = $this->getNoticias(3);
-                $data['eventos'] = $this->getEventos(3);
+                $data['eventos'] = $this->getEventos(3, true);
                 break;
         }
 
@@ -84,8 +84,17 @@ class PageController
         return $stmt->fetchAll();
     }
 
-    private function getEventos(int $limit = 0) {
-        $sql = "SELECT * FROM eventos WHERE estado != 'cancelado' ORDER BY fecha_evento DESC";
+    private function getEventos(int $limit = 0, bool $upcomingOnly = false) {
+        $where = "estado != 'cancelado'";
+        $order = "fecha_evento DESC";
+        
+        if ($upcomingOnly) {
+            // Solo mostrar eventos con fecha futura o sin fecha pero que estén marcados como programados
+            $where .= " AND estado = 'programado' AND (fecha_evento >= CURDATE() OR fecha_evento IS NULL OR fecha_evento = '0000-00-00')";
+            $order = "fecha_evento ASC";
+        }
+
+        $sql = "SELECT * FROM eventos WHERE $where ORDER BY $order";
         if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
