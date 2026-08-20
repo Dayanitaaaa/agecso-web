@@ -163,8 +163,8 @@ $regData = $_SESSION['reg_data'] ?? [];
                     <div>
                         <label for="rol_id" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Perfil en la Rueda</label>
                         <select id="rol_id" name="rol_id" class="block w-full px-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium">
-                            <option value="4" <?php echo ($regData['rol_id'] ?? '') == '4' ? 'selected' : ''; ?>>Comprador</option>
-                            <option value="3" <?php echo ($regData['rol_id'] ?? '') == '3' ? 'selected' : ''; ?>>Vendedor / Proveedor</option>
+                            <option value="3" <?php echo ($regData['rol_id'] ?? '') == '3' ? 'selected' : ''; ?>>Comprador</option>
+                            <option value="4" <?php echo ($regData['rol_id'] ?? '') == '4' ? 'selected' : ''; ?>>Vendedor / Proveedor</option>
                         </select>
                     </div>
                 </div>
