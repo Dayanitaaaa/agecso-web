@@ -90,8 +90,8 @@ $regData = $_SESSION['reg_data'] ?? [];
                             <tr>
                                 <td class="py-4 px-6 text-gray-500 font-bold bg-gray-50/30">Perfil Rueda</td>
                                 <td class="py-4 px-6">
-                                    <span class="px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider <?php echo ($regData['rol_id'] ?? '') == '3' ? 'bg-blue-600 text-white' : 'bg-orange-500 text-white'; ?>">
-                                        <?php echo ($regData['rol_id'] ?? '') == '3' ? 'Comprador' : 'Vendedor / Proveedor'; ?>
+                                    <span class="px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider <?php echo ($regData['rol_id'] ?? '') == '4' ? 'bg-blue-600 text-white' : 'bg-orange-500 text-white'; ?>">
+                                        <?php echo ($regData['rol_id'] ?? '') == '4' ? 'Comprador' : 'Vendedor / Proveedor'; ?>
                                     </span>
                                 </td>
                             </tr>

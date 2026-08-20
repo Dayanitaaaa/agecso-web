@@ -495,7 +495,7 @@ class VendedorController {
                 }
 
                 // VALIDACIÓN: Verificar si las inscripciones están abiertas
-                $stmt_rueda = $this->pdo->prepare("SELECT fechaInscripcionInicio, fechaInscripcionFin FROM ruedas_negocios WHERE id = ?");
+                $stmt_rueda = $this->pdo->prepare("SELECT * FROM ruedas_negocios WHERE id = ?");
                 $stmt_rueda->execute([$rueda_id]);
                 $rueda = $stmt_rueda->fetch();
                 if ($rueda) {
@@ -1348,22 +1348,33 @@ class VendedorController {
 
                 $this->pdo->beginTransaction();
 
-                // 1. Activar membresía en la tabla de empresas
-                $stmt = $this->pdo->prepare("
-                    UPDATE empresas
-                    SET membresia_plan = ?,
-                        membresia_estado = 'activo',
-                        membresia_vencimiento = ?
-                    WHERE id = ?
-                ");
-                $stmt->execute([$plan, $fecha_vencimiento, $empresa_id]);
+                // 1. Activar membresía en la tabla de empresas si existen las columnas
+                try {
+                    $stmt_check = $this->pdo->query("SHOW COLUMNS FROM empresas LIKE 'membresia_plan'");
+                    if ($stmt_check && $stmt_check->fetch()) {
+                        $stmt = $this->pdo->prepare("
+                            UPDATE empresas
+                            SET membresia_plan = ?,
+                                membresia_estado = 'activo',
+                                membresia_vencimiento = ?
+                            WHERE id = ?
+                        ");
+                        $stmt->execute([$plan, $fecha_vencimiento, $empresa_id]);
+                    }
+                } catch (Exception $e) {
+                    // Ignorar si no existen columnas
+                }
 
                 // 2. Insertar transacción gratuita en el historial
-                $stmt_pago = $this->pdo->prepare("
-                    INSERT INTO pagos_membresias (empresa_id, plan, monto, estado_pago, id_pago_externo, fecha_pago)
-                    VALUES (?, ?, ?, 'aprobado', ?, NOW())
-                ");
-                $stmt_pago->execute([$empresa_id, $plan, $monto, $payment_id]);
+                try {
+                    $stmt_pago = $this->pdo->prepare("
+                        INSERT INTO pagos_membresias (empresa_id, plan, monto, estado_pago, id_pago_externo, fecha_pago)
+                        VALUES (?, ?, ?, 'aprobado', ?, NOW())
+                    ");
+                    $stmt_pago->execute([$empresa_id, $plan, $monto, $payment_id]);
+                } catch (Exception $e) {
+                    // Ignorar si no existe tabla
+                }
 
                 $this->pdo->commit();
 
@@ -1424,22 +1435,33 @@ class VendedorController {
 
                 $this->pdo->beginTransaction();
 
-                // 1. Activar membresía en la tabla de empresas
-                $stmt = $this->pdo->prepare("
-                    UPDATE empresas 
-                    SET membresia_plan = ?, 
-                        membresia_estado = 'activo', 
-                        membresia_vencimiento = ? 
-                    WHERE id = ?
-                ");
-                $stmt->execute([$plan, $fecha_vencimiento, $empresa_id]);
+                // 1. Activar membresía en la tabla de empresas si existen las columnas
+                try {
+                    $stmt_check_col = $this->pdo->query("SHOW COLUMNS FROM empresas LIKE 'membresia_plan'");
+                    if ($stmt_check_col && $stmt_check_col->fetch()) {
+                        $stmt = $this->pdo->prepare("
+                            UPDATE empresas 
+                            SET membresia_plan = ?, 
+                                membresia_estado = 'activo', 
+                                membresia_vencimiento = ? 
+                            WHERE id = ?
+                        ");
+                        $stmt->execute([$plan, $fecha_vencimiento, $empresa_id]);
+                    }
+                } catch (Exception $e) {
+                    // Ignorar si no existe la columna
+                }
 
                 // 2. Insertar transacción oficial en el historial con ID de Mercado Pago
-                $stmt_pago = $this->pdo->prepare("
-                    INSERT INTO pagos_membresias (empresa_id, plan, monto, estado_pago, id_pago_externo, fecha_pago)
-                    VALUES (?, ?, ?, 'aprobado', ?, NOW())
-                ");
-                $stmt_pago->execute([$empresa_id, $plan, $monto, $payment_id]);
+                try {
+                    $stmt_pago = $this->pdo->prepare("
+                        INSERT INTO pagos_membresias (empresa_id, plan, monto, estado_pago, id_pago_externo, fecha_pago)
+                        VALUES (?, ?, ?, 'aprobado', ?, NOW())
+                    ");
+                    $stmt_pago->execute([$empresa_id, $plan, $monto, $payment_id]);
+                } catch (Exception $e) {
+                    // Ignorar si no existe tabla
+                }
 
                 $this->pdo->commit();
 
@@ -1472,15 +1494,22 @@ class VendedorController {
                 $stmt_user = $this->pdo->prepare("UPDATE usuarios SET roleId = 4 WHERE id = ?");
                 $stmt_user->execute([$usuario_id]);
 
-                // 2. Limpiar membresía en la tabla empresas (los compradores no pagan membresía)
-                $stmt_emp = $this->pdo->prepare("
-                    UPDATE empresas 
-                    SET membresia_plan = 'ninguno', 
-                        membresia_estado = 'inactivo', 
-                        membresia_vencimiento = NULL 
-                    WHERE usuarioId = ?
-                ");
-                $stmt_emp->execute([$usuario_id]);
+                // 2. Limpiar membresía si la columna existe en la base de datos
+                try {
+                    $stmt_check = $this->pdo->query("SHOW COLUMNS FROM empresas LIKE 'membresia_plan'");
+                    if ($stmt_check && $stmt_check->fetch()) {
+                        $stmt_emp = $this->pdo->prepare("
+                            UPDATE empresas 
+                            SET membresia_plan = 'ninguno', 
+                                membresia_estado = 'inactivo', 
+                                membresia_vencimiento = NULL 
+                            WHERE usuarioId = ?
+                        ");
+                        $stmt_emp->execute([$usuario_id]);
+                    }
+                } catch (Exception $e) {
+                    // Ignorar si la tabla no tiene las columnas de membresía
+                }
 
                 $this->pdo->commit();
 

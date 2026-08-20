@@ -634,14 +634,21 @@ class AdminController {
 
                 $this->pdo->beginTransaction();
 
-                $stmt = $this->pdo->prepare("
-                    UPDATE empresas 
-                    SET membresia_plan = ?, 
-                        membresia_estado = ?, 
-                        membresia_vencimiento = ? 
-                    WHERE id = ?
-                ");
-                $stmt->execute([$plan, $estado, $vencimiento, $empresa_id]);
+                try {
+                    $stmt_check = $this->pdo->query("SHOW COLUMNS FROM empresas LIKE 'membresia_plan'");
+                    if ($stmt_check && $stmt_check->fetch()) {
+                        $stmt = $this->pdo->prepare("
+                            UPDATE empresas 
+                            SET membresia_plan = ?, 
+                                membresia_estado = ?, 
+                                membresia_vencimiento = ? 
+                            WHERE id = ?
+                        ");
+                        $stmt->execute([$plan, $estado, $vencimiento, $empresa_id]);
+                    }
+                } catch (Exception $e) {
+                    // Ignorar si no existe la columna
+                }
 
                 // Si el administrador activa manualmente un plan de pago, registramos la transacción en el historial de pagos para las gráficas
                 if ($estado === 'activo' && in_array($plan, ['mensual', 'anual'])) {

@@ -231,8 +231,10 @@ class CompradorController {
                 $stmt_primera_rueda->execute([$miEmpresaId]);
                 $primera_rueda = $stmt_primera_rueda->fetch();
 
-                if (!$primera_rueda) {
-                    // Si no hay activa, buscamos cualquiera donde esté aceptado (histórico)
+                if ($primera_rueda) {
+                    $ruedaId = $primera_rueda['id'];
+                } else {
+                    // Si no hay activa donde esté aceptado, buscamos cualquier rueda histórica donde esté aceptado
                     $stmt_cualquier_rueda = $this->pdo->prepare("
                         SELECT rn.id
                         FROM ruedas_negocios rn
@@ -245,30 +247,22 @@ class CompradorController {
                     $stmt_cualquier_rueda->execute([$miEmpresaId]);
                     $cualquier_rueda = $stmt_cualquier_rueda->fetch();
 
-                    if (!$cualquier_rueda) {
-                        // Si no está aceptado en ninguna, ver si tiene alguna pendiente
-                        $stmt_pendiente = $this->pdo->prepare("
-                            SELECT ir.estadoInscripcion 
-                            FROM inscripciones_ruedas ir
-                            WHERE ir.empresaId = ?
-                            LIMIT 1
-                        ");
+                    if ($cualquier_rueda) {
+                        $ruedaId = $cualquier_rueda['id'];
+                    } else {
+                        // Si no está aceptado en ninguna, verificar si tiene inscripción pendiente
+                        $stmt_pendiente = $this->pdo->prepare("SELECT estadoInscripcion FROM inscripciones_ruedas WHERE empresaId = ? LIMIT 1");
                         $stmt_pendiente->execute([$miEmpresaId]);
                         $inscripcion_status = $stmt_pendiente->fetch();
 
-                        if ($inscripcion_status) {
-                            if ($inscripcion_status['estadoInscripcion'] === 'pendiente') {
-                                throw new Exception("Tu inscripción a la rueda de negocios aún está pendiente de aprobación por el administrador.");
-                            } else {
-                                throw new Exception("Tu inscripción a la rueda de negocios ha sido rechazada o está inactiva.");
-                            }
+                        if ($inscripcion_status && $inscripcion_status['estadoInscripcion'] === 'pendiente') {
+                            header("Location: index.php?controlador=comprador&accion=dashboard&msg=inscripcion_pendiente_revision");
+                            exit();
                         }
 
-                        throw new Exception("No estás inscrito en ninguna rueda de negocios. Por favor, inscríbete a una rueda desde el Panel Principal.");
+                        header("Location: index.php?controlador=comprador&accion=dashboard&msg=inscribete_primero");
+                        exit();
                     }
-                    $ruedaId = $cualquier_rueda['id'];
-                } else {
-                    $ruedaId = $primera_rueda['id'];
                 }
             }
             
@@ -873,7 +867,7 @@ class CompradorController {
                 }
 
                 // VALIDACIÓN: Verificar si las inscripciones están abiertas
-                $stmt_rueda = $this->pdo->prepare("SELECT fechaInscripcionInicio, fechaInscripcionFin FROM ruedas_negocios WHERE id = ?");
+                $stmt_rueda = $this->pdo->prepare("SELECT * FROM ruedas_negocios WHERE id = ?");
                 $stmt_rueda->execute([$rueda_id]);
                 $rueda = $stmt_rueda->fetch();
                 if ($rueda) {
@@ -1119,15 +1113,22 @@ class CompradorController {
                 $stmt_user = $this->pdo->prepare("UPDATE usuarios SET roleId = 3 WHERE id = ?");
                 $stmt_user->execute([$usuario_id]);
 
-                // 2. Inicializar membresía de vendedor en la tabla empresas
-                $stmt_emp = $this->pdo->prepare("
-                    UPDATE empresas 
-                    SET membresia_plan = 'ninguno', 
-                        membresia_estado = 'inactivo', 
-                        membresia_vencimiento = NULL 
-                    WHERE usuarioId = ?
-                ");
-                $stmt_emp->execute([$usuario_id]);
+                // 2. Inicializar membresía si la columna existe en la base de datos
+                try {
+                    $stmt_check = $this->pdo->query("SHOW COLUMNS FROM empresas LIKE 'membresia_plan'");
+                    if ($stmt_check && $stmt_check->fetch()) {
+                        $stmt_emp = $this->pdo->prepare("
+                            UPDATE empresas 
+                            SET membresia_plan = 'ninguno', 
+                                membresia_estado = 'inactivo', 
+                                membresia_vencimiento = NULL 
+                            WHERE usuarioId = ?
+                        ");
+                        $stmt_emp->execute([$usuario_id]);
+                    }
+                } catch (Exception $e) {
+                    // Ignorar si la tabla no tiene las columnas de membresía
+                }
 
                 $this->pdo->commit();
 
