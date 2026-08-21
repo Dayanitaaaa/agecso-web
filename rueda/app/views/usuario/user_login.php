@@ -33,7 +33,7 @@ include __DIR__ . '/../layout/header.php';
                     </div>
                 <?php endif; ?>
 
-                <form action="/usuario/login" method="POST" class="space-y-6">
+                <form action="index.php?controlador=usuario&accion=login" method="POST" class="space-y-6">
                     <?php echo CsrfService::getInputField('login'); ?>
                     
                     <!-- Campo Usuario (Correo) -->
@@ -73,10 +73,10 @@ include __DIR__ . '/../layout/header.php';
                         </div>
                         <!-- Enlaces adicionales -->
                         <div class="flex justify-between items-center px-4 mt-6">
-                            <a href="/usuario/forgotPassword" class="text-xs text-sky-500 hover:text-sky-600 font-semibold transition-colors duration-200" style="position: relative; z-index: 999; cursor: pointer !important;">
+                            <a href="index.php?controlador=usuario&accion=forgotPassword" class="text-xs text-sky-500 hover:text-sky-600 font-semibold transition-colors duration-200" style="position: relative; z-index: 999; cursor: pointer !important;">
                                 Olvidé mi contraseña
                             </a>
-                            <a href="/usuario/registro" class="text-xs text-gray-400 hover:text-gray-500 transition-colors duration-200">
+                            <a href="index.php?controlador=usuario&accion=registro" class="text-xs text-gray-400 hover:text-gray-500 transition-colors duration-200">
                                 Registrarme
                             </a>
                         </div>
@@ -94,7 +94,7 @@ include __DIR__ . '/../layout/header.php';
                 <!-- Registro -->
                 <div class="pt-2 text-center space-y-1.5">
                     <p class="text-[11px] text-gray-400 font-medium">¿No tienes una cuenta?</p>
-                    <a href="/usuario/registro" 
+                    <a href="index.php?controlador=usuario&accion=registro" 
                        class="block text-sm font-black text-gray-800 hover:text-sky-500 hover:underline tracking-widest uppercase transition">
                         REGISTRATE AQUÍ
                     </a>
