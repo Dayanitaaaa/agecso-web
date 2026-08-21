@@ -732,9 +732,21 @@ class AdminController {
     /**
      * Establecer mensaje flash
      */
-    private function setFlash($message, $type = 'success') {
+    public function setFlash($message, $type = 'success') {
         $_SESSION['flash_message'] = $message;
         $_SESSION['flash_type'] = $type;
+    }
+
+    /**
+     * Obtener mensaje flash
+     */
+    public function getFlash() {
+        if (isset($_SESSION['flash_message'])) {
+            $msg = $_SESSION['flash_message'];
+            unset($_SESSION['flash_message'], $_SESSION['flash_type']);
+            return $msg;
+        }
+        return null;
     }
 
     /**

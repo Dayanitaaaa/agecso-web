@@ -10,13 +10,6 @@
     </a>
 </div>
 
-<?php if ($flash = $this->getFlash()): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="bi bi-check-circle me-2"></i> <?= htmlspecialchars($flash) ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
-
 <div class="admin-card">
     <?php if (empty($items)): ?>
         <div class="text-center py-5">
