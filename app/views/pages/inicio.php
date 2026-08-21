@@ -275,6 +275,96 @@
     </div>
 </section>
 
+<?php if (!empty($data['ruedas'])): ?>
+<!-- SECCIÓN: RUEDAS DE NEGOCIOS DESTACADAS -->
+<section class="ruedas-activas-section py-5 position-relative" style="background: linear-gradient(135deg, #091322 0%, #0f2742 50%, #091322 100%); color: white; border-top: 1px solid rgba(0,162,255,0.15); border-bottom: 1px solid rgba(0,162,255,0.15);">
+    <div class="container py-4 position-relative z-2">
+        <div class="text-center mb-5">
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill font-monospace fw-bold text-uppercase mb-3" style="letter-spacing: 0.15em; font-size: 0.8rem;">
+                <i class="bi bi-briefcase-fill me-1"></i> Ruedas de Negocios AGECSO
+            </span>
+            <h2 class="display-5 fw-black text-white mb-3">Encuentros Comerciales Disponibles</h2>
+            <p class="text-white-50 mx-auto" style="max-width: 600px;">Participa en nuestras ruedas de negocio, conecta directamente con compradores y proveedores de la región y agenda reuniones de 30 minutos.</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <?php foreach ($data['ruedas'] as $rueda): ?>
+                <div class="col-lg-6 col-xl-4">
+                    <div class="card h-100 border-0 rounded-4 shadow-lg p-4 d-flex flex-column justify-between position-relative overflow-hidden" 
+                         style="background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.12) !important;">
+                        
+                        <div>
+                            <!-- Header Card: Estado y Modalidad -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <?php
+                                    $estado = $rueda['estadoRueda'] ?? 'activa';
+                                    $badgeClass = 'bg-success';
+                                    $estadoTexto = 'Rueda Activa';
+                                    if ($estado === 'inscripciones') {
+                                        $badgeClass = 'bg-warning text-dark';
+                                        $estadoTexto = 'Inscripciones Abiertas';
+                                    } elseif ($estado === 'planeacion') {
+                                        $badgeClass = 'bg-info text-dark';
+                                        $estadoTexto = 'Próximamente';
+                                    }
+                                ?>
+                                <span class="badge <?= $badgeClass ?> px-3 py-1.5 rounded-pill fw-bold text-uppercase" style="font-size: 0.72rem;">
+                                    <?= $estadoTexto ?>
+                                </span>
+
+                                <?php if (($rueda['modalidad'] ?? 'virtual') === 'presencial'): ?>
+                                    <span class="badge bg-white text-dark px-3 py-1.5 rounded-pill fw-bold" style="font-size: 0.72rem;">
+                                        <i class="bi bi-geo-alt-fill text-danger me-1"></i> Presencial (<?= $rueda['cantidadMesas'] ?? 1 ?> Mesas)
+                                    </span>
+                                <?php else: ?>
+                                    <span class="badge bg-primary px-3 py-1.5 rounded-pill fw-bold" style="font-size: 0.72rem;">
+                                        <i class="bi bi-camera-video-fill me-1"></i> Virtual
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- Título y Descripción -->
+                            <h4 class="fw-black text-white mb-2"><?= htmlspecialchars($rueda['nombreRueda'] ?? ($rueda['tituloRueda'] ?? 'Rueda de Negocios')) ?></h4>
+                            <p class="text-white-50 small mb-4" style="min-height: 44px;">
+                                <?= htmlspecialchars($rueda['descripcion'] ?? 'Evento empresarial de relacionamiento y citas comerciales.') ?>
+                            </p>
+
+                            <!-- Detalles de Fechas y Horarios -->
+                            <div class="rounded-3 p-3 mb-4" style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05);">
+                                <div class="d-flex align-items-center gap-2.5 mb-2 text-white-75 small">
+                                    <i class="bi bi-calendar-event text-warning fs-5"></i>
+                                    <div>
+                                        <strong class="text-white d-block">Fechas del Evento:</strong>
+                                        <span><?= date('d/m/Y', strtotime($rueda['fechaInicio'])) ?> - <?= date('d/m/Y', strtotime($rueda['fechaFin'])) ?></span>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center gap-2.5 text-white-75 small">
+                                    <i class="bi bi-clock-history text-info fs-5"></i>
+                                    <div>
+                                        <strong class="text-white d-block">Horario de Citas (30 min):</strong>
+                                        <span>
+                                            <?= !empty($rueda['horaInicio']) ? date('h:i A', strtotime($rueda['horaInicio'])) : '08:00 AM' ?> - 
+                                            <?= !empty($rueda['horaFin']) ? date('h:i A', strtotime($rueda['horaFin'])) : '06:00 PM' ?>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botón CTA -->
+                        <div class="mt-2">
+                            <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro" class="btn btn-warning w-100 fw-bold py-2.5 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2 text-dark">
+                                <i class="bi bi-arrow-right-circle-fill"></i> Inscribirme a la Rueda
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <section class="rueda-cta-section section-padding position-relative overflow-hidden">
     <!-- Decorative background elements -->
     <div class="rueda-bg-shape shape-1"></div>

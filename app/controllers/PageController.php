@@ -61,6 +61,11 @@ class PageController
             case 'inicio':
                 $data['noticias'] = $this->getNoticias(3);
                 $data['eventos'] = $this->getEventos(3, true);
+                $data['ruedas'] = $this->getRuedas();
+                break;
+            case 'agenda':
+                $data['eventos'] = $this->getEventos();
+                $data['ruedas'] = $this->getRuedas();
                 break;
         }
 
@@ -98,6 +103,17 @@ class PageController
         if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll();
+    }
+
+    private function getRuedas(int $limit = 0) {
+        try {
+            $sql = "SELECT * FROM ruedas_negocios WHERE estadoRueda IN ('activa', 'inscripciones', 'planeacion') ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
+            if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
+            $stmt = $this->pdo->query($sql);
+            return $stmt ? $stmt->fetchAll() : [];
+        } catch (Exception $e) {
+            return [];
+        }
     }
 
     private function getCursos() {
