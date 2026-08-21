@@ -113,12 +113,12 @@ class VendedorController {
                 Logger::logRoleError('vendedor', 'Error silencioso en trazabilidad dashboard', ['error' => $e->getMessage()]);
             }
 
-            $stmt_ruedas = $this->pdo->query("SELECT * FROM ruedas_negocios WHERE estadoRueda IN ('inscripciones', 'activa')");
+            $stmt_ruedas = $this->pdo->query("SELECT *, nombreRueda as tituloRueda, descripcion as descripcionRueda FROM ruedas_negocios WHERE estadoRueda IN ('inscripciones', 'activa')");
             $ruedas = $stmt_ruedas->fetchAll();
 
             // Obtener mis inscripciones a ruedas (Aceptadas, Pendientes, etc.)
             $stmt_mis_ruedas = $this->pdo->prepare("
-                SELECT rn.*, ir.estadoInscripcion 
+                SELECT rn.*, ir.estadoInscripcion, rn.nombreRueda as tituloRueda, rn.descripcion as descripcionRueda
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ?

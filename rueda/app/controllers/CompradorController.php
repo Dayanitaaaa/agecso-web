@@ -44,7 +44,7 @@ class CompradorController {
 
             // Obtener mis inscripciones a ruedas (Aceptadas, Pendientes, etc.)
             $stmt_mis_ruedas = $this->pdo->prepare("
-                SELECT rn.*, ir.estadoInscripcion 
+                SELECT rn.*, ir.estadoInscripcion, rn.nombreRueda as tituloRueda, rn.descripcion as descripcionRueda
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ?
@@ -110,7 +110,7 @@ class CompradorController {
             $trazabilidad_pendientes = $trazabilidadModel->getSeguimientosPendientes($_SESSION['usuario_id'], SYSTEM_TIME);
 
             // Obtener ruedas de negocios activas generales para el panel lateral
-            $stmt_ruedas = $this->pdo->query("SELECT * FROM ruedas_negocios WHERE estadoRueda IN ('inscripciones', 'activa')");
+            $stmt_ruedas = $this->pdo->query("SELECT *, nombreRueda as tituloRueda, descripcion as descripcionRueda FROM ruedas_negocios WHERE estadoRueda IN ('inscripciones', 'activa')");
             $ruedas = $stmt_ruedas->fetchAll();
 
             // Obtener mis inscripciones a ruedas (formato indexado para compatibilidad si es necesario)
