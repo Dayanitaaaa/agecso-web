@@ -61,9 +61,11 @@ class PageController
             case 'inicio':
                 $data['noticias'] = $this->getNoticias(3);
                 $data['eventos'] = $this->getEventos(3, true);
+                $data['agenda'] = $this->getAgenda();
                 $data['ruedas'] = $this->getRuedas();
                 break;
             case 'agenda':
+                $data['agenda'] = $this->getAgenda();
                 $data['eventos'] = $this->getEventos();
                 $data['ruedas'] = $this->getRuedas();
                 break;
@@ -71,6 +73,34 @@ class PageController
 
         $viewPath = __DIR__ . '/../views/pages/' . $page . '.php';
         require __DIR__ . '/../views/layouts/main.php';
+    }
+
+    private function getAgenda() {
+        try {
+            // Asegurar tabla si no existe
+            $this->pdo->exec("CREATE TABLE IF NOT EXISTS agenda (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                titulo VARCHAR(255) NOT NULL,
+                descripcion TEXT,
+                imagen VARCHAR(255) DEFAULT NULL,
+                fecha_inicio DATE NULL,
+                fecha_fin DATE NULL,
+                hora_inicio TIME NULL,
+                hora_fin TIME NULL,
+                lugar VARCHAR(255) DEFAULT NULL,
+                tipo VARCHAR(50) DEFAULT 'general',
+                link_registro VARCHAR(500) DEFAULT NULL,
+                texto_boton VARCHAR(100) DEFAULT 'Registrarme',
+                estado ENUM('activo', 'inactivo', 'destacado') DEFAULT 'activo',
+                orden INT DEFAULT 999,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+            $stmt = $this->pdo->query("SELECT * FROM agenda WHERE estado != 'inactivo' ORDER BY CASE WHEN estado = 'destacado' THEN 0 ELSE 1 END, orden ASC, fecha_inicio DESC, id DESC");
+            return $stmt ? $stmt->fetchAll() : [];
+        } catch (Exception $e) {
+            return [];
+        }
     }
 
     private function getNoticias(int $limit = 0) {

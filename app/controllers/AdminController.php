@@ -18,7 +18,31 @@ class AdminController {
             exit();
         }
 
+        // Asegurar tabla de agenda
+        try {
+            $this->pdo->exec("CREATE TABLE IF NOT EXISTS agenda (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                titulo VARCHAR(255) NOT NULL,
+                descripcion TEXT,
+                imagen VARCHAR(255) DEFAULT NULL,
+                fecha_inicio DATE NULL,
+                fecha_fin DATE NULL,
+                hora_inicio TIME NULL,
+                hora_fin TIME NULL,
+                lugar VARCHAR(255) DEFAULT NULL,
+                tipo VARCHAR(50) DEFAULT 'general',
+                link_registro VARCHAR(500) DEFAULT NULL,
+                texto_boton VARCHAR(100) DEFAULT 'Registrarme',
+                estado ENUM('activo', 'inactivo', 'destacado') DEFAULT 'activo',
+                orden INT DEFAULT 999,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } catch (Exception $e) {}
+
         // Inicializar modelos
+        $this->models['agenda'] = new BaseModel($pdo);
+        $this->models['agenda']->table = 'agenda';
+
         $this->models['noticias'] = new BaseModel($pdo);
         $this->models['noticias']->table = 'noticias';
         
@@ -43,6 +67,7 @@ class AdminController {
      */
     public function index() {
         $stats = [
+            'agenda' => $this->models['agenda']->count(),
             'noticias' => $this->models['noticias']->count(),
             'eventos' => $this->models['eventos']->count(),
             'cursos' => $this->models['cursos']->count(),
@@ -53,6 +78,94 @@ class AdminController {
 
         $title = 'Panel de Administración';
         require __DIR__ . '/../views/admin/dashboard.php';
+    }
+
+    /**
+     * Gestión de agenda y convocatorias
+     */
+    public function agenda() {
+        $action = $_GET['action'] ?? 'list';
+        $id = $_GET['id'] ?? null;
+        
+        switch ($action) {
+            case 'list':
+                $items = $this->models['agenda']->getAll('orden ASC, fecha_inicio DESC, id DESC');
+                $title = 'Gestión de Agenda';
+                require __DIR__ . '/../views/admin/agenda/list.php';
+                break;
+                
+            case 'create':
+                $this->handleAgendaForm();
+                break;
+                
+            case 'edit':
+                $this->handleAgendaForm($id);
+                break;
+                
+            case 'delete':
+                if ($id) {
+                    $this->models['agenda']->delete($id);
+                    $this->setFlash('Elemento de agenda eliminado correctamente');
+                }
+                header("Location: " . APP_URL . "/admin/agenda");
+                exit();
+                
+            default:
+                header("Location: " . APP_URL . "/admin/agenda");
+                exit();
+        }
+    }
+
+    /**
+     * Manejar formulario de agenda
+     */
+    private function handleAgendaForm($id = null) {
+        $item = $id ? $this->models['agenda']->getById($id) : null;
+        $error = '';
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'titulo' => trim($_POST['titulo'] ?? ''),
+                'descripcion' => trim($_POST['descripcion'] ?? ''),
+                'fecha_inicio' => !empty($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : null,
+                'fecha_fin' => !empty($_POST['fecha_fin']) ? $_POST['fecha_fin'] : null,
+                'hora_inicio' => !empty($_POST['hora_inicio']) ? $_POST['hora_inicio'] : null,
+                'hora_fin' => !empty($_POST['hora_fin']) ? $_POST['hora_fin'] : null,
+                'lugar' => trim($_POST['lugar'] ?? ''),
+                'tipo' => $_POST['tipo'] ?? 'evento',
+                'link_registro' => trim($_POST['link_registro'] ?? ''),
+                'texto_boton' => trim($_POST['texto_boton'] ?? 'Registrarme'),
+                'estado' => $_POST['estado'] ?? 'activo',
+                'orden' => (int)($_POST['orden'] ?? 999)
+            ];
+
+            // Manejar imagen
+            if (isset($_POST['eliminar_imagen']) && $_POST['eliminar_imagen'] == '1') {
+                $data['imagen'] = null;
+            } else {
+                $imgUploaded = $this->handleImageUpload('imagen', $item['imagen'] ?? null);
+                if ($imgUploaded) {
+                    $data['imagen'] = $imgUploaded;
+                }
+            }
+            
+            if (empty($data['titulo'])) {
+                $error = 'El título de la actividad es obligatorio.';
+            } else {
+                if ($id) {
+                    $this->models['agenda']->update($id, $data);
+                    $this->setFlash('Actividad de agenda actualizada correctamente');
+                } else {
+                    $this->models['agenda']->insert($data);
+                    $this->setFlash('Actividad agregada a la agenda correctamente');
+                }
+                header("Location: " . APP_URL . "/admin/agenda");
+                exit();
+            }
+        }
+        
+        $title = $id ? 'Editar Agenda' : 'Nueva Actividad en Agenda';
+        require __DIR__ . '/../views/admin/agenda/form.php';
     }
 
     /**

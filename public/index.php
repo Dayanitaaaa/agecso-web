@@ -51,6 +51,9 @@ if ($page === 'login') {
     
     $section = $_GET['section'] ?? 'dashboard';
     switch ($section) {
+        case 'agenda':
+            $controller->agenda();
+            break;
         case 'noticias':
             $controller->noticias();
             break;

@@ -636,80 +636,76 @@
 </section>
 <?php endif; ?>
 
-<?php if (!empty($data['eventos'])): ?>
+<?php if (!empty($data['agenda'])): ?>
 <section class="section-padding bg-light">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <span class="text-uppercase tracking-wider fw-bold text-primary" style="font-size: 0.8rem; letter-spacing: 0.15em;">Calendario AGECSO</span>
-                <h2 class="mb-0 fw-bold text-dark">Próximos Eventos y Agenda</h2>
+                <span class="text-uppercase tracking-wider fw-bold text-primary" style="font-size: 0.8rem; letter-spacing: 0.15em;">Calendario y Actividades</span>
+                <h2 class="mb-0 fw-bold text-dark">Agenda y Convocatorias Abiertas</h2>
             </div>
             <a href="<?= APP_URL ?>/agenda" class="btn btn-outline-primary rounded-pill px-4 fw-bold">Ver toda la agenda</a>
         </div>
         <div class="row g-4">
-            <?php foreach ($data['eventos'] as $item): ?>
-                <?php 
-                    $mainImg = $item['imagen'] ?? '';
-                    if (!$mainImg && !empty($item['imagenes'])) {
-                        $galeria = json_decode($item['imagenes'], true);
-                        if (!empty($galeria)) $mainImg = $galeria[0];
-                    }
-                ?>
+            <?php foreach (array_slice($data['agenda'], 0, 3) as $act): ?>
                 <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column justify-content-between hover-shadow transition">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column justify-content-between hover-shadow transition bg-white">
                         <div>
-                            <div class="position-relative" style="height: 200px; background-color: #e9ecef;">
-                                <?php if (!empty($mainImg)): ?>
-                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($mainImg) ?>" class="w-100 h-100 object-fit-cover" alt="<?= htmlspecialchars($item['titulo']) ?>">
+                            <!-- Afiche / Imagen -->
+                            <div class="position-relative" style="height: 220px; background-color: #f8f9fa;">
+                                <?php if (!empty($act['imagen'])): ?>
+                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($act['imagen']) ?>" class="w-100 h-100 object-fit-contain p-2" alt="<?= htmlspecialchars($act['titulo']) ?>">
                                 <?php else: ?>
                                     <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-white text-muted">
-                                        <i class="bi bi-calendar-event fs-1 text-primary opacity-50"></i>
+                                        <i class="bi bi-calendar2-check fs-1 text-primary opacity-50"></i>
                                     </div>
                                 <?php endif; ?>
                                 
+                                <?php if ($act['estado'] === 'destacado'): ?>
+                                    <span class="position-absolute top-0 start-0 m-3 badge bg-warning text-dark px-3 py-1.5 rounded-pill fw-bold shadow-sm">
+                                        <i class="bi bi-star-fill me-1"></i> Destacado
+                                    </span>
+                                <?php endif; ?>
+
                                 <span class="position-absolute top-0 end-0 m-3 badge bg-primary px-3 py-1.5 rounded-pill fw-bold text-capitalize shadow-sm">
-                                    <?= htmlspecialchars($item['tipo'] ?? 'Evento') ?>
+                                    <?= htmlspecialchars($act['tipo'] ?? 'Actividad') ?>
                                 </span>
                             </div>
 
                             <div class="p-4">
-                                <h5 class="fw-bold text-dark mb-2"><?= htmlspecialchars($item['titulo']) ?></h5>
+                                <h5 class="fw-bold text-dark mb-2"><?= htmlspecialchars($act['titulo']) ?></h5>
                                 <p class="text-muted small mb-3">
                                     <?php 
-                                    $plainText = strip_tags($item['descripcion']);
+                                    $plainText = strip_tags($act['descripcion'] ?? '');
                                     echo htmlspecialchars(substr($plainText, 0, 110)) . (strlen($plainText) > 110 ? '...' : ''); 
                                     ?>
                                 </p>
 
-                                <?php if (!empty($item['lugar'])): ?>
-                                    <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars($item['lugar']) ?></p>
+                                <?php if (!empty($act['lugar'])): ?>
+                                    <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars($act['lugar']) ?></p>
                                 <?php endif; ?>
                             </div>
                         </div>
 
                         <div class="px-4 pb-4 pt-0">
-                            <?php 
-                            $eventDate = $item['fecha_evento'];
-                            $isPast = false;
-                            if (!empty($eventDate) && $eventDate !== '0000-00-00') {
-                                $isPast = strtotime($eventDate) < strtotime(date('Y-m-d'));
-                            }
-                            
-                            if (!$isPast && !empty($eventDate) && $eventDate !== '0000-00-00'): ?>
-                                <div class="d-flex align-items-center justify-content-between border-top pt-3">
-                                    <span class="small fw-bold text-dark"><i class="bi bi-calendar-event text-primary me-1"></i> <?= date('d/m/Y', strtotime($item['fecha_evento'])) ?></span>
-                                    <?php if (!empty($item['hora_inicio'])): ?>
-                                        <span class="small text-muted"><i class="bi bi-clock me-1"></i> <?= date('h:i A', strtotime($item['hora_inicio'])) ?></span>
-                                    <?php endif; ?>
-                                </div>
-                            <?php elseif (!$isPast): ?>
-                                <div class="border-top pt-3">
-                                    <span class="small text-muted"><i class="bi bi-calendar-event me-1"></i> Fecha por confirmar</span>
-                                </div>
+                            <div class="d-flex align-items-center justify-content-between border-top pt-3 mb-3">
+                                <span class="small fw-bold text-dark">
+                                    <i class="bi bi-calendar-event text-primary me-1"></i> 
+                                    <?= !empty($act['fecha_inicio']) ? date('d/m/Y', strtotime($act['fecha_inicio'])) : 'Próximamente' ?>
+                                </span>
+                                <?php if (!empty($act['hora_inicio'])): ?>
+                                    <span class="small text-muted"><i class="bi bi-clock me-1"></i> <?= date('h:i A', strtotime($act['hora_inicio'])) ?></span>
+                                <?php endif; ?>
+                            </div>
+
+                            <?php if (!empty($act['link_registro'])): ?>
+                                <a href="<?= htmlspecialchars($act['link_registro']) ?>" target="_blank" class="btn btn-primary w-100 fw-bold rounded-pill py-2 shadow-sm d-flex align-items-center justify-content-center gap-1.5 text-sm">
+                                    <i class="bi bi-box-arrow-up-right"></i> <?= htmlspecialchars($act['texto_boton'] ?? 'Inscribirme') ?>
+                                </a>
                             <?php else: ?>
-                                <div class="border-top pt-3">
-                                    <span class="small text-danger fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Realizado</span>
-                                </div>
+                                <a href="<?= APP_URL ?>/agenda" class="btn btn-outline-primary w-100 fw-bold rounded-pill py-2 d-flex align-items-center justify-content-center gap-1.5 text-sm">
+                                    <i class="bi bi-info-circle"></i> Ver Detalles
+                                </a>
                             <?php endif; ?>
                         </div>
                     </div>
