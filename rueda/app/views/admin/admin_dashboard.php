@@ -16,6 +16,12 @@
                     <i class="fas fa-user-shield mr-2 text-white/90"></i> Administrador AGECSO
                 </p>
             </div>
+            <div class="relative z-10 flex flex-wrap gap-3">
+                <button onclick="document.getElementById('modalCrearRueda').classList.remove('hidden')" 
+                        class="bg-gray-900 hover:bg-black text-amber-300 hover:text-amber-200 px-6 py-3.5 rounded-full font-black text-sm shadow-xl hover:-translate-y-0.5 transform transition-all duration-300 flex items-center gap-2.5">
+                    <i class="fas fa-plus-circle text-amber-400 text-base"></i> Crear Rueda de Negocio
+                </button>
+            </div>
         </div>
 
         <!-- Enlaces de Desplazamiento Rápido -->
