@@ -109,5 +109,91 @@
             <?php endif; ?>
         </div>
 
+        <!-- EVENTOS Y ACTIVIDADES DE LA AGENDA (ADMINISTRADOS DESDE EL PANEL) -->
+        <?php if (!empty($data['eventos'])): ?>
+            <div class="mt-5 pt-4 border-top">
+                <div class="d-flex align-items-center justify-content-between mb-4 pb-2">
+                    <div>
+                        <h2 class="h3 fw-black text-dark mb-1">
+                            <i class="bi bi-calendar3 text-primary me-2"></i> Calendario de Actividades y Eventos
+                        </h2>
+                        <p class="text-muted small mb-0">Talleres, foros, capacitaciones y actividades programadas por AGECSO.</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <?php foreach ($data['eventos'] as $item): ?>
+                        <?php 
+                            $mainImg = $item['imagen'] ?? '';
+                            if (!$mainImg && !empty($item['imagenes'])) {
+                                $galeria = json_decode($item['imagenes'], true);
+                                if (!empty($galeria)) $mainImg = $galeria[0];
+                            }
+                        ?>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column justify-content-between hover-shadow transition">
+                                <div>
+                                    <div class="position-relative" style="height: 200px; background-color: #e9ecef;">
+                                        <?php if (!empty($mainImg)): ?>
+                                            <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($mainImg) ?>" class="w-100 h-100 object-fit-cover" alt="<?= htmlspecialchars($item['titulo']) ?>">
+                                        <?php else: ?>
+                                            <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-white text-muted">
+                                                <i class="bi bi-calendar-event fs-1 text-primary opacity-50"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                        
+                                        <span class="position-absolute top-0 end-0 m-3 badge bg-primary px-3 py-1.5 rounded-pill fw-bold text-capitalize shadow-sm">
+                                            <?= htmlspecialchars($item['tipo'] ?? 'Evento') ?>
+                                        </span>
+                                    </div>
+
+                                    <div class="p-4">
+                                        <h5 class="fw-bold text-dark mb-2"><?= htmlspecialchars($item['titulo']) ?></h5>
+                                        <p class="text-muted small mb-3">
+                                            <?php 
+                                            $plainText = strip_tags($item['descripcion']);
+                                            echo htmlspecialchars(substr($plainText, 0, 110)) . (strlen($plainText) > 110 ? '...' : ''); 
+                                            ?>
+                                        </p>
+
+                                        <?php if (!empty($item['lugar'])): ?>
+                                            <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars($item['lugar']) ?></p>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+
+                                <div class="px-4 pb-4 pt-0">
+                                    <?php 
+                                    $eventDate = $item['fecha_evento'];
+                                    $isPast = false;
+                                    if (!empty($eventDate) && $eventDate !== '0000-00-00') {
+                                        $isPast = strtotime($eventDate) < strtotime(date('Y-m-d'));
+                                    }
+                                    
+                                    if (!$isPast && !empty($eventDate) && $eventDate !== '0000-00-00'): ?>
+                                        <div class="d-flex align-items-center justify-content-between border-top pt-3">
+                                            <span class="small fw-bold text-dark"><i class="bi bi-calendar-event text-primary me-1"></i> <?= date('d/m/Y', strtotime($item['fecha_evento'])) ?></span>
+                                            <?php if (!empty($item['hora_inicio'])): ?>
+                                                <span class="small text-muted"><i class="bi bi-clock me-1"></i> <?= date('h:i A', strtotime($item['hora_inicio'])) ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php elseif (!$isPast): ?>
+                                        <div class="border-top pt-3">
+                                            <span class="small text-muted"><i class="bi bi-calendar-event me-1"></i> Fecha por confirmar</span>
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="border-top pt-3">
+                                            <span class="small text-danger fw-bold"><i class="bi bi-check-circle-fill me-1"></i> Realizado</span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
+        </div>
+
     </div>
 </section>
