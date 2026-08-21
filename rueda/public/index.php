@@ -92,9 +92,24 @@ try {
     error_log('[RUEDAS_AUTO_ESTADO] ' . $e->getMessage());
 }
 
-// Obtener controlador y acción de la URL (Ejemplo: index.php?controlador=usuario&accion=login)
-$controlador_nombre = isset($_GET['controlador']) ? $_GET['controlador'] : 'home';
-$accion = isset($_GET['accion']) ? $_GET['accion'] : 'index';
+// Obtener controlador y acción de la URL (rutas limpias o query antiguas)
+$controlador_nombre = 'home';
+$accion = 'index';
+
+if (isset($_GET['ruta']) && trim($_GET['ruta']) !== '') {
+    $partes = explode('/', trim($_GET['ruta'], '/'));
+    $controlador_nombre = !empty($partes[0]) ? $partes[0] : 'home';
+    $accion = !empty($partes[1]) ? $partes[1] : 'index';
+    unset($_GET['controlador'], $_GET['accion']);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['controlador'])) {
+    // Redirigir URLs antiguas (index.php?controlador=...) a la versión limpia
+    $params = $_GET;
+    unset($params['controlador'], $params['accion']);
+    $query = $params ? '?' . http_build_query($params) : '';
+    $url = '/' . rawurlencode($_GET['controlador']) . '/' . rawurlencode($_GET['accion'] ?? 'index') . $query;
+    header("Location: " . $url, true, 301);
+    exit();
+}
 
 // Detectar si es un controlador de API (prefijo 'api/' o sufijo 'Api')
 $esApi = false;

@@ -472,20 +472,20 @@ class UsuarioController {
     private function redirigirPorRol($slugRole) {
         switch ($slugRole) {
             case 'superadmin':
-                header("Location: index.php?controlador=superadmin&accion=dashboard");
+                header("Location: /superadmin/dashboard");
                 break;
             case 'admin':
-                header("Location: index.php?controlador=admin&accion=dashboard");
+                header("Location: /admin/dashboard");
                 break;
             case 'comprador':
-                header("Location: index.php?controlador=comprador&accion=dashboard");
+                header("Location: /comprador/dashboard");
                 break;
             case 'proveedor':
             case 'vendedor':
-                header("Location: index.php?controlador=vendedor&accion=dashboard");
+                header("Location: /vendedor/dashboard");
                 break;
             default:
-                header("Location: index.php");
+                header("Location: /");
                 break;
         }
     }

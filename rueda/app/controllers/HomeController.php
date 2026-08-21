@@ -16,25 +16,25 @@ class HomeController {
             $userRole = strtolower(trim($_SESSION['slugRole']));
             switch ($userRole) {
                 case 'superadmin':
-                    header("Location: index.php?controlador=superadmin&accion=dashboard");
+                    header("Location: /superadmin/dashboard");
                     exit();
                 case 'admin':
-                    header("Location: index.php?controlador=admin&accion=dashboard");
+                    header("Location: /admin/dashboard");
                     exit();
                 case 'comprador':
-                    header("Location: index.php?controlador=comprador&accion=dashboard");
+                    header("Location: /comprador/dashboard");
                     exit();
                 case 'proveedor':
                 case 'vendedor':
-                    header("Location: index.php?controlador=vendedor&accion=dashboard");
+                    header("Location: /vendedor/dashboard");
                     exit();
                 default:
-                    header("Location: index.php?controlador=usuario&accion=logout");
+                    header("Location: /usuario/logout");
                     exit();
             }
         } else {
             // Si NO está logueado, lo enviamos directo al Login
-            header("Location: index.php?controlador=usuario&accion=login");
+            header("Location: /usuario/login");
             exit();
         }
     }
