@@ -336,6 +336,75 @@ class AdminController {
         }
     }
 
+    public function editarRueda() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $rueda_id = $_POST['rueda_id'] ?? null;
+                if (!$rueda_id) {
+                    throw new Exception("ID de rueda no proporcionado.");
+                }
+
+                $titulo = $_POST['titulo'];
+                $descripcion = $_POST['descripcion'];
+                $fecha_inicio = $_POST['fecha_inicio'];
+                $fecha_fin = $_POST['fecha_fin'];
+                $hora_inicio = !empty($_POST['hora_inicio']) ? $_POST['hora_inicio'] : '08:00:00';
+                $hora_fin = !empty($_POST['hora_fin']) ? $_POST['hora_fin'] : '18:00:00';
+                $duracion_cita = !empty($_POST['duracion_cita']) ? (int)$_POST['duracion_cita'] : 30;
+                $estado = $_POST['estado']; // planeacion, inscripciones, activa, finalizada, cancelada
+                $modalidad = $_POST['modalidad'] ?? 'virtual';
+                $ubicacion = $_POST['ubicacion'] ?? 'Virtual';
+                $cantidad_mesas = $_POST['cantidad_mesas'] ?? 1;
+                $usuario_id = $_SESSION['usuario_id'];
+
+                if (strtotime($fecha_fin) < strtotime($fecha_inicio)) {
+                    throw new Exception("La fecha de finalización no puede ser anterior a la fecha de inicio.");
+                }
+
+                // Asegurar columnas
+                try {
+                    $cols = [
+                        'horaInicio' => "TIME DEFAULT '08:00:00'",
+                        'horaFin' => "TIME DEFAULT '18:00:00'",
+                        'duracionCitaMinutos' => "INT DEFAULT 30",
+                        'modalidad' => "VARCHAR(50) DEFAULT 'virtual'",
+                        'ubicacion' => "VARCHAR(255) DEFAULT 'Virtual'",
+                        'cantidadMesas' => "INT DEFAULT 1"
+                    ];
+                    foreach ($cols as $col => $def) {
+                        $stmt_check = $this->pdo->query("SHOW COLUMNS FROM ruedas_negocios LIKE '$col'");
+                        if ($stmt_check && !$stmt_check->fetch()) {
+                            $this->pdo->exec("ALTER TABLE ruedas_negocios ADD COLUMN $col $def");
+                        }
+                    }
+                } catch (Exception $e) {}
+
+                $sql = "UPDATE ruedas_negocios 
+                        SET nombreRueda = ?, descripcion = ?, fechaInicio = ?, fechaFin = ?, 
+                            horaInicio = ?, horaFin = ?, duracionCitaMinutos = ?, 
+                            modalidad = ?, ubicacion = ?, cantidadMesas = ?, estadoRueda = ? 
+                        WHERE id = ?";
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $rueda_id]);
+
+                Logger::log("Rueda de Negocios ID $rueda_id actualizada por Admin ID: $usuario_id", 'business');
+
+                header("Location: index.php?controlador=admin&accion=dashboard&msg=rueda_actualizada");
+                exit();
+            } catch (Exception $e) {
+                Logger::log("Error al editar Rueda: " . $e->getMessage(), 'system');
+                Logger::logCurrentRoleError('Error al editar rueda de negocio', [
+                    'accion' => 'editarRueda',
+                    'error' => $e->getMessage(),
+                    'usuario_id' => $_SESSION['usuario_id'] ?? 'n/a'
+                ]);
+                $error_msg = $e->getMessage();
+                require_once '../app/views/layout/error.php';
+                exit();
+            }
+        }
+    }
+
     public function verPerfilEmpresa() {
         $id = $_GET['id'] ?? null;
         if (!$id) {
