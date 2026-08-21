@@ -942,10 +942,10 @@ class CompradorController {
                     }
                 }
 
-                // VALIDACIÓN: 45 minutos de separación entre citas para AMBAS empresas
+                // VALIDACIÓN: 30 minutos de duración de citas para AMBAS empresas
                 $fechaBase = strtotime($fecha_hora);
-                $horaInicio = date('Y-m-d H:i:s', strtotime('-44 minutes', $fechaBase));
-                $horaFin = date('Y-m-d H:i:s', strtotime('+44 minutes', $fechaBase));
+                $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
+                $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
                 
                 // Verificar para el comprador
                 $stmt_disp_c = $this->pdo->prepare("
@@ -957,7 +957,7 @@ class CompradorController {
                 ");
                 $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id]);
                 if ($stmt_disp_c->fetch()['ocupado'] > 0) {
-                    throw new Exception("Ya tienes una cita agendada en un horario muy cercano. Por favor, deja al menos 45 minutos entre citas.");
+                    throw new Exception("Ya tienes una cita agendada en un horario que coincide. Las reuniones tienen una duración de 30 minutos.");
                 }
                 
                 // Verificar para el vendedor
@@ -970,7 +970,7 @@ class CompradorController {
                 ");
                 $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id]);
                 if ($stmt_disp_v->fetch()['ocupado'] > 0) {
-                    throw new Exception("El vendedor seleccionado ya tiene una cita agendada en un horario muy cercano.");
+                    throw new Exception("El vendedor seleccionado ya tiene una cita agendada en ese horario (bloques de 30 minutos).");
                 }
 
                 // OBTENER MESA ASIGNADA PREVIAMENTE (SI EXISTE)

@@ -129,11 +129,11 @@ class ReunionApiController extends BaseApiController {
                 }
             }
 
-            // 3. Obtener mesas ocupadas en ese rango (1 hora de margen)
+            // 3. Obtener mesas ocupadas en ese rango (bloque de 30 minutos)
             $fechaBase = strtotime($fecha_hora);
-            // Usamos un margen de 44 minutos para permitir citas seguidas (back-to-back)
-            $horaInicio = date('Y-m-d H:i:s', strtotime('-44 minutes', $fechaBase));
-            $horaFin = date('Y-m-d H:i:s', strtotime('+44 minutes', $fechaBase));
+            // Margen de 29 minutos para permitir citas seguidas (back-to-back de 30 min)
+            $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
+            $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
 
             // Si el comprador ya tiene una mesa, solo verificamos si ESA mesa está libre para el nuevo horario
             // Pero permitimos que ÉL mismo la use aunque tenga citas cercanas (la validación de 45 min del controlador ya evita solapamientos del comprador)
