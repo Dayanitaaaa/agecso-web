@@ -85,9 +85,14 @@
                                     </div>
                                 </div>
 
-                                <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro" class="btn btn-primary w-100 fw-bold rounded-pill py-2.5 shadow-sm">
-                                    Participar en esta Rueda
-                                </a>
+                                <div class="d-grid gap-2">
+                                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rol=vendedor&rueda_id=<?= $rueda['id'] ?>" class="btn btn-warning fw-bold rounded-pill py-2.5 shadow-sm text-dark d-flex align-items-center justify-content-center gap-2">
+                                        <i class="bi bi-shop"></i> Inscribirme como Vendedor / Proveedor
+                                    </a>
+                                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rol=comprador&rueda_id=<?= $rueda['id'] ?>" class="btn btn-outline-primary fw-bold rounded-pill py-2 d-flex align-items-center justify-content-center gap-2">
+                                        <i class="bi bi-cart3"></i> Inscribirme como Comprador
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>

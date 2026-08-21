@@ -48,6 +48,20 @@ class UsuarioController {
             // Si es GET sin editar, limpiar sesión y mostrar Paso 1 vacío
             if ($_SERVER['REQUEST_METHOD'] == 'GET' && !isset($_GET['editar'])) {
                 unset($_SESSION['reg_data']);
+
+                // Capturar rol preseleccionado desde la web principal
+                if (isset($_GET['rol'])) {
+                    $rol_slug = strtolower(trim($_GET['rol']));
+                    $rol_id = in_array($rol_slug, ['vendedor', 'proveedor']) ? '3' : '4';
+                    $_SESSION['reg_data']['rol_id'] = $rol_id;
+                } elseif (isset($_GET['rol_id'])) {
+                    $_SESSION['reg_data']['rol_id'] = (int)$_GET['rol_id'];
+                }
+
+                // Guardar ID de rueda de negocio a la que se desea postular
+                if (!empty($_GET['rueda_id'])) {
+                    $_SESSION['rueda_registro_id'] = (int)$_GET['rueda_id'];
+                }
             }
             // Si viene de editar (Corregir), mantener datos en sesión para precargar Paso 1
 

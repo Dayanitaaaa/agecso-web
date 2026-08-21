@@ -351,11 +351,27 @@
                             </div>
                         </div>
 
-                        <!-- Botón CTA -->
-                        <div class="mt-2">
-                            <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro" class="btn btn-warning w-100 fw-bold py-2.5 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2 text-dark">
-                                <i class="bi bi-arrow-right-circle-fill"></i> Inscribirme a la Rueda
-                            </a>
+                        <!-- Botones CTA: Vendedor vs Comprador -->
+                        <div class="mt-2 space-y-2">
+                            <p class="text-[11px] text-white-50 text-center uppercase tracking-wider fw-bold mb-2">Selecciona cómo deseas participar:</p>
+                            
+                            <div class="d-grid gap-2">
+                                <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rol=vendedor&rueda_id=<?= $rueda['id'] ?>" 
+                                   class="btn btn-warning fw-bold py-2.5 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2 text-dark">
+                                    <i class="bi bi-shop"></i> Inscribirme como Vendedor / Proveedor
+                                </a>
+
+                                <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rol=comprador&rueda_id=<?= $rueda['id'] ?>" 
+                                   class="btn btn-outline-light fw-bold py-2 rounded-pill d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-cart3"></i> Inscribirme como Comprador
+                                </a>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=login" class="text-white-50 small text-decoration-none hover-white">
+                                    ¿Ya tienes cuenta? <span class="text-warning fw-bold text-decoration-underline">Inicia Sesión</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

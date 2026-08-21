@@ -36,6 +36,31 @@ $regData = $_SESSION['reg_data'] ?? [];
             <input type="hidden" name="paso" value="1">
             
             <div class="space-y-6">
+                <!-- Selector de Perfil en la Rueda (Vendedor vs Comprador) -->
+                <div>
+                    <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">¿Cómo deseas participar en la Rueda?</label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <label class="group relative flex flex-col items-center p-4 border-2 border-gray-100 rounded-2xl cursor-pointer hover:border-amber-300 hover:bg-amber-50/30 transition-all duration-200 has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50/70 has-[:checked]:shadow-sm">
+                            <input type="radio" name="rol_id_radio" value="3" class="hidden" onchange="seleccionarRol(3)" <?php echo ($regData['rol_id'] ?? '3') == '3' ? 'checked' : ''; ?>>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 group-hover:bg-amber-100/50 text-gray-400 group-has-[:checked]:text-amber-600 group-has-[:checked]:bg-amber-100 transition-colors mb-2">
+                                <i class="fas fa-store text-xl"></i>
+                            </div>
+                            <span class="text-xs font-black uppercase tracking-wider text-gray-700 group-has-[:checked]:text-amber-800">Vendedor / Proveedor</span>
+                            <span class="text-[10px] text-gray-400 text-center mt-0.5">Ofrecer mis productos y servicios</span>
+                        </label>
+
+                        <label class="group relative flex flex-col items-center p-4 border-2 border-gray-100 rounded-2xl cursor-pointer hover:border-sky-300 hover:bg-sky-50/30 transition-all duration-200 has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/70 has-[:checked]:shadow-sm">
+                            <input type="radio" name="rol_id_radio" value="4" class="hidden" onchange="seleccionarRol(4)" <?php echo ($regData['rol_id'] ?? '') == '4' ? 'checked' : ''; ?>>
+                            <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-50 group-hover:bg-sky-100/50 text-gray-400 group-has-[:checked]:text-sky-600 group-has-[:checked]:bg-sky-100 transition-colors mb-2">
+                                <i class="fas fa-shopping-bag text-xl"></i>
+                            </div>
+                            <span class="text-xs font-black uppercase tracking-wider text-gray-700 group-has-[:checked]:text-sky-800">Comprador</span>
+                            <span class="text-[10px] text-gray-400 text-center mt-0.5">Buscar y cotizar con proveedores</span>
+                        </label>
+                    </div>
+                    <input type="hidden" name="rol_id" id="rol_id" value="<?php echo htmlspecialchars($regData['rol_id'] ?? '3'); ?>">
+                </div>
+
                 <!-- Selector de Tipo de Persona -->
                 <div>
                     <label class="block text-sm font-bold text-gray-700 mb-3 ml-1">Tipo de Persona</label>
@@ -147,7 +172,7 @@ $regData = $_SESSION['reg_data'] ?? [];
                 </div>
 
                 <!-- Representante y Perfil -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 gap-5">
                     <div>
                         <label for="representante_legal" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Representante Legal</label>
                         <div class="relative">
@@ -159,13 +184,6 @@ $regData = $_SESSION['reg_data'] ?? [];
                                 class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium" 
                                 placeholder="Nombre completo">
                         </div>
-                    </div>
-                    <div>
-                        <label for="rol_id" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Perfil en la Rueda</label>
-                        <select id="rol_id" name="rol_id" class="block w-full px-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium">
-                            <option value="4" <?php echo ($regData['rol_id'] ?? '') == '4' ? 'selected' : ''; ?>>Comprador</option>
-                            <option value="3" <?php echo ($regData['rol_id'] ?? '') == '3' ? 'selected' : ''; ?>>Vendedor / Proveedor</option>
-                        </select>
                     </div>
                 </div>
 
@@ -349,6 +367,11 @@ limpiarBtn.addEventListener('click', function() {
 });
 
 document.addEventListener('click', e => { if (!busquedaInput.contains(e.target) && !resultadosDiv.contains(e.target)) resultadosDiv.classList.add('hidden'); });
+
+function seleccionarRol(id) {
+    const el = document.getElementById('rol_id');
+    if (el) el.value = id;
+}
 
 // Precargar sector si hay datos en sesión
 <?php if (!empty($regData['sector_id']) && !empty($regData['ciiu_clase'])): ?>
