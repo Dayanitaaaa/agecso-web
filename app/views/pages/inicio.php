@@ -275,100 +275,99 @@
     </div>
 </section>
 
-<?php if (!empty($data['ruedas'])): ?>
-<!-- SECCIÓN: RUEDAS DE NEGOCIOS DESTACADAS -->
-<section class="ruedas-activas-section py-5 position-relative" style="background: linear-gradient(135deg, #091322 0%, #0f2742 50%, #091322 100%); color: white; border-top: 1px solid rgba(0,162,255,0.15); border-bottom: 1px solid rgba(0,162,255,0.15);">
-    <div class="container py-4 position-relative z-2">
-        <div class="text-center mb-5">
-            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill font-monospace fw-bold text-uppercase mb-3" style="letter-spacing: 0.15em; font-size: 0.8rem;">
-                <i class="bi bi-briefcase-fill me-1"></i> Ruedas de Negocios AGECSO
-            </span>
-            <h2 class="display-5 fw-black text-white mb-3">Encuentros Comerciales Disponibles</h2>
-            <p class="text-white-50 mx-auto" style="max-width: 600px;">Participa en nuestras ruedas de negocio, conecta directamente con compradores y proveedores de la región y agenda reuniones de 30 minutos.</p>
+<?php if (!empty($data['agenda'])): ?>
+<!-- SECCIÓN: AGENDA Y ACTIVIDADES DESTACADAS -->
+<section class="agenda-home-section py-5 bg-light border-top border-bottom">
+    <div class="container py-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+            <div>
+                <span class="badge bg-primary px-3 py-2 rounded-pill fw-bold text-uppercase mb-2" style="letter-spacing: 0.1em; font-size: 0.75rem;">
+                    <i class="bi bi-calendar2-check-fill me-1"></i> Agenda y Convocatorias AGECSO
+                </span>
+                <h2 class="display-6 fw-bold text-dark mb-0">Próximas Actividades</h2>
+            </div>
+            <a href="<?= APP_URL ?>/agenda" class="btn btn-outline-primary rounded-pill px-4 fw-bold">
+                Ver toda la agenda <i class="bi bi-arrow-right ms-1"></i>
+            </a>
         </div>
 
-        <div class="row g-4 justify-content-center">
-            <?php foreach ($data['ruedas'] as $rueda): ?>
-                <div class="col-lg-6 col-xl-4">
-                    <div class="card h-100 border-0 rounded-4 shadow-lg p-4 d-flex flex-column justify-between position-relative overflow-hidden" 
-                         style="background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.12) !important;">
-                        
+        <div class="row g-4">
+            <?php foreach (array_slice($data['agenda'], 0, 3) as $act): ?>
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column justify-content-between hover-shadow transition bg-white">
                         <div>
-                            <?php if (!empty($rueda['imagen'])): ?>
-                                <div class="mb-3 rounded-3 overflow-hidden shadow-sm" style="height: 180px;">
-                                    <img src="<?= BUSINESS_PLATFORM_URL ?>/<?= htmlspecialchars($rueda['imagen']) ?>" alt="<?= htmlspecialchars($rueda['nombreRueda'] ?? 'Rueda') ?>" class="w-100 h-100 object-fit-cover">
-                                </div>
-                            <?php endif; ?>
-
-                            <!-- Header Card: Estado y Modalidad -->
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <?php
-                                    $estado = $rueda['estadoRueda'] ?? 'activa';
-                                    $badgeClass = 'bg-success';
-                                    $estadoTexto = 'Rueda Activa';
-                                    if ($estado === 'inscripciones') {
-                                        $badgeClass = 'bg-warning text-dark';
-                                        $estadoTexto = 'Inscripciones Abiertas';
-                                    } elseif ($estado === 'planeacion') {
-                                        $badgeClass = 'bg-info text-dark';
-                                        $estadoTexto = 'Próximamente';
-                                    }
-                                ?>
-                                <span class="badge <?= $badgeClass ?> px-3 py-1.5 rounded-pill fw-bold text-uppercase" style="font-size: 0.72rem;">
-                                    <?= $estadoTexto ?>
-                                </span>
-
-                                <?php if (($rueda['modalidad'] ?? 'virtual') === 'presencial'): ?>
-                                    <span class="badge bg-white text-dark px-3 py-1.5 rounded-pill fw-bold" style="font-size: 0.72rem;">
-                                        <i class="bi bi-geo-alt-fill text-danger me-1"></i> Presencial (<?= $rueda['cantidadMesas'] ?? 1 ?> Mesas)
-                                    </span>
+                            <!-- Afiche / Imagen -->
+                            <div class="position-relative" style="height: 230px; background-color: #f8f9fa;">
+                                <?php if (!empty($act['imagen'])): ?>
+                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($act['imagen']) ?>" class="w-100 h-100 object-fit-contain p-2" alt="<?= htmlspecialchars($act['titulo']) ?>">
                                 <?php else: ?>
-                                    <span class="badge bg-primary px-3 py-1.5 rounded-pill fw-bold" style="font-size: 0.72rem;">
-                                        <i class="bi bi-camera-video-fill me-1"></i> Virtual
+                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted">
+                                        <i class="bi bi-calendar2-check fs-1 text-primary opacity-50"></i>
+                                    </div>
+                                <?php endif; ?>
+                                
+                                <?php if ($act['estado'] === 'destacado'): ?>
+                                    <span class="position-absolute top-0 start-0 m-3 badge bg-warning text-dark px-3 py-1.5 rounded-pill fw-bold shadow-sm">
+                                        <i class="bi bi-star-fill me-1"></i> Destacado
                                     </span>
                                 <?php endif; ?>
+
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-primary px-3 py-1.5 rounded-pill fw-bold text-capitalize shadow-sm">
+                                    <?= htmlspecialchars($act['tipo'] ?? 'Actividad') ?>
+                                </span>
                             </div>
 
-                            <!-- Título y Descripción -->
-                            <h4 class="fw-black text-white mb-2"><?= htmlspecialchars($rueda['nombreRueda'] ?? ($rueda['tituloRueda'] ?? 'Rueda de Negocios')) ?></h4>
-                            <p class="text-white-50 small mb-4" style="min-height: 44px;">
-                                <?= htmlspecialchars($rueda['descripcion'] ?? 'Evento empresarial de relacionamiento y citas comerciales.') ?>
-                            </p>
+                            <div class="p-4">
+                                <h5 class="fw-bold text-dark mb-2"><?= htmlspecialchars($act['titulo']) ?></h5>
+                                <p class="text-muted small mb-3">
+                                    <?php 
+                                    $plainText = strip_tags($act['descripcion'] ?? '');
+                                    echo htmlspecialchars(substr($plainText, 0, 110)) . (strlen($plainText) > 110 ? '...' : ''); 
+                                    ?>
+                                </p>
 
-                            <!-- Detalles de Fechas y Horarios -->
-                            <div class="rounded-3 p-3 mb-4" style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05);">
-                                <div class="d-flex align-items-center gap-2.5 mb-2 text-white-75 small">
-                                    <i class="bi bi-calendar-event text-warning fs-5"></i>
-                                    <div>
-                                        <strong class="text-white d-block">Fechas del Evento:</strong>
-                                        <span><?= date('d/m/Y', strtotime($rueda['fechaInicio'])) ?> - <?= date('d/m/Y', strtotime($rueda['fechaFin'])) ?></span>
-                                    </div>
+                                <div class="bg-light rounded-3 p-2.5 mb-2">
+                                    <?php if (!empty($act['fecha_inicio'])): ?>
+                                        <div class="d-flex align-items-center gap-2 mb-1 text-dark small">
+                                            <i class="bi bi-calendar-event text-primary"></i>
+                                            <span>
+                                                <?= date('d/m/Y', strtotime($act['fecha_inicio'])) ?>
+                                                <?php if (!empty($act['fecha_fin']) && $act['fecha_fin'] !== $act['fecha_inicio']): ?>
+                                                    - <?= date('d/m/Y', strtotime($act['fecha_fin'])) ?>
+                                                <?php endif; ?>
+                                            </span>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (!empty($act['hora_inicio'])): ?>
+                                        <div class="d-flex align-items-center gap-2 text-dark small">
+                                            <i class="bi bi-clock text-success"></i>
+                                            <span>
+                                                <?= date('h:i A', strtotime($act['hora_inicio'])) ?>
+                                                <?php if (!empty($act['hora_fin'])): ?>
+                                                    - <?= date('h:i A', strtotime($act['hora_fin'])) ?>
+                                                <?php endif; ?>
+                                            </span>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
-                                <div class="d-flex align-items-center gap-2.5 text-white-75 small">
-                                    <i class="bi bi-clock-history text-info fs-5"></i>
-                                    <div>
-                                        <strong class="text-white d-block">Horario de Citas (30 min):</strong>
-                                        <span>
-                                            <?= !empty($rueda['horaInicio']) ? date('h:i A', strtotime($rueda['horaInicio'])) : '08:00 AM' ?> - 
-                                            <?= !empty($rueda['horaFin']) ? date('h:i A', strtotime($rueda['horaFin'])) : '06:00 PM' ?>
-                                        </span>
-                                    </div>
-                                </div>
+
+                                <?php if (!empty($act['lugar'])): ?>
+                                    <p class="text-muted small mb-0"><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars($act['lugar']) ?></p>
+                                <?php endif; ?>
                             </div>
                         </div>
 
-                        <!-- Botón CTA: Registrarme -->
-                        <div class="mt-2">
-                            <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rueda_id=<?= $rueda['id'] ?>" 
-                               class="btn btn-warning w-100 fw-bold py-3 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2 text-dark fs-6">
-                                <i class="bi bi-pencil-square"></i> Registrarme en la Rueda
-                            </a>
-
-                            <div class="text-center mt-2.5">
-                                <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=login" class="text-white-50 small text-decoration-none hover-white">
-                                    ¿Ya tienes cuenta? <span class="text-warning fw-bold text-decoration-underline">Inicia Sesión</span>
+                        <div class="px-4 pb-4 pt-0">
+                            <?php if (!empty($act['link_registro'])): ?>
+                                <a href="<?= htmlspecialchars($act['link_registro']) ?>" target="_blank" class="btn btn-primary w-100 fw-bold rounded-pill py-2.5 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-box-arrow-up-right"></i> <?= htmlspecialchars($act['texto_boton'] ?? 'Inscribirme') ?>
                                 </a>
-                            </div>
+                            <?php else: ?>
+                                <a href="<?= APP_URL ?>/agenda" class="btn btn-outline-primary w-100 fw-bold rounded-pill py-2.5 d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-info-circle"></i> Ver Detalles
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -636,82 +635,3 @@
 </section>
 <?php endif; ?>
 
-<?php if (!empty($data['agenda'])): ?>
-<section class="section-padding bg-light">
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <span class="text-uppercase tracking-wider fw-bold text-primary" style="font-size: 0.8rem; letter-spacing: 0.15em;">Calendario y Actividades</span>
-                <h2 class="mb-0 fw-bold text-dark">Agenda y Convocatorias Abiertas</h2>
-            </div>
-            <a href="<?= APP_URL ?>/agenda" class="btn btn-outline-primary rounded-pill px-4 fw-bold">Ver toda la agenda</a>
-        </div>
-        <div class="row g-4">
-            <?php foreach (array_slice($data['agenda'], 0, 3) as $act): ?>
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column justify-content-between hover-shadow transition bg-white">
-                        <div>
-                            <!-- Afiche / Imagen -->
-                            <div class="position-relative" style="height: 220px; background-color: #f8f9fa;">
-                                <?php if (!empty($act['imagen'])): ?>
-                                    <img src="<?= APP_URL ?>/uploads/<?= htmlspecialchars($act['imagen']) ?>" class="w-100 h-100 object-fit-contain p-2" alt="<?= htmlspecialchars($act['titulo']) ?>">
-                                <?php else: ?>
-                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-white text-muted">
-                                        <i class="bi bi-calendar2-check fs-1 text-primary opacity-50"></i>
-                                    </div>
-                                <?php endif; ?>
-                                
-                                <?php if ($act['estado'] === 'destacado'): ?>
-                                    <span class="position-absolute top-0 start-0 m-3 badge bg-warning text-dark px-3 py-1.5 rounded-pill fw-bold shadow-sm">
-                                        <i class="bi bi-star-fill me-1"></i> Destacado
-                                    </span>
-                                <?php endif; ?>
-
-                                <span class="position-absolute top-0 end-0 m-3 badge bg-primary px-3 py-1.5 rounded-pill fw-bold text-capitalize shadow-sm">
-                                    <?= htmlspecialchars($act['tipo'] ?? 'Actividad') ?>
-                                </span>
-                            </div>
-
-                            <div class="p-4">
-                                <h5 class="fw-bold text-dark mb-2"><?= htmlspecialchars($act['titulo']) ?></h5>
-                                <p class="text-muted small mb-3">
-                                    <?php 
-                                    $plainText = strip_tags($act['descripcion'] ?? '');
-                                    echo htmlspecialchars(substr($plainText, 0, 110)) . (strlen($plainText) > 110 ? '...' : ''); 
-                                    ?>
-                                </p>
-
-                                <?php if (!empty($act['lugar'])): ?>
-                                    <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars($act['lugar']) ?></p>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-
-                        <div class="px-4 pb-4 pt-0">
-                            <div class="d-flex align-items-center justify-content-between border-top pt-3 mb-3">
-                                <span class="small fw-bold text-dark">
-                                    <i class="bi bi-calendar-event text-primary me-1"></i> 
-                                    <?= !empty($act['fecha_inicio']) ? date('d/m/Y', strtotime($act['fecha_inicio'])) : 'Próximamente' ?>
-                                </span>
-                                <?php if (!empty($act['hora_inicio'])): ?>
-                                    <span class="small text-muted"><i class="bi bi-clock me-1"></i> <?= date('h:i A', strtotime($act['hora_inicio'])) ?></span>
-                                <?php endif; ?>
-                            </div>
-
-                            <?php if (!empty($act['link_registro'])): ?>
-                                <a href="<?= htmlspecialchars($act['link_registro']) ?>" target="_blank" class="btn btn-primary w-100 fw-bold rounded-pill py-2 shadow-sm d-flex align-items-center justify-content-center gap-1.5 text-sm">
-                                    <i class="bi bi-box-arrow-up-right"></i> <?= htmlspecialchars($act['texto_boton'] ?? 'Inscribirme') ?>
-                                </a>
-                            <?php else: ?>
-                                <a href="<?= APP_URL ?>/agenda" class="btn btn-outline-primary w-100 fw-bold rounded-pill py-2 d-flex align-items-center justify-content-center gap-1.5 text-sm">
-                                    <i class="bi bi-info-circle"></i> Ver Detalles
-                                </a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-<?php endif; ?>
