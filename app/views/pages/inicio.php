@@ -331,12 +331,12 @@
                             <?php endif; ?>
 
                             <!-- Detalles de Fechas, Horarios y Lugar -->
-                            <div class="rounded-3 p-3 mb-4" style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.05);">
+                            <div class="rounded-3 p-3 mb-4" style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);">
                                 <?php if (!empty($act['fecha_inicio'])): ?>
-                                    <div class="d-flex align-items-center gap-2.5 mb-2 text-white-75 small">
+                                    <div class="d-flex align-items-center gap-2.5 mb-2 small" style="color: rgba(255,255,255,0.95) !important;">
                                         <i class="bi bi-calendar-event text-warning fs-5"></i>
                                         <div>
-                                            <strong class="text-white d-block">Fecha:</strong>
+                                            <strong class="d-block" style="color: #ffffff !important;">Fecha:</strong>
                                             <span>
                                                 <?= date('d/m/Y', strtotime($act['fecha_inicio'])) ?>
                                                 <?php if (!empty($act['fecha_fin']) && $act['fecha_fin'] !== $act['fecha_inicio']): ?>
@@ -348,10 +348,10 @@
                                 <?php endif; ?>
 
                                 <?php if (!empty($act['hora_inicio'])): ?>
-                                    <div class="d-flex align-items-center gap-2.5 mb-2 text-white-75 small">
+                                    <div class="d-flex align-items-center gap-2.5 mb-2 small" style="color: rgba(255,255,255,0.95) !important;">
                                         <i class="bi bi-clock-history text-info fs-5"></i>
                                         <div>
-                                            <strong class="text-white d-block">Horario:</strong>
+                                            <strong class="d-block" style="color: #ffffff !important;">Horario:</strong>
                                             <span>
                                                 <?= date('h:i A', strtotime($act['hora_inicio'])) ?>
                                                 <?php if (!empty($act['hora_fin'])): ?>
@@ -363,10 +363,10 @@
                                 <?php endif; ?>
 
                                 <?php if (!empty($act['lugar'])): ?>
-                                    <div class="d-flex align-items-center gap-2.5 text-white-75 small">
+                                    <div class="d-flex align-items-center gap-2.5 small" style="color: rgba(255,255,255,0.95) !important;">
                                         <i class="bi bi-geo-alt-fill text-danger fs-5"></i>
                                         <div>
-                                            <strong class="text-white d-block">Lugar:</strong>
+                                            <strong class="d-block" style="color: #ffffff !important;">Lugar:</strong>
                                             <span><?= htmlspecialchars($act['lugar']) ?></span>
                                         </div>
                                     </div>
