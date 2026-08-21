@@ -108,17 +108,38 @@ class PageController
     private function getRuedas(int $limit = 0) {
         try {
             $ruedas = [];
+            // 1. Conectar a la base de datos de ruedas (producción)
             try {
-                $sql = "SELECT * FROM u152451479_agecso_rueda.ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
-                if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
-                $stmt = $this->pdo->query($sql);
-                if ($stmt) $ruedas = $stmt->fetchAll();
-            } catch (Exception $e) {
+                $host = "localhost";
+                $port = 3306;
+                $db_name = "u152451479_agecso_rueda";
+                $username = "u152451479_agecso_user";
+                $password = "Lopez1007645229*";
+
+                $pdo_rueda = new PDO("mysql:host=$host;port=$port;dbname=$db_name;charset=utf8mb4", $username, $password, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+                ]);
+
                 $sql = "SELECT * FROM ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
                 if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
-                $stmt = $this->pdo->query($sql);
+                $stmt = $pdo_rueda->query($sql);
                 if ($stmt) $ruedas = $stmt->fetchAll();
+            } catch (Exception $e) {
+                // 2. Intentar consulta en la conexión actual
+                try {
+                    $sql = "SELECT * FROM u152451479_agecso_rueda.ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
+                    if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
+                    $stmt = $this->pdo->query($sql);
+                    if ($stmt) $ruedas = $stmt->fetchAll();
+                } catch (Exception $e2) {
+                    $sql = "SELECT * FROM ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
+                    if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
+                    $stmt = $this->pdo->query($sql);
+                    if ($stmt) $ruedas = $stmt->fetchAll();
+                }
             }
+
             return $ruedas;
         } catch (Exception $e) {
             return [];
