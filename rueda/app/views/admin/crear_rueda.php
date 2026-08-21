@@ -62,6 +62,41 @@
                         </div>
                     </div>
 
+                    <!-- Franja Horaria de Reuniones -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600">
+                                <i class="fas fa-clock mr-1"></i> Hora Inicio de Citas <span class="text-red-500">*</span>
+                            </label>
+                            <input type="time" name="hora_inicio" value="08:00" required 
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600">
+                                <i class="fas fa-clock mr-1"></i> Hora Fin de Citas <span class="text-red-500">*</span>
+                            </label>
+                            <input type="time" name="hora_fin" value="18:00" required 
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200">
+                        </div>
+                    </div>
+
+                    <!-- Duración de Citas -->
+                    <div class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-sm">
+                                <i class="fas fa-stopwatch"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-extrabold text-gray-800">Duración por Cita de Negocio</p>
+                                <p class="text-xs text-gray-500">Bloques estándar de 30 minutos por reunión</p>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500 text-white text-xs font-black px-4 py-1.5 rounded-full shadow-sm">
+                            30 Minutos
+                        </span>
+                        <input type="hidden" name="duracion_cita" value="30">
+                    </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Estado Inicial</label>

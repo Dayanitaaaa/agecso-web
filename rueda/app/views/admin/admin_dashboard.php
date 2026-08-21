@@ -57,6 +57,95 @@
             </div>
         </div>
 
+        <!-- SECCIÓN: Ruedas de Negocios Registradas -->
+        <div id="ruedas" class="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl overflow-hidden border border-gray-100 scroll-mt-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
+            <div class="px-6 py-5 border-b border-gray-100 bg-amber-50/10 flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2">
+                        <i class="fas fa-calendar-alt text-amber-500"></i> Ruedas de Negocios
+                    </h3>
+                    <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-1">Eventos configurados, franjas horarias y control de mesas</p>
+                </div>
+                <button onclick="document.getElementById('modalCrearRueda').classList.remove('hidden')" 
+                        class="bg-amber-500 hover:bg-amber-600 text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition flex items-center gap-1.5">
+                    <i class="fas fa-plus"></i> Nueva Rueda
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-100">
+                    <thead class="bg-gray-50/50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Rueda / Evento</th>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Fechas del Evento</th>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Horario de Reuniones</th>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Modalidad / Mesas</th>
+                            <th class="px-6 py-4 text-center text-xs font-extrabold text-gray-400 uppercase tracking-wider">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        <?php if (empty($ruedas)): ?>
+                            <tr>
+                                <td colspan="5" class="px-6 py-6 text-center text-gray-400 italic text-sm">No hay ruedas de negocios registradas.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($ruedas as $r): ?>
+                                <tr class="hover:bg-amber-50/5 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-extrabold text-gray-900"><?php echo htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda')); ?></div>
+                                        <div class="text-[10px] text-gray-400 font-bold max-w-xs truncate"><?php echo htmlspecialchars($r['descripcion'] ?? ''); ?></div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600 font-bold">
+                                        <div class="flex items-center gap-1.5">
+                                            <i class="fas fa-calendar text-amber-500 text-[10px]"></i>
+                                            <span><?php echo date('d/m/Y', strtotime($r['fechaInicio'])); ?> - <?php echo date('d/m/Y', strtotime($r['fechaFin'])); ?></span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs">
+                                        <div class="flex flex-col gap-0.5">
+                                            <span class="font-black text-gray-800 flex items-center gap-1">
+                                                <i class="fas fa-clock text-emerald-500 text-[10px]"></i>
+                                                <?php echo !empty($r['horaInicio']) ? date('h:i A', strtotime($r['horaInicio'])) : '08:00 AM'; ?> - 
+                                                <?php echo !empty($r['horaFin']) ? date('h:i A', strtotime($r['horaFin'])) : '06:00 PM'; ?>
+                                            </span>
+                                            <span class="text-[10px] text-emerald-600 font-bold">
+                                                <i class="fas fa-stopwatch text-[9px]"></i> Citas de 30 minutos
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs">
+                                        <?php if (($r['modalidad'] ?? 'virtual') === 'presencial'): ?>
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black bg-purple-50 text-purple-700 border border-purple-100">
+                                                <i class="fas fa-chair mr-1"></i> Presencial (<?php echo $r['cantidadMesas'] ?? 1; ?> Mesas)
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black bg-sky-50 text-sky-700 border border-sky-100">
+                                                <i class="fas fa-video mr-1"></i> Virtual
+                                            </span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <?php
+                                            $estadoClases = [
+                                                'activa' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+                                                'inscripciones' => 'bg-amber-50 text-amber-700 border border-amber-200',
+                                                'planeacion' => 'bg-blue-50 text-blue-700 border border-blue-200',
+                                                'finalizada' => 'bg-gray-100 text-gray-600 border border-gray-200',
+                                                'cancelada' => 'bg-red-50 text-red-600 border border-red-200'
+                                            ];
+                                            $claseEstado = $estadoClases[$r['estadoRueda']] ?? 'bg-gray-100 text-gray-700';
+                                        ?>
+                                        <span class="px-3 py-1 text-[10px] font-black rounded-full uppercase tracking-wider <?php echo $claseEstado; ?>">
+                                            <?php echo htmlspecialchars($r['estadoRueda']); ?>
+                                        </span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- Nueva sección: Empresas Pendientes de Aprobación -->
         <div id="empresas-pendientes" class="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl overflow-hidden border border-gray-100 scroll-mt-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
             <div class="px-6 py-5 border-b border-gray-100 bg-amber-50/10 flex justify-between items-center">
@@ -359,6 +448,41 @@
                                     class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-400 transition duration-200 bg-white cursor-pointer"
                                     placeholder="Seleccionar fecha...">
                             </div>
+                        </div>
+
+                        <!-- Franja Horaria de Reuniones -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600">
+                                    <i class="fas fa-clock mr-1"></i> Hora Inicio de Citas
+                                </label>
+                                <input type="time" name="hora_inicio" id="hora_inicio" value="08:00" required 
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600">
+                                    <i class="fas fa-clock mr-1"></i> Hora Fin de Citas
+                                </label>
+                                <input type="time" name="hora_fin" id="hora_fin" value="18:00" required 
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white">
+                            </div>
+                        </div>
+
+                        <!-- Duración de Citas -->
+                        <div class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-3 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-xs">
+                                    <i class="fas fa-stopwatch"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-extrabold text-gray-800">Duración por Cita de Negocio</p>
+                                    <p class="text-[10px] text-gray-500">Bloques estándar de 30 minutos por reunión</p>
+                                </div>
+                            </div>
+                            <span class="bg-amber-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
+                                30 Minutos
+                            </span>
+                            <input type="hidden" name="duracion_cita" value="30">
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
