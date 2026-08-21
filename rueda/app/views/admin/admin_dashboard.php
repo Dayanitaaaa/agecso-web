@@ -453,18 +453,24 @@
                         <!-- Franja Horaria de Reuniones -->
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600">
-                                    <i class="fas fa-clock mr-1"></i> Hora Inicio de Citas
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
+                                    <i class="fas fa-clock text-emerald-500"></i> Hora Inicio Citas
                                 </label>
-                                <input type="time" name="hora_inicio" id="hora_inicio" value="08:00" required 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white">
+                                <div class="relative">
+                                    <input type="text" name="hora_inicio" id="hora_inicio" value="08:00" required 
+                                        class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white cursor-pointer"
+                                        placeholder="08:00 AM">
+                                </div>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600">
-                                    <i class="fas fa-clock mr-1"></i> Hora Fin de Citas
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
+                                    <i class="fas fa-clock text-emerald-500"></i> Hora Fin Citas
                                 </label>
-                                <input type="time" name="hora_fin" id="hora_fin" value="18:00" required 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white">
+                                <div class="relative">
+                                    <input type="text" name="hora_fin" id="hora_fin" value="18:00" required 
+                                        class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white cursor-pointer"
+                                        placeholder="06:00 PM">
+                                </div>
                             </div>
                         </div>
 
@@ -613,6 +619,29 @@
 
         const fpFin = flatpickr("#fecha_fin", {
             ...configDate
+        });
+
+        // Configuración elegante de selector de Hora para Citas (Flatpickr)
+        const configTime = {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            altInput: true,
+            altFormat: "h:i K",
+            time_24hr: false,
+            minuteIncrement: 30,
+            disableMobile: "true",
+            locale: "es"
+        };
+
+        flatpickr("#hora_inicio", {
+            ...configTime,
+            defaultDate: "08:00"
+        });
+
+        flatpickr("#hora_fin", {
+            ...configTime,
+            defaultDate: "18:00"
         });
     });
 </script>
