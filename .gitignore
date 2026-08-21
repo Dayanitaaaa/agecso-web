@@ -6,6 +6,8 @@ config/db.php
 Thumbs.db
 Archivo.zip
 __MACOSX/
+rueda/sessions/*
+!rueda/sessions/.gitkeep
 
 # Carpeta git
 .git/

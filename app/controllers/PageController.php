@@ -107,28 +107,17 @@ class PageController
 
     private function getRuedas(int $limit = 0) {
         try {
-            $sql = "SELECT * FROM ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
-            if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
-            $stmt = $this->pdo->query($sql);
-            $ruedas = $stmt ? $stmt->fetchAll() : [];
-            
-            // Si la base de datos está vacía, mostrar una rueda de ejemplo destacada
-            if (empty($ruedas)) {
-                $ruedas = [
-                    [
-                        'id' => 1,
-                        'nombreRueda' => 'Gran Rueda de Negocios AGECSO 2026',
-                        'descripcion' => 'Encuentro empresarial multisectorial para conectar empresas vendedoras y compradoras de Sabana Occidente.',
-                        'fechaInicio' => date('Y-m-d', strtotime('+7 days')),
-                        'fechaFin' => date('Y-m-d', strtotime('+8 days')),
-                        'horaInicio' => '08:00:00',
-                        'horaFin' => '18:00:00',
-                        'duracionCitaMinutos' => 30,
-                        'modalidad' => 'presencial',
-                        'cantidadMesas' => 20,
-                        'estadoRueda' => 'inscripciones'
-                    ]
-                ];
+            $ruedas = [];
+            try {
+                $sql = "SELECT * FROM u152451479_agecso_rueda.ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
+                if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
+                $stmt = $this->pdo->query($sql);
+                if ($stmt) $ruedas = $stmt->fetchAll();
+            } catch (Exception $e) {
+                $sql = "SELECT * FROM ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
+                if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
+                $stmt = $this->pdo->query($sql);
+                if ($stmt) $ruedas = $stmt->fetchAll();
             }
             return $ruedas;
         } catch (Exception $e) {
