@@ -312,6 +312,8 @@ class AdminController {
                             $this->pdo->exec("ALTER TABLE ruedas_negocios ADD COLUMN $col $def");
                         }
                     }
+                    // Asegurar que el ENUM de estadoRueda incluya 'inscripciones'
+                    $this->pdo->exec("ALTER TABLE ruedas_negocios MODIFY COLUMN estadoRueda ENUM('planeacion','inscripciones','activa','finalizada','cancelada') DEFAULT 'planeacion'");
                 } catch (Exception $e) {}
 
                 // Procesar subida de imagen de la rueda
@@ -397,6 +399,8 @@ class AdminController {
                             $this->pdo->exec("ALTER TABLE ruedas_negocios ADD COLUMN $col $def");
                         }
                     }
+                    // Asegurar que el ENUM de estadoRueda incluya 'inscripciones'
+                    $this->pdo->exec("ALTER TABLE ruedas_negocios MODIFY COLUMN estadoRueda ENUM('planeacion','inscripciones','activa','finalizada','cancelada') DEFAULT 'planeacion'");
                 } catch (Exception $e) {}
 
                 // Procesar subida de nueva imagen si se seleccionó
