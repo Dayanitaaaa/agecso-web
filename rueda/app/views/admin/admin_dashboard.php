@@ -92,8 +92,19 @@
                             <?php foreach ($ruedas as $r): ?>
                                 <tr class="hover:bg-amber-50/5 transition">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-extrabold text-gray-900"><?php echo htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda')); ?></div>
-                                        <div class="text-[10px] text-gray-400 font-bold max-w-xs truncate"><?php echo htmlspecialchars($r['descripcion'] ?? ''); ?></div>
+                                        <div class="flex items-center gap-3">
+                                            <?php if (!empty($r['imagen'])): ?>
+                                                <img src="<?php echo htmlspecialchars($r['imagen']); ?>" alt="Banner" class="w-10 h-10 rounded-xl object-cover border border-amber-200 flex-shrink-0">
+                                            <?php else: ?>
+                                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-sm flex-shrink-0">
+                                                    <i class="fas fa-handshake"></i>
+                                                </div>
+                                            <?php endif; ?>
+                                            <div>
+                                                <div class="text-sm font-extrabold text-gray-900"><?php echo htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda')); ?></div>
+                                                <div class="text-[10px] text-gray-400 font-bold max-w-xs truncate"><?php echo htmlspecialchars($r['descripcion'] ?? ''); ?></div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600 font-bold">
                                         <div class="flex items-center gap-1.5">
@@ -325,7 +336,7 @@
                 </svg>
             </button>
 
-            <form action="index.php?controlador=admin&accion=editarRueda" method="POST">
+            <form action="index.php?controlador=admin&accion=editarRueda" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="rueda_id" id="edit_rueda_id">
                 <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
                     <!-- Título con Icono -->
@@ -347,6 +358,23 @@
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Descripción del Evento <span class="text-red-500">*</span></label>
                             <textarea name="descripcion" id="edit_descripcion" rows="3" required 
                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 resize-none"></textarea>
+                        </div>
+
+                        <!-- Imagen de la Rueda -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fas fa-image text-amber-500"></i> Imagen o Banner de la Rueda
+                            </label>
+                            <div class="flex items-center gap-3 p-3 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+                                <div id="edit_previewContainer" class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0">
+                                    <i class="fas fa-image text-gray-400 text-xl" id="edit_previewPlaceholder"></i>
+                                    <img id="edit_imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" name="imagen" id="edit_imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" onchange="previewEditImage(this)">
+                                    <p class="text-[10px] text-gray-400 mt-1">Sube una nueva foto para reemplazar la actual.</p>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Fechas del Evento -->
@@ -565,7 +593,7 @@
                 </svg>
             </button>
 
-            <form action="index.php?controlador=admin&accion=crearRueda" method="POST">
+            <form action="index.php?controlador=admin&accion=crearRueda" method="POST" enctype="multipart/form-data">
                 <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
                     <!-- Título con Icono -->
                     <div class="flex items-center gap-2.5 mb-6 text-left">
@@ -590,6 +618,23 @@
                             <textarea name="descripcion" rows="3" required 
                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 resize-none" 
                                       placeholder="Detalles sobre el alcance, sectores invitados y objetivos..."></textarea>
+                        </div>
+
+                        <!-- Imagen / Banner de la Rueda -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fas fa-image text-amber-500"></i> Imagen o Banner de la Rueda
+                            </label>
+                            <div class="flex items-center gap-3 p-3 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
+                                <div id="create_previewContainer" class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0">
+                                    <i class="fas fa-image text-gray-400 text-xl" id="create_previewPlaceholder"></i>
+                                    <img id="create_imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
+                                </div>
+                                <div class="flex-1">
+                                    <input type="file" name="imagen" id="create_imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" onchange="previewCreateImage(this)">
+                                    <p class="text-[10px] text-gray-400 mt-1">Formatos: JPG, PNG, WEBP.</p>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Fechas de Inscripción -->
@@ -736,6 +781,34 @@
 </div>
 
 <script>
+    function previewCreateImage(input) {
+        const preview = document.getElementById('create_imagePreview');
+        const placeholder = document.getElementById('create_previewPlaceholder');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function previewEditImage(input) {
+        const preview = document.getElementById('edit_imagePreview');
+        const placeholder = document.getElementById('edit_previewPlaceholder');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
     function toggleUbicacion() {
         const modalidad = document.getElementById('modalidad_select').value;
         const container = document.getElementById('ubicacion_container');
@@ -795,6 +868,19 @@
         if (fpEditFin && rueda.fechaFin) fpEditFin.setDate(rueda.fechaFin);
         if (fpEditHoraInicio && rueda.horaInicio) fpEditHoraInicio.setDate(rueda.horaInicio);
         if (fpEditHoraFin && rueda.horaFin) fpEditHoraFin.setDate(rueda.horaFin);
+
+        // Previsualización de imagen existente en edición
+        const editPreview = document.getElementById('edit_imagePreview');
+        const editPlaceholder = document.getElementById('edit_previewPlaceholder');
+        if (rueda.imagen) {
+            editPreview.src = rueda.imagen;
+            editPreview.classList.remove('hidden');
+            if (editPlaceholder) editPlaceholder.classList.add('hidden');
+        } else {
+            editPreview.src = '';
+            editPreview.classList.add('hidden');
+            if (editPlaceholder) editPlaceholder.classList.remove('hidden');
+        }
 
         document.getElementById('modalEditarRueda').classList.remove('hidden');
     }

@@ -294,6 +294,12 @@
                          style="background: rgba(255, 255, 255, 0.06); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.12) !important;">
                         
                         <div>
+                            <?php if (!empty($rueda['imagen'])): ?>
+                                <div class="mb-3 rounded-3 overflow-hidden shadow-sm" style="height: 180px;">
+                                    <img src="<?= BUSINESS_PLATFORM_URL ?>/<?= htmlspecialchars($rueda['imagen']) ?>" alt="<?= htmlspecialchars($rueda['nombreRueda'] ?? 'Rueda') ?>" class="w-100 h-100 object-fit-cover">
+                                </div>
+                            <?php endif; ?>
+
                             <!-- Header Card: Estado y Modalidad -->
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <?php
@@ -351,23 +357,14 @@
                             </div>
                         </div>
 
-                        <!-- Botones CTA: Vendedor vs Comprador -->
-                        <div class="mt-2 space-y-2">
-                            <p class="text-[11px] text-white-50 text-center uppercase tracking-wider fw-bold mb-2">Selecciona cómo deseas participar:</p>
-                            
-                            <div class="d-grid gap-2">
-                                <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rol=vendedor&rueda_id=<?= $rueda['id'] ?>" 
-                                   class="btn btn-warning fw-bold py-2.5 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2 text-dark">
-                                    <i class="bi bi-shop"></i> Inscribirme como Vendedor / Proveedor
-                                </a>
+                        <!-- Botón CTA: Registrarme -->
+                        <div class="mt-2">
+                            <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rueda_id=<?= $rueda['id'] ?>" 
+                               class="btn btn-warning w-100 fw-bold py-3 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2 text-dark fs-6">
+                                <i class="bi bi-pencil-square"></i> Registrarme en la Rueda
+                            </a>
 
-                                <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rol=comprador&rueda_id=<?= $rueda['id'] ?>" 
-                                   class="btn btn-outline-light fw-bold py-2 rounded-pill d-flex align-items-center justify-content-center gap-2">
-                                    <i class="bi bi-cart3"></i> Inscribirme como Comprador
-                                </a>
-                            </div>
-
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-2.5">
                                 <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=login" class="text-white-50 small text-decoration-none hover-white">
                                     ¿Ya tienes cuenta? <span class="text-warning fw-bold text-decoration-underline">Inicia Sesión</span>
                                 </a>

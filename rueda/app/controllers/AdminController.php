@@ -295,7 +295,7 @@ class AdminController {
                     throw new Exception("La fecha de finalización no puede ser anterior a la fecha de inicio.");
                 }
 
-                // Asegurar columnas de horario, mesas y modalidad en ruedas_negocios
+                // Asegurar columnas de horario, mesas, modalidad e imagen en ruedas_negocios
                 try {
                     $cols = [
                         'horaInicio' => "TIME DEFAULT '08:00:00'",
@@ -303,7 +303,8 @@ class AdminController {
                         'duracionCitaMinutos' => "INT DEFAULT 30",
                         'modalidad' => "VARCHAR(50) DEFAULT 'virtual'",
                         'ubicacion' => "VARCHAR(255) DEFAULT 'Virtual'",
-                        'cantidadMesas' => "INT DEFAULT 1"
+                        'cantidadMesas' => "INT DEFAULT 1",
+                        'imagen' => "VARCHAR(255) DEFAULT NULL"
                     ];
                     foreach ($cols as $col => $def) {
                         $stmt_check = $this->pdo->query("SHOW COLUMNS FROM ruedas_negocios LIKE '$col'");
@@ -313,10 +314,28 @@ class AdminController {
                     }
                 } catch (Exception $e) {}
 
-                $sql = "INSERT INTO ruedas_negocios (nombreRueda, descripcion, fechaInicio, fechaFin, horaInicio, horaFin, duracionCitaMinutos, modalidad, ubicacion, cantidadMesas, estadoRueda, organizadorId) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                // Procesar subida de imagen de la rueda
+                $imagen_path = null;
+                if (!empty($_FILES['imagen']['name']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                    $allowed_exts = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+                    $file_info = pathinfo($_FILES['imagen']['name']);
+                    $ext = strtolower($file_info['extension'] ?? '');
+                    if (in_array($ext, $allowed_exts)) {
+                        $upload_dir = __DIR__ . '/../../public/uploads/ruedas/';
+                        if (!is_dir($upload_dir)) {
+                            mkdir($upload_dir, 0755, true);
+                        }
+                        $filename = 'rueda_' . time() . '_' . uniqid() . '.' . $ext;
+                        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $upload_dir . $filename)) {
+                            $imagen_path = 'uploads/ruedas/' . $filename;
+                        }
+                    }
+                }
+
+                $sql = "INSERT INTO ruedas_negocios (nombreRueda, descripcion, fechaInicio, fechaFin, horaInicio, horaFin, duracionCitaMinutos, modalidad, ubicacion, cantidadMesas, estadoRueda, organizadorId, imagen) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $this->pdo->prepare($sql);
-                $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $usuario_id]);
+                $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $usuario_id, $imagen_path]);
 
                 Logger::log("Rueda de Negocios Creada: '$titulo' (ID: " . $this->pdo->lastInsertId() . ") por Admin ID: $usuario_id", 'business');
 
@@ -369,7 +388,8 @@ class AdminController {
                         'duracionCitaMinutos' => "INT DEFAULT 30",
                         'modalidad' => "VARCHAR(50) DEFAULT 'virtual'",
                         'ubicacion' => "VARCHAR(255) DEFAULT 'Virtual'",
-                        'cantidadMesas' => "INT DEFAULT 1"
+                        'cantidadMesas' => "INT DEFAULT 1",
+                        'imagen' => "VARCHAR(255) DEFAULT NULL"
                     ];
                     foreach ($cols as $col => $def) {
                         $stmt_check = $this->pdo->query("SHOW COLUMNS FROM ruedas_negocios LIKE '$col'");
@@ -379,13 +399,41 @@ class AdminController {
                     }
                 } catch (Exception $e) {}
 
-                $sql = "UPDATE ruedas_negocios 
-                        SET nombreRueda = ?, descripcion = ?, fechaInicio = ?, fechaFin = ?, 
-                            horaInicio = ?, horaFin = ?, duracionCitaMinutos = ?, 
-                            modalidad = ?, ubicacion = ?, cantidadMesas = ?, estadoRueda = ? 
-                        WHERE id = ?";
-                $stmt = $this->pdo->prepare($sql);
-                $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $rueda_id]);
+                // Procesar subida de nueva imagen si se seleccionó
+                $nueva_imagen = null;
+                if (!empty($_FILES['imagen']['name']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+                    $allowed_exts = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+                    $file_info = pathinfo($_FILES['imagen']['name']);
+                    $ext = strtolower($file_info['extension'] ?? '');
+                    if (in_array($ext, $allowed_exts)) {
+                        $upload_dir = __DIR__ . '/../../public/uploads/ruedas/';
+                        if (!is_dir($upload_dir)) {
+                            mkdir($upload_dir, 0755, true);
+                        }
+                        $filename = 'rueda_' . time() . '_' . uniqid() . '.' . $ext;
+                        if (move_uploaded_file($_FILES['imagen']['tmp_name'], $upload_dir . $filename)) {
+                            $nueva_imagen = 'uploads/ruedas/' . $filename;
+                        }
+                    }
+                }
+
+                if ($nueva_imagen) {
+                    $sql = "UPDATE ruedas_negocios 
+                            SET nombreRueda = ?, descripcion = ?, fechaInicio = ?, fechaFin = ?, 
+                                horaInicio = ?, horaFin = ?, duracionCitaMinutos = ?, 
+                                modalidad = ?, ubicacion = ?, cantidadMesas = ?, estadoRueda = ?, imagen = ? 
+                            WHERE id = ?";
+                    $stmt = $this->pdo->prepare($sql);
+                    $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $nueva_imagen, $rueda_id]);
+                } else {
+                    $sql = "UPDATE ruedas_negocios 
+                            SET nombreRueda = ?, descripcion = ?, fechaInicio = ?, fechaFin = ?, 
+                                horaInicio = ?, horaFin = ?, duracionCitaMinutos = ?, 
+                                modalidad = ?, ubicacion = ?, cantidadMesas = ?, estadoRueda = ? 
+                            WHERE id = ?";
+                    $stmt = $this->pdo->prepare($sql);
+                    $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $rueda_id]);
+                }
 
                 Logger::log("Rueda de Negocios ID $rueda_id actualizada por Admin ID: $usuario_id", 'business');
 

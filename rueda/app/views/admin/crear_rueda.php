@@ -18,8 +18,10 @@
 
         <!-- Formulario -->
         <div class="bg-white p-8 rounded-[2rem] shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100">
-            <form action="index.php?controlador=admin&accion=crearRueda" method="POST">
-                <div class="space-y-6">
+            <form action="index.php?controlador=admin&accion=crearRueda" method="POST" enctype="multipart/form-data" class="space-y-6">
+                
+                <!-- Título y Descripción -->
+                <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Título de la Rueda <span class="text-red-500">*</span></label>
                         <input type="text" name="titulo" required 
@@ -32,6 +34,23 @@
                         <textarea name="descripcion" rows="4" required 
                                   class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 resize-none" 
                                   placeholder="Detalles sobre el alcance, sectores invitados y objetivos..."></textarea>
+                    </div>
+
+                    <!-- Imagen / Banner de la Rueda -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fas fa-image text-amber-500"></i> Imagen o Banner de la Rueda (Opcional)
+                        </label>
+                        <div class="flex items-center gap-4 p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-amber-400 bg-gray-50/50 transition duration-200">
+                            <div id="previewContainer" class="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0">
+                                <i class="fas fa-image text-gray-400 text-2xl" id="previewPlaceholder"></i>
+                                <img id="imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
+                            </div>
+                            <div class="flex-1">
+                                <input type="file" name="imagen" id="imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" onchange="previewImage(this)">
+                                <p class="text-[11px] text-gray-400 mt-1.5">Formatos: JPG, PNG, WEBP. Tamaño recomendado: 800x500 px.</p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Fechas de Inscripción -->
@@ -161,6 +180,20 @@
 </div>
 
 <script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const placeholder = document.getElementById('previewPlaceholder');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
 function toggleUbicacion() {
     const modalidad = document.getElementById('modalidad_select').value;
     const container = document.getElementById('ubicacion_container');

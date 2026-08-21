@@ -33,24 +33,31 @@
             <?php else: ?>
                 <div class="row g-4">
                     <?php foreach ($data['ruedas'] as $rueda): ?>
-                        <div class="col-lg-6">
-                            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white position-relative overflow-hidden hover-shadow transition">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <?php
-                                        $estado = $rueda['estadoRueda'] ?? 'activa';
-                                        $badgeClass = 'bg-success text-white';
-                                        $estadoTexto = 'Rueda Activa';
-                                        if ($estado === 'inscripciones') {
-                                            $badgeClass = 'bg-warning text-dark';
-                                            $estadoTexto = 'Inscripciones Abiertas';
-                                        } elseif ($estado === 'planeacion') {
-                                            $badgeClass = 'bg-info text-dark';
-                                            $estadoTexto = 'Planeación';
-                                        }
-                                    ?>
-                                    <span class="badge <?= $badgeClass ?> px-3 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 0.75rem;">
-                                        <?= $estadoTexto ?>
-                                    </span>
+                        <div class="col-lg-6 col-xl-4">
+                            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 d-flex flex-column justify-content-between hover-shadow transition">
+                                <div>
+                                    <?php if (!empty($rueda['imagen'])): ?>
+                                        <div class="mb-3 rounded-3 overflow-hidden shadow-sm" style="height: 180px;">
+                                            <img src="<?= BUSINESS_PLATFORM_URL ?>/<?= htmlspecialchars($rueda['imagen']) ?>" alt="<?= htmlspecialchars($rueda['nombreRueda'] ?? 'Rueda') ?>" class="w-100 h-100 object-fit-cover">
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <?php
+                                            $estado = $rueda['estadoRueda'] ?? 'activa';
+                                            $badgeClass = 'bg-success';
+                                            $estadoTexto = 'Rueda Activa';
+                                            if ($estado === 'inscripciones') {
+                                                $badgeClass = 'bg-warning text-dark';
+                                                $estadoTexto = 'Inscripciones Abiertas';
+                                            } elseif ($estado === 'planeacion') {
+                                                $badgeClass = 'bg-info text-dark';
+                                                $estadoTexto = 'Planeación';
+                                            }
+                                        ?>
+                                        <span class="badge <?= $badgeClass ?> px-3 py-1 rounded-pill fw-bold text-uppercase" style="font-size: 0.75rem;">
+                                            <?= $estadoTexto ?>
+                                        </span>
                                     <?php if (($rueda['modalidad'] ?? 'virtual') === 'presencial'): ?>
                                         <span class="badge bg-purple text-white px-2.5 py-1 rounded-pill fw-bold" style="background-color: #6f42c1; font-size: 0.75rem;">
                                             <i class="bi bi-geo-alt-fill me-1"></i> Presencial (<?= $rueda['cantidadMesas'] ?? 1 ?> Mesas)
@@ -85,13 +92,15 @@
                                     </div>
                                 </div>
 
-                                <div class="d-grid gap-2">
-                                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rol=vendedor&rueda_id=<?= $rueda['id'] ?>" class="btn btn-warning fw-bold rounded-pill py-2.5 shadow-sm text-dark d-flex align-items-center justify-content-center gap-2">
-                                        <i class="bi bi-shop"></i> Inscribirme como Vendedor / Proveedor
+                                <div class="mt-2">
+                                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rueda_id=<?= $rueda['id'] ?>" class="btn btn-warning w-100 fw-bold rounded-pill py-3 shadow-sm text-dark d-flex align-items-center justify-content-center gap-2 fs-6">
+                                        <i class="bi bi-pencil-square"></i> Registrarme en la Rueda
                                     </a>
-                                    <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=registro&rol=comprador&rueda_id=<?= $rueda['id'] ?>" class="btn btn-outline-primary fw-bold rounded-pill py-2 d-flex align-items-center justify-content-center gap-2">
-                                        <i class="bi bi-cart3"></i> Inscribirme como Comprador
-                                    </a>
+                                    <div class="text-center mt-2">
+                                        <a href="<?= BUSINESS_PLATFORM_URL ?>/index.php?controlador=usuario&accion=login" class="text-muted small text-decoration-none">
+                                            ¿Ya tienes cuenta? <span class="text-primary fw-bold text-decoration-underline">Inicia Sesión</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
