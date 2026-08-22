@@ -25,7 +25,7 @@ class TestController {
     
     /**
      * Acción para listar reuniones disponibles para encuesta
-     * URL: index.php?controlador=test&accion=reuniones_disponibles
+     * URL: index.php?contwrolador=test&accion=reuniones_disponibles
      */
     public function reunionesDisponibles() {
         try {

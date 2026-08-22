@@ -43,6 +43,46 @@
                     <p class="text-xs text-gray-500 mt-1">Has regresado exitosamente al perfil de Comprador. Ahora puedes buscar ofertas de productos y participar en todas las ruedas de negocios de manera gratuita.</p>
                 </div>
             </div>
+        <?php elseif (isset($_GET['msg']) && $_GET['msg'] === 'inscribete_primero'): ?>
+            <div class="bg-amber-50 border-2 border-amber-200 p-5 rounded-3xl shadow-sm flex items-center">
+                <div class="p-3 bg-amber-100 text-amber-600 rounded-2xl mr-4 shrink-0 font-bold">
+                    <i class="fas fa-info-circle text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-amber-900">¡Inscríbete a una rueda para acceder al Mercado de Ofertas!</h3>
+                    <p class="text-xs text-amber-700 mt-1">Selecciona una de las ruedas activas en la sección de abajo y haz clic en "Inscribirme" para comenzar a interactuar con los vendedores.</p>
+                </div>
+            </div>
+        <?php elseif (isset($_GET['msg']) && $_GET['msg'] === 'inscripcion_pendiente_revision'): ?>
+            <div class="bg-sky-50 border-2 border-sky-200 p-5 rounded-3xl shadow-sm flex items-center">
+                <div class="p-3 bg-sky-100 text-sky-600 rounded-2xl mr-4 shrink-0 font-bold">
+                    <i class="fas fa-clock text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-sky-900">Tu inscripción está en revisión</h3>
+                    <p class="text-xs text-sky-700 mt-1">El administrador revisará y aprobará tu participación en la rueda en breve. Una vez aprobada, tendrás acceso completo al catálogo de ofertas.</p>
+                </div>
+            </div>
+        <?php elseif (isset($_GET['msg']) && $_GET['msg'] === 'inscripcion_enviada'): ?>
+            <div class="bg-emerald-50 border-2 border-emerald-200 p-5 rounded-3xl shadow-sm flex items-center">
+                <div class="p-3 bg-emerald-100 text-emerald-600 rounded-2xl mr-4 shrink-0 font-bold">
+                    <i class="fas fa-check-circle text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-emerald-900">¡Inscripción enviada exitosamente!</h3>
+                    <p class="text-xs text-emerald-700 mt-1">Tu solicitud de participación ha sido registrada. Te notificaremos cuando el administrador la apruebe.</p>
+                </div>
+            </div>
+        <?php elseif (isset($_GET['msg']) && $_GET['msg'] === 'ya_inscrito'): ?>
+            <div class="bg-blue-50 border-2 border-blue-200 p-5 rounded-3xl shadow-sm flex items-center">
+                <div class="p-3 bg-blue-100 text-blue-600 rounded-2xl mr-4 shrink-0 font-bold">
+                    <i class="fas fa-info-circle text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm font-extrabold text-blue-900">Ya estás inscrito en esta rueda</h3>
+                    <p class="text-xs text-blue-700 mt-1">Tu empresa ya cuenta con un registro para esta rueda de negocios.</p>
+                </div>
+            </div>
         <?php endif; ?>
 
         <!-- SECCIÓN DE KPIs: RESUMEN DE ALTO NIVEL -->

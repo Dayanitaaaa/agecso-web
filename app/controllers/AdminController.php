@@ -18,7 +18,31 @@ class AdminController {
             exit();
         }
 
+        // Asegurar tabla de agenda
+        try {
+            $this->pdo->exec("CREATE TABLE IF NOT EXISTS agenda (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                titulo VARCHAR(255) NOT NULL,
+                descripcion TEXT,
+                imagen VARCHAR(255) DEFAULT NULL,
+                fecha_inicio DATE NULL,
+                fecha_fin DATE NULL,
+                hora_inicio TIME NULL,
+                hora_fin TIME NULL,
+                lugar VARCHAR(255) DEFAULT NULL,
+                tipo VARCHAR(50) DEFAULT 'general',
+                link_registro VARCHAR(500) DEFAULT NULL,
+                texto_boton VARCHAR(100) DEFAULT 'Registrarme',
+                estado ENUM('activo', 'inactivo', 'destacado') DEFAULT 'activo',
+                orden INT DEFAULT 999,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+        } catch (Exception $e) {}
+
         // Inicializar modelos
+        $this->models['agenda'] = new BaseModel($pdo);
+        $this->models['agenda']->table = 'agenda';
+
         $this->models['noticias'] = new BaseModel($pdo);
         $this->models['noticias']->table = 'noticias';
         
@@ -43,6 +67,7 @@ class AdminController {
      */
     public function index() {
         $stats = [
+            'agenda' => $this->models['agenda']->count(),
             'noticias' => $this->models['noticias']->count(),
             'eventos' => $this->models['eventos']->count(),
             'cursos' => $this->models['cursos']->count(),
@@ -53,6 +78,94 @@ class AdminController {
 
         $title = 'Panel de Administración';
         require __DIR__ . '/../views/admin/dashboard.php';
+    }
+
+    /**
+     * Gestión de agenda y convocatorias
+     */
+    public function agenda() {
+        $action = $_GET['action'] ?? 'list';
+        $id = $_GET['id'] ?? null;
+        
+        switch ($action) {
+            case 'list':
+                $items = $this->models['agenda']->getAll('orden ASC, fecha_inicio DESC, id DESC');
+                $title = 'Gestión de Agenda';
+                require __DIR__ . '/../views/admin/agenda/list.php';
+                break;
+                
+            case 'create':
+                $this->handleAgendaForm();
+                break;
+                
+            case 'edit':
+                $this->handleAgendaForm($id);
+                break;
+                
+            case 'delete':
+                if ($id) {
+                    $this->models['agenda']->delete($id);
+                    $this->setFlash('Elemento de agenda eliminado correctamente');
+                }
+                header("Location: " . APP_URL . "/admin/agenda");
+                exit();
+                
+            default:
+                header("Location: " . APP_URL . "/admin/agenda");
+                exit();
+        }
+    }
+
+    /**
+     * Manejar formulario de agenda
+     */
+    private function handleAgendaForm($id = null) {
+        $item = $id ? $this->models['agenda']->getById($id) : null;
+        $error = '';
+        
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $data = [
+                'titulo' => trim($_POST['titulo'] ?? ''),
+                'descripcion' => trim($_POST['descripcion'] ?? ''),
+                'fecha_inicio' => !empty($_POST['fecha_inicio']) ? $_POST['fecha_inicio'] : null,
+                'fecha_fin' => !empty($_POST['fecha_fin']) ? $_POST['fecha_fin'] : null,
+                'hora_inicio' => !empty($_POST['hora_inicio']) ? $_POST['hora_inicio'] : null,
+                'hora_fin' => !empty($_POST['hora_fin']) ? $_POST['hora_fin'] : null,
+                'lugar' => trim($_POST['lugar'] ?? ''),
+                'tipo' => $_POST['tipo'] ?? 'evento',
+                'link_registro' => trim($_POST['link_registro'] ?? ''),
+                'texto_boton' => trim($_POST['texto_boton'] ?? 'Registrarme'),
+                'estado' => $_POST['estado'] ?? 'activo',
+                'orden' => (int)($_POST['orden'] ?? 999)
+            ];
+
+            // Manejar imagen
+            if (isset($_POST['eliminar_imagen']) && $_POST['eliminar_imagen'] == '1') {
+                $data['imagen'] = null;
+            } else {
+                $imgUploaded = $this->handleImageUpload('imagen', $item['imagen'] ?? null);
+                if ($imgUploaded) {
+                    $data['imagen'] = $imgUploaded;
+                }
+            }
+            
+            if (empty($data['titulo'])) {
+                $error = 'El título de la actividad es obligatorio.';
+            } else {
+                if ($id) {
+                    $this->models['agenda']->update($id, $data);
+                    $this->setFlash('Actividad de agenda actualizada correctamente');
+                } else {
+                    $this->models['agenda']->insert($data);
+                    $this->setFlash('Actividad agregada a la agenda correctamente');
+                }
+                header("Location: " . APP_URL . "/admin/agenda");
+                exit();
+            }
+        }
+        
+        $title = $id ? 'Editar Agenda' : 'Nueva Actividad en Agenda';
+        require __DIR__ . '/../views/admin/agenda/form.php';
     }
 
     /**
@@ -142,6 +255,68 @@ class AdminController {
     }
 
     /**
+     * Gestión de multimedia
+     */
+    public function multimedia() {
+        $action = $_GET['action'] ?? 'list';
+        $filename = $_GET['id'] ?? null; // En este caso el ID es el nombre del archivo
+        $uploadDir = __DIR__ . '/../../public/uploads/';
+
+        // Asegurar que el directorio existe
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+            file_put_contents($uploadDir . '.gitkeep', '');
+        }
+
+        switch ($action) {
+            case 'list':
+                $files = array_diff(scandir($uploadDir), array('.', '..', '.gitkeep'));
+                $items = [];
+                foreach ($files as $file) {
+                    if (is_file($uploadDir . $file)) {
+                        $items[] = [
+                            'name' => $file,
+                            'size' => filesize($uploadDir . $file),
+                            'date' => filemtime($uploadDir . $file),
+                            'path' => APP_URL . '/uploads/' . $file
+                        ];
+                    }
+                }
+                
+                // Ordenar por fecha descendente
+                usort($items, function($a, $b) {
+                    return $b['date'] <=> $a['date'];
+                });
+
+                $title = 'Biblioteca Multimedia';
+                require __DIR__ . '/../views/admin/multimedia/list.php';
+                break;
+
+            case 'delete':
+                if ($filename && file_exists($uploadDir . $filename)) {
+                    unlink($uploadDir . $filename);
+                    $this->setFlash('Archivo eliminado correctamente');
+                }
+                header("Location: " . APP_URL . "/admin/multimedia");
+                exit();
+
+            case 'upload':
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                    $res = $this->handleImageUpload('file');
+                    if ($res) {
+                        $this->setFlash('Imagen subida correctamente');
+                    }
+                }
+                header("Location: " . APP_URL . "/admin/multimedia");
+                exit();
+                
+            default:
+                header("Location: " . APP_URL . "/admin/multimedia");
+                exit();
+        }
+    }
+
+    /**
      * Gestión de mensajes de contacto
      */
     public function mensajes() {
@@ -210,17 +385,9 @@ class AdminController {
                 $remainingImages = array_filter($currentImages, function($img) {
                     return !in_array($img, $_POST['eliminar_imagenes']);
                 });
-                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : null;
+                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : '[]';
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
-
-            // Fallback: Si no hay imagen principal pero hay imágenes en el carrusel, usar la primera como principal
-            if (empty($data['imagen']) && !empty($data['imagenes'])) {
-                $galeria = json_decode($data['imagenes'], true);
-                if (!empty($galeria)) {
-                    $data['imagen'] = $galeria[0];
-                }
-            }
 
             // Verificar si las columnas existen antes de intentar guardar
             $cols = $this->pdo->query("SHOW COLUMNS FROM noticias")->fetchAll(PDO::FETCH_COLUMN);
@@ -282,18 +449,10 @@ class AdminController {
                 $remainingImages = array_filter($currentImages, function($img) {
                     return !in_array($img, $_POST['eliminar_imagenes']);
                 });
-                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : null;
+                $currentImagesJson = !empty($remainingImages) ? json_encode(array_values($remainingImages)) : '[]';
             }
             $data['imagenes'] = $this->handleMultipleImagesUpload('imagenes', $currentImagesJson);
             
-            // Fallback: Si no hay imagen principal pero hay imágenes en el carrusel, usar la primera como principal
-            if (empty($data['imagen']) && !empty($data['imagenes'])) {
-                $galeria = json_decode($data['imagenes'], true);
-                if (!empty($galeria)) {
-                    $data['imagen'] = $galeria[0];
-                }
-            }
-
             // Verificar si las columnas existen antes de intentar guardar (evita Fatal Error)
             $stmt_check_ev_img = $this->pdo->query("SHOW COLUMNS FROM eventos LIKE 'imagenes'");
             if (!$stmt_check_ev_img->fetch()) {
@@ -573,102 +732,119 @@ class AdminController {
     /**
      * Establecer mensaje flash
      */
-    private function setFlash($message, $type = 'success') {
+    public function setFlash($message, $type = 'success') {
         $_SESSION['flash_message'] = $message;
         $_SESSION['flash_type'] = $type;
     }
 
     /**
+     * Obtener mensaje flash
+     */
+    public function getFlash() {
+        if (isset($_SESSION['flash_message'])) {
+            $msg = $_SESSION['flash_message'];
+            unset($_SESSION['flash_message'], $_SESSION['flash_type']);
+            return $msg;
+        }
+        return null;
+    }
+
+    /**
      * Manejar subida de múltiples imágenes
      */
-    private function handleMultipleImagesUpload($fileInput, $currentImagesJson = null) {
+    private function handleMultipleImagesUpload($fileInput, $currentImagesJson = '[]') {
         if (!isset($_FILES[$fileInput]) || empty($_FILES[$fileInput]['name'][0])) {
             return $currentImagesJson;
         }
 
         $files = $_FILES[$fileInput];
-        $uploadedFilenames = $currentImagesJson ? json_decode($currentImagesJson, true) : [];
+        $uploadedFilenames = json_decode($currentImagesJson, true);
         if (!is_array($uploadedFilenames)) $uploadedFilenames = [];
 
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 5 * 1024 * 1024; // 5MB
-        $uploadDir = __DIR__ . '/../../public/uploads/';
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $maxSize = 12 * 1024 * 1024; // 12MB
+        $uploadDir = realpath(__DIR__ . '/../../public/uploads') . DIRECTORY_SEPARATOR;
+        if (!$uploadDir || $uploadDir === DIRECTORY_SEPARATOR) {
+            $uploadDir = __DIR__ . '/../../public/uploads/';
+        }
 
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0777, true);
         }
 
-        if (!is_writable($uploadDir)) {
-            $this->setFlash("Error: La carpeta de galería no tiene permisos de escritura.", 'danger');
-            return $currentImagesJson;
-        }
-
         for ($i = 0; $i < count($files['name']); $i++) {
             if ($files['error'][$i] !== UPLOAD_ERR_OK) continue;
             
-            if (!in_array($files['type'][$i], $allowedTypes)) continue;
+            $extension = strtolower(pathinfo($files['name'][$i], PATHINFO_EXTENSION));
+            if (!in_array($extension, $allowedExtensions)) continue;
             if ($files['size'][$i] > $maxSize) continue;
 
-            $extension = pathinfo($files['name'][$i], PATHINFO_EXTENSION);
             $filename = uniqid() . '_' . time() . '_' . $i . '.' . $extension;
-            $uploadPath = $uploadDir . $filename;
-
-            if (move_uploaded_file($files['tmp_name'][$i], $uploadPath)) {
+            
+            if (move_uploaded_file($files['tmp_name'][$i], $uploadDir . $filename)) {
                 $uploadedFilenames[] = $filename;
             }
         }
 
-        return !empty($uploadedFilenames) ? json_encode($uploadedFilenames) : null;
+        return json_encode(array_values($uploadedFilenames));
     }
 
     /**
      * Manejar subida de imagen
      */
     private function handleImageUpload($fileInput, $currentImage = null) {
-        if (!isset($_FILES[$fileInput]) || $_FILES[$fileInput]['error'] !== UPLOAD_ERR_OK) {
+        // Si no se envió el archivo o no se seleccionó nada
+        if (!isset($_FILES[$fileInput]) || $_FILES[$fileInput]['error'] === UPLOAD_ERR_NO_FILE) {
+            return $currentImage;
+        }
+
+        // Si hay algún otro error en la subida
+        if ($_FILES[$fileInput]['error'] !== UPLOAD_ERR_OK) {
+            $errorMsg = "Error en la subida de la imagen principal: ";
+            switch ($_FILES[$fileInput]['error']) {
+                case UPLOAD_ERR_INI_SIZE: $errorMsg .= "El archivo es demasiado grande para la configuración del servidor."; break;
+                case UPLOAD_ERR_FORM_SIZE: $errorMsg .= "El archivo excede el tamaño del formulario."; break;
+                case UPLOAD_ERR_PARTIAL: $errorMsg .= "La subida se interrumpió."; break;
+                case UPLOAD_ERR_NO_TMP_DIR: $errorMsg .= "Falta carpeta temporal en el servidor."; break;
+                default: $errorMsg .= "Error código " . $_FILES[$fileInput]['error']; break;
+            }
+            $this->setFlash($errorMsg, 'error');
             return $currentImage;
         }
 
         $file = $_FILES[$fileInput];
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-        $maxSize = 5 * 1024 * 1024; // 5MB
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $maxSize = 12 * 1024 * 1024; // Aumentar a 12MB
 
-        if (!in_array($file['type'], $allowedTypes)) {
-            $this->setFlash("Tipo de archivo no permitido: " . $file['type'], 'danger');
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($extension, $allowedExtensions)) {
+            $this->setFlash("Formato no permitido para '{$file['name']}'. Usa JPG, PNG o WEBP.", 'error');
             return $currentImage;
         }
 
         if ($file['size'] > $maxSize) {
-            $this->setFlash("El archivo es demasiado grande (máx 5MB)", 'danger');
+            $this->setFlash("La imagen es demasiado pesada (" . round($file['size']/1024/1024, 2) . "MB). Máximo 12MB.", 'error');
             return $currentImage;
         }
 
-        $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+        // Limpiar el nombre del archivo original para evitar problemas con caracteres raros
         $filename = uniqid() . '_' . time() . '.' . $extension;
+        $uploadDir = realpath(__DIR__ . '/../../public/uploads') . DIRECTORY_SEPARATOR;
         
-        $uploadDir = __DIR__ . '/../../public/uploads/';
-        
-        // Crear directorio si no existe
+        // Si realpath falló, intentar el camino directo
+        if (!$uploadDir || $uploadDir === DIRECTORY_SEPARATOR) {
+            $uploadDir = __DIR__ . '/../../public/uploads/';
+        }
+
         if (!file_exists($uploadDir)) {
-            if (!mkdir($uploadDir, 0777, true)) {
-                $this->setFlash("Error crítico: No se pudo crear la carpeta de subidas. Revisa los permisos en el servidor.", 'danger');
-                return $currentImage;
-            }
+            mkdir($uploadDir, 0777, true);
         }
 
-        // Verificar si la carpeta tiene permisos de escritura
-        if (!is_writable($uploadDir)) {
-            $this->setFlash("Error: La carpeta de subidas no tiene permisos de escritura (777/755).", 'danger');
-            return $currentImage;
-        }
-        
-        $uploadPath = $uploadDir . $filename;
-
-        if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
+        if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
             return $filename;
         }
 
-        $this->setFlash("Error al guardar el archivo en el servidor. Revisa los permisos de carpeta.", 'danger');
+        $this->setFlash("Error interno: No se pudo mover el archivo al directorio de destino. Revisa los permisos de la carpeta uploads.", 'error');
         return $currentImage;
     }
 }

@@ -18,8 +18,10 @@
 
         <!-- Formulario -->
         <div class="bg-white p-8 rounded-[2rem] shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100">
-            <form action="index.php?controlador=admin&accion=crearRueda" method="POST">
-                <div class="space-y-6">
+            <form action="index.php?controlador=admin&accion=crearRueda" method="POST" enctype="multipart/form-data" class="space-y-6">
+                
+                <!-- Título y Descripción -->
+                <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Título de la Rueda <span class="text-red-500">*</span></label>
                         <input type="text" name="titulo" required 
@@ -32,6 +34,23 @@
                         <textarea name="descripcion" rows="4" required 
                                   class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 resize-none" 
                                   placeholder="Detalles sobre el alcance, sectores invitados y objetivos..."></textarea>
+                    </div>
+
+                    <!-- Imagen / Banner de la Rueda -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fas fa-image text-amber-500"></i> Imagen o Banner de la Rueda (Opcional)
+                        </label>
+                        <div class="flex items-center gap-4 p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-amber-400 bg-gray-50/50 transition duration-200">
+                            <div id="previewContainer" class="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0">
+                                <i class="fas fa-image text-gray-400 text-2xl" id="previewPlaceholder"></i>
+                                <img id="imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
+                            </div>
+                            <div class="flex-1">
+                                <input type="file" name="imagen" id="imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" onchange="previewImage(this)">
+                                <p class="text-[11px] text-gray-400 mt-1.5">Formatos: JPG, PNG, WEBP. Tamaño recomendado: 800x500 px.</p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Fechas de Inscripción -->
@@ -60,6 +79,47 @@
                             <input type="date" name="fecha_fin" required 
                                 class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-400 transition duration-200">
                         </div>
+                    </div>
+
+                    <!-- Franja Horaria de Reuniones -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
+                                <i class="fas fa-clock text-emerald-500"></i> Hora Inicio de Citas <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text" name="hora_inicio" id="hora_inicio" value="08:00" required 
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white cursor-pointer"
+                                    placeholder="08:00 AM">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
+                                <i class="fas fa-clock text-emerald-500"></i> Hora Fin de Citas <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text" name="hora_fin" id="hora_fin" value="18:00" required 
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white cursor-pointer"
+                                    placeholder="06:00 PM">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Duración de Citas -->
+                    <div class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-sm">
+                                <i class="fas fa-stopwatch"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-extrabold text-gray-800">Duración por Cita de Negocio</p>
+                                <p class="text-xs text-gray-500">Bloques estándar de 30 minutos por reunión</p>
+                            </div>
+                        </div>
+                        <span class="bg-amber-500 text-white text-xs font-black px-4 py-1.5 rounded-full shadow-sm">
+                            30 Minutos
+                        </span>
+                        <input type="hidden" name="duracion_cita" value="30">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -120,6 +180,20 @@
 </div>
 
 <script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    const placeholder = document.getElementById('previewPlaceholder');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
 function toggleUbicacion() {
     const modalidad = document.getElementById('modalidad_select').value;
     const container = document.getElementById('ubicacion_container');
@@ -142,6 +216,29 @@ function toggleUbicacion() {
 
 document.addEventListener("DOMContentLoaded", function() {
     toggleUbicacion();
+
+    // Configuración elegante de selector de Hora para Citas (Flatpickr)
+    const configTime = {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        altInput: true,
+        altFormat: "h:i K",
+        time_24hr: false,
+        minuteIncrement: 30,
+        disableMobile: "true",
+        locale: "es"
+    };
+
+    flatpickr("#hora_inicio", {
+        ...configTime,
+        defaultDate: "08:00"
+    });
+
+    flatpickr("#hora_fin", {
+        ...configTime,
+        defaultDate: "18:00"
+    });
 });
 </script>
 

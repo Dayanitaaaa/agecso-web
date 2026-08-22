@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AGECSO - Software Rueda de Negocios</title>
+    <link rel="icon" type="image/jpeg" href="img/AGECSO.jpg">
+    <link rel="apple-touch-icon" href="img/AGECSO.jpg">
     <!-- Tailwind CSS (local) -->
     <script src="assets/js/tailwind.js"></script>
     <!-- FontAwesome (CDN) -->

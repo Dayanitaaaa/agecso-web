@@ -21,13 +21,19 @@ include __DIR__ . '/../layout/header.php';
                     </h2>
                 </div>
 
-                <?php if(!empty($mensaje)): ?>
-                    <div class="text-xs text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-200 text-left">
-                        <?php echo $mensaje; ?>
+                <?php if ($mensaje): ?>
+                    <div id="alert-msg">
+                        <?= $mensaje ?>
                     </div>
                 <?php endif; ?>
 
-                <form class="space-y-5" action="index.php?controlador=usuario&accion=login" method="POST">
+                <?php if (isset($_GET['msg']) && $_GET['msg'] === 'reset_success'): ?>
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                        Contraseña actualizada con éxito. Ya puedes iniciar sesión.
+                    </div>
+                <?php endif; ?>
+
+                <form action="index.php?controlador=usuario&accion=login" method="POST" class="space-y-6">
                     <?php echo CsrfService::getInputField('login'); ?>
                     
                     <!-- Campo Usuario (Correo) -->
@@ -65,8 +71,14 @@ include __DIR__ . '/../layout/header.php';
                             <i class="fas fa-exclamation-circle text-xs"></i>
                             <span id="password-error-text">Por favor, ingresa tu contraseña.</span>
                         </div>
-                        <div class="text-center mt-2">
-                            <a href="#" class="text-[11px] text-gray-500 hover:text-sky-500 hover:underline transition">¿Olvidaste tu contraseña?</a>
+                        <!-- Enlaces adicionales -->
+                        <div class="flex justify-between items-center px-4 mt-6">
+                            <a href="index.php?controlador=usuario&accion=forgotPassword" class="text-xs text-sky-500 hover:text-sky-600 font-semibold transition-colors duration-200" style="position: relative; z-index: 999; cursor: pointer !important;">
+                                Olvidé mi contraseña
+                            </a>
+                            <a href="index.php?controlador=usuario&accion=registro" class="text-xs text-gray-400 hover:text-gray-500 transition-colors duration-200">
+                                Registrarme
+                            </a>
                         </div>
                     </div>
 

@@ -5,11 +5,13 @@ if (session_status() === PHP_SESSION_NONE) {
 $section = $_GET['section'] ?? 'dashboard';
 $sections = [
     'dashboard' => 'Dashboard',
+    'agenda' => 'Agenda',
     'noticias' => 'Noticias',
-    'eventos' => 'Eventos',
+    'eventos' => 'Eventos Realizados',
     'cursos' => 'Cursos Realizados',
     'aliados' => 'Aliados',
     'servicios' => 'Servicios',
+    'multimedia' => 'Multimedia',
     'mensajes' => 'Mensajes'
 ];
 ?>
@@ -43,7 +45,7 @@ $sections = [
         <nav class="nav flex-column py-3">
             <?php foreach ($sections as $slug => $label): ?>
                 <a class="nav-link <?= $section === $slug ? 'active' : '' ?>" href="<?= APP_URL ?>/admin/<?= $slug ?>">
-                    <i class="bi bi-<?= $slug === 'dashboard' ? 'speedometer2' : ($slug === 'noticias' ? 'newspaper' : ($slug === 'eventos' ? 'calendar-event' : ($slug === 'cursos' ? 'mortarboard' : ($slug === 'aliados' ? 'people' : ($slug === 'servicios' ? 'briefcase' : 'envelope'))))) ?>"></i>
+                    <i class="bi bi-<?= $slug === 'dashboard' ? 'speedometer2' : ($slug === 'agenda' ? 'calendar2-check' : ($slug === 'noticias' ? 'newspaper' : ($slug === 'eventos' ? 'calendar-event' : ($slug === 'cursos' ? 'mortarboard' : ($slug === 'aliados' ? 'people' : ($slug === 'servicios' ? 'briefcase' : ($slug === 'multimedia' ? 'images' : 'envelope'))))))) ?>"></i>
                     <?= $label ?>
                 </a>
             <?php endforeach; ?>

@@ -11,7 +11,7 @@ class RuedaModel {
      */
     public function getActivas() {
         $stmt = $this->pdo->prepare("
-            SELECT id, tituloRueda, descripcionRueda, fechaInicio, fechaFin, estadoRueda 
+            SELECT id, nombreRueda as tituloRueda, descripcion as descripcionRueda, fechaInicio, fechaFin, estadoRueda 
             FROM ruedas_negocios 
             WHERE estadoRueda IN ('activa', 'inscripciones')
             ORDER BY fechaInicio DESC
@@ -24,7 +24,7 @@ class RuedaModel {
      * Obtiene detalle de una rueda
      */
     public function getById($id) {
-        $stmt = $this->pdo->prepare("SELECT * FROM ruedas_negocios WHERE id = ?");
+        $stmt = $this->pdo->prepare("SELECT *, nombreRueda as tituloRueda, descripcion as descripcionRueda FROM ruedas_negocios WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

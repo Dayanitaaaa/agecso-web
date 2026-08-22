@@ -10,16 +10,16 @@
         const toastId = 'toast-' + Date.now();
         
         const typeClass = type === 'success' ? 'toast-success' : 
-                         type === 'error' ? 'toast-error' : 'toast-info';
+                         (type === 'error' || type === 'danger') ? 'toast-error' : 'toast-info';
         
         const icon = type === 'success' ? 'bi-check-circle' : 
-                    type === 'error' ? 'bi-exclamation-circle' : 'bi-info-circle';
+                    (type === 'error' || type === 'danger') ? 'bi-exclamation-circle' : 'bi-info-circle';
         
         const toastHTML = `
             <div id="${toastId}" class="toast ${typeClass}" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <i class="bi ${icon} me-2"></i>
-                    <strong class="me-auto">${type === 'success' ? 'Éxito' : type === 'error' ? 'Error' : 'Información'}</strong>
+                    <strong class="me-auto">${(type === 'error' || type === 'danger') ? 'Error' : (type === 'success' ? 'Éxito' : 'Información')}</strong>
                     <small>Ahora</small>
                     <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>

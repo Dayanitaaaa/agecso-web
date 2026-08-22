@@ -44,7 +44,7 @@ class CompradorController {
 
             // Obtener mis inscripciones a ruedas (Aceptadas, Pendientes, etc.)
             $stmt_mis_ruedas = $this->pdo->prepare("
-                SELECT rn.*, ir.estadoInscripcion 
+                SELECT rn.*, ir.estadoInscripcion, rn.nombreRueda as tituloRueda, rn.descripcion as descripcionRueda
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ?
@@ -110,7 +110,7 @@ class CompradorController {
             $trazabilidad_pendientes = $trazabilidadModel->getSeguimientosPendientes($_SESSION['usuario_id'], SYSTEM_TIME);
 
             // Obtener ruedas de negocios activas generales para el panel lateral
-            $stmt_ruedas = $this->pdo->query("SELECT * FROM ruedas_negocios WHERE estadoRueda IN ('inscripciones', 'activa')");
+            $stmt_ruedas = $this->pdo->query("SELECT *, nombreRueda as tituloRueda, descripcion as descripcionRueda FROM ruedas_negocios WHERE estadoRueda IN ('inscripciones', 'activa')");
             $ruedas = $stmt_ruedas->fetchAll();
 
             // Obtener mis inscripciones a ruedas (formato indexado para compatibilidad si es necesario)
@@ -206,24 +206,64 @@ class CompradorController {
             // Si no llega ID por URL, buscar la primera rueda inscrita y aceptada del comprador
             // (necesario para que funcione el menú "Mercado de Ofertas" del sidebar)
             if (empty($ruedaId)) {
+                // Primero buscamos en qué ruedas está inscrita la empresa
+                $stmt_empresa = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
+                $stmt_empresa->execute([$_SESSION['usuario_id']]);
+                $miEmpresa = $stmt_empresa->fetch();
+
+                if (!$miEmpresa) {
+                    throw new Exception("No se encontró información de tu empresa. Por favor completa tu perfil.");
+                }
+
+                $miEmpresaId = $miEmpresa['id'];
+
+                // Buscamos una rueda activa donde esté aceptado
                 $stmt_primera_rueda = $this->pdo->prepare("
                     SELECT rn.id
                     FROM ruedas_negocios rn
                     JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
-                    WHERE ir.empresaId = (SELECT id FROM empresas WHERE usuarioId = ?)
+                    WHERE ir.empresaId = ?
                       AND ir.estadoInscripcion = 'aceptada'
                       AND rn.estadoRueda IN ('activa', 'inscripciones', 'planeacion')
                     ORDER BY rn.fechaInicio DESC
                     LIMIT 1
                 ");
-                $stmt_primera_rueda->execute([$_SESSION['usuario_id']]);
+                $stmt_primera_rueda->execute([$miEmpresaId]);
                 $primera_rueda = $stmt_primera_rueda->fetch();
 
-                if (!$primera_rueda) {
-                    throw new Exception("No estás inscrito en ninguna rueda activa. Inscríbete primero para acceder al mercado de ofertas.");
-                }
+                if ($primera_rueda) {
+                    $ruedaId = $primera_rueda['id'];
+                } else {
+                    // Si no hay activa donde esté aceptado, buscamos cualquier rueda histórica donde esté aceptado
+                    $stmt_cualquier_rueda = $this->pdo->prepare("
+                        SELECT rn.id
+                        FROM ruedas_negocios rn
+                        JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
+                        WHERE ir.empresaId = ?
+                          AND ir.estadoInscripcion = 'aceptada'
+                        ORDER BY rn.fechaInicio DESC
+                        LIMIT 1
+                    ");
+                    $stmt_cualquier_rueda->execute([$miEmpresaId]);
+                    $cualquier_rueda = $stmt_cualquier_rueda->fetch();
 
-                $ruedaId = $primera_rueda['id'];
+                    if ($cualquier_rueda) {
+                        $ruedaId = $cualquier_rueda['id'];
+                    } else {
+                        // Si no está aceptado en ninguna, verificar si tiene inscripción pendiente
+                        $stmt_pendiente = $this->pdo->prepare("SELECT estadoInscripcion FROM inscripciones_ruedas WHERE empresaId = ? LIMIT 1");
+                        $stmt_pendiente->execute([$miEmpresaId]);
+                        $inscripcion_status = $stmt_pendiente->fetch();
+
+                        if ($inscripcion_status && $inscripcion_status['estadoInscripcion'] === 'pendiente') {
+                            header("Location: index.php?controlador=comprador&accion=dashboard&msg=inscripcion_pendiente_revision");
+                            exit();
+                        }
+
+                        header("Location: index.php?controlador=comprador&accion=dashboard&msg=inscribete_primero");
+                        exit();
+                    }
+                }
             }
             
             // SEGURIDAD: Validar que el comprador está inscrito y ACEPTADO
@@ -827,7 +867,7 @@ class CompradorController {
                 }
 
                 // VALIDACIÓN: Verificar si las inscripciones están abiertas
-                $stmt_rueda = $this->pdo->prepare("SELECT fechaInscripcionInicio, fechaInscripcionFin FROM ruedas_negocios WHERE id = ?");
+                $stmt_rueda = $this->pdo->prepare("SELECT * FROM ruedas_negocios WHERE id = ?");
                 $stmt_rueda->execute([$rueda_id]);
                 $rueda = $stmt_rueda->fetch();
                 if ($rueda) {
@@ -902,10 +942,10 @@ class CompradorController {
                     }
                 }
 
-                // VALIDACIÓN: 45 minutos de separación entre citas para AMBAS empresas
+                // VALIDACIÓN: 30 minutos de duración de citas para AMBAS empresas
                 $fechaBase = strtotime($fecha_hora);
-                $horaInicio = date('Y-m-d H:i:s', strtotime('-44 minutes', $fechaBase));
-                $horaFin = date('Y-m-d H:i:s', strtotime('+44 minutes', $fechaBase));
+                $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
+                $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
                 
                 // Verificar para el comprador
                 $stmt_disp_c = $this->pdo->prepare("
@@ -917,7 +957,7 @@ class CompradorController {
                 ");
                 $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id]);
                 if ($stmt_disp_c->fetch()['ocupado'] > 0) {
-                    throw new Exception("Ya tienes una cita agendada en un horario muy cercano. Por favor, deja al menos 45 minutos entre citas.");
+                    throw new Exception("Ya tienes una cita agendada en un horario que coincide. Las reuniones tienen una duración de 30 minutos.");
                 }
                 
                 // Verificar para el vendedor
@@ -930,7 +970,7 @@ class CompradorController {
                 ");
                 $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id]);
                 if ($stmt_disp_v->fetch()['ocupado'] > 0) {
-                    throw new Exception("El vendedor seleccionado ya tiene una cita agendada en un horario muy cercano.");
+                    throw new Exception("El vendedor seleccionado ya tiene una cita agendada en ese horario (bloques de 30 minutos).");
                 }
 
                 // OBTENER MESA ASIGNADA PREVIAMENTE (SI EXISTE)
@@ -1069,26 +1109,48 @@ class CompradorController {
 
                 $this->pdo->beginTransaction();
 
-                // 1. Cambiar roleId en la tabla usuarios a 3 (Proveedor / Vendedor)
-                $stmt_user = $this->pdo->prepare("UPDATE usuarios SET roleId = 3 WHERE id = ?");
-                $stmt_user->execute([$usuario_id]);
+                // 1. Obtener el ID del rol de vendedor/proveedor en la base de datos
+                $stmt_r = $this->pdo->prepare("SELECT id, slugRole, nombreRole FROM roles WHERE slugRole IN ('vendedor', 'proveedor') LIMIT 1");
+                $stmt_r->execute();
+                $rolVendedor = $stmt_r->fetch();
 
-                // 2. Inicializar membresía de vendedor en la tabla empresas
-                $stmt_emp = $this->pdo->prepare("
-                    UPDATE empresas 
-                    SET membresia_plan = 'ninguno', 
-                        membresia_estado = 'inactivo', 
-                        membresia_vencimiento = NULL 
-                    WHERE usuarioId = ?
-                ");
-                $stmt_emp->execute([$usuario_id]);
+                $vendedorRoleId = $rolVendedor ? (int)$rolVendedor['id'] : 4;
+                $slugRole = $rolVendedor ? $rolVendedor['slugRole'] : 'vendedor';
+                $nombreRole = $rolVendedor ? $rolVendedor['nombreRole'] : 'Vendedor / Proveedor';
+
+                // 2. Cambiar roleId en la tabla usuarios
+                $stmt_user = $this->pdo->prepare("UPDATE usuarios SET roleId = ? WHERE id = ?");
+                $stmt_user->execute([$vendedorRoleId, $usuario_id]);
+
+                // 3. Asegurar columnas de membresía en empresas si no existen y actualizar
+                try {
+                    $stmt_check = $this->pdo->query("SHOW COLUMNS FROM empresas LIKE 'membresia_plan'");
+                    if ($stmt_check && !$stmt_check->fetch()) {
+                        $this->pdo->exec("
+                            ALTER TABLE empresas 
+                            ADD COLUMN membresia_plan VARCHAR(50) DEFAULT 'ninguno',
+                            ADD COLUMN membresia_estado VARCHAR(50) DEFAULT 'inactivo',
+                            ADD COLUMN membresia_vencimiento DATETIME NULL
+                        ");
+                    }
+                    $stmt_emp = $this->pdo->prepare("
+                        UPDATE empresas 
+                        SET membresia_plan = 'ninguno', 
+                            membresia_estado = 'inactivo', 
+                            membresia_vencimiento = NULL 
+                        WHERE usuarioId = ?
+                    ");
+                    $stmt_emp->execute([$usuario_id]);
+                } catch (Exception $e) {
+                    // Si no se pueden agregar columnas, continuar
+                }
 
                 $this->pdo->commit();
 
-                // 3. Actualizar variables de sesión para que el cambio de rol tenga efecto de inmediato
-                $_SESSION['roleId'] = 3;
-                $_SESSION['slugRole'] = 'proveedor';
-                $_SESSION['nombreRole'] = 'Proveedor';
+                // 4. Actualizar variables de sesión para que el cambio de rol tenga efecto de inmediato
+                $_SESSION['roleId'] = $vendedorRoleId;
+                $_SESSION['slugRole'] = $slugRole;
+                $_SESSION['nombreRole'] = $nombreRole;
 
                 Logger::log("Usuario ID $usuario_id actualizó su cuenta de Comprador a Vendedor", 'business');
 

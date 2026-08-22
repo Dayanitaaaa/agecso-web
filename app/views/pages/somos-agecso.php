@@ -34,7 +34,8 @@ $sectores = [
             ['archivo' => '2educacion.jpg', 'link' => 'https://www.cealacumbresas.edu.co/'],
             ['archivo' => '3educacion.jpeg', 'link' => 'https://businessenglishschool.edu.co/'],
             ['archivo' => '4educacion.jpeg', 'link' => 'https://teinco.edu.co/'],
-            ['archivo' => '5educacion.jpeg', 'link' => 'https://sabetecnologias.edu.co/']
+            ['archivo' => '5educacion.jpeg', 'link' => 'https://sabetecnologias.edu.co/'],
+            ['archivo' => '6educacion.jpeg', 'link' => 'https://www.soyeni.edu.co/']
         ]
     ],
     [
@@ -57,7 +58,17 @@ $sectores = [
     ],
     [
         'titulo' => 'Talento Humano, Salud y Bienestar',
-        'logos' => ['9logo.jpeg', '10logo.png', '11logo.jpg', '12logo.png']
+        'logos' => [
+            ['archivo' => '1salud.png', 'link' => ''],
+            ['archivo' => '2salud.jpeg', 'link' => ''],
+            ['archivo' => '3salud.jpg', 'link' => ''],
+            ['archivo' => '4salud.jpeg', 'link' => ''],
+            ['archivo' => '5salud.jpeg', 'link' => ''],
+            ['archivo' => '6salud.jpg', 'link' => ''],
+            ['archivo' => '7salud.jpeg', 'link' => ''],
+            ['archivo' => '8salud.png', 'link' => ''],
+            ['archivo' => '9salud.jpg', 'link' => '']
+        ]
     ],
     [
         'titulo' => 'Suministros y Dotaciones',
@@ -90,7 +101,8 @@ $sectores = [
         'titulo' => 'Abogados y Seguros',
         'logos' => [
             ['archivo' => '1abogado.png', 'link' => 'https://qbmseguros.com/'],
-            ['archivo' => '2abogado.jpeg', 'link' => '']
+            ['archivo' => '2abogado.jpeg', 'link' => ''],
+            ['archivo' => '3abogado.png', 'link' => 'https://asmillennium.com/']
         ]
     ],
     [
@@ -99,7 +111,8 @@ $sectores = [
             ['archivo' => '1restaurante.png', 'link' => 'https://deliciasmargarita.com/'],
             ['archivo' => '2restaurante.jpeg', 'link' => ''],
             ['archivo' => '3restaurante.jpeg', 'link' => 'https://hotelessaharafacatativa.com.co/'],
-            ['archivo' => '4restaurante.jpeg', 'link' => 'https://www.facebook.com/somosburrito']
+            ['archivo' => '4restaurante.jpeg', 'link' => 'https://www.facebook.com/somosburrito'],
+            ['archivo' => '5restaurante.jpeg', 'link' => 'https://www.instagram.com/laguarichahamburgueseria?igsh=MWQ5NXZsMnZkeDJxMA==']
         ]
     ],
     [
@@ -108,7 +121,8 @@ $sectores = [
             ['archivo' => '1seguridad.png', 'link' => 'https://mastinseguridad.com/'],
             ['archivo' => '2seguridad.png', 'link' => 'https://www.advertirpoligrafia.com/'],
             ['archivo' => '3seguridad.png', 'link' => 'https://www.grupolaroche.com/'],
-            ['archivo' => '4seguridad.jpeg', 'link' => 'https://www.cooserviunidos.com/']
+            ['archivo' => '4seguridad.jpeg', 'link' => 'https://www.cooserviunidos.com/'],
+            ['archivo' => '5seguridad.jpeg', 'link' => 'https://www.instagram.com/astragprs?igsh=MWx0bnNubWVmazhiOQ==']
         ]
     ],
     [
@@ -129,6 +143,18 @@ $sectores = [
             ['archivo' => '1construccion.jpeg', 'link' => ''],
             ['archivo' => '2construccion.jpg', 'link' => ''],
             ['archivo' => '3construccion.jpg', 'link' => 'https://www.bsingenieriayequipos.com/']
+        ]
+    ],
+    [
+        'titulo' => 'Comercio Autopartes, Servicio Automotriz y Concesionarios',
+        'logos' => [
+            ['archivo' => '1automotriz.jpg', 'link' => 'https://daycar.com.co/']
+        ]
+    ],
+    [
+        'titulo' => 'Farmacéutico y Cosmético',
+        'logos' => [
+            ['archivo' => 'carruselF1.jpeg', 'link' => 'https://pharmatrading.co/']
         ]
     ]
 ];

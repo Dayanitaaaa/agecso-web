@@ -23,6 +23,10 @@
                 <div class="alert alert-danger py-2 px-3 mb-3" style="font-size: 0.85rem; border-radius: 10px;"><?= htmlspecialchars($error) ?></div>
             <?php endif; ?>
 
+            <?php if (isset($_GET['reset']) && $_GET['reset'] === 'success'): ?>
+                <div class="alert alert-success py-2 px-3 mb-3" style="font-size: 0.85rem; border-radius: 10px;">Contraseña actualizada correctamente. Ya puedes iniciar sesión.</div>
+            <?php endif; ?>
+
             <form method="POST" action="">
                 <div class="login-input-group">
                     <i class="bi bi-person input-icon"></i>
@@ -39,7 +43,7 @@
                 <label class="d-flex align-items-center gap-1 text-muted" style="cursor: pointer;">
                     <input type="checkbox" class="form-check-input m-0" style="cursor: pointer;"> Recordarme
                 </label>
-                <a href="#">¿Olvidaste tu contraseña?</a>
+                <a href="<?= APP_URL ?>/?page=forgot-password" style="position: relative; z-index: 999; cursor: pointer !important;">¿Olvidaste tu contraseña?</a>
             </div>
 
             <div class="login-back">

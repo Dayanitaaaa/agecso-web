@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `ruedas_negocios` (
   `fechaInicio` date NOT NULL,
   `fechaFin` date NOT NULL,
   `duracionCitaMinutos` int(11) DEFAULT 30,
-  `estadoRueda` enum('planeacion','activa','finalizada','cancelada') DEFAULT 'planeacion',
+  `estadoRueda` enum('planeacion','inscripciones','activa','finalizada','cancelada') DEFAULT 'planeacion',
   `autoActivada` tinyint(1) DEFAULT 0,
   `autoFinalizada` tinyint(1) DEFAULT 0,
   `organizadorId` int(10) UNSIGNED DEFAULT NULL,

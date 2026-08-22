@@ -21,7 +21,7 @@ if (!empty($parts[0])) {
         if (!empty($parts[1])) $_GET['section'] = $parts[1];
         if (!empty($parts[2])) $_GET['action'] = $parts[2];
         if (!empty($parts[3])) $_GET['id'] = $parts[3];
-    } elseif (in_array($parts[0], ['login', 'logout', 'noticias', 'eventos', 'contacto', 'somos-agecso', 'aliados', 'servicios', 'cursos-webinar'])) {
+    } elseif (in_array($parts[0], ['login', 'logout', 'forgot-password', 'reset-password', 'noticias', 'eventos', 'contacto', 'nosotros', 'somos-agecso', 'aliados', 'servicios', 'cursos-webinar', 'agenda'])) {
         $_GET['page'] = $parts[0];
     }
 }
@@ -33,6 +33,14 @@ if ($page === 'login') {
     require_once __DIR__ . '/../app/controllers/AuthController.php';
     $controller = new AuthController($pdo);
     $controller->login();
+} elseif ($page === 'forgot-password' || $page === 'forgotpassword') {
+    require_once __DIR__ . '/../app/controllers/AuthController.php';
+    $controller = new AuthController($pdo);
+    $controller->forgotPassword();
+} elseif ($page === 'reset-password' || $page === 'resetpassword') {
+    require_once __DIR__ . '/../app/controllers/AuthController.php';
+    $controller = new AuthController($pdo);
+    $controller->resetPassword();
 } elseif ($page === 'logout') {
     require_once __DIR__ . '/../app/controllers/AuthController.php';
     $controller = new AuthController($pdo);
@@ -43,6 +51,9 @@ if ($page === 'login') {
     
     $section = $_GET['section'] ?? 'dashboard';
     switch ($section) {
+        case 'agenda':
+            $controller->agenda();
+            break;
         case 'noticias':
             $controller->noticias();
             break;
@@ -57,6 +68,9 @@ if ($page === 'login') {
             break;
         case 'servicios':
             $controller->servicios();
+            break;
+        case 'multimedia':
+            $controller->multimedia();
             break;
         case 'mensajes':
             $controller->mensajes();

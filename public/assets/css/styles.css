@@ -779,8 +779,8 @@ html {
 /* Track holding all slides */
 .logo-slider-track {
     display: flex;
-    /* (180px width + 30px margin) * 26 slides = 5460px */
-    width: calc(210px * 26);
+    /* (180px width + 30px margin) * 28 slides = 5880px */
+    width: calc(210px * 28);
     animation: scrollLogos 45s linear infinite;
 }
 
@@ -824,13 +824,13 @@ html {
     opacity: 1;
 }
 
-/* Infinite loop keyframe calculation for 13 slides */
+/* Infinite loop keyframe calculation for 14 slides */
 @keyframes scrollLogos {
     0% {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(calc(-210px * 13)); /* Slides width + margins to restart seamlessly */
+        transform: translateX(calc(-210px * 14)); /* Slides width + margins to restart seamlessly */
     }
 }
 
@@ -1148,142 +1148,236 @@ html {
     transform: translateX(4px);
 }
 
-/* Rueda CTA Section */
+/* Rueda CTA Section Modern Redesign */
 .rueda-cta-section {
-    position: relative;
-    background: #fff;
-    overflow: hidden;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
 }
 
-/* Benefit items */
-.benefit-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    background: rgba(0, 162, 255, 0.08);
-    color: #00a2ff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-    flex-shrink: 0;
-    box-shadow: 0 4px 10px rgba(0, 162, 255, 0.05);
-}
-
-/* Mockup wrapper & background glow */
-.rueda-mockup-wrapper {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    position: relative;
-}
-
-.mockup-bg-glow {
+.rueda-bg-shape {
     position: absolute;
-    width: 320px;
-    height: 320px;
-    background: radial-gradient(circle, rgba(0, 162, 255, 0.22) 0%, rgba(77, 191, 255, 0) 70%);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    filter: blur(80px);
     z-index: 1;
     pointer-events: none;
 }
 
-/* CSS Mockup Dashboard Card with 3D rotation */
-.dashboard-mockup-card {
+.shape-1 {
+    width: 400px;
+    height: 400px;
+    background: rgba(0, 162, 255, 0.05);
+    top: -100px;
+    right: -100px;
+}
+
+.shape-2 {
+    width: 300px;
+    height: 300px;
+    background: rgba(88, 165, 92, 0.04);
+    bottom: -50px;
+    left: -50px;
+}
+
+.highlight-text-blue {
+    color: #00a2ff;
     position: relative;
-    z-index: 2;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.08) !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1) !important;
-    transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
-    transition: transform 0.5s ease;
-}
-
-.rueda-mockup-wrapper:hover .dashboard-mockup-card {
-    transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
-}
-
-.mockup-header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.mockup-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
     display: inline-block;
 }
-.mockup-dot.red { background: #ff5f56; }
-.mockup-dot.yellow { background: #ffbd2e; }
-.mockup-dot.green { background: #27c93f; }
 
-.mockup-body {
+.benefit-item-modern {
+    padding: 1.25rem;
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.04) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s ease;
+}
+
+.benefit-item-modern:hover {
+    transform: translateX(10px);
+    box-shadow: 0 10px 30px rgba(0, 162, 255, 0.08);
+    border-color: rgba(0, 162, 255, 0.1) !important;
+}
+
+.benefit-icon-box {
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 162, 255, 0.1);
+    color: #00a2ff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.benefit-icon-box.blue-box { background: rgba(0, 138, 224, 0.1); color: #008ae0; }
+.benefit-icon-box.green-box { background: rgba(88, 165, 92, 0.1); color: #58a55c; }
+
+.shadow-blue-lg {
+    box-shadow: 0 10px 25px rgba(0, 162, 255, 0.25) !important;
+}
+
+/* Enhanced Mockup */
+.rueda-mockup-container {
+    position: relative;
+    perspective: 1000px;
+    padding: 20px;
+}
+
+.dashboard-mockup-frame {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    transform: rotateY(-10deg) rotateX(5deg);
+    transition: transform 0.6s ease;
+}
+
+.rueda-mockup-container:hover .dashboard-mockup-frame {
+    transform: rotateY(0deg) rotateX(0deg);
+}
+
+.mockup-browser-header {
+    background: #101c2c;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mockup-dots { display: flex; gap: 6px; }
+.mockup-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+
+.mockup-url-bar {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.7rem;
+    padding: 4px 30px;
+    border-radius: 6px;
+}
+
+.mockup-status {
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pulse-status {
+    width: 8px;
+    height: 8px;
+    background: #ff0000;
+    border-radius: 50%;
+    animation: statusPulse 1.5s infinite;
+}
+
+@keyframes statusPulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.mockup-ui-content {
+    padding: 25px;
     background: #f8fafc;
 }
 
-.mockup-banner {
-    background: linear-gradient(135deg, #005fa3 0%, #008ae0 100%);
-    box-shadow: 0 4px 12px rgba(0, 95, 163, 0.15);
+.ui-welcome-card {
+    background: linear-gradient(135deg, #005fa3 0%, #00a2ff 100%);
+    padding: 15px 20px;
+    border-radius: 12px;
+    color: #fff;
 }
 
-.mockup-stat-card {
-    border: 1px solid rgba(0, 0, 0, 0.05) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+.ui-welcome-card h6 { font-size: 0.85rem; margin: 0; }
+.ui-progress {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    width: 70%;
+    border-radius: 10px;
+    margin-top: 8px;
 }
 
-.mockup-avatar {
-    width: 28px;
-    height: 28px;
+.ui-stat-card {
+    background: #fff;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.ui-stat-card small { display: block; font-size: 0.6rem; color: #64748b; text-transform: uppercase; }
+.ui-stat-card strong { font-size: 1.1rem; color: #00a2ff; }
+
+.ui-agenda-list { margin-top: 20px; }
+.ui-list-header { font-size: 0.65rem; font-weight: 800; color: #94a3b8; letter-spacing: 1px; margin-bottom: 10px; }
+
+.ui-meeting-item {
+    background: #fff;
+    padding: 10px 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.ui-avatar {
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
-    font-weight: bold;
+    font-size: 0.7rem;
+    font-weight: 700;
     color: #fff;
 }
-.mockup-avatar.blue { background: #00a2ff; }
-.mockup-avatar.green { background: #58a55c; }
 
-.mockup-meeting-row {
-    border: 1px solid rgba(0, 0, 0, 0.05) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    transition: background-color 0.2s ease;
-}
-.mockup-meeting-row:hover {
-    background-color: #f1f5f9;
-}
+.ava-blue { background: #00a2ff; }
+.ava-green { background: #58a55c; }
+.ui-name { font-size: 0.75rem; font-weight: 600; color: #1e293b; }
 
-/* Floating Glass Badge */
-.mockup-floating-badge {
+.ui-badge { font-size: 0.6rem; padding: 2px 8px; border-radius: 50px; font-weight: 700; }
+.bg-soft-success { background: rgba(88, 165, 92, 0.1); color: #58a55c; }
+.bg-soft-warning { background: rgba(255, 193, 7, 0.1); color: #b45309; }
+
+.ui-notification-card {
     position: absolute;
-    bottom: -20px;
-    right: -30px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    z-index: 3;
-    width: 240px;
-    box-shadow: 0 10px 30px rgba(0, 162, 255, 0.15) !important;
-    transition: transform 0.4s ease;
+    bottom: -10px;
+    right: -20px;
+    background: #fff;
+    padding: 15px 20px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.rueda-mockup-wrapper:hover .mockup-floating-badge {
-    transform: translateY(-8px) scale(1.05);
+.notif-icon { color: #58a55c; font-size: 1.5rem; }
+.notif-text strong { display: block; font-size: 0.85rem; color: #1e293b; }
+.notif-text span { font-size: 0.75rem; color: #64748b; }
+
+.mockup-float-element {
+    position: absolute;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1;
 }
 
-/* Responsiveness for Rueda CTA Mockup */
-@media (max-width: 991px) {
-    .rueda-mockup-wrapper {
-        margin-top: 40px;
-    }
-    .mockup-floating-badge {
-        right: 10px;
-        bottom: -15px;
-    }
-}
+.float-1 { width: 80px; height: 80px; top: -20px; left: -20px; background: rgba(0, 162, 255, 0.05); }
+.float-2 { width: 60px; height: 60px; bottom: 40px; right: -30px; background: rgba(88, 165, 92, 0.05); }
 
 /* Contact Page Advanced Styles */
 .contact-hero-banner {
@@ -1433,13 +1527,14 @@ html {
     position: relative;
     height: 250px;
     overflow: hidden;
+    background-color: #f8f9fa; /* Fondo neutro para imágenes que no llenen el espacio */
 }
 
 .news-card-media img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important; /* Corta la imagen para que llene el espacio sin deformarse */
-    object-position: top !important; /* Muestra siempre la parte de arriba (evita "sin cabeza") */
+    object-fit: contain !important; /* Muestra la imagen completa sin recortes */
+    transition: transform 0.5s ease;
     display: block;
 }
 
@@ -1560,4 +1655,76 @@ html {
 
 .event-details-grid {
     border: 1px solid rgba(25, 135, 84, 0.1);
+}
+
+/* Modern Pillars Section */
+.bg-modern-light {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.pillar-card {
+    border-radius: 24px !important;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+}
+
+.pillar-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 50px rgba(0, 162, 255, 0.1) !important;
+}
+
+.pillar-line {
+    height: 6px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.pillar-line.blue { background: #00a2ff; }
+.pillar-line.light-blue { background: #4dbfff; }
+.pillar-line.dark-blue { background: #005fa3; }
+
+.pillar-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    background: rgba(0, 162, 255, 0.1);
+    color: #00a2ff;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    transition: all 0.3s ease;
+}
+
+.pillar-icon-wrapper.light-blue { background: rgba(77, 191, 255, 0.12); color: #4dbfff; }
+.pillar-icon-wrapper.dark-blue { background: rgba(0, 95, 163, 0.1); color: #005fa3; }
+
+.pillar-card:hover .pillar-icon-wrapper {
+    transform: scale(1.1) rotate(5deg);
+    background: #00a2ff;
+    color: #fff;
+}
+
+.pillar-card:hover .pillar-icon-wrapper.light-blue { background: #4dbfff; }
+.pillar-card:hover .pillar-icon-wrapper.dark-blue { background: #005fa3; }
+
+.pillar-link {
+    color: #00a2ff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.pillar-link:hover {
+    color: #005fa3;
+    transform: translateX(5px);
 }

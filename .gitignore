@@ -6,6 +6,12 @@ config/db.php
 Thumbs.db
 Archivo.zip
 __MACOSX/
+rueda/sessions/*
+!rueda/sessions/.gitkeep
 
 # Carpeta git
 .git/
+
+# Carpeta de subidas (mantener carpeta pero ignorar contenido)
+public/uploads/*
+!public/uploads/.gitkeep
