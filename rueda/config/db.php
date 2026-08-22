@@ -16,6 +16,9 @@ try {
     // Configurar el modo de obtención por defecto a array asociativo
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
+    // Sincronizar zona horaria de MySQL con la de PHP (Colombia)
+    $pdo->exec("SET time_zone = '-05:00'");
+
     // Producción: usar hora real del sistema
     define('SYSTEM_TIME', date('Y-m-d H:i:s'));
 
