@@ -566,7 +566,14 @@ async function cargarMesasDisponibles(fechaHora) {
             }
         } else {
             select.innerHTML = '<option value="">No hay mesas disponibles en este horario</option>';
-            infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> Todo ocupado. Intenta con otra hora.';
+            
+            // Mostrar información de debug si está disponible
+            if (result.data && result.data.debug) {
+                console.log("DEBUG INFO:", result.data.debug);
+                infoText.innerHTML = `<i class="fas fa-times-circle text-red-500"></i> Todo ocupado. <br><small style="color: #666;">Mesas configuradas: ${result.data.debug.total_mesas_configuradas}, Ocupadas: ${result.data.debug.mesas_ocupadas.length || 0}</small>`;
+            } else {
+                infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> Todo ocupado. Intenta con otra hora.';
+            }
         }
     } catch (error) {
         console.error("Error al cargar mesas:", error);
