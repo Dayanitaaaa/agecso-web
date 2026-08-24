@@ -180,10 +180,22 @@ class ReunionApiController extends BaseApiController {
             error_log("[MESAS_DEBUG] Mesas disponibles: " . json_encode($disponibles));
             error_log("[MESAS_DEBUG] Mesa asignada al comprador: " . ($mesa_asignada ?? 'ninguna'));
 
-            return $this->sendSuccess([
+            // Si no hay mesas disponibles, incluir información de depuración
+            $response = [
                 'mesas' => $disponibles,
                 'mesa_sugerida' => $mesa_asignada
-            ]);
+            ];
+            
+            if (empty($disponibles)) {
+                $response['debug'] = [
+                    'total_mesas_configuradas' => $total_mesas,
+                    'mesas_ocupadas' => $ocupadas_por_otros,
+                    'fecha_hora_solicitada' => $fecha_hora,
+                    'rango_busqueda' => "$horaInicio a $horaFin"
+                ];
+            }
+
+            return $this->sendSuccess($response);
         } catch (Exception $e) {
             error_log('[API_MESAS_ERROR] ' . $e->getMessage());
             return $this->sendError($e->getMessage(), 500);
