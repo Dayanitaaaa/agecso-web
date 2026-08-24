@@ -112,8 +112,11 @@ class ReunionApiController extends BaseApiController {
             $rueda = $stmt_rueda->fetch();
             $total_mesas = ($rueda) ? (int)$rueda['cantidadMesas'] : 0;
             
+            error_log("[MESAS_DEBUG] Rueda ID: $rueda_id, Total mesas configuradas: $total_mesas");
+            
             // Validar que haya mesas configuradas
             if ($total_mesas <= 0) {
+                error_log("[MESAS_DEBUG] ERROR: No hay mesas configuradas");
                 return $this->sendError("La rueda de negocios no tiene mesas configuradas. Contacta al administrador.", 400);
             }
 
@@ -140,6 +143,10 @@ class ReunionApiController extends BaseApiController {
             $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
             $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
 
+            error_log("[MESAS_DEBUG] FechaHora solicitada: $fecha_hora");
+            error_log("[MESAS_DEBUG] Rango búsqueda: $horaInicio a $horaFin");
+            error_log("[MESAS_DEBUG] Comprador ID: $comprador_id");
+
             // Si el comprador ya tiene una mesa, solo verificamos si ESA mesa está libre para el nuevo horario
             // Pero permitimos que ÉL mismo la use aunque tenga citas cercanas (la validación de 45 min del controlador ya evita solapamientos del comprador)
             $stmt_ocupadas = $this->pdo->prepare("
@@ -156,6 +163,8 @@ class ReunionApiController extends BaseApiController {
             
             $stmt_ocupadas->execute($params_ocupadas);
             $ocupadas_por_otros = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
+            
+            error_log("[MESAS_DEBUG] Mesas ocupadas por otros: " . json_encode($ocupadas_por_otros));
 
             // 4. Generar lista de mesas disponibles
             $disponibles = [];
@@ -167,6 +176,9 @@ class ReunionApiController extends BaseApiController {
                     $disponibles[] = $nombre_mesa;
                 }
             }
+            
+            error_log("[MESAS_DEBUG] Mesas disponibles: " . json_encode($disponibles));
+            error_log("[MESAS_DEBUG] Mesa asignada al comprador: " . ($mesa_asignada ?? 'ninguna'));
 
             return $this->sendSuccess([
                 'mesas' => $disponibles,
