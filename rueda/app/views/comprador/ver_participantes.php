@@ -545,6 +545,9 @@ async function cargarMesasDisponibles(fechaHora) {
 
         select.innerHTML = '<option value="">-- Seleccionar Mesa --</option>';
         
+        // SIEMPRE mostrar debug en consola
+        console.log("RESPUESTA API:", result);
+        
         if (result.status === 'success' && result.data && result.data.mesas && result.data.mesas.length > 0) {
             let mesaYaAsignada = result.data.mesa_sugerida;
             
@@ -583,7 +586,9 @@ async function cargarMesasDisponibles(fechaHora) {
                 
                 infoText.innerHTML = mensaje;
             } else {
-                infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> Todo ocupado. Intenta con otra hora.';
+                // Si no hay debug, mostrar el error completo
+                console.log("SIN DEBUG - Respuesta completa:", JSON.stringify(result));
+                infoText.innerHTML = `<i class="fas fa-times-circle text-red-500"></i> Error: ${result.message || 'Desconocido'}. <br><small>Revisa la consola (F12) para más detalles.</small>`;
             }
         }
     } catch (error) {
