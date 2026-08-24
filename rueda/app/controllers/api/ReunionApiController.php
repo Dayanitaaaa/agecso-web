@@ -110,7 +110,12 @@ class ReunionApiController extends BaseApiController {
             $stmt_rueda = $this->pdo->prepare("SELECT cantidadMesas FROM ruedas_negocios WHERE id = ?");
             $stmt_rueda->execute([$rueda_id]);
             $rueda = $stmt_rueda->fetch();
-            $total_mesas = ($rueda) ? (int)$rueda['cantidadMesas'] : 1;
+            $total_mesas = ($rueda) ? (int)$rueda['cantidadMesas'] : 0;
+            
+            // Validar que haya mesas configuradas
+            if ($total_mesas <= 0) {
+                return $this->sendError("La rueda de negocios no tiene mesas configuradas. Contacta al administrador.", 400);
+            }
 
             // 2. Verificar si el comprador ya tiene una mesa asignada en esta rueda
             $mesa_asignada = null;
