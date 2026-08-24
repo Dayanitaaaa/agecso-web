@@ -570,7 +570,18 @@ async function cargarMesasDisponibles(fechaHora) {
             // Mostrar información de debug si está disponible
             if (result.data && result.data.debug) {
                 console.log("DEBUG INFO:", result.data.debug);
-                infoText.innerHTML = `<i class="fas fa-times-circle text-red-500"></i> Todo ocupado. <br><small style="color: #666;">Mesas configuradas: ${result.data.debug.total_mesas_configuradas}, Ocupadas: ${result.data.debug.mesas_ocupadas.length || 0}</small>`;
+                const debugInfo = result.data.debug;
+                let mensaje = `<i class="fas fa-times-circle text-red-500"></i> `;
+                
+                if (debugInfo.total_mesas_configuradas === 0) {
+                    mensaje += `ERROR: La rueda no tiene mesas configuradas. Contacta al administrador.`;
+                } else if (debugInfo.mesas_ocupadas && debugInfo.mesas_ocupadas.length > 0) {
+                    mensaje += `Todas las mesas ocupadas. <br><small style="color: #666;">Mesas: ${debugInfo.total_mesas_configuradas}, Ocupadas: ${debugInfo.mesas_ocupadas.length}</small>`;
+                } else {
+                    mensaje += `No hay mesas disponibles. <br><small style="color: #666;">Mesas configuradas: ${debugInfo.total_mesas_configuradas}</small>`;
+                }
+                
+                infoText.innerHTML = mensaje;
             } else {
                 infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> Todo ocupado. Intenta con otra hora.';
             }
