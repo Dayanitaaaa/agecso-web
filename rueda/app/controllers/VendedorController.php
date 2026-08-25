@@ -465,29 +465,15 @@ class VendedorController {
                 $rueda_id = $_POST['rueda_id'] ?? null;
                 $sector_id = $_POST['sector_id'] ?? $_POST['categoria_id'] ?? 1;
                 
-                // CAPTURA AGRESIVA DE TÍTULO (Busca en todo el POST)
-                $titulo = null;
-                $posibles = ['titulo_oferta', 'nombre_producto', 'tituloOferta', 'nombre', 'producto', 'servicio'];
-                foreach($posibles as $p) {
-                    if (!empty($_POST[$p])) {
-                        $titulo = $_POST[$p];
-                        break;
-                    }
-                }
+                // CAPTURA EXACTA SEGÚN ERROR DETECTADO
+                $titulo = $_POST['titulo'] ?? $_POST['titulo_oferta'] ?? $_POST['nombre_producto'] ?? null;
+                $descripcion = $_POST['descripcion'] ?? $_POST['descripcion_oferta'] ?? null;
                 
-                // CAPTURA AGRESIVA DE DESCRIPCIÓN
-                $descripcion = "Sin descripción";
-                $posiblesDesc = ['descripcion_oferta', 'descripcion', 'detalle'];
-                foreach($posiblesDesc as $pd) {
-                    if (!empty($_POST[$pd])) {
-                        $descripcion = $_POST[$pd];
-                        break;
-                    }
-                }
+                $tags_input = $_POST['tags'] ?? $_POST['tags_busqueda'] ?? '';
 
                 if (empty($titulo)) {
                     $llaves = !empty($_POST) ? implode(', ', array_keys($_POST)) : 'VACIO';
-                    throw new Exception("El nombre del producto es obligatorio. (Campos recibidos: $llaves)");
+                    throw new Exception("El nombre del producto o servicio es obligatorio. (Recibido: $llaves)");
                 }
 
                 if (!$rueda_id) {
