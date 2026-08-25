@@ -643,7 +643,7 @@ class VendedorController {
                 try {
                     if ($apartado) {
                         $reunion_id = $apartado['id'];
-                        // Actualizar el registro existente
+                        // Actualizar el registro existente SIN la columna inexistente fechaLimiteNegociacion
                         $stmt = $this->pdo->prepare("
                             UPDATE reuniones 
                             SET vendedorId = ?, 
@@ -651,36 +651,39 @@ class VendedorController {
                                 estadoCita = 'pendiente', 
                                 ultimaAccionPor = 'vendedor', 
                                 propositor = 'vendedor',
-                                contadorContrapropuestas = 1,
-                                fechaLimiteNegociacion = ?
+                                contadorContrapropuestas = 1
                             WHERE id = ?
                         ");
-                        $stmt->execute([$vendedor_id, $fecha_hora, $rueda['fechaFin'] . ' 23:59:59', $reunion_id]);
+                        $stmt->execute([$vendedor_id, $fecha_hora, $reunion_id]);
                     } else {
-                        // Crear uno nuevo si no existe (caso borde)
+                        // Crear uno nuevo si no existe
                         $stmt = $this->pdo->prepare("
-                            INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, contadorContrapropuestas, ultimaAccionPor, propositor, fechaLimiteNegociacion) 
-                            VALUES (?, ?, ?, ?, 'pendiente', ?, ?, 1, 'vendedor', 'vendedor', ?)
+                            INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, contadorContrapropuestas, ultimaAccionPor, propositor) 
+                            VALUES (?, ?, ?, ?, 'pendiente', ?, ?, 1, 'vendedor', 'vendedor')
                         ");
-                        $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $numero_mesa, $rueda['fechaFin'] . ' 23:59:59']);
+                        $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $numero_mesa]);
                         $reunion_id = $this->pdo->lastInsertId();
                     }
 
-                    // Intentar guardar el historial (es opcional para la funcionalidad core)
-                    $this->pdo->prepare("
-                        INSERT INTO reunion_negociaciones (reunionId, propuestoPor, fechaHoraPropuesta, respuesta, numeroContrapropuesta)
-                        VALUES (?, 'vendedor', ?, 'pendiente', 1)
-                    ")->execute([$reunion_id, $fecha_hora]);
+                    // Intentar guardar el historial
+                    try {
+                        $this->pdo->prepare("
+                            INSERT INTO reunion_negociaciones (reunionId, propuestoPor, fechaHoraPropuesta, respuesta, numeroContrapropuesta)
+                            VALUES (?, 'vendedor', ?, 'pendiente', 1)
+                        ")->execute([$reunion_id, $fecha_hora]);
+                    } catch (Throwable $e_neg) {
+                        // Opcional
+                    }
 
                     $this->pdo->commit();
-                } catch (Exception $inner_e) {
+                } catch (Throwable $inner_e) {
                     $this->pdo->rollBack();
                     throw new Exception("Error en base de datos: " . $inner_e->getMessage());
                 }
 
                 header("Location: index.php?controlador=vendedor&accion=dashboard&msg=solicitud_enviada");
                 exit();
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 Logger::logCurrentRoleError('Error al solicitar cita', [
                     'accion' => 'solicitarCita',
                     'error' => $e->getMessage()
