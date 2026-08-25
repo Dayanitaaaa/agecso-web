@@ -116,18 +116,6 @@
                             <i class="fas fa-building text-[8px] opacity-60"></i> <?php echo htmlspecialchars($oferta['razon_social'] ?? 'N/A'); ?>
                         </p>
                         
-                        <div class="mt-auto pt-4 relative z-10">
-                            <?php if ($rueda['estadoRueda'] === 'activa'): ?>
-                                <button onclick="abrirModalCitaOferta(<?php echo $oferta['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($oferta['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($oferta['tituloOferta'] ?? 'N/A')); ?>')" 
-                                        class="w-full bg-[#00a2ff] hover:bg-[#008ae0] text-white py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md shadow-sky-500/10">
-                                    Solicitar Cita
-                                </button>
-                            <?php else: ?>
-                                <button disabled class="w-full bg-gray-100 text-gray-400 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-not-allowed border border-gray-100" title="Rueda no activa">
-                                    <i class="fas fa-lock mr-1"></i> Bloqueado
-                                </button>
-                            <?php endif; ?>
-                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -233,18 +221,6 @@
                                 </div>
                             </div>
                             
-                            <div class="px-7 pb-7">
-                                <?php if ($rueda['estadoRueda'] === 'activa'): ?>
-                                    <button onclick="abrirModalCitaOferta(<?php echo $oferta['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($oferta['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($oferta['tituloOferta'] ?? 'N/A')); ?>')" 
-                                            class="w-full bg-[#00a2ff] hover:bg-[#008ae0] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-sky-500/10 flex items-center justify-center gap-2">
-                                        <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Reunión
-                                    </button>
-                                <?php else: ?>
-                                    <button disabled class="w-full bg-gray-50 text-gray-300 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-gray-100 flex items-center justify-center gap-2">
-                                        <i class="fas fa-lock text-[10px]"></i> Agendamiento Cerrado
-                                    </button>
-                                <?php endif; ?>
-                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -279,135 +255,6 @@
                     <?php endforeach; ?>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para solicitar reunión desde una Oferta -->
-<div id="modalCitaOferta" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <!-- Overlay oscuro premium -->
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="document.getElementById('modalCitaOferta').classList.add('hidden')"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        
-        <!-- Tarjeta de Modal Premium -->
-        <div class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100/50 transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative">
-            
-            <!-- Botón Cerrar (X) arriba a la derecha -->
-            <button type="button" onclick="document.getElementById('modalCitaOferta').classList.add('hidden')" 
-                    class="absolute right-5 top-5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition duration-200 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-
-            <form action="index.php?controlador=comprador&accion=solicitarReunion" method="POST">
-                <input type="hidden" name="rueda_id" value="<?php echo $ruedaId; ?>">
-                <input type="hidden" name="vendedor_id" id="modal_vendedor_id">
-                <input type="hidden" name="comprador_id" value="<?php echo $miEmpresaId; ?>">
-                
-                <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
-                    <!-- Título con Icono -->
-                    <div class="flex items-center gap-2.5 mb-5 text-left">
-                        <div class="p-2 bg-sky-500/10 text-[#00a2ff] rounded-xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <h3 class="text-xl font-extrabold text-gray-800 tracking-tight">Solicitar Reunión de Negocio</h3>
-                    </div>
-                    
-                    <!-- Tarjeta de Detalles del Negocio -->
-                    <div class="bg-gradient-to-br from-sky-50/50 to-blue-50/30 border border-sky-100 p-4 rounded-2xl mb-6 flex flex-col gap-3 text-left">
-                        <div class="flex items-start gap-3">
-                            <div class="p-2 bg-sky-500/10 text-[#00a2ff] rounded-xl text-md flex items-center justify-center shrink-0">
-                                <i class="fas fa-box-open text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-[#00a2ff] tracking-wider uppercase">Interés en oferta</p>
-                                <p id="modal_titulo_oferta" class="font-extrabold text-gray-800 text-sm mt-0.5"></p>
-                            </div>
-                        </div>
-                        <div class="h-px bg-sky-100/50"></div>
-                        <div class="flex items-start gap-3">
-                            <div class="p-2 bg-gray-500/10 text-gray-600 rounded-xl text-md flex items-center justify-center shrink-0">
-                                <i class="fas fa-building text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Proveedor</p>
-                                <p id="modal_nombre_vendedor" class="font-bold text-gray-800 text-sm mt-0.5"></p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Campos del Formulario -->
-                    <div class="space-y-5 text-left">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Fecha y Hora Propuesta</label>
-                            <input type="text" name="fecha_hora" id="fecha_hora_input" required 
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-white cursor-pointer"
-                                   placeholder="Seleccionar fecha y hora...">
-                            <p class="text-[10px] text-gray-400 mt-1.5 ml-1 flex items-center gap-1 font-bold">
-                                <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                La cita debe agendarse antes del <?php echo date('d/m/Y H:i', strtotime($rueda['fechaFin'])); ?>
-                            </p>
-                        </div>
-
-                        <?php if ($rueda['modalidad'] === 'virtual'): ?>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Link de Reunión (Opcional)</label>
-                                <input type="url" name="link_reunion" placeholder="https://meet.google.com/..." 
-                                       class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200">
-                                <p class="text-[10px] text-gray-400 mt-1.5 ml-1 flex items-center gap-1 font-bold">
-                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                    Puedes agregarlo ahora o después desde tus Citas Programadas
-                                </p>
-                            </div>
-                        <?php else: ?>
-                            <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-4 text-left">
-                                <p class="text-[11px] text-orange-800 font-black leading-relaxed text-left">
-                                    <i class="fas fa-map-marker-alt mr-1.5 text-orange-500"></i> 
-                                    <strong>Reunión Presencial:</strong> Esta rueda se realiza físicamente en: <br>
-                                    <span class="font-bold text-orange-900 ml-5"><?php echo htmlspecialchars($rueda['ubicacion']); ?></span>
-                                </p>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Número de Mesa / Stand (Opcional)</label>
-                                <div class="relative">
-                                    <select name="numero_mesa" id="numero_mesa_select" 
-                                           class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 appearance-none bg-white font-bold">
-                                        <option value="">Selecciona una fecha primero...</option>
-                                    </select>
-                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
-                                        <i class="fas fa-chair text-[10px]"></i>
-                                    </div>
-                                </div>
-                                <p id="mesa_info_text" class="text-[10px] text-gray-400 mt-1.5 ml-1 flex items-center gap-1 font-bold">
-                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                    Solo se muestran las mesas libres para el horario elegido.
-                                </p>
-                            </div>
-                        <?php endif; ?>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Mensaje / Objetivo</label>
-                            <textarea name="descripcion" rows="3" required 
-                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 resize-none" 
-                                      placeholder="Describe tu interés en esta oferta..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Acciones del Footer -->
-                <div class="bg-gray-50/50 border-t border-gray-100 px-6 py-4 sm:px-8 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-                    <button type="button" onclick="document.getElementById('modalCitaOferta').classList.add('hidden')" 
-                            class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-sm font-black text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-8 py-2.5 bg-[#00a2ff] text-sm font-black text-white hover:bg-[#008ae0] shadow-[0_4px_15px_rgba(0,162,255,0.2)] hover:shadow-[0_6px_20px_rgba(0,162,255,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none uppercase tracking-widest">
-                        Enviar Solicitud
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
@@ -504,115 +351,15 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-    // Inicializar Flatpickr en español para la cita
-    if (document.getElementById('fecha_hora_input')) {
-        flatpickr("#fecha_hora_input", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            altInput: true,
-            altFormat: "F j, Y - h:i K",
-            locale: "es",
-            minDate: "today",
-            maxDate: "<?php echo date('Y-m-d H:i', strtotime($rueda['fechaFin'])); ?>",
-            time_24hr: false,
-            disableMobile: "true",
-            animate: true,
-            onChange: function(selectedDates, dateStr) {
-                if (document.getElementById('numero_mesa_select')) {
-                    cargarMesasDisponibles(dateStr);
-                }
-            }
-        });
-    }
-});
-
-async function cargarMesasDisponibles(fechaHora) {
-    const select = document.getElementById('numero_mesa_select');
-    const infoText = document.getElementById('mesa_info_text');
-    const ruedaId = "<?php echo $ruedaId; ?>";
-    const compradorId = "<?php echo $miEmpresaId; ?>";
-
-    if (!select) return;
-
-    select.innerHTML = '<option value="">Cargando mesas disponibles...</option>';
-    select.disabled = true;
-
-    try {
-        const encodedFecha = encodeURIComponent(fechaHora);
-        const response = await fetch(`index.php?controlador=api/reunion&accion=getMesasDisponibles&rueda_id=${ruedaId}&fecha_hora=${encodedFecha}&comprador_id=${compradorId}`);
-        const result = await response.json();
-
-        select.innerHTML = '<option value="">-- Seleccionar Mesa --</option>';
-        
-        // SIEMPRE mostrar debug en consola
-        console.log("RESPUESTA API:", result);
-        
-        if (result.status === 'success' && result.data && result.data.mesas && result.data.mesas.length > 0) {
-            let mesaYaAsignada = result.data.mesa_sugerida;
-            
-            result.data.mesas.forEach(mesa => {
-                const opt = document.createElement('option');
-                opt.value = mesa;
-                opt.textContent = mesa + (mesa === mesaYaAsignada ? ' (Tu mesa actual)' : '');
-                if (mesa === mesaYaAsignada) {
-                    opt.selected = true;
-                }
-                select.appendChild(opt);
-            });
-            select.disabled = false;
-            
-            if (mesaYaAsignada) {
-                infoText.innerHTML = `<i class="fas fa-check-circle text-[#00a2ff]"></i> Se ha pre-seleccionado tu mesa asignada.`;
-            } else {
-                infoText.innerHTML = `<i class="fas fa-check-circle text-green-500"></i> ${result.data.mesas.length} mesas libres encontradas.`;
-            }
-        } else {
-            select.innerHTML = '<option value="">No hay mesas disponibles en este horario</option>';
-            
-            // Mostrar información de debug si está disponible
-            if (result.data && result.data.debug) {
-                console.log("DEBUG INFO:", result.data.debug);
-                const debugInfo = result.data.debug;
-                let mensaje = `<i class="fas fa-times-circle text-red-500"></i> `;
-                
-                if (debugInfo.total_mesas_configuradas === 0) {
-                    mensaje += `ERROR: La rueda no tiene mesas configuradas. Contacta al administrador.`;
-                } else if (debugInfo.mesas_ocupadas && debugInfo.mesas_ocupadas.length > 0) {
-                    mensaje += `Todas las mesas ocupadas. <br><small style="color: #666;">Mesas: ${debugInfo.total_mesas_configuradas}, Ocupadas: ${debugInfo.mesas_ocupadas.length}</small>`;
-                } else {
-                    mensaje += `No hay mesas disponibles. <br><small style="color: #666;">Mesas configuradas: ${debugInfo.total_mesas_configuradas}</small>`;
-                }
-                
-                infoText.innerHTML = mensaje;
-            } else {
-                // Si no hay debug, mostrar el error completo
-                console.log("SIN DEBUG - Respuesta completa:", JSON.stringify(result));
-                infoText.innerHTML = `<i class="fas fa-times-circle text-red-500"></i> Error: ${result.message || 'Desconocido'}. <br><small>Revisa la consola (F12) para más detalles.</small>`;
-            }
-        }
-    } catch (error) {
-        console.error("Error al cargar mesas:", error);
-        select.innerHTML = '<option value="">Error al cargar mesas</option>';
-    }
-}
-
-function abrirModalCitaOferta(vendedorId, nombreVendedor, tituloOferta) {
-    document.getElementById('modal_vendedor_id').value = vendedorId;
-    document.getElementById('modal_nombre_vendedor').innerText = nombreVendedor;
-    document.getElementById('modal_titulo_oferta').innerText = tituloOferta;
-    document.getElementById('modalCitaOferta').classList.remove('hidden');
-}
-
 function toggleParticipantes() {
-    const seccion = document.getElementById('seccion-participantes');
-    const icono = document.getElementById('icon-participantes');
+    const seccion = document.getElementById('grid_empresas');
+    const icono = document.querySelector('button[onclick*="grid_empresas"] i');
     if (seccion.classList.contains('hidden')) {
         seccion.classList.remove('hidden');
-        icono.classList.add('rotate-180');
+        if (icono) icono.classList.add('rotate-180');
     } else {
         seccion.classList.add('hidden');
-        icono.classList.remove('rotate-180');
+        if (icono) icono.classList.remove('rotate-180');
     }
 }
 </script>
