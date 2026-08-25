@@ -1058,21 +1058,25 @@ class VendedorController {
 
             $demandas = [];
             foreach ($lista_empresas as $emp) {
-                // 2. Buscar si la empresa tiene una demanda en esta rueda
-                $stmt_d = $this->pdo->prepare("SELECT tituloDemanda, descripcionDemanda, createdAt FROM demandas WHERE empresaId = ? AND ruedaId = ? LIMIT 1");
+                // 2. Buscar demandas de la empresa en esta rueda
+                $stmt_d = $this->pdo->prepare("SELECT tituloDemanda, descripcionDemanda, createdAt FROM demandas WHERE empresaId = ? AND ruedaId = ?");
                 $stmt_d->execute([$emp['empresaId'], $rueda_id]);
-                $demandaInfo = $stmt_d->fetch();
+                $emp_demandas = $stmt_d->fetchAll();
 
-                // 3. Buscar si la empresa tiene una mesa apartada en esta rueda
+                // 3. Buscar ofertas de la empresa en esta rueda (Lo que ellos ofrecen)
+                $stmt_o = $this->pdo->prepare("SELECT tituloOferta, descripcionOferta, createdAt FROM ofertas WHERE empresaId = ? AND ruedaId = ?");
+                $stmt_o->execute([$emp['empresaId'], $rueda_id]);
+                $emp_ofertas = $stmt_o->fetchAll();
+
+                // 4. Buscar si la empresa tiene una mesa apartada en esta rueda
                 $stmt_m = $this->pdo->prepare("SELECT numero_mesa FROM reuniones WHERE compradorId = ? AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1");
                 $stmt_m->execute([$emp['empresaId'], $rueda_id]);
                 $mesaInfo = $stmt_m->fetch();
 
                 // Armar el objeto final para la vista
                 $demandas[] = array_merge($emp, [
-                    'tituloDemanda' => $demandaInfo ? $demandaInfo['tituloDemanda'] : null,
-                    'descripcionDemanda' => $demandaInfo ? $demandaInfo['descripcionDemanda'] : null,
-                    'demandaCreatedAt' => $demandaInfo ? $demandaInfo['createdAt'] : null,
+                    'demandas' => $emp_demandas,
+                    'ofertas' => $emp_ofertas,
                     'mesa_apartada' => $mesaInfo ? $mesaInfo['numero_mesa'] : null
                 ]);
             }

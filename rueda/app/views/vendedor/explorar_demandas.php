@@ -117,8 +117,45 @@
                                     </div>
                                 </div>
                                 
-                                <h3 class="font-black text-gray-900 text-lg mb-3 leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($demanda['tituloDemanda'] ?? ''); ?></h3>
-                                <p class="text-xs text-gray-500 leading-relaxed font-medium line-clamp-4 mb-6"><?php echo nl2br(htmlspecialchars($demanda['descripcionDemanda'] ?? '')); ?></p>
+                                <h3 class="font-black text-gray-900 text-lg mb-3 leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($demanda['razon_social'] ?? ''); ?></h3>
+                                
+                                <div class="space-y-4 mb-6">
+                                    <!-- Ofertas de la empresa (Lo que ofrecen) -->
+                                    <?php if (!empty($demanda['ofertas'])): ?>
+                                        <div class="bg-emerald-50/50 p-3 rounded-xl border border-emerald-100/50">
+                                            <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                                <i class="fas fa-bullhorn text-[10px]"></i> Lo que ofrece:
+                                            </p>
+                                            <?php foreach (array_slice($demanda['ofertas'], 0, 2) as $oferta): ?>
+                                                <div class="mb-2 last:mb-0">
+                                                    <p class="text-[11px] font-black text-gray-800 leading-tight"><?php echo htmlspecialchars($oferta['tituloOferta']); ?></p>
+                                                    <p class="text-[10px] text-gray-500 line-clamp-2 mt-0.5"><?php echo htmlspecialchars($oferta['descripcionOferta']); ?></p>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <!-- Demandas de la empresa (Lo que buscan) -->
+                                    <?php if (!empty($demanda['demandas'])): ?>
+                                        <div class="bg-teal-50/50 p-3 rounded-xl border border-teal-100/50">
+                                            <p class="text-[9px] font-black text-[#0d9488] uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                                <i class="fas fa-shopping-basket text-[10px]"></i> Lo que busca:
+                                            </p>
+                                            <?php foreach (array_slice($demanda['demandas'], 0, 2) as $dem): ?>
+                                                <div class="mb-2 last:mb-0">
+                                                    <p class="text-[11px] font-black text-gray-800 leading-tight"><?php echo htmlspecialchars($dem['tituloDemanda']); ?></p>
+                                                    <p class="text-[10px] text-gray-500 line-clamp-2 mt-0.5"><?php echo htmlspecialchars($dem['descripcionDemanda']); ?></p>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <?php if (empty($demanda['ofertas']) && empty($demanda['demandas'])): ?>
+                                        <div class="bg-gray-50 p-4 rounded-xl text-center border border-gray-100">
+                                            <p class="text-[10px] text-gray-400 font-bold italic">Esta empresa aún no ha publicado ofertas ni demandas.</p>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
                                 
                                 <div class="space-y-3 pt-6 border-t border-gray-50">
                                     <div class="flex items-center text-xs">
