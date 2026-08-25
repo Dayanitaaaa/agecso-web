@@ -140,48 +140,30 @@ class ReunionApiController extends BaseApiController {
 
             // 3. Obtener mesas ocupadas
             if ($fecha_hora) {
-                // Si se envía fecha_hora, verificar mesas ocupadas en ese rango (bloque de 30 minutos)
+                // Si se envía fecha_hora, verificar mesas ocupadas
                 $fechaBase = strtotime($fecha_hora);
                 $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
                 $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
 
-                error_log("[MESAS_DEBUG] FechaHora solicitada: $fecha_hora");
-                error_log("[MESAS_DEBUG] Rango búsqueda: $horaInicio a $horaFin");
-                error_log("[MESAS_DEBUG] Comprador ID: $comprador_id");
-
-                // Obtener mesas ocupadas por CUALQUIER comprador en esa fecha/hora
-                // Consideramos ocupadas las mesas con citas reales O apartadas
+                // Obtener mesas ocupadas: cualquier mesa con cita activa o apartada
                 $stmt_ocupadas = $this->pdo->prepare("
-                    SELECT numero_mesa FROM reuniones 
+                    SELECT DISTINCT numero_mesa FROM reuniones 
                     WHERE ruedaId = ? 
-                    AND (
-                        (fechaHora BETWEEN ? AND ?) 
-                        OR estadoCita = 'mesa_apartada'
-                    )
-                    AND estadoCita NOT IN ('cancelada', 'rechazada')
+                    AND estadoCita IN ('mesa_apartada', 'pendiente', 'aceptada', 'agendada', 'realizada', 'negociando')
                     AND numero_mesa IS NOT NULL
                 ");
-                $stmt_ocupadas->execute([$rueda_id, $horaInicio, $horaFin]);
+                $stmt_ocupadas->execute([$rueda_id]);
                 $ocupadas_por_otros = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
-                
-                error_log("[MESAS_DEBUG] Mesas ocupadas por otros: " . json_encode($ocupadas_por_otros));
             } else {
                 // Si no se envía fecha_hora, obtener todas las mesas ocupadas en la rueda
                 $stmt_ocupadas = $this->pdo->prepare("
-                    SELECT numero_mesa FROM reuniones 
+                    SELECT DISTINCT numero_mesa FROM reuniones 
                     WHERE ruedaId = ? 
-                    AND estadoCita NOT IN ('cancelada', 'rechazada')
+                    AND estadoCita IN ('mesa_apartada', 'pendiente', 'aceptada', 'agendada', 'realizada', 'negociando')
                     AND numero_mesa IS NOT NULL
-                    " . ($comprador_id ? "AND compradorId != ?" : "") . "
                 ");
-                
-                $params_ocupadas = [$rueda_id];
-                if ($comprador_id) $params_ocupadas[] = $comprador_id;
-                
-                $stmt_ocupadas->execute($params_ocupadas);
+                $stmt_ocupadas->execute([$rueda_id]);
                 $ocupadas_por_otros = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
-                
-                error_log("[MESAS_DEBUG] Mesas ocupadas por otros (sin fecha): " . json_encode($ocupadas_por_otros));
             }
 
             // 4. Generar lista de mesas disponibles
