@@ -594,30 +594,9 @@ class VendedorController {
                 if (!$rueda) {
                     throw new Exception("Rueda de negocios no encontrada.");
                 }
-
                 if ($rueda['estadoRueda'] !== 'activa') {
                     throw new Exception("No se pueden agendar citas mientras la rueda de negocios no esté en estado activa.");
                 }
-
-                // VALIDACIÓN: La fecha debe coincidir con los días de la rueda (comparar solo por día Y-m-d)
-                $fecha_cita_dia = date('Y-m-d', strtotime($fecha_hora));
-                $fecha_inicio_dia = date('Y-m-d', strtotime($rueda['fechaInicio']));
-                $fecha_fin_dia = date('Y-m-d', strtotime($rueda['fechaFin']));
-                
-                if ($fecha_cita_dia < $fecha_inicio_dia || $fecha_cita_dia > $fecha_fin_dia) {
-                    throw new Exception("La fecha de la reunión debe ser entre el " . date('d/m/Y', strtotime($fecha_inicio_dia)) . " y el " . date('d/m/Y', strtotime($fecha_fin_dia)) . ".");
-                }
-
-                // VALIDACIÓN: Buscar si ya existe un apartado de mesa de este comprador
-                $stmt_mesa = $this->pdo->prepare("
-                    SELECT id FROM reuniones 
-                    WHERE ruedaId = ? 
-                    AND compradorId = ? 
-                    AND estadoCita = 'mesa_apartada'
-                    LIMIT 1
-                ");
-                $stmt_mesa->execute([$rueda_id, $comprador_id]);
-                $apartado_existente = $stmt_mesa->fetch();
 
                 // 1. Buscar el apartado de mesa existente
                 $stmt_mesa = $this->pdo->prepare("SELECT id FROM reuniones WHERE ruedaId = ? AND compradorId = ? AND estadoCita = 'mesa_apartada' LIMIT 1");
