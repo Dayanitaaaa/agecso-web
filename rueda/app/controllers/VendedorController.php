@@ -633,50 +633,49 @@ class VendedorController {
                 $stmt_mesa->execute([$rueda_id, $comprador_id]);
                 $apartado_existente = $stmt_mesa->fetch();
 
-                if ($apartado_existente) {
-                    $reunion_id = $apartado_existente['id'];
-                    // ACTUALIZAR el apartado existente con la propuesta del vendedor
-                    $stmt = $this->pdo->prepare("
-                        UPDATE reuniones 
-                        SET vendedorId = ?, 
-                            fechaHora = ?, 
-                            estadoCita = 'pendiente', 
-                            ultimaAccionPor = 'vendedor', 
-                            propositor = 'vendedor',
-                            contadorContrapropuestas = 1,
-                            fechaLimiteNegociacion = ?
-                        WHERE id = ?
-                    ");
-                    $stmt->execute([$vendedor_id, $fecha_hora, $rueda['fechaFin'] . ' 23:59:59', $reunion_id]);
-                } else {
-                    // Si por alguna razón no hay apartado, crear una nueva
-                    $stmt = $this->pdo->prepare("
-                        INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, contadorContrapropuestas, ultimaAccionPor, propositor, fechaLimiteNegociacion) 
-                        VALUES (?, ?, ?, ?, 'pendiente', ?, ?, 1, 'vendedor', 'vendedor', ?)
-                    ");
-                    $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $numero_mesa, $rueda['fechaFin'] . ' 23:59:59']);
-                    $reunion_id = $this->pdo->lastInsertId();
-                }
+                // 1. Buscar el apartado de mesa existente
+                $stmt_mesa = $this->pdo->prepare("SELECT id FROM reuniones WHERE ruedaId = ? AND compradorId = ? AND estadoCita = 'mesa_apartada' LIMIT 1");
+                $stmt_mesa->execute([$rueda_id, $comprador_id]);
+                $apartado = $stmt_mesa->fetch();
 
-                if (!$reunion_id) {
-                    throw new Exception("No se pudo generar o encontrar el ID de la reunión.");
-                }
-                
-                // Programar seguimientos de trazabilidad (3 y 6 meses)
-                require_once '../app/models/TrazabilidadModel.php';
-                $trazabilidadModel = new TrazabilidadModel($this->pdo);
-                $trazabilidadModel->programarSeguimientos($reunion_id, $comprador_id, $vendedor_id, $fecha_hora);
-                
-                // Registrar la propuesta inicial en el historial (Manejo de error específico)
+                $this->pdo->beginTransaction();
+
                 try {
-                    $stmt_hist = $this->pdo->prepare("
+                    if ($apartado) {
+                        $reunion_id = $apartado['id'];
+                        // Actualizar el registro existente
+                        $stmt = $this->pdo->prepare("
+                            UPDATE reuniones 
+                            SET vendedorId = ?, 
+                                fechaHora = ?, 
+                                estadoCita = 'pendiente', 
+                                ultimaAccionPor = 'vendedor', 
+                                propositor = 'vendedor',
+                                contadorContrapropuestas = 1,
+                                fechaLimiteNegociacion = ?
+                            WHERE id = ?
+                        ");
+                        $stmt->execute([$vendedor_id, $fecha_hora, $rueda['fechaFin'] . ' 23:59:59', $reunion_id]);
+                    } else {
+                        // Crear uno nuevo si no existe (caso borde)
+                        $stmt = $this->pdo->prepare("
+                            INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, contadorContrapropuestas, ultimaAccionPor, propositor, fechaLimiteNegociacion) 
+                            VALUES (?, ?, ?, ?, 'pendiente', ?, ?, 1, 'vendedor', 'vendedor', ?)
+                        ");
+                        $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $numero_mesa, $rueda['fechaFin'] . ' 23:59:59']);
+                        $reunion_id = $this->pdo->lastInsertId();
+                    }
+
+                    // Intentar guardar el historial (es opcional para la funcionalidad core)
+                    $this->pdo->prepare("
                         INSERT INTO reunion_negociaciones (reunionId, propuestoPor, fechaHoraPropuesta, respuesta, numeroContrapropuesta)
                         VALUES (?, 'vendedor', ?, 'pendiente', 1)
-                    ");
-                    $stmt_hist->execute([$reunion_id, $fecha_hora]);
-                } catch (Exception $e_hist) {
-                    // Log del error pero permitir que la cita se guarde
-                    Logger::log("Error al guardar historial de negociación: " . $e_hist->getMessage());
+                    ")->execute([$reunion_id, $fecha_hora]);
+
+                    $this->pdo->commit();
+                } catch (Exception $inner_e) {
+                    $this->pdo->rollBack();
+                    throw new Exception("Error en base de datos: " . $inner_e->getMessage());
                 }
 
                 header("Location: index.php?controlador=vendedor&accion=dashboard&msg=solicitud_enviada");
