@@ -635,10 +635,10 @@ class VendedorController {
                     throw new Exception("Ya existe una solicitud de cita pendiente o activa con esta empresa para esta rueda.");
                 }
 
-                // VALIDACIÓN: 1 hora de separación entre citas para AMBAS empresas
+                // VALIDACIÓN: 30 minutos de duración de citas para AMBAS empresas
                 $fechaBase = strtotime($fecha_hora);
-                $horaInicio = date('Y-m-d H:i:s', strtotime('-1 hour', $fechaBase));
-                $horaFin = date('Y-m-d H:i:s', strtotime('+1 hour', $fechaBase));
+                $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
+                $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
                 
                 // Verificar para el vendedor
                 $stmt_disp_v = $this->pdo->prepare("
@@ -650,7 +650,7 @@ class VendedorController {
                 ");
                 $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id]);
                 if ($stmt_disp_v->fetch()['ocupado'] > 0) {
-                    throw new Exception("Ya tienes una cita agendada dentro del rango de 1 hora. Debes dejar al menos 1 hora de separación entre citas.");
+                    throw new Exception("Ya tienes una cita agendada en un horario que coincide. Las reuniones tienen una duración de 30 minutos.");
                 }
                 
                 // Verificar para el comprador
@@ -663,7 +663,7 @@ class VendedorController {
                 ");
                 $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id]);
                 if ($stmt_disp_c->fetch()['ocupado'] > 0) {
-                    throw new Exception("El comprador seleccionado ya tiene una cita agendada dentro del rango de 1 hora.");
+                    throw new Exception("El comprador seleccionado ya tiene una cita agendada en ese horario (bloques de 30 minutos).");
                 }
 
                 // Crear reunión con estado 'pendiente' - esperando respuesta del comprador
