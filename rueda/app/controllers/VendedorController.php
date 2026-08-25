@@ -634,6 +634,7 @@ class VendedorController {
                 $apartado_existente = $stmt_mesa->fetch();
 
                 if ($apartado_existente) {
+                    $reunion_id = $apartado_existente['id'];
                     // ACTUALIZAR el apartado existente con la propuesta del vendedor
                     $stmt = $this->pdo->prepare("
                         UPDATE reuniones 
@@ -646,10 +647,9 @@ class VendedorController {
                             fechaLimiteNegociacion = ?
                         WHERE id = ?
                     ");
-                    $stmt->execute([$vendedor_id, $fecha_hora, $rueda['fechaFin'] . ' 23:59:59', $apartado_existente['id']]);
-                    $reunion_id = $apartado_existente['id'];
+                    $stmt->execute([$vendedor_id, $fecha_hora, $rueda['fechaFin'] . ' 23:59:59', $reunion_id]);
                 } else {
-                    // Si por alguna razón no hay apartado (no debería pasar), crear una nueva
+                    // Si por alguna razón no hay apartado, crear una nueva
                     $stmt = $this->pdo->prepare("
                         INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, contadorContrapropuestas, ultimaAccionPor, propositor, fechaLimiteNegociacion) 
                         VALUES (?, ?, ?, ?, 'pendiente', ?, ?, 1, 'vendedor', 'vendedor', ?)
@@ -657,23 +657,27 @@ class VendedorController {
                     $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $numero_mesa, $rueda['fechaFin'] . ' 23:59:59']);
                     $reunion_id = $this->pdo->lastInsertId();
                 }
+
+                if (!$reunion_id) {
+                    throw new Exception("No se pudo generar o encontrar el ID de la reunión.");
+                }
                 
                 // Programar seguimientos de trazabilidad (3 y 6 meses)
                 require_once '../app/models/TrazabilidadModel.php';
                 $trazabilidadModel = new TrazabilidadModel($this->pdo);
-                $trazabilidadModel->programarSeguimientos(
-                    $reunion_id, 
-                    $comprador_id, 
-                    $vendedor_id, 
-                    $fecha_hora
-                );
+                $trazabilidadModel->programarSeguimientos($reunion_id, $comprador_id, $vendedor_id, $fecha_hora);
                 
-                // Registrar la propuesta inicial en el historial
-                $stmt_hist = $this->pdo->prepare("
-                    INSERT INTO reunion_negociaciones (reunionId, propuestoPor, fechaHoraPropuesta, respuesta, numeroContrapropuesta)
-                    VALUES (?, 'vendedor', ?, 'pendiente', 1)
-                ");
-                $stmt_hist->execute([$reunion_id, $fecha_hora]);
+                // Registrar la propuesta inicial en el historial (Manejo de error específico)
+                try {
+                    $stmt_hist = $this->pdo->prepare("
+                        INSERT INTO reunion_negociaciones (reunionId, propuestoPor, fechaHoraPropuesta, respuesta, numeroContrapropuesta)
+                        VALUES (?, 'vendedor', ?, 'pendiente', 1)
+                    ");
+                    $stmt_hist->execute([$reunion_id, $fecha_hora]);
+                } catch (Exception $e_hist) {
+                    // Log del error pero permitir que la cita se guarde
+                    Logger::log("Error al guardar historial de negociación: " . $e_hist->getMessage());
+                }
 
                 header("Location: index.php?controlador=vendedor&accion=dashboard&msg=solicitud_enviada");
                 exit();
