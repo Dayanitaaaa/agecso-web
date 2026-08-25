@@ -742,16 +742,13 @@ class VendedorController {
             $sql = "
                 SELECT DISTINCT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId
                 FROM empresas e
-                JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
-                JOIN reuniones r_mesa ON e.id = r_mesa.compradorId
-                WHERE ir.ruedaId = ? 
-                AND ir.estadoInscripcion = 'aceptada'
-                AND r_mesa.ruedaId = ?
-                AND r_mesa.estadoCita = 'mesa_apartada'
+                JOIN reuniones r ON e.id = r.compradorId
+                WHERE r.ruedaId = ? 
+                AND r.estadoCita = 'mesa_apartada'
                 AND e.id != ?
             ";
             
-            $params = [$ruedaId, $ruedaId, $miEmpresa['id']];
+            $params = [$ruedaId, $miEmpresa['id']];
 
             if (!empty($busqueda)) {
                 $sql .= " AND (e.razon_social LIKE ? OR e.descripcion LIKE ?)";
