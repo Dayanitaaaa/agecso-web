@@ -1188,8 +1188,10 @@ class CompradorController {
                     throw new Exception("La fecha debe estar dentro del período de la rueda (" . date('d/m/Y', $fecha_inicio_rueda) . " - " . date('d/m/Y', $fecha_fin_rueda) . ").");
                 }
 
-                // Usar la fecha seleccionada por el usuario a las 05:00 AM para evitar CUALQUIER conflicto
-                $fecha_hora_defecto = $fecha_apartado . ' 05:00:00';
+                // Usar la fecha seleccionada con una hora y segundos aleatorios para evitar CUALQUIER conflicto con el trigger
+                $segundos_aleatorios = str_pad(rand(0, 59), 2, "0", STR_PAD_LEFT);
+                $minutos_aleatorios = str_pad(rand(0, 59), 2, "0", STR_PAD_LEFT);
+                $fecha_hora_defecto = $fecha_apartado . " 05:$minutos_aleatorios:$segundos_aleatorios";
 
                 // VALIDACIÓN: Verificar que el comprador no tenga ya una mesa apartada en esta rueda
                 $stmt_mesa = $this->pdo->prepare("
@@ -1218,13 +1220,12 @@ class CompradorController {
                 }
 
                 // Crear registro de apartado de mesa (sin vendedor asignado aún)
-                // Usamos el ID del comprador como marcador temporal
-                // El trigger actualizado ignorará este registro para evitar errores de concurrencia
+                $estado_apartado = 'mesa_apartada';
                 $stmt = $this->pdo->prepare("
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
-                    VALUES (?, ?, ?, ?, 'mesa_apartada', NULL, ?, 'comprador', 'comprador', 0)
+                    VALUES (?, ?, ?, ?, ?, NULL, ?, 'comprador', 'comprador', 0)
                 ");
-                $stmt->execute([$rueda_id, $comprador_id, $comprador_id, $fecha_hora_defecto, $numero_mesa]);
+                $stmt->execute([$rueda_id, $comprador_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa]);
 
                 header("Location: index.php?controlador=comprador&accion=verReuniones&msg=mesa_apartada");
                 exit();
