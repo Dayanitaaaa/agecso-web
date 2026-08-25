@@ -634,28 +634,32 @@ class CompradorController {
             $citas_historial = [];          // cancelada, realizada
 
             foreach ($todas_citas as $c) {
-                // Lógica de turnos: ¿Quién debe actuar?
-                $debeActuarComprador = ($c['estadoCita'] == 'negociando' || $c['estadoCita'] == 'pendiente') && $c['ultimaAccionPor'] == 'vendedor';
-                $esperandoVendedor = ($c['estadoCita'] == 'negociando' || $c['estadoCita'] == 'pendiente') && $c['ultimaAccionPor'] == 'comprador';
+                // Lógica de turnos simplificada y robusta
+                $estado = $c['estadoCita'];
+                $ultimaAccion = $c['ultimaAccionPor'] ?? 'vendedor';
 
-                if ($debeActuarComprador) {
-                    // El vendedor envió una propuesta o contraoferta que el comprador debe responder
+                if ($estado === 'mesa_apartada') {
+                    // Mesas apartadas van a citas programadas (esperando propuesta)
+                    $citas_programadas[] = $c;
+                } elseif (in_array($estado, ['pendiente', 'negociando']) && $ultimaAccion === 'vendedor') {
+                    // Cita recibida del vendedor para que el comprador decida
                     $stmt_hist = $this->pdo->prepare("
                         SELECT * FROM reunion_negociaciones 
-                        WHERE reunionId = ? AND propuestoPor = 'vendedor' AND respuesta = 'pendiente'
+                        WHERE reunionId = ? AND propuestoPor = 'vendedor'
                         ORDER BY numeroContrapropuesta DESC 
                         LIMIT 1
                     ");
                     $stmt_hist->execute([$c['id']]);
-                    $ultima_propuesta = $stmt_hist->fetch();
-                    $c['ultima_propuesta'] = $ultima_propuesta;
+                    $c['ultima_propuesta'] = $stmt_hist->fetch();
                     $citas_por_aceptar[] = $c;
-                } elseif ($esperandoVendedor) {
-                    // El comprador envió la propuesta y espera respuesta del vendedor
+                } elseif (in_array($estado, ['pendiente', 'negociando']) && $ultimaAccion === 'comprador') {
+                    // Cita enviada por el comprador esperando al vendedor
                     $citas_pendientes_vendedor[] = $c;
-                } elseif (in_array($c['estadoCita'], ['aceptada', 'agendada', 'mesa_apartada'])) {
+                } elseif (in_array($estado, ['aceptada', 'agendada'])) {
+                    // Cita confirmada
                     $citas_programadas[] = $c;
                 } else {
+                    // Finalizadas o canceladas
                     $citas_historial[] = $c;
                 }
             }
