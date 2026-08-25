@@ -599,13 +599,13 @@ class VendedorController {
                     throw new Exception("No se pueden agendar citas mientras la rueda de negocios no esté en estado activa.");
                 }
 
-                // VALIDACIÓN: La fecha debe estar dentro del rango de la rueda
-                $fecha_cita = strtotime($fecha_hora);
-                $fecha_inicio_rueda = strtotime($rueda['fechaInicio'] . ' 00:00:00');
-                $fecha_fin_rueda = strtotime($rueda['fechaFin'] . ' 23:59:59');
+                // VALIDACIÓN: La fecha debe coincidir con los días de la rueda (comparar solo por día Y-m-d)
+                $fecha_cita_dia = date('Y-m-d', strtotime($fecha_hora));
+                $fecha_inicio_dia = date('Y-m-d', strtotime($rueda['fechaInicio']));
+                $fecha_fin_dia = date('Y-m-d', strtotime($rueda['fechaFin']));
                 
-                if ($fecha_cita < $fecha_inicio_rueda || $fecha_cita > $fecha_fin_rueda) {
-                    throw new Exception("La fecha de la reunión debe estar dentro del período de la rueda de negocios (" . date('d/m/Y', $fecha_inicio_rueda) . " - " . date('d/m/Y', $fecha_fin_rueda) . ").");
+                if ($fecha_cita_dia < $fecha_inicio_dia || $fecha_cita_dia > $fecha_fin_dia) {
+                    throw new Exception("La fecha de la reunión debe ser entre el " . date('d/m/Y', strtotime($fecha_inicio_dia)) . " y el " . date('d/m/Y', strtotime($fecha_fin_dia)) . ".");
                 }
 
                 // VALIDACIÓN: Buscar si ya existe un apartado de mesa de este comprador
