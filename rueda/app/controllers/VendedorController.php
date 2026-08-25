@@ -563,25 +563,16 @@ class VendedorController {
             try {
                 $rueda_id = $_POST['rueda_id'];
                 $comprador_id = $_POST['comprador_id'];
-                $vendedor_id = $_POST['vendedor_id'];
-                $fecha_hora = $_POST['fecha_hora'];
-                $link_reunion = isset($_POST['link_reunion']) ? trim($_POST['link_reunion']) : null;
-                $numero_mesa = isset($_POST['numero_mesa']) ? trim($_POST['numero_mesa']) : null;
-                
-                // Normalizar link
-                if ($link_reunion && !preg_match("~^(?:f|ht)tps?://~i", $link_reunion)) {
-                    $link_reunion = "https://" . $link_reunion;
-                }
-
-                // SEGURIDAD: Validar que el vendedor_id pertenece a la empresa del usuario logueado
+                // Obtener automáticamente la empresa del vendedor logueado (Máxima seguridad y sin fallos)
                 $stmt_v = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
                 $stmt_v->execute([$_SESSION['usuario_id']]);
                 $miEmpresa = $stmt_v->fetch();
 
-                if (!$miEmpresa || $vendedor_id != $miEmpresa['id']) {
-                    Logger::logSecurityAlert("Intento de suplantación de identidad en agendamiento por usuario ID: " . $_SESSION['usuario_id']);
-                    throw new Exception("No tienes permisos para agendar por esta empresa.");
+                if (!$miEmpresa) {
+                    throw new Exception("No se encontró tu empresa registrada para realizar esta solicitud.");
                 }
+
+                $vendedor_id = $miEmpresa['id'];
 
                 // VALIDACIÓN: Ambas empresas deben estar inscritas en la rueda
                 $stmt_ins_check = $this->pdo->prepare("
