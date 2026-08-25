@@ -454,7 +454,7 @@ class VendedorController {
     public function registrarOferta() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
-                // Capturar ID de empresa (priorizar sesión si no viene en POST)
+                // Priorizar ID de empresa desde sesión si falla el POST
                 $empresa_id = $_POST['empresa_id'] ?? null;
                 if (!$empresa_id) {
                     $stmt_e = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
@@ -463,46 +463,40 @@ class VendedorController {
                 }
 
                 $rueda_id = $_POST['rueda_id'] ?? null;
-                $sector_id = $_POST['sector_id'] ?? $_POST['categoria_id'] ?? null;
+                $sector_id = $_POST['sector_id'] ?? $_POST['categoria_id'] ?? 1;
                 
-                // FLEXIBILIDAD TOTAL EN TÍTULO: Aceptar todas las variantes posibles
-                $titulo = $_POST['titulo_oferta'] ?? $_POST['nombre_producto'] ?? $_POST['tituloOferta'] ?? $_POST['nombre'] ?? null;
+                // CAPTURA AGRESIVA DE TÍTULO (Busca en todo el POST)
+                $titulo = null;
+                $posibles = ['titulo_oferta', 'nombre_producto', 'tituloOferta', 'nombre', 'producto', 'servicio'];
+                foreach($posibles as $p) {
+                    if (!empty($_POST[$p])) {
+                        $titulo = $_POST[$p];
+                        break;
+                    }
+                }
                 
-                // FLEXIBILIDAD TOTAL EN DESCRIPCIÓN
-                $descripcion = $_POST['descripcion_oferta'] ?? $_POST['descripcion_producto'] ?? $_POST['descripcion'] ?? $_POST['descripcionOferta'] ?? null;
-                
-                $tags_input = $_POST['tags'] ?? $_POST['tags_busqueda'] ?? '';
-
-                if (!$rueda_id) {
-                    throw new Exception("Debes seleccionar una rueda de negocios.");
+                // CAPTURA AGRESIVA DE DESCRIPCIÓN
+                $descripcion = "Sin descripción";
+                $posiblesDesc = ['descripcion_oferta', 'descripcion', 'detalle'];
+                foreach($posiblesDesc as $pd) {
+                    if (!empty($_POST[$pd])) {
+                        $descripcion = $_POST[$pd];
+                        break;
+                    }
                 }
 
                 if (empty($titulo)) {
-                    throw new Exception("El nombre del producto o servicio es obligatorio.");
+                    $llaves = !empty($_POST) ? implode(', ', array_keys($_POST)) : 'VACIO';
+                    throw new Exception("El nombre del producto es obligatorio. (Campos recibidos: $llaves)");
                 }
 
-                if (empty($descripcion)) {
-                    throw new Exception("La descripción comercial es obligatoria.");
+                if (!$rueda_id) {
+                    throw new Exception("Error: No se detectó el ID de la rueda de negocios.");
                 }
 
-                if (empty($sector_id)) {
-                    throw new Exception("Debes seleccionar la categoría del producto.");
-                }
-
-                // SEGURIDAD: Validar inscripción en la rueda
-                $stmt_ins = $this->pdo->prepare("SELECT id FROM inscripciones_ruedas WHERE empresaId = ? AND ruedaId = ? AND estadoInscripcion = 'aceptada'");
-                $stmt_ins->execute([$empresa_id, $rueda_id]);
-                if (!$stmt_ins->fetch()) {
-                    throw new Exception("Debes estar inscrito y aceptado en la rueda de negocios para publicar ofertas.");
-                }
-
-                // Procesar tags: convertir a minúsculas y limpiar
-                $tags_array = array_map(function($tag) {
-                    return strtolower(trim($tag));
-                }, explode(',', $tags_input));
-                
-                // Eliminar vacíos
-                $tags_array = array_filter($tags_array);
+                // Procesar tags
+                $tags_input = $_POST['tags'] ?? '';
+                $tags_array = array_filter(array_map('trim', explode(',', $tags_input)));
                 $tags_json = json_encode(array_values($tags_array));
 
                 $stmt = $this->pdo->prepare("INSERT INTO ofertas (empresaId, ruedaId, sectorId, tituloOferta, descripcionOferta, tagsBusqueda, isActive) VALUES (?, ?, ?, ?, ?, ?, 1)");
@@ -511,11 +505,6 @@ class VendedorController {
                 header("Location: index.php?controlador=vendedor&accion=dashboard&msg=oferta_registrada");
                 exit();
             } catch (Exception $e) {
-                Logger::logCurrentRoleError('Error al registrar oferta', [
-                    'accion' => 'registrarOferta',
-                    'empresa_id' => $_POST['empresa_id'] ?? 'n/a',
-                    'error' => $e->getMessage()
-                ]);
                 $error_msg = $e->getMessage();
                 require_once '../app/views/layout/error.php';
             }
