@@ -31,17 +31,6 @@ class CompradorController {
                 throw new Exception("No se encontró información de la empresa para este usuario.");
             }
 
-            // --- NUEVA LÓGICA DE LIMPIEZA AUTOMÁTICA ---
-            // Cancelar citas pendientes/negociando que ya pasaron
-            $this->pdo->prepare("
-                UPDATE reuniones 
-                SET estadoCita = 'cancelada', ultimaAccionPor = NULL
-                WHERE compradorId = ? 
-                AND estadoCita IN ('pendiente', 'negociando') 
-                AND fechaHora < ?
-            ")->execute([$empresa['id'], SYSTEM_TIME]);
-            // --------------------------------------------
-
             // Obtener mis inscripciones a ruedas (Aceptadas, Pendientes, etc.)
             $stmt_mis_ruedas = $this->pdo->prepare("
                 SELECT rn.*, ir.estadoInscripcion, rn.nombreRueda as tituloRueda, rn.descripcion as descripcionRueda
