@@ -449,16 +449,15 @@ class VendedorController {
             $error_msg = $e->getMessage();
             require_once '../app/views/layout/error.php';
         }
-    }
-
     public function registrarOferta() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
                 $empresa_id = $_POST['empresa_id'] ?? null;
                 $rueda_id = $_POST['rueda_id'] ?? null;
                 $sector_id = $_POST['sector_id'] ?? null;
-                $titulo = isset($_POST['producto_servicio']) ? trim($_POST['producto_servicio']) : '';
-                $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
+                // Aceptar tanto 'titulo_oferta' como 'nombre_producto' para mayor compatibilidad
+                $titulo = $_POST['titulo_oferta'] ?? $_POST['nombre_producto'] ?? null;
+                $descripcion = $_POST['descripcion_oferta'] ?? $_POST['descripcion'] ?? null;
                 $tags_input = $_POST['tags'] ?? '';
 
                 if (!$rueda_id) {
