@@ -1203,17 +1203,18 @@ class CompradorController {
                     throw new Exception("Ya tienes una mesa apartada en esta rueda.");
                 }
 
-                // VALIDACIÓN: Verificar que la mesa esté disponible (solo para mesas apartadas o activas)
+                // VALIDACIÓN: Verificar que la mesa esté disponible
+                // Una mesa solo está ocupada si tiene una cita aceptada, pendiente o realizada.
+                // Ignoramos 'mesa_apartada' para permitir que el flujo de apartado funcione.
                 $stmt_disp = $this->pdo->prepare("
                     SELECT COUNT(*) as ocupada FROM reuniones 
                     WHERE numero_mesa = ? 
                     AND ruedaId = ? 
-                    AND estadoCita NOT IN ('cancelada', 'rechazada')
-                    AND estadoCita != 'mesa_apartada'
+                    AND estadoCita IN ('aceptada', 'pendiente', 'realizada')
                 ");
                 $stmt_disp->execute([$numero_mesa, $rueda_id]);
                 if ($stmt_disp->fetch()['ocupada'] > 0) {
-                    throw new Exception("La mesa seleccionada ya está ocupada.");
+                    throw new Exception("La mesa seleccionada ya está ocupada por una reunión programada.");
                 }
 
                 // Crear registro de apartado de mesa (sin vendedor asignado aún)
