@@ -622,58 +622,41 @@ class VendedorController {
                     throw new Exception("La fecha de la reunión debe estar dentro del período de la rueda de negocios (" . date('d/m/Y', $fecha_inicio_rueda) . " - " . date('d/m/Y', $fecha_fin_rueda) . ").");
                 }
 
-                // VALIDACIÓN: Evitar citas duplicadas con la misma empresa en la misma rueda
-                $stmt_check = $this->pdo->prepare("
+                // VALIDACIÓN: Buscar si ya existe un apartado de mesa de este comprador
+                $stmt_mesa = $this->pdo->prepare("
                     SELECT id FROM reuniones 
                     WHERE ruedaId = ? 
                     AND compradorId = ? 
-                    AND vendedorId = ? 
-                    AND estadoCita NOT IN ('cancelada')
+                    AND estadoCita = 'mesa_apartada'
+                    LIMIT 1
                 ");
-                $stmt_check->execute([$rueda_id, $comprador_id, $vendedor_id]);
-                if ($stmt_check->fetch()) {
-                    throw new Exception("Ya existe una solicitud de cita pendiente o activa con esta empresa para esta rueda.");
-                }
+                $stmt_mesa->execute([$rueda_id, $comprador_id]);
+                $apartado_existente = $stmt_mesa->fetch();
 
-                // VALIDACIÓN: 30 minutos de duración de citas para AMBAS empresas
-                $fechaBase = strtotime($fecha_hora);
-                $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
-                $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
-                
-                // Verificar para el vendedor
-                $stmt_disp_v = $this->pdo->prepare("
-                    SELECT COUNT(*) as ocupado FROM reuniones 
-                    WHERE (vendedorId = ? OR compradorId = ?) 
-                    AND fechaHora BETWEEN ? AND ?
-                    AND ruedaId = ? 
-                    AND estadoCita NOT IN ('cancelada', 'rechazada')
-                ");
-                $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id]);
-                if ($stmt_disp_v->fetch()['ocupado'] > 0) {
-                    throw new Exception("Ya tienes una cita agendada en un horario que coincide. Las reuniones tienen una duración de 30 minutos.");
+                if ($apartado_existente) {
+                    // ACTUALIZAR el apartado existente con la propuesta del vendedor
+                    $stmt = $this->pdo->prepare("
+                        UPDATE reuniones 
+                        SET vendedorId = ?, 
+                            fechaHora = ?, 
+                            estadoCita = 'pendiente', 
+                            ultimaAccionPor = 'vendedor', 
+                            propositor = 'vendedor',
+                            contadorContrapropuestas = 1,
+                            fechaLimiteNegociacion = ?
+                        WHERE id = ?
+                    ");
+                    $stmt->execute([$vendedor_id, $fecha_hora, $rueda['fechaFin'] . ' 23:59:59', $apartado_existente['id']]);
+                    $reunion_id = $apartado_existente['id'];
+                } else {
+                    // Si por alguna razón no hay apartado (no debería pasar), crear una nueva
+                    $stmt = $this->pdo->prepare("
+                        INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, contadorContrapropuestas, ultimaAccionPor, propositor, fechaLimiteNegociacion) 
+                        VALUES (?, ?, ?, ?, 'pendiente', ?, ?, 1, 'vendedor', 'vendedor', ?)
+                    ");
+                    $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $numero_mesa, $rueda['fechaFin'] . ' 23:59:59']);
+                    $reunion_id = $this->pdo->lastInsertId();
                 }
-                
-                // Verificar para el comprador
-                $stmt_disp_c = $this->pdo->prepare("
-                    SELECT COUNT(*) as ocupado FROM reuniones 
-                    WHERE (vendedorId = ? OR compradorId = ?) 
-                    AND fechaHora BETWEEN ? AND ?
-                    AND ruedaId = ? 
-                    AND estadoCita NOT IN ('cancelada', 'rechazada')
-                ");
-                $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id]);
-                if ($stmt_disp_c->fetch()['ocupado'] > 0) {
-                    throw new Exception("El comprador seleccionado ya tiene una cita agendada en ese horario (bloques de 30 minutos).");
-                }
-
-                // Crear reunión con estado 'pendiente' - esperando respuesta del comprador
-                $stmt = $this->pdo->prepare("
-                    INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, contadorContrapropuestas, ultimaAccionPor, propositor, fechaLimiteNegociacion) 
-                    VALUES (?, ?, ?, ?, 'pendiente', ?, ?, 0, 'vendedor', 'vendedor', ?)
-                ");
-                $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $numero_mesa, $rueda['fechaFin'] . ' 23:59:59']);
-                
-                $reunion_id = $this->pdo->lastInsertId();
                 
                 // Programar seguimientos de trazabilidad (3 y 6 meses)
                 require_once '../app/models/TrazabilidadModel.php';
