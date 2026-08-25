@@ -1041,41 +1041,47 @@ class VendedorController {
                 throw new Exception("No tienes acceso a esta rueda de negocios o no está activa.");
             }
 
-            // Obtener TODOS los compradores inscritos y aceptados en esta rueda, con o sin demanda
-            $stmt_demandas = $this->pdo->prepare("
+            // 1. Obtener todas las empresas compradoras inscritas y aceptadas en esta rueda
+            $stmt_empresas = $this->pdo->prepare("
                 SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona,
-                       s.nombreSector, s.ciiu_clase,
-                       d.tituloDemanda, d.descripcionDemanda, d.createdAt as demandaCreatedAt
+                       s.nombreSector, s.ciiu_clase
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
                 JOIN sectores s ON e.sectorId = s.id
-                LEFT JOIN demandas d ON e.id = d.empresaId AND d.ruedaId = ?
-                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' AND e.id != ?
-                ORDER BY e.razon_social ASC
+                WHERE ir.ruedaId = ? 
+                AND ir.estadoInscripcion = 'aceptada' 
+                AND e.id != ?
             ");
-            $stmt_demandas->execute([$rueda_id, $rueda_id, $empresa['id']]);
-            $demandas = $stmt_demandas->fetchAll();
+            $stmt_empresas->execute([$rueda_id, $empresa['id']]);
+            $lista_empresas = $stmt_empresas->fetchAll();
 
-            // Obtener mesa apartada para cada comprador y priorizarlos
-            $con_mesa = [];
-            $sin_mesa = [];
-            foreach ($demandas as &$c) {
-                $stmt_mesa = $this->pdo->prepare("
-                    SELECT numero_mesa FROM reuniones 
-                    WHERE compradorId = ? AND ruedaId = ? AND estadoCita = 'mesa_apartada' 
-                    LIMIT 1
-                ");
-                $stmt_mesa->execute([$c['empresaId'], $rueda_id]);
-                $mesaInfo = $stmt_mesa->fetch();
-                $c['mesa_apartada'] = $mesaInfo ? $mesaInfo['numero_mesa'] : null;
-                if ($c['mesa_apartada']) {
-                    $con_mesa[] = $c;
-                } else {
-                    $sin_mesa[] = $c;
-                }
+            $demandas = [];
+            foreach ($lista_empresas as $emp) {
+                // 2. Buscar si la empresa tiene una demanda en esta rueda
+                $stmt_d = $this->pdo->prepare("SELECT tituloDemanda, descripcionDemanda, createdAt FROM demandas WHERE empresaId = ? AND ruedaId = ? LIMIT 1");
+                $stmt_d->execute([$emp['empresaId'], $rueda_id]);
+                $demandaInfo = $stmt_d->fetch();
+
+                // 3. Buscar si la empresa tiene una mesa apartada en esta rueda
+                $stmt_m = $this->pdo->prepare("SELECT numero_mesa FROM reuniones WHERE compradorId = ? AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1");
+                $stmt_m->execute([$emp['empresaId'], $rueda_id]);
+                $mesaInfo = $stmt_m->fetch();
+
+                // Armar el objeto final para la vista
+                $demandas[] = array_merge($emp, [
+                    'tituloDemanda' => $demandaInfo ? $demandaInfo['tituloDemanda'] : null,
+                    'descripcionDemanda' => $demandaInfo ? $demandaInfo['descripcionDemanda'] : null,
+                    'demandaCreatedAt' => $demandaInfo ? $demandaInfo['createdAt'] : null,
+                    'mesa_apartada' => $mesaInfo ? $mesaInfo['numero_mesa'] : null
+                ]);
             }
-            unset($c);
-            $demandas = array_merge($con_mesa, $sin_mesa);
+
+            // Ordenar: primero los que tienen mesa, luego el resto
+            usort($demandas, function($a, $b) {
+                if ($a['mesa_apartada'] && !$b['mesa_apartada']) return -1;
+                if (!$a['mesa_apartada'] && $b['mesa_apartada']) return 1;
+                return strcmp($a['razon_social'], $b['razon_social']);
+            });
 
             // Obtener sectores únicos de las demandas para filtros
             $sectores = [];
