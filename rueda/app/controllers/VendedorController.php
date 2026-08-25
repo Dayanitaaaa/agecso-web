@@ -1041,17 +1041,21 @@ class VendedorController {
                 throw new Exception("No tienes acceso a esta rueda de negocios o no está activa.");
             }
 
-            // Obtener todas las demandas de compradores en esta rueda específica
+            // Obtener TODOS los compradores inscritos y aceptados en esta rueda, con o sin demanda
+            // Se incluye el número de mesa si ya apartaron una
             $stmt_demandas = $this->pdo->prepare("
-                SELECT d.*, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona,
-                       s.nombreSector, s.ciiu_clase, e.id as empresaId
-                FROM demandas d
-                JOIN empresas e ON d.empresaId = e.id
+                SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona, e.descripcion,
+                       s.nombreSector, s.ciiu_clase,
+                       d.tituloDemanda, d.descripcionDemanda, d.createdAt as demandaCreatedAt,
+                       (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1) as mesa_apartada
+                FROM empresas e
+                JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
                 JOIN sectores s ON e.sectorId = s.id
-                WHERE d.ruedaId = ? AND e.id != ?
-                ORDER BY d.createdAt DESC
+                LEFT JOIN demandas d ON e.id = d.empresaId AND d.ruedaId = ?
+                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' AND e.id != ?
+                ORDER BY mesa_apartada IS NOT NULL DESC, e.razon_social ASC
             ");
-            $stmt_demandas->execute([$rueda_id, $empresa['id']]);
+            $stmt_demandas->execute([$rueda_id, $rueda_id, $rueda_id, $empresa['id']]);
             $demandas = $stmt_demandas->fetchAll();
 
             // Obtener sectores únicos de las demandas para filtros
