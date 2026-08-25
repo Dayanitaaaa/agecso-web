@@ -1188,8 +1188,8 @@ class CompradorController {
                     throw new Exception("La fecha debe estar dentro del período de la rueda (" . date('d/m/Y', $fecha_inicio_rueda) . " - " . date('d/m/Y', $fecha_fin_rueda) . ").");
                 }
 
-                // Usar la fecha seleccionada por el usuario a las 12:00 PM para evitar conflictos
-                $fecha_hora_defecto = $fecha_apartado . ' 12:00:00';
+                // Usar la fecha seleccionada por el usuario a las 05:00 AM para evitar CUALQUIER conflicto
+                $fecha_hora_defecto = $fecha_apartado . ' 05:00:00';
 
                 // VALIDACIÓN: Verificar que el comprador no tenga ya una mesa apartada en esta rueda
                 $stmt_mesa = $this->pdo->prepare("

@@ -138,7 +138,7 @@ async function cargarMesasDisponibles() {
         return;
     }
 
-    const fechaHora = fechaInput.value + ' 12:00:00';
+    const fechaHora = fechaInput.value + ' 05:00:00';
 
     select.innerHTML = '<option value="">Cargando mesas...</option>';
     select.disabled = true;
