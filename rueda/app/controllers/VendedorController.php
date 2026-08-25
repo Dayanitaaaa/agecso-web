@@ -454,16 +454,27 @@ class VendedorController {
     public function registrarOferta() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
+                // Capturar ID de empresa (priorizar sesión si no viene en POST)
                 $empresa_id = $_POST['empresa_id'] ?? null;
+                if (!$empresa_id) {
+                    $stmt_e = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
+                    $stmt_e->execute([$_SESSION['usuario_id']]);
+                    $empresa_id = $stmt_e->fetchColumn();
+                }
+
                 $rueda_id = $_POST['rueda_id'] ?? null;
-                $sector_id = $_POST['sector_id'] ?? null;
-                // Aceptar tanto 'titulo_oferta' como 'nombre_producto' para mayor compatibilidad
-                $titulo = $_POST['titulo_oferta'] ?? $_POST['nombre_producto'] ?? null;
-                $descripcion = $_POST['descripcion_oferta'] ?? $_POST['descripcion'] ?? null;
-                $tags_input = $_POST['tags'] ?? '';
+                $sector_id = $_POST['sector_id'] ?? $_POST['categoria_id'] ?? null;
+                
+                // FLEXIBILIDAD TOTAL EN TÍTULO: Aceptar todas las variantes posibles
+                $titulo = $_POST['titulo_oferta'] ?? $_POST['nombre_producto'] ?? $_POST['tituloOferta'] ?? $_POST['nombre'] ?? null;
+                
+                // FLEXIBILIDAD TOTAL EN DESCRIPCIÓN
+                $descripcion = $_POST['descripcion_oferta'] ?? $_POST['descripcion_producto'] ?? $_POST['descripcion'] ?? $_POST['descripcionOferta'] ?? null;
+                
+                $tags_input = $_POST['tags'] ?? $_POST['tags_busqueda'] ?? '';
 
                 if (!$rueda_id) {
-                    throw new Exception("Debes seleccionar una rueda de negocios para registrar esta oferta.");
+                    throw new Exception("Debes seleccionar una rueda de negocios.");
                 }
 
                 if (empty($titulo)) {
