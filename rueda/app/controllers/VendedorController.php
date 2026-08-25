@@ -1042,21 +1042,40 @@ class VendedorController {
             }
 
             // Obtener TODOS los compradores inscritos y aceptados en esta rueda, con o sin demanda
-            // Se incluye el número de mesa si ya apartaron una
             $stmt_demandas = $this->pdo->prepare("
                 SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona,
                        s.nombreSector, s.ciiu_clase,
-                       d.tituloDemanda, d.descripcionDemanda, d.createdAt as demandaCreatedAt,
-                       (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1) as mesa_apartada
+                       d.tituloDemanda, d.descripcionDemanda, d.createdAt as demandaCreatedAt
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
                 JOIN sectores s ON e.sectorId = s.id
                 LEFT JOIN demandas d ON e.id = d.empresaId AND d.ruedaId = ?
                 WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' AND e.id != ?
-                ORDER BY mesa_apartada IS NOT NULL DESC, e.razon_social ASC
+                ORDER BY e.razon_social ASC
             ");
-            $stmt_demandas->execute([$rueda_id, $rueda_id, $rueda_id, $empresa['id']]);
+            $stmt_demandas->execute([$rueda_id, $rueda_id, $empresa['id']]);
             $demandas = $stmt_demandas->fetchAll();
+
+            // Obtener mesa apartada para cada comprador y priorizarlos
+            $con_mesa = [];
+            $sin_mesa = [];
+            foreach ($demandas as &$c) {
+                $stmt_mesa = $this->pdo->prepare("
+                    SELECT numero_mesa FROM reuniones 
+                    WHERE compradorId = ? AND ruedaId = ? AND estadoCita = 'mesa_apartada' 
+                    LIMIT 1
+                ");
+                $stmt_mesa->execute([$c['empresaId'], $rueda_id]);
+                $mesaInfo = $stmt_mesa->fetch();
+                $c['mesa_apartada'] = $mesaInfo ? $mesaInfo['numero_mesa'] : null;
+                if ($c['mesa_apartada']) {
+                    $con_mesa[] = $c;
+                } else {
+                    $sin_mesa[] = $c;
+                }
+            }
+            unset($c);
+            $demandas = array_merge($con_mesa, $sin_mesa);
 
             // Obtener sectores únicos de las demandas para filtros
             $sectores = [];
