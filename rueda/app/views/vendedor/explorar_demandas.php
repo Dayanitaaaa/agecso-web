@@ -163,7 +163,9 @@
                                             <i class="fas fa-building text-[#0d9488] text-[10px]"></i>
                                         </div>
                                         <div>
-                                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Comprador</p>
+                                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">
+                                                <?php echo ($demanda['rol_slug'] === 'comprador') ? 'Comprador' : 'Vendedor'; ?>
+                                            </p>
                                             <p class="font-black text-gray-800 leading-none"><?php echo htmlspecialchars($demanda['razon_social'] ?? ''); ?></p>
                                         </div>
                                     </div>

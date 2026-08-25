@@ -1028,13 +1028,15 @@ class VendedorController {
                 throw new Exception("No tienes acceso a esta rueda de negocios o no está activa.");
             }
 
-            // 1. Obtener todas las empresas compradoras inscritas y aceptadas en esta rueda
+            // 1. Obtener todas las empresas inscritas y aceptadas en esta rueda, con su rol
             $stmt_empresas = $this->pdo->prepare("
                 SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona,
-                       s.nombreSector, s.ciiu_clase
+                       s.nombreSector, s.ciiu_clase, r.slugRole as rol_slug
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
                 JOIN sectores s ON e.sectorId = s.id
+                JOIN usuarios u ON e.usuarioId = u.id
+                JOIN roles r ON u.roleId = r.id
                 WHERE ir.ruedaId = ? 
                 AND ir.estadoInscripcion = 'aceptada' 
                 AND e.id != ?
