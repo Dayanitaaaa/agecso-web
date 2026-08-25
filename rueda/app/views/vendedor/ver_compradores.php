@@ -252,6 +252,7 @@ document.addEventListener("DOMContentLoaded", function() {
             minDate: "today",
             maxDate: "<?php echo date('Y-m-d H:i', strtotime($rueda['fechaFin'])); ?>",
             time_24hr: false,
+            minuteIncrement: 30,
             disableMobile: "true",
             animate: true,
             onChange: function(selectedDates, dateStr) {
