@@ -563,6 +563,14 @@ class VendedorController {
             try {
                 $rueda_id = $_POST['rueda_id'];
                 $comprador_id = $_POST['comprador_id'];
+                $fecha_hora = $_POST['fecha_hora'] ?? null;
+                $link_reunion = isset($_POST['link_reunion']) ? trim($_POST['link_reunion']) : null;
+                $numero_mesa = isset($_POST['numero_mesa']) ? trim($_POST['numero_mesa']) : null;
+
+                if (empty($fecha_hora)) {
+                    throw new Exception("Debes seleccionar la fecha y hora para la reunión.");
+                }
+
                 // Obtener automáticamente la empresa del vendedor logueado (Máxima seguridad y sin fallos)
                 $stmt_v = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
                 $stmt_v->execute([$_SESSION['usuario_id']]);
