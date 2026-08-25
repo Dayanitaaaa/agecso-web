@@ -612,7 +612,7 @@ class CompradorController {
             $sql_citas = "
                 SELECT r.*, e.razon_social as nombre_vendedor, rn.tituloRueda, rn.id as ruedaId
                 FROM reuniones r
-                JOIN empresas e ON r.vendedorId = e.id
+                LEFT JOIN empresas e ON r.vendedorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
                 WHERE r.compradorId = ?
             ";
