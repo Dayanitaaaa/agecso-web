@@ -265,6 +265,9 @@
                                         <a href="index.php?controlador=comprador&accion=verParticipantes&id=<?php echo $r['id']; ?>" class="text-xs bg-sky-50 text-[#00a2ff] hover:bg-[#00a2ff] hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-sky-500/5 flex items-center gap-1.5">
                                             <i class="fas fa-store text-[10px]"></i> Mercado
                                         </a>
+                                        <a href="index.php?controlador=comprador&accion=apartarMesa&id=<?php echo $r['id']; ?>" class="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-emerald-500/5 flex items-center gap-1.5">
+                                            <i class="fas fa-chair text-[10px]"></i> Apartar Mesa
+                                        </a>
                                         <a href="index.php?controlador=comprador&accion=verReuniones" class="text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-indigo-500/5 flex items-center gap-1.5">
                                             <i class="far fa-calendar-check text-[10px]"></i> Citas
                                         </a>

@@ -1102,6 +1102,135 @@ class CompradorController {
         }
     }
 
+    public function apartarMesa() {
+        try {
+            $ruedaId = $_GET['id'] ?? null;
+            
+            if (!$ruedaId) {
+                throw new Exception("ID de rueda no especificado.");
+            }
+
+            // Obtener datos de la empresa del comprador
+            $stmt = $this->pdo->prepare("SELECT * FROM empresas WHERE usuarioId = ?");
+            $stmt->execute([$_SESSION['usuario_id']]);
+            $miEmpresa = $stmt->fetch();
+
+            if (!$miEmpresa) {
+                throw new Exception("No se encontró información de tu empresa.");
+            }
+
+            // Obtener datos de la rueda
+            $stmt_rueda = $this->pdo->prepare("SELECT * FROM ruedas_negocios WHERE id = ?");
+            $stmt_rueda->execute([$ruedaId]);
+            $rueda = $stmt_rueda->fetch();
+
+            if (!$rueda) {
+                throw new Exception("Rueda de negocios no encontrada.");
+            }
+
+            require_once '../app/views/comprador/apartar_mesa.php';
+        } catch (Exception $e) {
+            $error_msg = $e->getMessage();
+            require_once '../app/views/layout/error.php';
+        }
+    }
+
+    public function procesarApartarMesa() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                $rueda_id = $_POST['rueda_id'];
+                $comprador_id = $_POST['comprador_id'];
+                $fecha_hora = $_POST['fecha_hora'];
+                $link_reunion = isset($_POST['link_reunion']) ? trim($_POST['link_reunion']) : null;
+                $numero_mesa = isset($_POST['numero_mesa']) ? trim($_POST['numero_mesa']) : null;
+                $descripcion = $_POST['descripcion'];
+
+                // Normalizar link
+                if ($link_reunion && !preg_match("~^(?:f|ht)tps?://~i", $link_reunion)) {
+                    $link_reunion = "https://" . $link_reunion;
+                }
+
+                // SEGURIDAD: Validar que el comprador_id pertenece a la empresa del usuario logueado
+                $stmt_c = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
+                $stmt_c->execute([$_SESSION['usuario_id']]);
+                $miEmpresa = $stmt_c->fetch();
+
+                if (!$miEmpresa || $comprador_id != $miEmpresa['id']) {
+                    throw new Exception("No tienes permisos para apartar mesa por esta empresa.");
+                }
+
+                // VALIDACIÓN: El comprador debe estar inscrito en la rueda
+                $stmt_ins = $this->pdo->prepare("
+                    SELECT estadoInscripcion FROM inscripciones_ruedas 
+                    WHERE ruedaId = ? AND empresaId = ?
+                ");
+                $stmt_ins->execute([$rueda_id, $comprador_id]);
+                $inscripcion = $stmt_ins->fetch();
+
+                if (!$inscripcion || $inscripcion['estadoInscripcion'] !== 'aceptada') {
+                    throw new Exception("Debes estar inscrito y aceptado en la rueda para apartar mesa.");
+                }
+
+                // VALIDACIÓN: Obtener fechas y estado de la rueda
+                $stmt_rueda = $this->pdo->prepare("SELECT fechaInicio, fechaFin, estadoRueda FROM ruedas_negocios WHERE id = ?");
+                $stmt_rueda->execute([$rueda_id]);
+                $rueda = $stmt_rueda->fetch();
+
+                if (!$rueda) {
+                    throw new Exception("Rueda de negocios no encontrada.");
+                }
+
+                if ($rueda['estadoRueda'] !== 'activa') {
+                    throw new Exception("No se pueden apartar mesas mientras la rueda no esté en estado activa.");
+                }
+
+                // VALIDACIÓN: No permitir fechas pasadas
+                if (strtotime($fecha_hora) < strtotime(SYSTEM_TIME)) {
+                    throw new Exception("No se pueden apartar mesas en fechas u horas pasadas.");
+                }
+
+                // VALIDACIÓN: La fecha debe estar dentro del rango de la rueda
+                $fecha_cita = strtotime($fecha_hora);
+                $fecha_inicio_rueda = strtotime($rueda['fechaInicio'] . ' 00:00:00');
+                $fecha_fin_rueda = strtotime($rueda['fechaFin'] . ' 23:59:59');
+                
+                if ($fecha_cita < $fecha_inicio_rueda || $fecha_cita > $fecha_fin_rueda) {
+                    throw new Exception("La fecha debe estar dentro del período de la rueda (" . date('d/m/Y', $fecha_inicio_rueda) . " - " . date('d/m/Y', $fecha_fin_rueda) . ").");
+                }
+
+                // VALIDACIÓN: Verificar que el comprador no tenga otra reunión en el mismo horario
+                $fechaBase = strtotime($fecha_hora);
+                $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
+                $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
+                
+                $stmt_disp = $this->pdo->prepare("
+                    SELECT COUNT(*) as ocupado FROM reuniones 
+                    WHERE compradorId = ? 
+                    AND fechaHora BETWEEN ? AND ?
+                    AND ruedaId = ? 
+                    AND estadoCita NOT IN ('cancelada', 'rechazada')
+                ");
+                $stmt_disp->execute([$comprador_id, $horaInicio, $horaFin, $rueda_id]);
+                if ($stmt_disp->fetch()['ocupado'] > 0) {
+                    throw new Exception("Ya tienes una reunión agendada en un horario que coincide. Las reuniones tienen una duración de 30 minutos.");
+                }
+
+                // Crear registro de apartado de mesa (sin vendedor asignado aún)
+                $stmt = $this->pdo->prepare("
+                    INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
+                    VALUES (?, ?, NULL, ?, 'mesa_apartada', ?, ?, 'comprador', 'comprador', 0)
+                ");
+                $stmt->execute([$rueda_id, $comprador_id, $fecha_hora, $link_reunion, $numero_mesa]);
+
+                header("Location: index.php?controlador=comprador&accion=verReuniones&msg=mesa_apartada");
+                exit();
+            } catch (Exception $e) {
+                $error_msg = $e->getMessage();
+                require_once '../app/views/layout/error.php';
+            }
+        }
+    }
+
     public function convertirseEnVendedor() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
