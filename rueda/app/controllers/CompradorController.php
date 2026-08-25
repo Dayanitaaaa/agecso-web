@@ -1128,6 +1128,7 @@ class CompradorController {
                 throw new Exception("Rueda de negocios no encontrada.");
             }
 
+            $miEmpresaId = $miEmpresa['id'];
             require_once '../app/views/comprador/apartar_mesa.php';
         } catch (Exception $e) {
             $error_msg = $e->getMessage();
