@@ -1205,16 +1205,22 @@ class CompradorController {
                     throw new Exception("Ya tienes una mesa apartada en esta rueda.");
                 }
 
+                $numero_mesa_limpio = preg_replace('/[^0-9]/', '', $numero_mesa);
+
+                if (empty($numero_mesa_limpio)) {
+                    throw new Exception("Debes seleccionar una mesa válida.");
+                }
+
                 // VALIDACIÓN: Verificar que la mesa esté disponible
                 // Una mesa está ocupada si tiene una cita aceptada, pendiente, realizada o YA APARTADA por otro.
                 $stmt_disp = $this->pdo->prepare("
                     SELECT COUNT(*) as ocupada FROM reuniones 
-                    WHERE numero_mesa = ? 
+                    WHERE (numero_mesa = ? OR numero_mesa = ?) 
                     AND ruedaId = ? 
                     AND estadoCita IN ('aceptada', 'pendiente', 'realizada', 'mesa_apartada')
                     AND compradorId != ?
                 ");
-                $stmt_disp->execute([$numero_mesa, $rueda_id, $comprador_id]);
+                $stmt_disp->execute([$numero_mesa_limpio, "Mesa $numero_mesa_limpio", $rueda_id, $comprador_id]);
                 if ($stmt_disp->fetch()['ocupada'] > 0) {
                     throw new Exception("La mesa seleccionada ya está reservada u ocupada por otra empresa.");
                 }
