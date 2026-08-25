@@ -160,10 +160,10 @@
                                         <i class="fas fa-check mr-2"></i> Ya tienes reunión
                                     </span>
                                 <?php else: ?>
-                                    <button onclick="solicitarReunion(<?php echo $demanda['empresaId']; ?>, <?php echo $rueda_actual['id']; ?>, '<?php echo htmlspecialchars(addslashes($demanda['razon_social'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($demanda['tituloDemanda'] ?? '')); ?>')" 
+                                <button onclick="solicitarReunion(<?php echo $demanda['empresaId']; ?>, <?php echo $rueda_actual['id']; ?>, '<?php echo htmlspecialchars(addslashes($demanda['razon_social'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($demanda['descripcion'] ?? 'Sin descripción.')); ?>', '<?php echo $demanda['mesa_apartada'] ?? ''; ?>')" 
                                             class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2">
                                         <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Reunión
-                                    </button>
+                                </button>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -194,64 +194,59 @@
                 <input type="hidden" id="rueda_id" name="rueda_id" value="<?php echo $rueda_actual['id'] ?? ''; ?>">
                 
                 <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
+                    <!-- Título con Icono -->
                     <div class="flex items-center gap-2.5 mb-5 text-left">
                         <div class="p-2 bg-teal-500/10 text-[#0d9488] rounded-xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
+                            <i class="fas fa-handshake text-xl"></i>
                         </div>
-                        <h3 class="text-xl font-extrabold text-gray-800 tracking-tight">Solicitar Reunión de Negocio</h3>
+                        <h3 class="text-xl font-extrabold text-gray-800 tracking-tight">Proponer Hora de Reunión</h3>
                     </div>
                     
-                    <div class="bg-gradient-to-br from-teal-50/50 to-emerald-50/30 border border-teal-100 p-4 rounded-2xl mb-6 flex flex-col gap-3 text-left">
+                    <!-- Tarjeta de Detalles del Comprador -->
+                    <div class="bg-gradient-to-br from-teal-50/50 to-emerald-50/30 border border-teal-100 p-5 rounded-2xl mb-6 flex flex-col gap-4 text-left">
                         <div class="flex items-start gap-3">
-                            <div class="p-2 bg-teal-500/10 text-[#0d9488] rounded-xl text-md flex items-center justify-center shrink-0">
-                                <i class="fas fa-clipboard-list text-xs"></i>
+                            <div class="p-2 bg-white text-[#0d9488] rounded-xl shadow-sm shrink-0">
+                                <i class="fas fa-building"></i>
                             </div>
                             <div>
-                                <p class="text-[10px] font-bold text-[#0d9488] tracking-wider uppercase">Interés en demanda</p>
-                                <p id="modal_titulo_demanda" class="font-extrabold text-gray-800 text-sm mt-0.5"></p>
+                                <p class="text-[10px] font-bold text-[#0d9488] tracking-wider uppercase">Empresa Compradora</p>
+                                <p id="nombre_comprador" class="font-black text-gray-900 text-base mt-0.5"></p>
+                                <p id="modal_descripcion_comprador" class="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-3"></p>
                             </div>
                         </div>
-                        <div class="h-px bg-teal-100/50"></div>
-                        <div class="flex items-start gap-3">
-                            <div class="p-2 bg-gray-500/10 text-gray-600 rounded-xl text-md flex items-center justify-center shrink-0">
-                                <i class="fas fa-building text-xs"></i>
+
+                        <div id="info_mesa_apartada" class="flex items-center gap-3 pt-3 border-t border-teal-100/50">
+                            <div class="p-2 bg-amber-100 text-amber-600 rounded-xl shrink-0">
+                                <i class="fas fa-map-marker-alt"></i>
                             </div>
                             <div>
-                                <p class="text-[10px] font-bold text-gray-400 tracking-wider uppercase">Comprador</p>
-                                <p id="nombre_comprador" class="font-bold text-gray-800 text-sm mt-0.5"></p>
+                                <p class="text-[10px] font-bold text-amber-600 tracking-wider uppercase">Ubicación de la Cita</p>
+                                <p class="font-bold text-gray-800 text-sm mt-0.5">
+                                    Mesa <span id="modal_numero_mesa" class="text-amber-700 font-black"></span> 
+                                    (Reservada por el comprador)
+                                </p>
                             </div>
                         </div>
                     </div>
                     
+                    <!-- Campos del Formulario -->
                     <div class="space-y-5 text-left">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Fecha y Hora Propuesta</label>
-                            <input type="datetime-local" id="fecha_hora" name="fecha_hora" required
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200 bg-white cursor-pointer"
-                                   min="<?php echo date('Y-m-d\TH:i', strtotime('+1 day')); ?>"
-                                   max="<?php echo date('Y-m-d\TH:i', strtotime($rueda_actual['fechaFin'])); ?>">
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">¿A qué hora te gustaría reunirte?</label>
+                            <input type="text" name="fecha_hora" id="fecha_hora_input" required 
+                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-5 py-3 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200 bg-gray-50 cursor-pointer"
+                                   placeholder="Seleccionar hora exacta...">
                             <p class="text-[10px] text-gray-400 mt-1.5 ml-1 flex items-center gap-1 font-bold">
                                 <i class="fas fa-info-circle text-[#0d9488]"></i>
-                                La cita debe agendarse antes del <?php echo date('d/m/Y H:i', strtotime($rueda_actual['fechaFin'])); ?>
+                                Sugiere una hora dentro del horario de la rueda.
                             </p>
                         </div>
-                        
+
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Link de Reunión (Opcional)</label>
-                            <input type="url" id="link_reunion" name="link_reunion" placeholder="https://meet.google.com/..."
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200">
-                            <p class="text-[10px] text-gray-400 mt-1.5 ml-1 flex items-center gap-1 font-bold">
-                                <i class="fas fa-info-circle text-[#0d9488]"></i>
-                                Puedes agregarlo ahora o después desde tus Citas Aceptadas
-                            </p>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Mensaje / Objetivo</label>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Mensaje para el Comprador</label>
                             <textarea name="descripcion" rows="3" required 
-                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200 resize-none" 
-                                      placeholder="Describe tu interés en esta demanda..."></textarea>
+                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-5 py-4 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200 resize-none bg-gray-50" 
+                                      placeholder="Ej: Hola, nos gustaría presentarte nuestros servicios..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -313,10 +308,32 @@ if (filtroTexto) filtroTexto.addEventListener('input', filtrarDemandas);
 if (filtroSector) filtroSector.addEventListener('change', filtrarDemandas);
 
 // Modal de solicitud de reunión
-function solicitarReunion(compradorId, ruedaId, nombreComprador, tituloDemanda) {
+function solicitarReunion(compradorId, ruedaId, nombreComprador, descripcionComprador, mesaApartada = '') {
     document.getElementById('comprador_id').value = compradorId;
     document.getElementById('nombre_comprador').textContent = nombreComprador;
-    document.getElementById('modal_titulo_demanda').textContent = tituloDemanda || '';
+    document.getElementById('modal_descripcion_comprador').textContent = descripcionComprador;
+    
+    if (mesaApartada) {
+        document.getElementById('modal_numero_mesa').innerText = mesaApartada;
+        document.getElementById('info_mesa_apartada').classList.remove('hidden');
+    } else {
+        document.getElementById('info_mesa_apartada').classList.add('hidden');
+    }
+
+    // Inicializar Flatpickr con 30 min
+    flatpickr("#fecha_hora_input", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i",
+        altInput: true,
+        altFormat: "F j, Y - h:i K",
+        locale: "es",
+        minDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaInicio'])); ?>",
+        maxDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaFin'])); ?>",
+        time_24hr: false,
+        minuteIncrement: 30,
+        disableMobile: "true",
+        animate: true
+    });
     
     document.getElementById('modalSolicitarReunion').classList.remove('hidden');
 }
