@@ -449,6 +449,8 @@ class VendedorController {
             $error_msg = $e->getMessage();
             require_once '../app/views/layout/error.php';
         }
+    }
+
     public function registrarOferta() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
