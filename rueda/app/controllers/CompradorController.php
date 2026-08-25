@@ -630,7 +630,7 @@ class CompradorController {
             $todas_citas = $stmt_citas->fetchAll();
 
             $citas_por_aceptar = [];      // pendiente, negociando (requieren acción del comprador)
-            $citas_programadas = [];        // aceptada
+            $citas_programadas = [];        // aceptada, agendada, mesa_apartada
             $citas_historial = [];          // cancelada, realizada
 
             foreach ($todas_citas as $c) {
@@ -653,7 +653,7 @@ class CompradorController {
                 } elseif ($esperandoVendedor) {
                     // El comprador envió la propuesta y espera respuesta del vendedor
                     $citas_pendientes_vendedor[] = $c;
-                } elseif (in_array($c['estadoCita'], ['aceptada', 'agendada'])) {
+                } elseif (in_array($c['estadoCita'], ['aceptada', 'agendada', 'mesa_apartada'])) {
                     $citas_programadas[] = $c;
                 } else {
                     $citas_historial[] = $c;
