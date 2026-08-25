@@ -1141,6 +1141,7 @@ class CompradorController {
             try {
                 $rueda_id = $_POST['rueda_id'];
                 $comprador_id = $_POST['comprador_id'];
+                $fecha_apartado = $_POST['fecha_apartado'];
                 $numero_mesa = isset($_POST['numero_mesa']) ? trim($_POST['numero_mesa']) : null;
                 $descripcion = $_POST['descripcion'];
 
@@ -1166,7 +1167,7 @@ class CompradorController {
                 }
 
                 // VALIDACIÓN: Obtener estado y fechas de la rueda
-                $stmt_rueda = $this->pdo->prepare("SELECT estadoRueda, fechaInicio FROM ruedas_negocios WHERE id = ?");
+                $stmt_rueda = $this->pdo->prepare("SELECT estadoRueda, fechaInicio, fechaFin FROM ruedas_negocios WHERE id = ?");
                 $stmt_rueda->execute([$rueda_id]);
                 $rueda = $stmt_rueda->fetch();
 
@@ -1178,9 +1179,17 @@ class CompradorController {
                     throw new Exception("No se pueden apartar mesas mientras la rueda no esté en estado activa.");
                 }
 
-                // Usar una fecha futura lejana para evitar conflictos con trigger de solapamiento
-                // El vendedor asignará la fecha real cuando solicite la reunión
-                $fecha_hora_defecto = '2099-12-31 23:59:59';
+                // VALIDACIÓN: Verificar que la fecha esté dentro del rango de la rueda
+                $fecha_apartado_ts = strtotime($fecha_apartado);
+                $fecha_inicio_rueda = strtotime($rueda['fechaInicio']);
+                $fecha_fin_rueda = strtotime($rueda['fechaFin']);
+                
+                if ($fecha_apartado_ts < $fecha_inicio_rueda || $fecha_apartado_ts > $fecha_fin_rueda) {
+                    throw new Exception("La fecha debe estar dentro del período de la rueda (" . date('d/m/Y', $fecha_inicio_rueda) . " - " . date('d/m/Y', $fecha_fin_rueda) . ").");
+                }
+
+                // Usar la fecha seleccionada por el usuario a las 9:00 AM
+                $fecha_hora_defecto = $fecha_apartado . ' 09:00:00';
 
                 // VALIDACIÓN: Verificar que el comprador no tenga ya una mesa apartada en esta rueda
                 $stmt_mesa = $this->pdo->prepare("

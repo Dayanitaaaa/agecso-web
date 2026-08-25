@@ -59,6 +59,18 @@
                         <?php endif; ?>
 
                         <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Fecha para apartar la mesa</label>
+                            <input type="date" name="fecha_apartado" id="fecha_apartado" required
+                                   class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-white font-bold"
+                                   min="<?php echo date('Y-m-d'); ?>"
+                                   max="<?php echo $rueda['fechaFin']; ?>">
+                            <p class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
+                                <i class="fas fa-info-circle text-[#00a2ff]"></i>
+                                La fecha debe estar entre <?php echo date('d/m/Y'); ?> y <?php echo date('d/m/Y', strtotime($rueda['fechaFin'])); ?>.
+                            </p>
+                        </div>
+
+                        <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Seleccionar Mesa Disponible</label>
                             <div class="relative">
                                 <select name="numero_mesa" id="numero_mesa_select" required
