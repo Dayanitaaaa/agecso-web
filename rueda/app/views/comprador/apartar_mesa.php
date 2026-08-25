@@ -114,6 +114,12 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
+    // Capturar cambio de fecha para recargar mesas
+    const fechaInput = document.getElementById('fecha_apartado');
+    if (fechaInput) {
+        fechaInput.addEventListener('change', cargarMesasDisponibles);
+    }
+    
     cargarMesasDisponibles();
 });
 
@@ -122,64 +128,56 @@ async function cargarMesasDisponibles() {
     const infoText = document.getElementById('mesa_info_text');
     const ocupadasInfo = document.getElementById('mesas_ocupadas_info');
     const listaOcupadas = document.getElementById('lista_ocupadas');
+    const fechaInput = document.getElementById('fecha_apartado');
     const ruedaId = "<?php echo $ruedaId; ?>";
     const compradorId = "<?php echo $miEmpresaId; ?>";
 
-    if (!select) return;
+    if (!select || !fechaInput) return;
+    if (!fechaInput.value) {
+        select.innerHTML = '<option value="">-- Selecciona una fecha primero --</option>';
+        return;
+    }
 
-    select.innerHTML = '<option value="">Cargando mesas disponibles...</option>';
+    const fechaHora = fechaInput.value + ' 09:00:00';
+
+    select.innerHTML = '<option value="">Cargando mesas...</option>';
     select.disabled = true;
+    ocupadasInfo.classList.add('hidden');
 
     try {
-        const response = await fetch(`index.php?controlador=api/reunion&accion=getMesasDisponibles&rueda_id=${ruedaId}&comprador_id=${compradorId}`);
+        const response = await fetch(`index.php?controlador=api/reunion&accion=getMesasDisponibles&rueda_id=${ruedaId}&comprador_id=${compradorId}&fecha_hora=${encodeURIComponent(fechaHora)}`);
         const result = await response.json();
         
         console.log('Resultado API:', result);
 
         select.innerHTML = '<option value="">-- Seleccionar Mesa --</option>';
         
-        if (result.status === 'success' && result.data && result.data.mesas && result.data.mesas.length > 0) {
-            let mesaYaAsignada = result.data.mesa_sugerida;
-            
-            result.data.mesas.forEach(mesa => {
-                const opt = document.createElement('option');
-                opt.value = mesa;
-                opt.textContent = mesa + (mesa === mesaYaAsignada ? ' (Tu mesa actual)' : '');
-                if (mesa === mesaYaAsignada) {
-                    opt.selected = true;
-                }
-                select.appendChild(opt);
-            });
-            select.disabled = false;
-            
-            if (mesaYaAsignada) {
-                infoText.innerHTML = `<i class="fas fa-check-circle text-[#00a2ff]"></i> Se ha pre-seleccionado tu mesa asignada.`;
+        if (result.status === 'success' && result.data && result.data.mesas) {
+            const mesasLibres = result.data.mesas;
+            const mesasOcupadas = (result.data.debug && result.data.debug.mesas_ocupadas) ? result.data.debug.mesas_ocupadas : [];
+
+            if (mesasLibres.length > 0) {
+                mesasLibres.forEach(mesa => {
+                    const opt = document.createElement('option');
+                    opt.value = mesa;
+                    opt.textContent = `Mesa ${mesa} (Disponible)`;
+                    select.appendChild(opt);
+                });
+                select.disabled = false;
+                infoText.innerHTML = `<i class="fas fa-check-circle text-green-500"></i> ${mesasLibres.length} mesas libres para esta fecha.`;
             } else {
-                infoText.innerHTML = `<i class="fas fa-check-circle text-green-500"></i> ${result.data.mesas.length} mesas libres encontradas.`;
+                select.innerHTML = '<option value="">No hay mesas disponibles</option>';
+                infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> No hay mesas libres en la fecha seleccionada.';
             }
 
-            // Mostrar mesas ocupadas si existen
-            console.log('Debug info:', result.data.debug);
-            if (result.data.debug && result.data.debug.mesas_ocupadas && result.data.debug.mesas_ocupadas.length > 0) {
+            if (mesasOcupadas.length > 0) {
                 ocupadasInfo.classList.remove('hidden');
-                listaOcupadas.textContent = result.data.debug.mesas_ocupadas.join(', ');
-                console.log('Mostrando mesas ocupadas:', result.data.debug.mesas_ocupadas);
-            } else {
-                console.log('No hay mesas ocupadas para mostrar');
-            }
-        } else {
-            select.innerHTML = '<option value="">No hay mesas disponibles</option>';
-            infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> No hay mesas disponibles en este momento.';
-            
-            if (result.data && result.data.debug && result.data.debug.mesas_ocupadas) {
-                ocupadasInfo.classList.remove('hidden');
-                listaOcupadas.textContent = result.data.debug.mesas_ocupadas.join(', ');
+                listaOcupadas.textContent = mesasOcupadas.join(', ');
             }
         }
     } catch (error) {
-        console.error("Error al cargar mesas:", error);
-        select.innerHTML = '<option value="">Error al cargar mesas</option>';
-        infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> Error al cargar las mesas. Intenta nuevamente.';
+        console.error("Error:", error);
+        select.innerHTML = '<option value="">Error al cargar</option>';
     }
 }
 </script>
