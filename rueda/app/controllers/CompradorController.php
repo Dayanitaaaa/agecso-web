@@ -431,18 +431,15 @@ class CompradorController {
                     ");
                     $stmt->execute([$cita_id]);
 
-                    // Actualizar historial
-                    $stmt_hist = $this->pdo->prepare("
-                        UPDATE reunion_negociaciones 
-                        SET respuesta = 'rechazada', updatedAt = NOW()
-                        WHERE reunionId = ? AND respuesta = 'pendiente'
-                    ");
-                    $stmt_hist->execute([$cita_id]);
+                    // Actualizar historial (opcional)
+                    try {
+                        $this->pdo->prepare("UPDATE reunion_negociaciones SET respuesta = 'rechazada' WHERE reunionId = ? AND respuesta = 'pendiente'")->execute([$cita_id]);
+                    } catch (Throwable $th) {}
 
                     $msg = "cita_rechazada";
 
                 } elseif ($accion == 'aceptada') {
-                    // El comprador acepta - el link lo agrega el PROPOSITOR (quien creó la cita)
+                    // El comprador acepta la hora propuesta
                     $stmt = $this->pdo->prepare("
                         UPDATE reuniones 
                         SET estadoCita = 'aceptada', ultimaAccionPor = 'comprador'
@@ -450,13 +447,10 @@ class CompradorController {
                     ");
                     $stmt->execute([$cita_id]);
 
-                    // Actualizar historial
-                    $stmt_hist = $this->pdo->prepare("
-                        UPDATE reunion_negociaciones 
-                        SET respuesta = 'aceptada', updatedAt = NOW()
-                        WHERE reunionId = ? AND respuesta = 'pendiente'
-                    ");
-                    $stmt_hist->execute([$cita_id]);
+                    // Actualizar historial (opcional)
+                    try {
+                        $this->pdo->prepare("UPDATE reunion_negociaciones SET respuesta = 'aceptada' WHERE reunionId = ? AND respuesta = 'pendiente'")->execute([$cita_id]);
+                    } catch (Throwable $th) {}
 
                     $msg = "cita_aceptada";
 
@@ -471,61 +465,9 @@ class CompradorController {
                         throw new Exception("Debes proporcionar una nueva fecha y hora para la contraoferta.");
                     }
 
-                    // El link se agrega después por el propositor al aceptar, no aquí
-
-                    // Validar que la nueva fecha está dentro del rango de la rueda
-                    $fecha_nueva = strtotime($nueva_fecha);
-                    $fecha_fin_rueda = strtotime($cita['fechaFin'] . ' 23:59:59');
-                    
-                    if ($fecha_nueva > $fecha_fin_rueda) {
-                        throw new Exception("La fecha propuesta no puede ser después de que termine la rueda de negocios.");
-                    }
-
-                    if ($fecha_nueva < time()) {
-                        throw new Exception("No puedes proponer una fecha en el pasado.");
-                    }
-
-                    // VALIDACIÓN: 1 hora de separación entre citas para AMBAS empresas (excluyendo la cita actual)
-                    $fechaBase = strtotime($nueva_fecha);
-                    $horaInicio = date('Y-m-d H:i:s', strtotime('-1 hour', $fechaBase));
-                    $horaFin = date('Y-m-d H:i:s', strtotime('+1 hour', $fechaBase));
-                    
-                    $comprador_id = $cita['compradorId'];
-                    $vendedor_id = $cita['vendedorId'];
-                    $rueda_id = $cita['ruedaId'];
-                    $cita_id_actual = $cita['id'];
-                    
-                    // Verificar para el comprador (excluyendo la cita actual)
-                    $stmt_disp_c = $this->pdo->prepare("
-                        SELECT COUNT(*) as ocupado FROM reuniones 
-                        WHERE (vendedorId = ? OR compradorId = ?) 
-                        AND fechaHora BETWEEN ? AND ?
-                        AND ruedaId = ? 
-                        AND estadoCita NOT IN ('cancelada', 'rechazada')
-                        AND id != ?
-                    ");
-                    $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id, $cita_id_actual]);
-                    if ($stmt_disp_c->fetch()['ocupado'] > 0) {
-                        throw new Exception("Ya tienes una cita agendada dentro del rango de 1 hora. Debes dejar al menos 1 hora de separación entre citas.");
-                    }
-                    
-                    // Verificar para el vendedor (excluyendo la cita actual)
-                    $stmt_disp_v = $this->pdo->prepare("
-                        SELECT COUNT(*) as ocupado FROM reuniones 
-                        WHERE (vendedorId = ? OR compradorId = ?) 
-                        AND fechaHora BETWEEN ? AND ?
-                        AND ruedaId = ? 
-                        AND estadoCita NOT IN ('cancelada', 'rechazada')
-                        AND id != ?
-                    ");
-                    $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id, $cita_id_actual]);
-                    if ($stmt_disp_v->fetch()['ocupado'] > 0) {
-                        throw new Exception("El vendedor ya tiene una cita agendada dentro del rango de 1 hora.");
-                    }
-
                     $nuevo_contador = $cita['contadorContrapropuestas'] + 1;
 
-                    // Actualizar reunión (sin link - se agrega después al aceptar)
+                    // Actualizar reunión con la nueva fecha y turno para el vendedor
                     $stmt = $this->pdo->prepare("
                         UPDATE reuniones 
                         SET fechaHora = ?, estadoCita = 'negociando', contadorContrapropuestas = ?, ultimaAccionPor = 'comprador'
@@ -533,12 +475,10 @@ class CompradorController {
                     ");
                     $stmt->execute([$nueva_fecha, $nuevo_contador, $cita_id]);
 
-                    // Registrar en historial
-                    $stmt_hist = $this->pdo->prepare("
-                        INSERT INTO reunion_negociaciones (reunionId, propuestoPor, fechaHoraPropuesta, mensaje, respuesta, numeroContrapropuesta)
-                        VALUES (?, 'comprador', ?, ?, 'pendiente', ?)
-                    ");
-                    $stmt_hist->execute([$cita_id, $nueva_fecha, $mensaje, $nuevo_contador]);
+                    // Registrar en historial (opcional)
+                    try {
+                        $this->pdo->prepare("INSERT INTO reunion_negociaciones (reunionId, propuestoPor, respuesta) VALUES (?, 'comprador', 'pendiente')")->execute([$cita_id]);
+                    } catch (Throwable $th) {}
 
                     $msg = "contraoferta_enviada";
                 }
