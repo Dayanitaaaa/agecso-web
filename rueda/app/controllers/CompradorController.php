@@ -580,7 +580,7 @@ class CompradorController {
 
             // Obtener ruedas en las que está inscrito el comprador
             $stmt_ruedas = $this->pdo->prepare("
-                SELECT rn.id, rn.tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin
+                SELECT rn.id, COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin, rn.modalidad, rn.ubicacion
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ? AND ir.estadoInscripcion = 'aceptada'
@@ -610,7 +610,7 @@ class CompradorController {
 
             // Obtener citas del comprador FILTRADAS POR RUEDA
             $sql_citas = "
-                SELECT r.*, e.razon_social as nombre_vendedor, rn.tituloRueda, rn.id as ruedaId
+                SELECT r.*, e.razon_social as nombre_vendedor, COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, rn.id as ruedaId
                 FROM reuniones r
                 LEFT JOIN empresas e ON r.vendedorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
@@ -634,15 +634,15 @@ class CompradorController {
             $citas_historial = [];          // cancelada, realizada
 
             foreach ($todas_citas as $c) {
-                // Lógica de turnos simplificada y robusta
-                $estado = $c['estadoCita'];
-                $ultimaAccion = $c['ultimaAccionPor'] ?? 'vendedor';
+                // Normalizar estado y turnos en minúsculas
+                $estado = strtolower(trim((string)$c['estadoCita']));
+                $ultimaAccion = strtolower(trim((string)($c['ultimaAccionPor'] ?? 'vendedor')));
 
                 if ($estado === 'mesa_apartada') {
                     // Mesas apartadas van a citas programadas (esperando propuesta)
                     $citas_programadas[] = $c;
-                } elseif (in_array($estado, ['pendiente', 'negociando']) && $ultimaAccion === 'vendedor') {
-                    // Cita recibida del vendedor para que el comprador decida
+                } elseif (in_array($estado, ['pendiente', 'negociando']) && ($ultimaAccion === 'vendedor' || empty($ultimaAccion))) {
+                    // Cita recibida del vendedor para que el comprador decida (Aceptar / Proponer hora / Rechazar)
                     $stmt_hist = $this->pdo->prepare("
                         SELECT * FROM reunion_negociaciones 
                         WHERE reunionId = ? AND propuestoPor = 'vendedor'
@@ -653,7 +653,7 @@ class CompradorController {
                     $c['ultima_propuesta'] = $stmt_hist->fetch();
                     $citas_por_aceptar[] = $c;
                 } elseif (in_array($estado, ['pendiente', 'negociando']) && $ultimaAccion === 'comprador') {
-                    // Cita enviada por el comprador esperando al vendedor
+                    // Cita con contraoferta enviada por el comprador, esperando al vendedor
                     $citas_pendientes_vendedor[] = $c;
                 } elseif (in_array($estado, ['aceptada', 'agendada'])) {
                     // Cita confirmada
