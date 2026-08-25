@@ -740,7 +740,7 @@ class VendedorController {
             $sector_id = $_GET['sector_id'] ?? '';
 
             $sql = "
-                SELECT DISTINCT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId
+                SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, r.numero_mesa, r.fechaHora
                 FROM empresas e
                 JOIN reuniones r ON e.id = r.compradorId
                 WHERE r.ruedaId = ? 
