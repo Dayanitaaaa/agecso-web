@@ -249,16 +249,14 @@ document.addEventListener("DOMContentLoaded", function() {
             altInput: true,
             altFormat: "F j, Y - h:i K",
             locale: "es",
-            minDate: "today",
-            maxDate: "<?php echo date('Y-m-d H:i', strtotime($rueda['fechaFin'])); ?>",
+            minDate: "<?php echo date('Y-m-d', strtotime($rueda['fechaInicio'])); ?>",
+            maxDate: "<?php echo date('Y-m-d', strtotime($rueda['fechaFin'])); ?>",
             time_24hr: false,
             minuteIncrement: 30,
             disableMobile: "true",
             animate: true,
             onChange: function(selectedDates, dateStr) {
-                if (document.getElementById('numero_mesa_select')) {
-                    cargarMesasDisponibles(dateStr);
-                }
+                // Aquí podrías disparar alguna validación extra si fuera necesario
             }
         });
     }
