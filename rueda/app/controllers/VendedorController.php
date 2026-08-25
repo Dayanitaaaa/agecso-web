@@ -406,7 +406,7 @@ class VendedorController {
                     $stmt_hist = $this->pdo->prepare("
                         SELECT * FROM reunion_negociaciones 
                         WHERE reunionId = ? AND propuestoPor = 'comprador' AND respuesta = 'pendiente'
-                        ORDER BY numeroContrapropuesta DESC 
+                        ORDER BY id DESC 
                         LIMIT 1
                     ");
                     $stmt_hist->execute([$c['id']]);
