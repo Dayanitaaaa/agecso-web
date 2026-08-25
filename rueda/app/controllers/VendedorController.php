@@ -1084,20 +1084,13 @@ class VendedorController {
                 return strcmp($a['razon_social'], $b['razon_social']);
             });
 
-            // Obtener sectores únicos de las demandas para filtros
-            $sectores = [];
-            $sector_ids = array_unique(array_column($demandas, 'sectorId'));
-            if (!empty($sector_ids)) {
-                $placeholders = implode(',', array_fill(0, count($sector_ids), '?'));
-                $stmt_sectores = $this->pdo->prepare("
-                    SELECT id, nombreSector, ciiu_clase 
-                    FROM sectores 
-                    WHERE id IN ($placeholders)
-                    ORDER BY ciiu_clase
-                ");
-                $stmt_sectores->execute($sector_ids);
-                $sectores = $stmt_sectores->fetchAll();
-            }
+            // Obtener sectores únicos para los filtros (Sin parámetros para evitar errores)
+            $sectores = $this->pdo->query("
+                SELECT id, nombreSector, ciiu_clase 
+                FROM sectores 
+                WHERE id IN (SELECT DISTINCT sectorId FROM empresas)
+                ORDER BY ciiu_clase ASC
+            ")->fetchAll();
 
             // Obtener reuniones existentes del vendedor en esta rueda
             $stmt_reuniones = $this->pdo->prepare("
