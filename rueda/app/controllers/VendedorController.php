@@ -599,14 +599,6 @@ class VendedorController {
                     throw new Exception("No se pueden agendar citas mientras la rueda de negocios no esté en estado activa.");
                 }
 
-                // VALIDACIÓN: No permitir días pasados (Permitir cualquier hora del día actual)
-                $fecha_cita_solo_dia = date('Y-m-d', strtotime($fecha_hora));
-                $hoy_solo_dia = date('Y-m-d', strtotime(SYSTEM_TIME));
-                
-                if ($fecha_cita_solo_dia < $hoy_solo_dia) {
-                    throw new Exception("No se pueden agendar citas en días anteriores al actual.");
-                }
-
                 // VALIDACIÓN: La fecha debe estar dentro del rango de la rueda
                 $fecha_cita = strtotime($fecha_hora);
                 $fecha_inicio_rueda = strtotime($rueda['fechaInicio'] . ' 00:00:00');
