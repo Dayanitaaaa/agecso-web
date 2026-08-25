@@ -1044,7 +1044,7 @@ class VendedorController {
             // Obtener TODOS los compradores inscritos y aceptados en esta rueda, con o sin demanda
             // Se incluye el número de mesa si ya apartaron una
             $stmt_demandas = $this->pdo->prepare("
-                SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona, e.descripcion,
+                SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona,
                        s.nombreSector, s.ciiu_clase,
                        d.tituloDemanda, d.descripcionDemanda, d.createdAt as demandaCreatedAt,
                        (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1) as mesa_apartada
