@@ -634,32 +634,20 @@ class CompradorController {
             $citas_historial = [];          // cancelada, realizada
 
             foreach ($todas_citas as $c) {
-                // Normalizar estado y turnos en minúsculas
+                // Normalizar estado
                 $estado = strtolower(trim((string)$c['estadoCita']));
-                $ultimaAccion = strtolower(trim((string)($c['ultimaAccionPor'] ?? 'vendedor')));
 
                 if ($estado === 'mesa_apartada') {
-                    // Mesas apartadas van a citas programadas (esperando propuesta)
+                    // Mesas apartadas sin propuesta de vendedor aún
                     $citas_programadas[] = $c;
-                } elseif (in_array($estado, ['pendiente', 'negociando']) && ($ultimaAccion === 'vendedor' || empty($ultimaAccion))) {
-                    // Cita recibida del vendedor para que el comprador decida (Aceptar / Proponer hora / Rechazar)
-                    $stmt_hist = $this->pdo->prepare("
-                        SELECT * FROM reunion_negociaciones 
-                        WHERE reunionId = ? AND propuestoPor = 'vendedor'
-                        ORDER BY numeroContrapropuesta DESC 
-                        LIMIT 1
-                    ");
-                    $stmt_hist->execute([$c['id']]);
-                    $c['ultima_propuesta'] = $stmt_hist->fetch();
+                } elseif (in_array($estado, ['pendiente', 'negociando'])) {
+                    // Cita pendiente: El comprador siempre puede Gestionar (Aceptar / Proponer hora / Rechazar)
                     $citas_por_aceptar[] = $c;
-                } elseif (in_array($estado, ['pendiente', 'negociando']) && $ultimaAccion === 'comprador') {
-                    // Cita con contraoferta enviada por el comprador, esperando al vendedor
-                    $citas_pendientes_vendedor[] = $c;
                 } elseif (in_array($estado, ['aceptada', 'agendada'])) {
                     // Cita confirmada
                     $citas_programadas[] = $c;
                 } else {
-                    // Finalizadas o canceladas
+                    // Finalizadas, canceladas o rechazadas
                     $citas_historial[] = $c;
                 }
             }
