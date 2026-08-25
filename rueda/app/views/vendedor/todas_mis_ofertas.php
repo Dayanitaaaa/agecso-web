@@ -152,8 +152,8 @@
                                 <option value="">-- Selecciona una rueda --</option>
                                 <?php foreach ($ruedas_inscrito as $r): ?>
                                     <option value="<?php echo $r['id']; ?>">
-                                        <?php echo htmlspecialchars($r['tituloRueda']); ?> (<?php echo date('d/m/Y', strtotime($r['fechaInicio'])); ?>)
-                                    </option>
+                                    <?php echo htmlspecialchars($r['nombreRueda'] ?? $r['tituloRueda'] ?? 'Rueda sin nombre'); ?> (<?php echo date('d/m/Y', strtotime($r['fechaInicio'])); ?>)
+                                </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
