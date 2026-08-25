@@ -46,7 +46,7 @@
                             <span class="text-[10px] bg-white border border-sky-100 text-[#00a2ff] px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">
                                 <?php echo ($rueda_actual['estadoRueda'] == 'activa') ? 'Rueda Activa' : 'Rueda ' . ucfirst($rueda_actual['estadoRueda']); ?>
                             </span>
-                            <?php if (strtolower($rueda_actual['modalidad'] ?? 'virtual') === 'virtual'): ?>
+                            <?php if (trim(strtolower($rueda_actual['modalidad'] ?? 'virtual')) === 'virtual'): ?>
                                 <span class="text-[10px] bg-purple-50 text-purple-700 border border-purple-100 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider"><i class="fas fa-video mr-1"></i>Virtual</span>
                             <?php else: ?>
                                 <span class="text-[10px] bg-orange-50 text-orange-700 border border-orange-100 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider" title="Presencial: <?php echo htmlspecialchars($rueda_actual['ubicacion'] ?? ''); ?>"><i class="fas fa-map-marker-alt mr-1"></i>Presencial</span>
