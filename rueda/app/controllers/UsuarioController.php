@@ -146,14 +146,20 @@ class UsuarioController {
                     }
 
                     // Resolver el ID real del rol dinámicamente desde la BD
-                    $rolInput = $regData['rol_id'] ?? 'comprador';
-                    $isVendedor = ($rolInput === 'vendedor' || $rolInput === 'proveedor' || $rolInput == 3 || $rolInput == '3' || $rolInput == 4 || $rolInput == '4' && ($regData['rol_id_nombre'] ?? '') === 'vendedor');
+                    $rolInput = $regData['rol_id'] ?? '3';
                     
-                    // Si viene como 'vendedor' o 'comprador' o ID
-                    $slugsBuscar = ($rolInput === 'vendedor' || $rolInput === 'proveedor' || $rolInput == 4 || $rolInput == '4') ? "('vendedor', 'proveedor')" : "('comprador')";
-                    $stmt_role = $this->pdo->query("SELECT id FROM roles WHERE slugRole IN $slugsBuscar LIMIT 1");
-                    $roleRow = $stmt_role ? $stmt_role->fetch() : null;
-                    $realRoleId = $roleRow ? (int)$roleRow['id'] : ($slugsBuscar === "('comprador')" ? 3 : 4);
+                    // Simplificar lógica: 3 = vendedor/proveedor, 4 = comprador
+                    if ($rolInput == 3 || $rolInput == '3') {
+                        // Vendedor/Proveedor
+                        $stmt_role = $this->pdo->query("SELECT id FROM roles WHERE slugRole IN ('vendedor', 'proveedor') LIMIT 1");
+                        $roleRow = $stmt_role ? $stmt_role->fetch() : null;
+                        $realRoleId = $roleRow ? (int)$roleRow['id'] : 3;
+                    } else {
+                        // Comprador
+                        $stmt_role = $this->pdo->query("SELECT id FROM roles WHERE slugRole = 'comprador' LIMIT 1");
+                        $roleRow = $stmt_role ? $stmt_role->fetch() : null;
+                        $realRoleId = $roleRow ? (int)$roleRow['id'] : 4;
+                    }
 
                     $registro = $this->usuarioModel->registrar(
                         $regData['representante_legal'], 
