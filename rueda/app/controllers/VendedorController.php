@@ -735,7 +735,7 @@ class VendedorController {
             $stmt_sectores = $this->pdo->query("SELECT * FROM sectores ORDER BY nombreSector ASC");
             $todos_sectores = $stmt_sectores->fetchAll();
 
-            // Obtener compradores inscritos en la rueda
+            // Obtener compradores inscritos en la rueda que YA APARTARON MESA
             $busqueda = $_GET['busqueda'] ?? '';
             $sector_id = $_GET['sector_id'] ?? '';
 
@@ -743,12 +743,15 @@ class VendedorController {
                 SELECT DISTINCT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
+                JOIN reuniones r_mesa ON e.id = r_mesa.compradorId
                 WHERE ir.ruedaId = ? 
                 AND ir.estadoInscripcion = 'aceptada'
+                AND r_mesa.ruedaId = ?
+                AND r_mesa.estadoCita = 'mesa_apartada'
                 AND e.id != ?
             ";
             
-            $params = [$ruedaId, $miEmpresa['id']];
+            $params = [$ruedaId, $ruedaId, $miEmpresa['id']];
 
             if (!empty($busqueda)) {
                 $sql .= " AND (e.razon_social LIKE ? OR e.descripcion LIKE ?)";
@@ -765,8 +768,9 @@ class VendedorController {
             $stmt->execute($params);
             $compradores = $stmt->fetchAll();
 
-            // Obtener demandas de cada comprador
+            // Obtener demandas y verificar si tiene mesa apartada
             foreach ($compradores as &$c) {
+                // Demandas
                 $stmt_dem = $this->pdo->prepare("
                     SELECT tituloDemanda, descripcionDemanda 
                     FROM demandas 
@@ -774,6 +778,21 @@ class VendedorController {
                 ");
                 $stmt_dem->execute([$c['empresaId'], $ruedaId]);
                 $c['demandas'] = $stmt_dem->fetchAll();
+
+                // Verificar mesa apartada
+                $stmt_mesa = $this->pdo->prepare("
+                    SELECT numero_mesa, fechaHora, id as reunionId
+                    FROM reuniones 
+                    WHERE compradorId = ? 
+                    AND ruedaId = ? 
+                    AND estadoCita = 'mesa_apartada'
+                    LIMIT 1
+                ");
+                $stmt_mesa->execute([$c['empresaId'], $ruedaId]);
+                $mesaInfo = $stmt_mesa->fetch();
+                $c['mesa_apartada'] = $mesaInfo ? $mesaInfo['numero_mesa'] : null;
+                $c['fecha_apartado'] = $mesaInfo ? $mesaInfo['fechaHora'] : null;
+                $c['reunion_apartada_id'] = $mesaInfo ? $mesaInfo['reunionId'] : null;
             }
 
             require_once '../app/views/vendedor/ver_compradores.php';

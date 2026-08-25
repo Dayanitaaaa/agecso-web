@@ -64,7 +64,7 @@
         <div class="mb-14">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-sm font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3">
-                    <i class="fas fa-users text-[#0d9488]"></i> Compradores Disponibles
+                    <i class="fas fa-chair text-[#0d9488]"></i> Compradores en Mesa (Esperando Solicitud)
                 </h2>
                 <div class="bg-teal-50 px-4 py-1.5 rounded-full border border-teal-100">
                     <span class="text-[10px] font-black text-[#0d9488] uppercase tracking-wider"><?php echo count($compradores); ?> resultados</span>
@@ -89,6 +89,12 @@
                                         <span class="text-[9px] bg-teal-50 text-[#0d9488] px-3 py-1 rounded-full font-black uppercase tracking-wider border border-teal-100/50">
                                             <i class="fas fa-building mr-1 opacity-60"></i> <?php echo htmlspecialchars($c['razon_social'] ?? 'N/A'); ?>
                                         </span>
+                                        <?php if (!empty($c['mesa_apartada'])): ?>
+                                            <span class="text-[9px] bg-amber-50 text-amber-600 px-3 py-1 rounded-full font-black uppercase tracking-wider border border-amber-100 flex items-center gap-1.5 shadow-sm">
+                                                <i class="fas fa-chair text-[10px] animate-pulse"></i> 
+                                                Mesa <?php echo htmlspecialchars($c['mesa_apartada']); ?> Apartada
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 
@@ -109,10 +115,20 @@
                             
                             <div class="px-7 pb-7">
                                 <?php if ($rueda['estadoRueda'] === 'activa'): ?>
-                                    <button onclick="abrirModalSolicitud(<?php echo $c['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>')" 
-                                            class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2">
-                                        <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Reunión
-                                    </button>
+                                    <?php if (!empty($c['mesa_apartada'])): ?>
+                                        <button onclick="abrirModalSolicitud(<?php echo $c['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>', '<?php echo $c['fecha_apartado']; ?>', '<?php echo $c['mesa_apartada']; ?>')" 
+                                                class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-lg shadow-amber-500/20 flex flex-col items-center justify-center gap-0.5 group-hover:scale-[1.02] transform">
+                                            <span class="flex items-center gap-2">
+                                                <i class="fas fa-calendar-check text-[10px]"></i> Solicitar a esta Mesa
+                                            </span>
+                                            <span class="text-[8px] opacity-90 font-bold uppercase tracking-widest">Mesa <?php echo $c['mesa_apartada']; ?> está esperando</span>
+                                        </button>
+                                    <?php else: ?>
+                                        <button onclick="abrirModalSolicitud(<?php echo $c['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>')" 
+                                                class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2">
+                                            <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Reunión
+                                        </button>
+                                    <?php endif; ?>
                                 <?php else: ?>
                                     <button disabled class="w-full bg-gray-50 text-gray-300 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-gray-100 flex items-center justify-center gap-2">
                                         <i class="fas fa-lock text-[10px]"></i> Agendamiento Cerrado
@@ -307,9 +323,16 @@ async function cargarMesasDisponibles(fechaHora) {
     }
 }
 
-function abrirModalSolicitud(compradorId, nombreComprador) {
+function abrirModalSolicitud(compradorId, nombreComprador, fechaApartada = null, mesaApartada = null) {
     document.getElementById('modal_comprador_id').value = compradorId;
     document.getElementById('modal_nombre_comprador').innerText = nombreComprador;
+    
+    // Si ya tiene una mesa apartada, podemos pre-seleccionar o informar
+    if (fechaApartada && mesaApartada) {
+        // Podríamos pre-cargar la fecha si lo deseamos, pero el flujo dice que acuerdan la hora
+        console.log("Comprador tiene mesa apartada:", mesaApartada, "para el día:", fechaApartada);
+    }
+    
     document.getElementById('modalSolicitud').classList.remove('hidden');
 }
 </script>
