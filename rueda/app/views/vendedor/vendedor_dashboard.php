@@ -283,6 +283,9 @@
                                         <a href="index.php?controlador=vendedor&accion=verMisOfertas&id=<?php echo $r['id']; ?>" class="text-xs bg-teal-50 text-[#0d9488] hover:bg-[#0d9488] hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-teal-500/5 flex items-center gap-1.5">
                                             <i class="fas fa-store text-[10px]"></i> Mercado
                                         </a>
+                                        <a href="index.php?controlador=vendedor&accion=verCompradores&id=<?php echo $r['id']; ?>" class="text-xs bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-purple-500/5 flex items-center gap-1.5">
+                                            <i class="fas fa-users text-[10px]"></i> Compradores
+                                        </a>
                                         <a href="index.php?controlador=vendedor&accion=verReuniones" class="text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-indigo-500/5 flex items-center gap-1.5">
                                             <i class="far fa-calendar-check text-[10px]"></i> Citas
                                         </a>

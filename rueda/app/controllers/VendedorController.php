@@ -705,6 +705,84 @@ class VendedorController {
         }
     }
 
+    public function verCompradores() {
+        try {
+            $ruedaId = $_GET['id'] ?? null;
+            
+            if (!$ruedaId) {
+                throw new Exception("ID de rueda no especificado.");
+            }
+
+            // Obtener datos de la empresa del vendedor
+            $stmt = $this->pdo->prepare("SELECT * FROM empresas WHERE usuarioId = ?");
+            $stmt->execute([$_SESSION['usuario_id']]);
+            $miEmpresa = $stmt->fetch();
+
+            if (!$miEmpresa) {
+                throw new Exception("No se encontró información de tu empresa.");
+            }
+
+            // Obtener datos de la rueda
+            $stmt_rueda = $this->pdo->prepare("SELECT * FROM ruedas_negocios WHERE id = ?");
+            $stmt_rueda->execute([$ruedaId]);
+            $rueda = $stmt_rueda->fetch();
+
+            if (!$rueda) {
+                throw new Exception("Rueda de negocios no encontrada.");
+            }
+
+            // Obtener todos los sectores para filtros
+            $stmt_sectores = $this->pdo->query("SELECT * FROM sectores ORDER BY nombreSector ASC");
+            $todos_sectores = $stmt_sectores->fetchAll();
+
+            // Obtener compradores inscritos en la rueda
+            $busqueda = $_GET['busqueda'] ?? '';
+            $sector_id = $_GET['sector_id'] ?? '';
+
+            $sql = "
+                SELECT DISTINCT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId
+                FROM empresas e
+                JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
+                WHERE ir.ruedaId = ? 
+                AND ir.estadoInscripcion = 'aceptada'
+                AND e.id != ?
+            ";
+            
+            $params = [$ruedaId, $miEmpresa['id']];
+
+            if (!empty($busqueda)) {
+                $sql .= " AND (e.razon_social LIKE ? OR e.descripcion LIKE ?)";
+                $params[] = "%$busqueda%";
+                $params[] = "%$busqueda%";
+            }
+
+            if (!empty($sector_id)) {
+                $sql .= " AND e.sectorId = ?";
+                $params[] = $sector_id;
+            }
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            $compradores = $stmt->fetchAll();
+
+            // Obtener demandas de cada comprador
+            foreach ($compradores as &$c) {
+                $stmt_dem = $this->pdo->prepare("
+                    SELECT tituloDemanda, descripcionDemanda 
+                    FROM demandas 
+                    WHERE empresaId = ? AND ruedaId = ?
+                ");
+                $stmt_dem->execute([$c['empresaId'], $ruedaId]);
+                $c['demandas'] = $stmt_dem->fetchAll();
+            }
+
+            require_once '../app/views/vendedor/ver_compradores.php';
+        } catch (Exception $e) {
+            $error_msg = $e->getMessage();
+            require_once '../app/views/layout/error.php';
+        }
+    }
+
     public function verEncuestas() {
         try {
             $stmt = $this->pdo->prepare("
