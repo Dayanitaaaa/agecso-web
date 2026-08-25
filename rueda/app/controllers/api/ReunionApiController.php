@@ -149,19 +149,20 @@ class ReunionApiController extends BaseApiController {
                 error_log("[MESAS_DEBUG] Rango búsqueda: $horaInicio a $horaFin");
                 error_log("[MESAS_DEBUG] Comprador ID: $comprador_id");
 
+                // Obtener mesas ocupadas por OTROS compradores en esa fecha/hora
+                // Consideramos ocupadas las mesas con citas reales O apartadas
                 $stmt_ocupadas = $this->pdo->prepare("
                     SELECT numero_mesa FROM reuniones 
                     WHERE ruedaId = ? 
-                    AND fechaHora BETWEEN ? AND ?
+                    AND (
+                        (fechaHora BETWEEN ? AND ?) 
+                        OR estadoCita = 'mesa_apartada'
+                    )
                     AND estadoCita NOT IN ('cancelada', 'rechazada')
+                    AND compradorId != ? 
                     AND numero_mesa IS NOT NULL
-                    " . ($comprador_id ? "AND compradorId != ?" : "") . "
                 ");
-                
-                $params_ocupadas = [$rueda_id, $horaInicio, $horaFin];
-                if ($comprador_id) $params_ocupadas[] = $comprador_id;
-                
-                $stmt_ocupadas->execute($params_ocupadas);
+                $stmt_ocupadas->execute([$rueda_id, $horaInicio, $horaFin, $comprador_id]);
                 $ocupadas_por_otros = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
                 
                 error_log("[MESAS_DEBUG] Mesas ocupadas por otros: " . json_encode($ocupadas_por_otros));

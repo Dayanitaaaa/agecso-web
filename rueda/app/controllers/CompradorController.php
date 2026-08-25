@@ -1206,17 +1206,17 @@ class CompradorController {
                 }
 
                 // VALIDACIÓN: Verificar que la mesa esté disponible
-                // Una mesa solo está ocupada si tiene una cita aceptada, pendiente o realizada.
-                // Ignoramos 'mesa_apartada' para permitir que el flujo de apartado funcione.
+                // Una mesa está ocupada si tiene una cita aceptada, pendiente, realizada o YA APARTADA por otro.
                 $stmt_disp = $this->pdo->prepare("
                     SELECT COUNT(*) as ocupada FROM reuniones 
                     WHERE numero_mesa = ? 
                     AND ruedaId = ? 
-                    AND estadoCita IN ('aceptada', 'pendiente', 'realizada')
+                    AND estadoCita IN ('aceptada', 'pendiente', 'realizada', 'mesa_apartada')
+                    AND compradorId != ?
                 ");
-                $stmt_disp->execute([$numero_mesa, $rueda_id]);
+                $stmt_disp->execute([$numero_mesa, $rueda_id, $comprador_id]);
                 if ($stmt_disp->fetch()['ocupada'] > 0) {
-                    throw new Exception("La mesa seleccionada ya está ocupada por una reunión programada.");
+                    throw new Exception("La mesa seleccionada ya está reservada u ocupada por otra empresa.");
                 }
 
                 // Crear registro de apartado de mesa (sin vendedor asignado aún)

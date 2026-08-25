@@ -167,7 +167,7 @@
                                     <?php endif; ?>
                                 </div>
                                 <div class="text-xs text-gray-600 font-bold bg-gray-50 px-3 py-2 rounded-xl border border-gray-100 inline-flex items-center mb-4">
-                                    <i class="far fa-calendar-check mr-2 text-emerald-500"></i> <?php echo date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>
+                                    <i class="far fa-calendar-check mr-2 text-emerald-500"></i> <?php echo $esMesaApartada ? date('d/m/Y', strtotime($cita['fechaHora'])) : date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>
                                 </div>
                                 <div class="flex flex-col gap-2">
                                     <?php 
