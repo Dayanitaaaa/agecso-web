@@ -41,25 +41,11 @@
                     <input type="hidden" name="comprador_id" value="<?php echo $miEmpresaId; ?>">
                     
                     <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Fecha y Hora de la Reunión</label>
-                            <input type="text" name="fecha_hora" id="fecha_hora_input" required 
-                                   class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-white cursor-pointer"
-                                   placeholder="Seleccionar fecha y hora...">
-                            <p class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
-                                <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                La cita debe agendarse antes del <?php echo date('d/m/Y H:i', strtotime($rueda['fechaFin'])); ?>
-                            </p>
-                        </div>
-
                         <?php if ($rueda['modalidad'] === 'virtual'): ?>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Link de Reunión (Opcional)</label>
-                                <input type="url" name="link_reunion" placeholder="https://meet.google.com/..." 
-                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200">
-                                <p class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
-                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                    Puedes agregarlo ahora o después desde tus Citas Programadas
+                            <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-4">
+                                <p class="text-xs text-purple-800 font-black leading-relaxed">
+                                    <i class="fas fa-video mr-1.5 text-purple-500"></i> 
+                                    <strong>Reunión Virtual:</strong> Esta rueda se realizará en línea.
                                 </p>
                             </div>
                         <?php else: ?>
@@ -70,23 +56,24 @@
                                     <span class="font-bold text-orange-900 ml-5"><?php echo htmlspecialchars($rueda['ubicacion']); ?></span>
                                 </p>
                             </div>
-                            <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Número de Mesa / Stand</label>
-                                <div class="relative">
-                                    <select name="numero_mesa" id="numero_mesa_select" 
-                                           class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 appearance-none bg-white font-bold">
-                                        <option value="">Selecciona una fecha primero...</option>
-                                    </select>
-                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
-                                        <i class="fas fa-chair text-xs"></i>
-                                    </div>
-                                </div>
-                                <p id="mesa_info_text" class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
-                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                    Solo se muestran las mesas libres para el horario elegido.
-                                </p>
-                            </div>
                         <?php endif; ?>
+
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Seleccionar Mesa Disponible</label>
+                            <div class="relative">
+                                <select name="numero_mesa" id="numero_mesa_select" required
+                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 appearance-none bg-white font-bold">
+                                    <option value="">-- Seleccionar Mesa --</option>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
+                                    <i class="fas fa-chair text-xs"></i>
+                                </div>
+                            </div>
+                            <p id="mesa_info_text" class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
+                                <i class="fas fa-info-circle text-[#00a2ff]"></i>
+                                Selecciona una mesa disponible para apartarla.
+                            </p>
+                        </div>
                         
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Mensaje / Objetivo</label>
@@ -109,29 +96,10 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Inicializar Flatpickr en español
-    if (document.getElementById('fecha_hora_input')) {
-        flatpickr("#fecha_hora_input", {
-            enableTime: true,
-            dateFormat: "Y-m-d H:i",
-            altInput: true,
-            altFormat: "F j, Y - h:i K",
-            locale: "es",
-            minDate: "today",
-            maxDate: "<?php echo date('Y-m-d H:i', strtotime($rueda['fechaFin'])); ?>",
-            time_24hr: false,
-            disableMobile: "true",
-            animate: true,
-            onChange: function(selectedDates, dateStr) {
-                if (document.getElementById('numero_mesa_select')) {
-                    cargarMesasDisponibles(dateStr);
-                }
-            }
-        });
-    }
+    cargarMesasDisponibles();
 });
 
-async function cargarMesasDisponibles(fechaHora) {
+async function cargarMesasDisponibles() {
     const select = document.getElementById('numero_mesa_select');
     const infoText = document.getElementById('mesa_info_text');
     const ruedaId = "<?php echo $ruedaId; ?>";
@@ -143,8 +111,7 @@ async function cargarMesasDisponibles(fechaHora) {
     select.disabled = true;
 
     try {
-        const encodedFecha = encodeURIComponent(fechaHora);
-        const response = await fetch(`index.php?controlador=api/reunion&accion=getMesasDisponibles&rueda_id=${ruedaId}&fecha_hora=${encodedFecha}&comprador_id=${compradorId}`);
+        const response = await fetch(`index.php?controlador=api/reunion&accion=getMesasDisponibles&rueda_id=${ruedaId}&comprador_id=${compradorId}`);
         const result = await response.json();
 
         select.innerHTML = '<option value="">-- Seleccionar Mesa --</option>';
@@ -169,8 +136,8 @@ async function cargarMesasDisponibles(fechaHora) {
                 infoText.innerHTML = `<i class="fas fa-check-circle text-green-500"></i> ${result.data.mesas.length} mesas libres encontradas.`;
             }
         } else {
-            select.innerHTML = '<option value="">No hay mesas disponibles en este horario</option>';
-            infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> Todo ocupado. Intenta con otra hora.';
+            select.innerHTML = '<option value="">No hay mesas disponibles</option>';
+            infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> No hay mesas disponibles en este momento.';
         }
     } catch (error) {
         console.error("Error al cargar mesas:", error);
