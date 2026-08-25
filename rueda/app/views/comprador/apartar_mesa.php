@@ -121,6 +121,8 @@ async function cargarMesasDisponibles() {
     try {
         const response = await fetch(`index.php?controlador=api/reunion&accion=getMesasDisponibles&rueda_id=${ruedaId}&comprador_id=${compradorId}`);
         const result = await response.json();
+        
+        console.log('Resultado API:', result);
 
         select.innerHTML = '<option value="">-- Seleccionar Mesa --</option>';
         
@@ -145,9 +147,13 @@ async function cargarMesasDisponibles() {
             }
 
             // Mostrar mesas ocupadas si existen
+            console.log('Debug info:', result.data.debug);
             if (result.data.debug && result.data.debug.mesas_ocupadas && result.data.debug.mesas_ocupadas.length > 0) {
                 ocupadasInfo.classList.remove('hidden');
                 listaOcupadas.textContent = result.data.debug.mesas_ocupadas.join(', ');
+                console.log('Mostrando mesas ocupadas:', result.data.debug.mesas_ocupadas);
+            } else {
+                console.log('No hay mesas ocupadas para mostrar');
             }
         } else {
             select.innerHTML = '<option value="">No hay mesas disponibles</option>';

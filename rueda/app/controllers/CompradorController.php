@@ -1178,8 +1178,9 @@ class CompradorController {
                     throw new Exception("No se pueden apartar mesas mientras la rueda no esté en estado activa.");
                 }
 
-                // Usar fecha de inicio de la rueda como valor por defecto para fechaHora
-                $fecha_hora_defecto = $rueda['fechaInicio'] . ' 09:00:00';
+                // Usar una fecha futura lejana para evitar conflictos con trigger de solapamiento
+                // El vendedor asignará la fecha real cuando solicite la reunión
+                $fecha_hora_defecto = '2099-12-31 23:59:59';
 
                 // VALIDACIÓN: Verificar que el comprador no tenga ya una mesa apartada en esta rueda
                 $stmt_mesa = $this->pdo->prepare("
@@ -1193,12 +1194,13 @@ class CompradorController {
                     throw new Exception("Ya tienes una mesa apartada en esta rueda.");
                 }
 
-                // VALIDACIÓN: Verificar que la mesa esté disponible
+                // VALIDACIÓN: Verificar que la mesa esté disponible (solo para mesas apartadas o activas)
                 $stmt_disp = $this->pdo->prepare("
                     SELECT COUNT(*) as ocupada FROM reuniones 
                     WHERE numero_mesa = ? 
                     AND ruedaId = ? 
                     AND estadoCita NOT IN ('cancelada', 'rechazada')
+                    AND estadoCita != 'mesa_apartada'
                 ");
                 $stmt_disp->execute([$numero_mesa, $rueda_id]);
                 if ($stmt_disp->fetch()['ocupada'] > 0) {
@@ -1206,7 +1208,7 @@ class CompradorController {
                 }
 
                 // Crear registro de apartado de mesa (sin vendedor asignado aún)
-                // Usamos el mismo ID del comprador como vendedorId temporalmente y fecha de inicio de rueda como fechaHora
+                // Usamos el mismo ID del comprador como vendedorId temporalmente y una fecha futura lejana
                 $stmt = $this->pdo->prepare("
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
                     VALUES (?, ?, ?, ?, 'mesa_apartada', NULL, ?, 'comprador', 'comprador', 0)
