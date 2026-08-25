@@ -1208,12 +1208,13 @@ class CompradorController {
                 }
 
                 // Crear registro de apartado de mesa (sin vendedor asignado aún)
-                // Usamos el mismo ID del comprador como vendedorId temporalmente y una fecha futura lejana
+                // Usamos vendedorId = 0 para evitar conflictos con trigger de validación
+                // El vendedor real será asignado cuando solicite la reunión
                 $stmt = $this->pdo->prepare("
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
-                    VALUES (?, ?, ?, ?, 'mesa_apartada', NULL, ?, 'comprador', 'comprador', 0)
+                    VALUES (?, ?, 0, ?, 'mesa_apartada', NULL, ?, 'comprador', 'comprador', 0)
                 ");
-                $stmt->execute([$rueda_id, $comprador_id, $comprador_id, $fecha_hora_defecto, $numero_mesa]);
+                $stmt->execute([$rueda_id, $comprador_id, $fecha_hora_defecto, $numero_mesa]);
 
                 header("Location: index.php?controlador=comprador&accion=verReuniones&msg=mesa_apartada");
                 exit();
