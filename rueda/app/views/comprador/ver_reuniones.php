@@ -143,7 +143,13 @@
                                 <div class="flex justify-between items-start mb-3">
                                     <div>
                                         <?php if ($esMesaApartada): ?>
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <span class="bg-amber-100 text-amber-700 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-tighter border border-amber-200">
+                                                    <i class="fas fa-chair mr-1"></i> Mesa Reservada
+                                                </span>
+                                            </div>
                                             <p class="font-extrabold text-gray-900">Esperando vendedor...</p>
+                                            <p class="text-[10px] text-gray-400 font-bold mt-0.5 italic">Tu mesa está lista para recibir propuestas</p>
                                         <?php else: ?>
                                             <p class="font-extrabold text-gray-900"><?php echo htmlspecialchars($cita['nombre_vendedor'] ?? 'N/A'); ?></p>
                                         <?php endif; ?>
