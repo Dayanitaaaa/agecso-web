@@ -69,10 +69,16 @@
                                     <i class="fas fa-chair text-xs"></i>
                                 </div>
                             </div>
-                            <p id="mesa_info_text" class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
+                            <div id="mesa_info_text" class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
                                 <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                Selecciona una mesa disponible para apartarla.
-                            </p>
+                                Cargando mesas disponibles...
+                            </div>
+                            <div id="mesas_ocupadas_info" class="mt-3 hidden">
+                                <p class="text-xs text-red-600 font-bold flex items-center gap-1">
+                                    <i class="fas fa-times-circle"></i>
+                                    Mesas ocupadas: <span id="lista_ocupadas"></span>
+                                </p>
+                            </div>
                         </div>
                         
                         <div>
@@ -102,6 +108,8 @@ document.addEventListener("DOMContentLoaded", function() {
 async function cargarMesasDisponibles() {
     const select = document.getElementById('numero_mesa_select');
     const infoText = document.getElementById('mesa_info_text');
+    const ocupadasInfo = document.getElementById('mesas_ocupadas_info');
+    const listaOcupadas = document.getElementById('lista_ocupadas');
     const ruedaId = "<?php echo $ruedaId; ?>";
     const compradorId = "<?php echo $miEmpresaId; ?>";
 
@@ -135,13 +143,25 @@ async function cargarMesasDisponibles() {
             } else {
                 infoText.innerHTML = `<i class="fas fa-check-circle text-green-500"></i> ${result.data.mesas.length} mesas libres encontradas.`;
             }
+
+            // Mostrar mesas ocupadas si existen
+            if (result.data.debug && result.data.debug.mesas_ocupadas && result.data.debug.mesas_ocupadas.length > 0) {
+                ocupadasInfo.classList.remove('hidden');
+                listaOcupadas.textContent = result.data.debug.mesas_ocupadas.join(', ');
+            }
         } else {
             select.innerHTML = '<option value="">No hay mesas disponibles</option>';
             infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> No hay mesas disponibles en este momento.';
+            
+            if (result.data && result.data.debug && result.data.debug.mesas_ocupadas) {
+                ocupadasInfo.classList.remove('hidden');
+                listaOcupadas.textContent = result.data.debug.mesas_ocupadas.join(', ');
+            }
         }
     } catch (error) {
         console.error("Error al cargar mesas:", error);
         select.innerHTML = '<option value="">Error al cargar mesas</option>';
+        infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> Error al cargar las mesas. Intenta nuevamente.';
     }
 }
 </script>

@@ -1203,11 +1203,12 @@ class CompradorController {
                 }
 
                 // Crear registro de apartado de mesa (sin vendedor asignado aún, sin fecha/hora)
+                // Usamos el mismo ID del comprador como vendedorId temporalmente para cumplir con la restricción NOT NULL
                 $stmt = $this->pdo->prepare("
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
-                    VALUES (?, ?, NULL, NULL, 'mesa_apartada', NULL, ?, 'comprador', 'comprador', 0)
+                    VALUES (?, ?, ?, NULL, 'mesa_apartada', NULL, ?, 'comprador', 'comprador', 0)
                 ");
-                $stmt->execute([$rueda_id, $comprador_id, $numero_mesa]);
+                $stmt->execute([$rueda_id, $comprador_id, $comprador_id, $numero_mesa]);
 
                 header("Location: index.php?controlador=comprador&accion=verReuniones&msg=mesa_apartada");
                 exit();
