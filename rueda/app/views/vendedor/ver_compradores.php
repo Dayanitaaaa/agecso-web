@@ -98,7 +98,14 @@
                                     </div>
                                 </div>
                                 
-                                <h3 class="font-black text-gray-900 text-lg mb-3 leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($c['razon_social'] ?? 'N/A'); ?></h3>
+                                <?php if (!empty($c['mesa_apartada'])): ?>
+                                        <div class="flex items-center gap-2 mb-2">
+                                            <span class="bg-amber-100 text-amber-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter border border-amber-200 shadow-sm">
+                                                <i class="fas fa-chair mr-1"></i> Ubicado en Mesa: <?php echo htmlspecialchars($c['mesa_apartada']); ?>
+                                            </span>
+                                        </div>
+                                    <?php endif; ?>
+                                    <h3 class="font-black text-gray-900 text-lg mb-2 leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($c['razon_social'] ?? ''); ?></h3>
                                 
                                 <?php if (!empty($c['demandas'])): ?>
                                     <div class="space-y-3 pt-6 border-t border-gray-50">

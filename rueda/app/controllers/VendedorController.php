@@ -697,12 +697,10 @@ class VendedorController {
             $stmt_sectores = $this->pdo->query("SELECT * FROM sectores ORDER BY nombreSector ASC");
             $todos_sectores = $stmt_sectores->fetchAll();
 
-            // Obtener compradores inscritos en la rueda que YA APARTARON MESA
-            $busqueda = $_GET['busqueda'] ?? '';
-            $sector_id = $_GET['sector_id'] ?? '';
-
+            // Obtener compradores que YA APARTARON MESA en esta rueda
             $sql = "
-                SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, r.numero_mesa, r.fechaHora
+                SELECT DISTINCT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.descripcion,
+                       r.numero_mesa, r.fechaHora
                 FROM empresas e
                 JOIN reuniones r ON e.id = r.compradorId
                 WHERE r.ruedaId = ? 
