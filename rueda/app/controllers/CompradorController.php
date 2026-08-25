@@ -1165,8 +1165,8 @@ class CompradorController {
                     throw new Exception("Debes estar inscrito y aceptado en la rueda para apartar mesa.");
                 }
 
-                // VALIDACIÓN: Obtener estado de la rueda
-                $stmt_rueda = $this->pdo->prepare("SELECT estadoRueda FROM ruedas_negocios WHERE id = ?");
+                // VALIDACIÓN: Obtener estado y fechas de la rueda
+                $stmt_rueda = $this->pdo->prepare("SELECT estadoRueda, fechaInicio FROM ruedas_negocios WHERE id = ?");
                 $stmt_rueda->execute([$rueda_id]);
                 $rueda = $stmt_rueda->fetch();
 
@@ -1177,6 +1177,9 @@ class CompradorController {
                 if ($rueda['estadoRueda'] !== 'activa') {
                     throw new Exception("No se pueden apartar mesas mientras la rueda no esté en estado activa.");
                 }
+
+                // Usar fecha de inicio de la rueda como valor por defecto para fechaHora
+                $fecha_hora_defecto = $rueda['fechaInicio'] . ' 09:00:00';
 
                 // VALIDACIÓN: Verificar que el comprador no tenga ya una mesa apartada en esta rueda
                 $stmt_mesa = $this->pdo->prepare("
@@ -1202,13 +1205,13 @@ class CompradorController {
                     throw new Exception("La mesa seleccionada ya está ocupada.");
                 }
 
-                // Crear registro de apartado de mesa (sin vendedor asignado aún, sin fecha/hora)
-                // Usamos el mismo ID del comprador como vendedorId temporalmente para cumplir con la restricción NOT NULL
+                // Crear registro de apartado de mesa (sin vendedor asignado aún)
+                // Usamos el mismo ID del comprador como vendedorId temporalmente y fecha de inicio de rueda como fechaHora
                 $stmt = $this->pdo->prepare("
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
-                    VALUES (?, ?, ?, NULL, 'mesa_apartada', NULL, ?, 'comprador', 'comprador', 0)
+                    VALUES (?, ?, ?, ?, 'mesa_apartada', NULL, ?, 'comprador', 'comprador', 0)
                 ");
-                $stmt->execute([$rueda_id, $comprador_id, $comprador_id, $numero_mesa]);
+                $stmt->execute([$rueda_id, $comprador_id, $comprador_id, $fecha_hora_defecto, $numero_mesa]);
 
                 header("Location: index.php?controlador=comprador&accion=verReuniones&msg=mesa_apartada");
                 exit();
