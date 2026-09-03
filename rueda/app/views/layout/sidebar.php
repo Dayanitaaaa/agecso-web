@@ -16,9 +16,9 @@ if ($userRole === 'admin') {
         ['label' => 'Configurar Ruedas', 'icon' => 'fas fa-cog', 'accion' => 'crearRueda', 'controlador' => 'admin'],
         ['label' => 'Estadísticas', 'icon' => 'fas fa-chart-line', 'accion' => 'verEstadisticas', 'controlador' => 'admin'],
     ];
-    $sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
-    $header_bg = 'bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
-    $footer_bg = 'bg-[#00a2ff]';
+    $sidebar_bg = 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900';
+    $header_bg = 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900';
+    $footer_bg = 'bg-slate-900';
 } elseif ($userRole === 'comprador' || $controlador === 'comprador') {
     $menu_items = [
         ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'comprador'],
