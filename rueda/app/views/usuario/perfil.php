@@ -70,12 +70,36 @@ $badgeColors = [
                     </h1>
                 </div>
             </div>
+            
+            <?php if (isset($_GET['msg'])): ?>
+                <div class="px-8 py-4">
+                    <?php if ($_GET['msg'] === 'ciiu_actualizado'): ?>
+                        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2">
+                            <i class="fas fa-check-circle"></i> Código CIIU actualizado correctamente.
+                        </div>
+                    <?php elseif ($_GET['msg'] === 'error_ciiu_vacio'): ?>
+                        <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2">
+                            <i class="fas fa-exclamation-triangle"></i> El código CIIU no puede estar vacío.
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+
             <div class="px-8 py-6 border-b border-gray-50 bg-gray-50/10">
                 <div class="flex flex-col sm:flex-row md:items-center justify-between gap-4">
                     <div class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-400">
-                        <span class="flex items-center">
+                        <span class="flex items-center group relative">
                             <i class="fas fa-tag mr-2 <?php echo $textColors[$theme]; ?>"></i>
-                            <?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?: ($perfil['ciiu_clase'] ?? 'N/A')); ?> - <?php echo htmlspecialchars($perfil['nombreSector'] ?? 'Sin sector'); ?>
+                            <span class="font-black text-gray-700"><?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?: ($perfil['ciiu_clase'] ?? 'N/A')); ?></span>
+                            <span class="mx-2">-</span>
+                            <?php echo htmlspecialchars($perfil['nombreSector'] ?? 'Sin sector'); ?>
+                            
+                            <?php if ($theme !== 'admin'): ?>
+                                <button onclick="editarCiiu('<?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?? ''); ?>')" 
+                                        class="ml-3 text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 px-2 py-1 rounded-lg transition-all flex items-center gap-1">
+                                    <i class="fas fa-edit"></i> Cambiar CIIU
+                                </button>
+                            <?php endif; ?>
                         </span>
                         <span class="flex items-center">
                             <i class="fas fa-map-marker-alt mr-2 <?php echo $textColors[$theme]; ?>"></i>
@@ -266,6 +290,48 @@ $badgeColors = [
 </div>
 
 <script>
+function editarCiiu(ciiuActual) {
+    Swal.fire({
+        title: 'Actualizar Código CIIU',
+        text: 'Ingresa el código correcto de tu actividad económica principal.',
+        input: 'text',
+        inputValue: ciiuActual,
+        placeholder: 'Ej: 6201',
+        showCancelButton: true,
+        confirmButtonColor: '#2563eb',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Guardar cambios',
+        cancelButtonText: 'Cancelar',
+        inputValidator: (value) => {
+            if (!value) {
+                return '¡Debes ingresar un código!'
+            }
+        },
+        customClass: {
+            popup: 'rounded-3xl',
+            input: 'rounded-xl border-gray-200 text-sm font-bold',
+            confirmButton: 'rounded-2xl px-6 py-3 font-bold text-sm',
+            cancelButton: 'rounded-2xl px-6 py-3 font-bold text-sm'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Crear formulario dinámico para enviar el POST
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'index.php?controlador=usuario&accion=actualizarCiiu';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'ciiu_personalizado';
+            input.value = result.value;
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+}
+
 function confirmarVendedor() {
     Swal.fire({
         title: '¿Convertirte en Vendedor?',

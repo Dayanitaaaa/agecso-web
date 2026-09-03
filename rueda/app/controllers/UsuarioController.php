@@ -210,13 +210,7 @@ class UsuarioController {
             }
 
             $mensaje = "";
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                // Validar CSRF
-                $csrfToken = $_POST['csrf_token'] ?? '';
-                if (!CsrfService::validateToken($csrfToken, 'login')) {
-                    throw new Exception("Token de seguridad inválido o expirado. Por favor recarga la página.");
-                }
-                
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $email = trim($_POST['correo'] ?? '');
                 $ip = RateLimitService::getClientIp();
                 
@@ -309,6 +303,36 @@ class UsuarioController {
                 'error' => $e->getMessage()
             ]);
             die("Error crítico del sistema. Por favor contacta al administrador.");
+        }
+    }
+
+    /**
+     * Permite al usuario actualizar su código CIIU personalizado desde el perfil
+     */
+    public function actualizarCiiu() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        
+        if (!isset($_SESSION['usuario_id'])) {
+            header("Location: index.php?controlador=usuario&accion=login");
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $nuevoCiiu = trim($_POST['ciiu_personalizado'] ?? '');
+            
+            if (empty($nuevoCiiu)) {
+                header("Location: index.php?controlador=usuario&accion=perfil&msg=error_ciiu_vacio");
+                exit();
+            }
+
+            $resultado = $this->usuarioModel->updateCiiuPersonalizado($_SESSION['usuario_id'], $nuevoCiiu);
+
+            if ($resultado) {
+                header("Location: index.php?controlador=usuario&accion=perfil&msg=ciiu_actualizado");
+            } else {
+                header("Location: index.php?controlador=usuario&accion=perfil&msg=error_actualizacion");
+            }
+            exit();
         }
     }
 

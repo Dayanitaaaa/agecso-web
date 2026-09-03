@@ -234,6 +234,14 @@ class UsuarioModel {
         return $stmt->execute([$hash, $id]);
     }
 
+    /**
+     * Actualizar el código CIIU personalizado de la empresa
+     */
+    public function updateCiiuPersonalizado($usuarioId, $nuevoCiiu) {
+        $stmt = $this->db->prepare("UPDATE empresas SET ciiu_personalizado = ? WHERE usuarioId = ?");
+        return $stmt->execute([$nuevoCiiu, $usuarioId]);
+    }
+
     private function writeDebugLogin($status, $email, $context = []) {
         $logFile = __DIR__ . '/../../logs/debug_login.txt';
         $timestamp = date('Y-m-d H:i:s');
