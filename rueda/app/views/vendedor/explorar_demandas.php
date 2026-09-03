@@ -103,7 +103,7 @@
                                 <div class="flex items-start justify-between mb-5">
                                     <div class="flex flex-wrap gap-2">
                                         <span class="text-[9px] bg-teal-50 text-[#0d9488] px-3 py-1 rounded-full font-black uppercase tracking-wider border border-teal-100/50">
-                                            <i class="fas fa-tag mr-1 opacity-60"></i> <?php echo htmlspecialchars($demanda['ciiu_clase'] ?? 'N/A'); ?>
+                                            <i class="fas fa-tag mr-1 opacity-60"></i> <?php echo htmlspecialchars($demanda['ciiu_personalizado'] ?: ($demanda['ciiu_clase'] ?? 'N/A')); ?>
                                         </span>
                                         <?php if ($tiene_reunion): ?>
                                             <span class="text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm

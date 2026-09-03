@@ -77,11 +77,11 @@ class UsuarioController {
                 }
 
                 if ($paso == '1') {
-                    // Obtener información del sector CIIU seleccionado
-                    $sectorId = $_POST['sector_id'];
-                    $stmt_sector = $this->pdo->prepare("SELECT ciiu_clase, nombreSector FROM sectores WHERE id = ?");
-                    $stmt_sector->execute([$sectorId]);
-                    $sectorInfo = $stmt_sector->fetch();
+                    // Obtener información del sector CIIU seleccionado (Ahora es manual)
+                    $ciiu_personalizado = trim($_POST['ciiu_personalizado'] ?? '');
+                    
+                    // Asignar sectorId 1 por defecto (Otros) si no se usa la lista
+                    $sectorId = 1; 
 
                     $nit = preg_replace('/\D+/', '', (string)($_POST['nit'] ?? ''));
                     $dv = preg_replace('/\D+/', '', (string)($_POST['digito_verificacion'] ?? ''));
@@ -107,8 +107,7 @@ class UsuarioController {
                         'sub_tipo_asociacion' => $_POST['sub_tipo_asociacion'] ?? '',
                         'representante_legal' => $_POST['representante_legal'],
                         'sector_id' => $sectorId,
-                        'ciiu_clase' => $sectorInfo['ciiu_clase'] ?? 'N/A',
-                        'nombre_sector' => $sectorInfo['nombreSector'] ?? 'N/A',
+                        'ciiu_personalizado' => $ciiu_personalizado,
                         'rol_id' => $_POST['rol_id']
                     ];
                     require_once __DIR__ . '/../views/usuario/user_registro_confirmar.php';
@@ -177,7 +176,8 @@ class UsuarioController {
                             'responsable_iva' => $regData['responsable_iva'],
                             'tamaño_empresa' => $regData['tamaño_empresa'],
                             'ubicacion_geografica' => $regData['ubicacion_geografica'],
-                            'sub_tipo_asociacion' => $regData['sub_tipo_asociacion']
+                            'sub_tipo_asociacion' => $regData['sub_tipo_asociacion'],
+                            'ciiu_personalizado' => $regData['ciiu_personalizado']
                         ]
                     );
 

@@ -106,6 +106,7 @@
                                         </div>
                                     <?php endif; ?>
                                     <h3 class="font-black text-gray-900 text-lg mb-2 leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($c['razon_social'] ?? ''); ?></h3>
+                                    <p class="text-[10px] font-bold text-teal-600 uppercase tracking-tighter mb-4">CIIU: <?php echo htmlspecialchars($c['ciiu_personalizado'] ?: ($c['ciiu_clase'] ?? 'N/A')); ?></p>
                                 
                                 <?php if (!empty($c['demandas'])): ?>
                                     <div class="space-y-3 pt-6 border-t border-gray-50">

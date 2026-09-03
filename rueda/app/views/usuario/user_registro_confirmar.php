@@ -82,9 +82,7 @@ $regData = $_SESSION['reg_data'] ?? [];
                             <tr>
                                 <td class="py-4 px-6 text-gray-500 font-bold bg-gray-50/30">Actividad (CIIU)</td>
                                 <td class="py-4 px-6 text-gray-800 text-xs font-bold">
-                                    <span class="text-blue-600"><?php echo htmlspecialchars($regData['ciiu_clase'] ?? 'N/A'); ?></span> 
-                                    <span class="text-gray-400 mx-1">|</span>
-                                    <?php echo htmlspecialchars($regData['nombre_sector'] ?? 'N/A'); ?>
+                                    <span class="text-blue-600"><?php echo htmlspecialchars($regData['ciiu_personalizado'] ?? 'N/A'); ?></span> 
                                 </td>
                             </tr>
                             <tr>

@@ -686,10 +686,11 @@ class VendedorController {
 
             // Obtener compradores con sus demandas y número de mesa si tienen
             $sql = "
-                SELECT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.descripcion,
+                SELECT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.descripcion, e.ciiu_personalizado, s.ciiu_clase,
                        (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1) as mesa_apartada
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
+                LEFT JOIN sectores s ON e.sectorId = s.id
                 WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' 
                 AND e.id != ?
             ";
@@ -1030,11 +1031,11 @@ class VendedorController {
 
             // 1. Obtener todas las empresas inscritas y aceptadas en esta rueda, con su rol
             $stmt_empresas = $this->pdo->prepare("
-                SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona,
+                SELECT e.id as empresaId, e.razon_social, e.ubicacionGeografica, e.sectorId, e.tipo_persona, e.ciiu_personalizado,
                        s.nombreSector, s.ciiu_clase, r.slugRole as rol_slug
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
-                JOIN sectores s ON e.sectorId = s.id
+                LEFT JOIN sectores s ON e.sectorId = s.id
                 JOIN usuarios u ON e.usuarioId = u.id
                 JOIN roles r ON u.roleId = r.id
                 WHERE ir.ruedaId = ? 

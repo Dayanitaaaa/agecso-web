@@ -37,22 +37,20 @@ class MatchmakingModel {
 
             $esComprador = ($miEmpresa['slugRole'] == 'comprador');
 
-            // Obtener código CIIU de mi empresa para matchmaking real
-            $miCiiuClase = '';
+            // Obtener código CIIU de mi empresa (priorizar personalizado)
+            $miCiiuMatch = $miEmpresa['ciiu_personalizado'] ?? '';
             $miSeccion = '';
-            try {
-                $sqlMiCIIU = "SELECT ciiu_clase, seccion FROM sectores WHERE id = ?";
-                $stmtMiCIIU = $this->db->prepare($sqlMiCIIU);
-                $stmtMiCIIU->execute([$miEmpresa['sectorId']]);
-                $miCIIUData = $stmtMiCIIU->fetch();
-                $miCiiuClase = $miCIIUData['ciiu_clase'] ?? '';
-                $miSeccion = $miCIIUData['seccion'] ?? '';
-            } catch (PDOException $e) {
-                Logger::logRoleError('system', 'Error obteniendo CIIU de empresa', [
-                    'empresaId' => $empresaId,
-                    'sectorId' => $miEmpresa['sectorId'],
-                    'error' => $e->getMessage()
-                ]);
+            
+            // Si no tiene personalizado, buscar el de la lista (retrocompatibilidad)
+            if (empty($miCiiuMatch)) {
+                try {
+                    $sqlMiCIIU = "SELECT ciiu_clase, seccion FROM sectores WHERE id = ?";
+                    $stmtMiCIIU = $this->db->prepare($sqlMiCIIU);
+                    $stmtMiCIIU->execute([$miEmpresa['sectorId']]);
+                    $miCIIUData = $stmtMiCIIU->fetch();
+                    $miCiiuMatch = $miCIIUData['ciiu_clase'] ?? '';
+                    $miSeccion = $miCIIUData['seccion'] ?? '';
+                } catch (PDOException $e) {}
             }
 
             // 2. Base de la consulta según el rol
@@ -66,13 +64,14 @@ class MatchmakingModel {
                             e.razon_social,
                             e.ubicacionGeografica,
                             e.sectorId,
+                            e.ciiu_personalizado,
                             s.nombreSector,
                             s.ciiu_clase,
                             s.seccion,
                             (e.ubicacionGeografica = ?) AS match_territorial
                         FROM ofertas o
                         JOIN empresas e ON o.empresaId = e.id
-                        JOIN sectores s ON e.sectorId = s.id
+                        LEFT JOIN sectores s ON e.sectorId = s.id
                         WHERE e.id != ? AND o.isActive = 1
                           AND (o.ruedaId = ? OR o.ruedaId IS NULL)";
                 $params = [$miEmpresa['ubicacionGeografica'], $empresaId, $ruedaId];
@@ -89,16 +88,17 @@ class MatchmakingModel {
                             e.razon_social,
                             e.ubicacionGeografica,
                             e.sectorId,
+                            e.ciiu_personalizado,
                             s.nombreSector,
                             s.ciiu_clase,
                             s.seccion,
                             (e.ubicacionGeografica = ?) AS match_territorial
                         FROM demandas d
                         JOIN empresas e ON d.empresaId = e.id
-                        JOIN sectores s ON e.sectorId = s.id
+                        LEFT JOIN sectores s ON e.sectorId = s.id
                         WHERE e.id != ? 
                           AND (d.ruedaId = ? OR d.ruedaId IS NULL)
-                        GROUP BY e.id, d.tagsRequerimiento, d.tituloDemanda"; 
+                        GROUP BY e.id, d.tagsRequerimiento, d.tituloDemanda, e.ciiu_personalizado, s.ciiu_clase, s.seccion"; 
                 $params = [$miEmpresa['ubicacionGeografica'], $empresaId, $ruedaId];
 
                 // Mis tags (ofertas)
@@ -131,14 +131,16 @@ class MatchmakingModel {
                     $coincidencias = count($tagsComunes);
                 }
 
-                // Cálculo de Score con CIIU real
+                // Cálculo de Score con CIIU (priorizar personalizado)
                 $score = ($coincidencias * 10); // 10 puntos por cada tag común
                 if ($p['match_territorial']) $score += 25; // Bono por territorio
                 
+                $ciiuContraparte = !empty($p['ciiu_personalizado']) ? $p['ciiu_personalizado'] : ($p['ciiu_clase'] ?? '');
+
                 // Bono por código CIIU exacto (misma actividad económica)
-                if ($p['ciiu_clase'] == $miCiiuClase) $score += 20;
-                // Bono adicional por misma sección CIIU (mismo sector amplio)
-                elseif ($p['seccion'] == $miSeccion) $score += 10;
+                if (!empty($miCiiuMatch) && $ciiuContraparte == $miCiiuMatch) $score += 30;
+                // Bono adicional por misma sección CIIU (mismo sector amplio - solo si viene de la lista)
+                elseif (!empty($miSeccion) && $p['seccion'] == $miSeccion) $score += 10;
 
                 if ($score > 0) {
                     $p['score'] = $score;

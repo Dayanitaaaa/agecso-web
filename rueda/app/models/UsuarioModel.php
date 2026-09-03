@@ -17,16 +17,17 @@ class UsuarioModel {
             $usuarioId = $this->db->lastInsertId();
 
             $sql_empresa = "INSERT INTO empresas (
-                usuarioId, sectorId, razon_social, tipo_persona, 
+                usuarioId, sectorId, ciiu_personalizado, razon_social, tipo_persona, 
                 tipo_asociacion, sub_tipo_asociacion, nit, 
                 digito_verificacion, responsable_iva, tamaño_empresa, 
                 representante_legal, ubicacionGeografica
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             $stmt_empresa = $this->db->prepare($sql_empresa);
             $stmt_empresa->execute([
                 $usuarioId, 
                 $sectorId, 
+                $extraData['ciiu_personalizado'] ?? NULL,
                 $razonSocial, 
                 $extraData['tipo_persona'] ?? 'juridica',
                 $tipoAsociacion,

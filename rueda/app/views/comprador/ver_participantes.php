@@ -251,6 +251,7 @@
                                 <i class="fas fa-building text-gray-300 text-sm group-hover:text-sky-400 transition-colors"></i>
                             </div>
                             <p class="text-[10px] font-black text-gray-900 line-clamp-2 uppercase tracking-tight"><?php echo htmlspecialchars($p['razon_social']); ?></p>
+                            <p class="text-[9px] font-bold text-sky-500 mt-1 uppercase tracking-tighter">CIIU: <?php echo htmlspecialchars($p['ciiu_personalizado'] ?: ($p['ciiu_clase'] ?? 'N/A')); ?></p>
                         </div>
                     <?php endforeach; ?>
                 </div>

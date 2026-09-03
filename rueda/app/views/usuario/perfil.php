@@ -75,7 +75,7 @@ $badgeColors = [
                     <div class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-400">
                         <span class="flex items-center">
                             <i class="fas fa-tag mr-2 <?php echo $textColors[$theme]; ?>"></i>
-                            <?php echo htmlspecialchars($perfil['ciiu_clase'] ?? 'N/A'); ?> - <?php echo htmlspecialchars($perfil['nombreSector'] ?? 'Sin sector'); ?>
+                            <?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?: ($perfil['ciiu_clase'] ?? 'N/A')); ?> - <?php echo htmlspecialchars($perfil['nombreSector'] ?? 'Sin sector'); ?>
                         </span>
                         <span class="flex items-center">
                             <i class="fas fa-map-marker-alt mr-2 <?php echo $textColors[$theme]; ?>"></i>

@@ -187,34 +187,19 @@ $regData = $_SESSION['reg_data'] ?? [];
                     </div>
                 </div>
 
-                <!-- CIIU con Buscador -->
+                <!-- CIIU Personalizado -->
                 <div class="relative">
-                    <label for="sector_busqueda" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Actividad Económica (CIIU)</label>
+                    <label for="ciiu_personalizado" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Código CIIU (Actividad Económica)</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                            <i class="fas fa-search text-xs"></i>
+                            <i class="fas fa-barcode text-xs"></i>
                         </div>
-                        <input type="text" id="sector_busqueda" placeholder="Buscar por código o nombre..." autocomplete="off" 
+                        <input type="text" id="ciiu_personalizado" name="ciiu_personalizado" required 
+                            value="<?php echo htmlspecialchars($regData['ciiu_personalizado'] ?? ''); ?>"
                             class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium"
-                            value="<?php echo htmlspecialchars($regData['ciiu_clase'] ?? ''); ?>">
+                            placeholder="Ej: 6201">
                     </div>
-                    <input type="hidden" id="sector_id" name="sector_id" required 
-                        value="<?php echo htmlspecialchars($regData['sector_id'] ?? ''); ?>">
-                    
-                    <div id="resultados_busqueda" class="absolute z-[100] w-full mt-1 bg-white border border-gray-100 rounded-2xl shadow-2xl max-h-60 overflow-y-auto hidden"></div>
-                    
-                    <div id="sector_seleccionado" class="hidden mt-3 p-4 bg-blue-50/50 border border-blue-100 rounded-2xl text-sm flex justify-between items-center animate-in fade-in slide-in-from-top-1 duration-200">
-                        <div class="flex items-center">
-                            <i class="fas fa-check-circle text-blue-500 mr-3 text-lg"></i>
-                            <div>
-                                <p class="text-[10px] text-blue-600 font-bold uppercase tracking-wider mb-0.5">Actividad Seleccionada</p>
-                                <span id="sector_texto" class="font-bold text-gray-800"></span>
-                            </div>
-                        </div>
-                        <button type="button" id="limpiar_sector" class="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
+                    <p class="mt-1.5 text-[10px] text-gray-400 ml-1">Ingresa el código CIIU de tu actividad económica principal.</p>
                 </div>
             </div>
 
@@ -305,82 +290,10 @@ document.addEventListener('DOMContentLoaded', () => {
     else toggleFields('juridica'); // Default
 });
 
-const sectoresCIIU = <?php echo json_encode($sectores); ?>;
-const busquedaInput = document.getElementById('sector_busqueda');
-const resultadosDiv = document.getElementById('resultados_busqueda');
-const sectorIdInput = document.getElementById('sector_id');
-const sectorSeleccionadoDiv = document.getElementById('sector_seleccionado');
-const sectorTextoSpan = document.getElementById('sector_texto');
-const limpiarBtn = document.getElementById('limpiar_sector');
-
-function mostrarSectores(query = '') {
-    query = query.trim().toLowerCase();
-    let filtrados = [];
-    if (query === '') {
-        // Mostrar los primeros 10 sectores por defecto
-        filtrados = sectoresCIIU.slice(0, 10);
-    } else {
-        filtrados = sectoresCIIU.filter(s => 
-            s.ciiu_clase.toLowerCase().includes(query) || 
-            s.nombreSector.toLowerCase().includes(query)
-        ).slice(0, 10);
-    }
-    
-    if (filtrados.length === 0) {
-        resultadosDiv.innerHTML = '<div class="p-3 text-gray-500 text-sm">No se encontraron resultados</div>';
-    } else {
-        resultadosDiv.innerHTML = filtrados.map(s => `
-            <div class="p-3 hover:bg-blue-50 cursor-pointer border-b border-gray-100 text-sm text-left" onclick="seleccionarSector(${s.id}, '${s.ciiu_clase}', '${s.nombreSector.replace(/'/g, "\\'")}')">
-                <span class="font-bold text-blue-700">${s.ciiu_clase}</span> - ${s.nombreSector}
-            </div>
-        `).join('');
-    }
-    resultadosDiv.classList.remove('hidden');
-}
-
-busquedaInput.addEventListener('input', function() {
-    mostrarSectores(this.value);
-});
-
-busquedaInput.addEventListener('focus', function() {
-    mostrarSectores(this.value);
-});
-
-busquedaInput.addEventListener('click', function() {
-    mostrarSectores(this.value);
-});
-
-function seleccionarSector(id, ciiu, nombre) {
-    sectorIdInput.value = id;
-    busquedaInput.classList.add('hidden');
-    resultadosDiv.classList.add('hidden');
-    sectorTextoSpan.innerHTML = `<b>${ciiu}</b> - ${nombre}`;
-    sectorSeleccionadoDiv.classList.remove('hidden');
-}
-
-limpiarBtn.addEventListener('click', function() {
-    sectorIdInput.value = '';
-    busquedaInput.value = '';
-    busquedaInput.classList.remove('hidden');
-    sectorSeleccionadoDiv.classList.add('hidden');
-    busquedaInput.focus();
-});
-
-document.addEventListener('click', e => { if (!busquedaInput.contains(e.target) && !resultadosDiv.contains(e.target)) resultadosDiv.classList.add('hidden'); });
-
 function seleccionarRol(id) {
     const el = document.getElementById('rol_id');
     if (el) el.value = id;
 }
-
-// Precargar sector si hay datos en sesión
-<?php if (!empty($regData['sector_id']) && !empty($regData['ciiu_clase'])): ?>
-document.addEventListener('DOMContentLoaded', function() {
-    busquedaInput.classList.add('hidden');
-    sectorTextoSpan.innerHTML = `<b><?php echo $regData['ciiu_clase']; ?></b> - <?php echo htmlspecialchars($regData['nombre_sector'] ?? ''); ?>`;
-    sectorSeleccionadoDiv.classList.remove('hidden');
-});
-<?php endif; ?>
 </script>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>
