@@ -22,7 +22,7 @@
                     Panel Vendedor Activo
                 </div>
                 <h1 class="text-4xl sm:text-5xl font-black tracking-tight leading-tight">
-                    ¡Hola, <?php echo explode(' ', htmlspecialchars($nombreSesion))[0]; ?>! 🚀
+                    ¡Hola, <?php echo explode(' ', htmlspecialchars($nombreSesion))[0]; ?>! 
                 </h1>
                 <p class="text-white/80 mt-4 flex items-center text-base sm:text-lg font-bold">
                     <i class="fas fa-building mr-2.5 opacity-70"></i> <?php echo htmlspecialchars($razon_social); ?>
