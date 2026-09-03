@@ -107,17 +107,17 @@ class ReunionApiController extends BaseApiController {
         }
 
         try {
-            // 1. Obtener cantidad de mesas de la rueda
-            $stmt_rueda = $this->pdo->prepare("SELECT cantidadMesas FROM ruedas_negocios WHERE id = ?");
+            // 1. Obtener configuración de la rueda
+            $stmt_rueda = $this->pdo->prepare("SELECT cantidadMesas, duracionCitaMinutos FROM ruedas_negocios WHERE id = ?");
             $stmt_rueda->execute([$rueda_id]);
             $rueda = $stmt_rueda->fetch();
             $total_mesas = ($rueda) ? (int)$rueda['cantidadMesas'] : 0;
+            $duracion = ($rueda) ? (int)($rueda['duracionCitaMinutos'] ?? 30) : 30;
             
-            error_log("[MESAS_DEBUG] Rueda ID: $rueda_id, Total mesas configuradas: $total_mesas");
+            error_log("[MESAS_DEBUG] Rueda ID: $rueda_id, Total mesas: $total_mesas, Duración: $duracion min");
             
             // Validar que haya mesas configuradas
             if ($total_mesas <= 0) {
-                error_log("[MESAS_DEBUG] ERROR: No hay mesas configuradas");
                 return $this->sendError("La rueda de negocios no tiene mesas configuradas. Contacta al administrador.", 400);
             }
 
@@ -140,19 +140,22 @@ class ReunionApiController extends BaseApiController {
 
             // 3. Obtener mesas ocupadas
             if ($fecha_hora) {
-                // Si se envía fecha_hora, verificar mesas ocupadas
+                // Si se envía fecha_hora, verificar mesas ocupadas en ese bloque temporal
                 $fechaBase = strtotime($fecha_hora);
-                $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
-                $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
+                // Restamos 1 minuto menos de la duración para permitir citas seguidas
+                $buffer = $duracion - 1;
+                $horaInicio = date('Y-m-d H:i:s', strtotime("-$buffer minutes", $fechaBase));
+                $horaFin = date('Y-m-d H:i:s', strtotime("+$buffer minutes", $fechaBase));
 
-                // Obtener mesas ocupadas: cualquier mesa con cita activa o apartada
+                // Obtener mesas ocupadas: cualquier mesa con cita activa en ese rango
                 $stmt_ocupadas = $this->pdo->prepare("
                     SELECT DISTINCT numero_mesa FROM reuniones 
                     WHERE ruedaId = ? 
                     AND estadoCita IN ('mesa_apartada', 'pendiente', 'aceptada', 'agendada', 'realizada', 'negociando')
                     AND numero_mesa IS NOT NULL
+                    AND (fechaHora BETWEEN ? AND ?)
                 ");
-                $stmt_ocupadas->execute([$rueda_id]);
+                $stmt_ocupadas->execute([$rueda_id, $horaInicio, $horaFin]);
                 $ocupadas_por_otros = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
             } else {
                 // Si no se envía fecha_hora, obtener todas las mesas ocupadas en la rueda

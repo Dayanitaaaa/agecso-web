@@ -6,6 +6,8 @@ $controlador = $_GET['controlador'] ?? '';
 // Definir los ítems del menú y colores según el rol
 $menu_items = [];
 $sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]'; // Default azul
+$header_bg = 'bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
+$footer_bg = 'bg-[#00a2ff]';
 
 if ($userRole === 'admin') {
     $menu_items = [
@@ -15,6 +17,8 @@ if ($userRole === 'admin') {
         ['label' => 'Estadísticas', 'icon' => 'fas fa-chart-line', 'accion' => 'verEstadisticas', 'controlador' => 'admin'],
     ];
     $sidebar_bg = 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900';
+    $header_bg = 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900';
+    $footer_bg = 'bg-slate-900';
 } elseif ($userRole === 'comprador') {
     $menu_items = [
         ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'comprador'],
@@ -22,7 +26,9 @@ if ($userRole === 'admin') {
         ['label' => 'Buscar Vendedores', 'icon' => 'fas fa-search-dollar', 'accion' => 'verParticipantes', 'controlador' => 'comprador'],
         ['label' => 'Mis Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'comprador'],
     ];
-    $sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
+    $sidebar_bg = 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900';
+    $header_bg = 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900';
+    $footer_bg = 'bg-slate-900';
 } elseif ($userRole === 'vendedor' || $userRole === 'proveedor') {
     $menu_items = [
         ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'vendedor'],
@@ -32,6 +38,8 @@ if ($userRole === 'admin') {
         ['label' => 'Mis Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'vendedor'],
     ];
     $sidebar_bg = 'bg-gradient-to-b from-[#0d9488] via-[#14b8a6] to-[#0f766e]';
+    $header_bg = 'bg-gradient-to-r from-[#0d9488] via-[#14b8a6] to-[#0f766e]';
+    $footer_bg = 'bg-[#0d9488]';
 }
 ?>
 

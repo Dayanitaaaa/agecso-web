@@ -593,6 +593,39 @@ class VendedorController {
                     throw new Exception("No se pueden agendar citas mientras la rueda de negocios no esté en estado activa.");
                 }
 
+                // VALIDACIÓN DINÁMICA: Separación entre citas según configuración de la rueda
+                $duracion = (int)($rueda['duracionCitaMinutos'] ?? 30);
+                $fechaBase = strtotime($fecha_hora);
+                $buffer = $duracion - 1;
+                $horaInicio = date('Y-m-d H:i:s', strtotime("-$buffer minutes", $fechaBase));
+                $horaFin = date('Y-m-d H:i:s', strtotime("+$buffer minutes", $fechaBase));
+
+                // Verificar para el vendedor
+                $stmt_disp_v = $this->pdo->prepare("
+                    SELECT COUNT(*) as ocupado FROM reuniones 
+                    WHERE (vendedorId = ? OR compradorId = ?) 
+                    AND fechaHora BETWEEN ? AND ?
+                    AND ruedaId = ? 
+                    AND estadoCita NOT IN ('cancelada', 'rechazada', 'mesa_apartada')
+                ");
+                $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id]);
+                if ($stmt_disp_v->fetch()['ocupado'] > 0) {
+                    throw new Exception("Ya tienes una cita agendada en este bloque de tiempo ($duracion min).");
+                }
+                
+                // Verificar para el comprador
+                $stmt_disp_c = $this->pdo->prepare("
+                    SELECT COUNT(*) as ocupado FROM reuniones 
+                    WHERE (vendedorId = ? OR compradorId = ?) 
+                    AND fechaHora BETWEEN ? AND ?
+                    AND ruedaId = ? 
+                    AND estadoCita NOT IN ('cancelada', 'rechazada', 'mesa_apartada')
+                ");
+                $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id]);
+                if ($stmt_disp_c->fetch()['ocupado'] > 0) {
+                    throw new Exception("El comprador ya tiene una cita agendada en este bloque de tiempo ($duracion min).");
+                }
+
                 // 1. Buscar el apartado de mesa existente
                 $stmt_mesa = $this->pdo->prepare("SELECT id FROM reuniones WHERE ruedaId = ? AND compradorId = ? AND estadoCita = 'mesa_apartada' LIMIT 1");
                 $stmt_mesa->execute([$rueda_id, $comprador_id]);
@@ -857,10 +890,13 @@ class VendedorController {
                         throw new Exception("No puedes proponer una fecha en el pasado.");
                     }
 
-                    // VALIDACIÓN: 1 hora de separación entre citas para AMBAS empresas (excluyendo la cita actual)
+                    // VALIDACIÓN DINÁMICA: Separación entre citas según configuración de la rueda
+                    $duracion = (int)($cita['duracionCitaMinutos'] ?? 30);
                     $fechaBase = strtotime($nueva_fecha);
-                    $horaInicio = date('Y-m-d H:i:s', strtotime('-1 hour', $fechaBase));
-                    $horaFin = date('Y-m-d H:i:s', strtotime('+1 hour', $fechaBase));
+                    // Dejamos 1 minuto de margen para permitir citas exactamente seguidas
+                    $buffer = $duracion - 1;
+                    $horaInicio = date('Y-m-d H:i:s', strtotime("-$buffer minutes", $fechaBase));
+                    $horaFin = date('Y-m-d H:i:s', strtotime("+$buffer minutes", $fechaBase));
                     
                     $vendedor_id = $cita['vendedorId'];
                     $comprador_id = $cita['compradorId'];
@@ -873,12 +909,12 @@ class VendedorController {
                         WHERE (vendedorId = ? OR compradorId = ?) 
                         AND fechaHora BETWEEN ? AND ?
                         AND ruedaId = ? 
-                        AND estadoCita NOT IN ('cancelada', 'rechazada')
+                        AND estadoCita NOT IN ('cancelada', 'rechazada', 'mesa_apartada')
                         AND id != ?
                     ");
                     $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id, $cita_id_actual]);
                     if ($stmt_disp_v->fetch()['ocupado'] > 0) {
-                        throw new Exception("Ya tienes una cita agendada dentro del rango de 1 hora. Debes dejar al menos 1 hora de separación entre citas.");
+                        throw new Exception("Ya tienes una cita agendada en este bloque de tiempo ($duracion min). Por favor elige otro horario.");
                     }
                     
                     // Verificar para el comprador (excluyendo la cita actual)
@@ -887,12 +923,12 @@ class VendedorController {
                         WHERE (vendedorId = ? OR compradorId = ?) 
                         AND fechaHora BETWEEN ? AND ?
                         AND ruedaId = ? 
-                        AND estadoCita NOT IN ('cancelada', 'rechazada')
+                        AND estadoCita NOT IN ('cancelada', 'rechazada', 'mesa_apartada')
                         AND id != ?
                     ");
                     $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id, $cita_id_actual]);
                     if ($stmt_disp_c->fetch()['ocupado'] > 0) {
-                        throw new Exception("El comprador ya tiene una cita agendada dentro del rango de 1 hora.");
+                        throw new Exception("El comprador ya tiene una cita agendada en este bloque de tiempo ($duracion min).");
                     }
 
                     $nuevo_contador = $cita['contadorContrapropuestas'] + 1;

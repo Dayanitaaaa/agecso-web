@@ -28,7 +28,7 @@
     
     <div class="flex-grow flex flex-col <?php echo isset($_SESSION['usuario_id']) ? 'md:ml-64' : ''; ?> transition-all duration-300">
         <!-- Top Nav Original Restaurada -->
-        <nav class="bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0] text-white shadow-md border-b border-sky-400/10 h-16 flex items-center">
+        <nav class="<?php echo $header_bg ?? 'bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0]'; ?> text-white shadow-md border-b border-sky-400/10 h-16 flex items-center">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center gap-4">

@@ -120,7 +120,7 @@
                                                 <?php echo !empty($r['horaFin']) ? date('h:i A', strtotime($r['horaFin'])) : '06:00 PM'; ?>
                                             </span>
                                             <span class="text-[10px] text-emerald-600 font-bold">
-                                                <i class="fas fa-stopwatch text-[9px]"></i> Citas de 30 minutos
+                                                <i class="fas fa-stopwatch text-[9px]"></i> Citas de <?php echo $r['duracionCitaMinutos'] ?? 30; ?> minutos
                                             </span>
                                         </div>
                                     </td>
@@ -414,20 +414,29 @@
                         </div>
 
                         <!-- Duración de Citas -->
-                        <div class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-3 flex items-center justify-between">
+                        <div class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-3 flex items-center justify-between text-left">
                             <div class="flex items-center gap-2.5">
                                 <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-xs">
                                     <i class="fas fa-stopwatch"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-extrabold text-gray-800">Duración por Cita de Negocio</p>
-                                    <p class="text-[10px] text-gray-500">Bloques estándar de 30 minutos por reunión</p>
+                                    <p class="text-xs font-extrabold text-gray-800">Duración por Cita</p>
+                                    <p class="text-[10px] text-gray-500">Minutos por reunión</p>
                                 </div>
                             </div>
-                            <span class="bg-amber-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
-                                30 Minutos
-                            </span>
-                            <input type="hidden" name="duracion_cita" value="30">
+                            <div class="relative">
+                                <select name="duracion_cita" id="edit_duracion_cita" required 
+                                        class="bg-amber-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-300 pr-7">
+                                    <option value="10">10 Minutos</option>
+                                    <option value="15">15 Minutos</option>
+                                    <option value="30" selected>30 Minutos</option>
+                                    <option value="45">45 Minutos</option>
+                                    <option value="60">1 Hora</option>
+                                </select>
+                                <div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-white/80">
+                                    <i class="fas fa-chevron-down text-[8px]"></i>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -700,14 +709,23 @@
                                     <i class="fas fa-stopwatch"></i>
                                 </div>
                                 <div>
-                                    <p class="text-xs font-extrabold text-gray-800">Duración por Cita de Negocio</p>
-                                    <p class="text-[10px] text-gray-500">Bloques estándar de 30 minutos por reunión</p>
+                                    <p class="text-xs font-extrabold text-gray-800">Duración por Cita</p>
+                                    <p class="text-[10px] text-gray-500">Minutos por reunión</p>
                                 </div>
                             </div>
-                            <span class="bg-amber-500 text-white text-xs font-black px-3 py-1 rounded-full shadow-sm">
-                                30 Minutos
-                            </span>
-                            <input type="hidden" name="duracion_cita" value="30">
+                            <div class="relative">
+                                <select name="duracion_cita" required 
+                                        class="bg-amber-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-300 pr-7">
+                                    <option value="10">10 Minutos</option>
+                                    <option value="15">15 Minutos</option>
+                                    <option value="30" selected>30 Minutos</option>
+                                    <option value="45">45 Minutos</option>
+                                    <option value="60">1 Hora</option>
+                                </select>
+                                <div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-white/80">
+                                    <i class="fas fa-chevron-down text-[8px]"></i>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-2 gap-4">
@@ -856,6 +874,7 @@
         document.getElementById('edit_titulo').value = rueda.nombreRueda || rueda.tituloRueda || '';
         document.getElementById('edit_descripcion').value = rueda.descripcion || '';
         document.getElementById('edit_estado').value = rueda.estadoRueda || 'planeacion';
+        document.getElementById('edit_duracion_cita').value = rueda.duracionCitaMinutos || 30;
         
         const mod = rueda.modalidad || 'virtual';
         document.getElementById('edit_modalidad_select').value = mod;
