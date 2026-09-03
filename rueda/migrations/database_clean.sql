@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS `empresas` (
   `usuarioId` int(10) UNSIGNED NOT NULL,
   `sectorId` bigint(20) UNSIGNED NOT NULL,
   `ciiu_personalizado` varchar(10) DEFAULT NULL,
+  `ciiu_nombre_personalizado` varchar(255) DEFAULT NULL,
   `tipo_persona` enum('natural','juridica','esal_otro') DEFAULT 'juridica',
   `razon_social` varchar(255) DEFAULT NULL,
   `tipo_asociacion` varchar(100) DEFAULT 'S.A.S.',

@@ -102,9 +102,14 @@
                             <div class="p-7 flex-1">
                                 <div class="flex items-start justify-between mb-5">
                                     <div class="flex flex-wrap gap-2">
-                                        <span class="text-[9px] bg-teal-50 text-[#0d9488] px-3 py-1 rounded-full font-black uppercase tracking-wider border border-teal-100/50">
-                                            <i class="fas fa-tag mr-1 opacity-60"></i> <?php echo htmlspecialchars($demanda['ciiu_personalizado'] ?: ($demanda['ciiu_clase'] ?? 'N/A')); ?>
-                                        </span>
+                                        <div class="flex flex-col">
+                                            <span class="text-[9px] bg-teal-50 text-[#0d9488] px-3 py-1 rounded-full font-black uppercase tracking-wider border border-teal-100/50 w-fit">
+                                                <i class="fas fa-tag mr-1 opacity-60"></i> <?php echo htmlspecialchars($demanda['ciiu_personalizado'] ?: ($demanda['ciiu_clase'] ?? 'N/A')); ?>
+                                            </span>
+                                            <?php if (!empty($demanda['ciiu_nombre_personalizado'])): ?>
+                                                <span class="text-[8px] text-gray-400 font-bold mt-1 line-clamp-1 italic"><?php echo htmlspecialchars($demanda['ciiu_nombre_personalizado']); ?></span>
+                                            <?php endif; ?>
+                                        </div>
                                         <?php if ($tiene_reunion): ?>
                                             <span class="text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm
                                                 <?php echo $estado_reunion === 'aceptada' ? 'bg-emerald-500 text-white' : 

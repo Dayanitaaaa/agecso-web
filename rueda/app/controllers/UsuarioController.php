@@ -79,6 +79,7 @@ class UsuarioController {
                 if ($paso == '1') {
                     // Obtener información del sector CIIU seleccionado (Ahora es manual)
                     $ciiu_personalizado = trim($_POST['ciiu_personalizado'] ?? '');
+                    $ciiu_nombre_personalizado = trim($_POST['ciiu_nombre_personalizado'] ?? '');
                     
                     // Asignar sectorId 1 por defecto (Otros) si no se usa la lista
                     $sectorId = 1; 
@@ -108,6 +109,7 @@ class UsuarioController {
                         'representante_legal' => $_POST['representante_legal'],
                         'sector_id' => $sectorId,
                         'ciiu_personalizado' => $ciiu_personalizado,
+                        'ciiu_nombre_personalizado' => $ciiu_nombre_personalizado,
                         'rol_id' => $_POST['rol_id']
                     ];
                     require_once __DIR__ . '/../views/usuario/user_registro_confirmar.php';
@@ -177,7 +179,8 @@ class UsuarioController {
                             'tamaño_empresa' => $regData['tamaño_empresa'],
                             'ubicacion_geografica' => $regData['ubicacion_geografica'],
                             'sub_tipo_asociacion' => $regData['sub_tipo_asociacion'],
-                            'ciiu_personalizado' => $regData['ciiu_personalizado']
+                            'ciiu_personalizado' => $regData['ciiu_personalizado'],
+                            'ciiu_nombre_personalizado' => $regData['ciiu_nombre_personalizado']
                         ]
                     );
 
@@ -319,13 +322,14 @@ class UsuarioController {
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $nuevoCiiu = trim($_POST['ciiu_personalizado'] ?? '');
+            $nuevoNombre = trim($_POST['ciiu_nombre_personalizado'] ?? '');
             
             if (empty($nuevoCiiu)) {
                 header("Location: index.php?controlador=usuario&accion=perfil&msg=error_ciiu_vacio");
                 exit();
             }
 
-            $resultado = $this->usuarioModel->updateCiiuPersonalizado($_SESSION['usuario_id'], $nuevoCiiu);
+            $resultado = $this->usuarioModel->updateCiiuPersonalizado($_SESSION['usuario_id'], $nuevoCiiu, $nuevoNombre);
 
             if ($resultado) {
                 header("Location: index.php?controlador=usuario&accion=perfil&msg=ciiu_actualizado");

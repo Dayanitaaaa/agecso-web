@@ -17,17 +17,18 @@ class UsuarioModel {
             $usuarioId = $this->db->lastInsertId();
 
             $sql_empresa = "INSERT INTO empresas (
-                usuarioId, sectorId, ciiu_personalizado, razon_social, tipo_persona, 
+                usuarioId, sectorId, ciiu_personalizado, ciiu_nombre_personalizado, razon_social, tipo_persona, 
                 tipo_asociacion, sub_tipo_asociacion, nit, 
                 digito_verificacion, responsable_iva, tamaño_empresa, 
                 representante_legal, ubicacionGeografica
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             $stmt_empresa = $this->db->prepare($sql_empresa);
             $stmt_empresa->execute([
                 $usuarioId, 
                 $sectorId, 
                 $extraData['ciiu_personalizado'] ?? NULL,
+                $extraData['ciiu_nombre_personalizado'] ?? NULL,
                 $razonSocial, 
                 $extraData['tipo_persona'] ?? 'juridica',
                 $tipoAsociacion,
@@ -237,9 +238,9 @@ class UsuarioModel {
     /**
      * Actualizar el código CIIU personalizado de la empresa
      */
-    public function updateCiiuPersonalizado($usuarioId, $nuevoCiiu) {
-        $stmt = $this->db->prepare("UPDATE empresas SET ciiu_personalizado = ? WHERE usuarioId = ?");
-        return $stmt->execute([$nuevoCiiu, $usuarioId]);
+    public function updateCiiuPersonalizado($usuarioId, $nuevoCiiu, $nuevoNombre = null) {
+        $stmt = $this->db->prepare("UPDATE empresas SET ciiu_personalizado = ?, ciiu_nombre_personalizado = ? WHERE usuarioId = ?");
+        return $stmt->execute([$nuevoCiiu, $nuevoNombre, $usuarioId]);
     }
 
     private function writeDebugLogin($status, $email, $context = []) {

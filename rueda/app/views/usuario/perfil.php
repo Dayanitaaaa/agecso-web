@@ -92,10 +92,10 @@ $badgeColors = [
                             <i class="fas fa-tag mr-2 <?php echo $textColors[$theme]; ?>"></i>
                             <span class="font-black text-gray-700"><?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?: ($perfil['ciiu_clase'] ?? 'N/A')); ?></span>
                             <span class="mx-2">-</span>
-                            <?php echo htmlspecialchars($perfil['nombreSector'] ?? 'Sin sector'); ?>
+                            <span class="text-gray-500"><?php echo htmlspecialchars($perfil['ciiu_nombre_personalizado'] ?: ($perfil['nombreSector'] ?? 'Sin sector')); ?></span>
                             
                             <?php if ($theme !== 'admin'): ?>
-                                <button onclick="editarCiiu('<?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?? ''); ?>')" 
+                                <button onclick="editarCiiu('<?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?? ''); ?>', '<?php echo htmlspecialchars($perfil['ciiu_nombre_personalizado'] ?? ''); ?>')" 
                                         class="ml-3 text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 px-2 py-1 rounded-lg transition-all flex items-center gap-1">
                                     <i class="fas fa-edit"></i> Cambiar CIIU
                                 </button>
@@ -290,42 +290,59 @@ $badgeColors = [
 </div>
 
 <script>
-function editarCiiu(ciiuActual) {
+function editarCiiu(ciiuActual, nombreActual) {
     Swal.fire({
-        title: 'Actualizar Código CIIU',
-        text: 'Ingresa el código correcto de tu actividad económica principal.',
-        input: 'text',
-        inputValue: ciiuActual,
-        placeholder: 'Ej: 6201',
+        title: 'Actualizar Actividad CIIU',
+        html: `
+            <div class="text-left space-y-4">
+                <div>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Código CIIU</label>
+                    <input id="swal-input1" class="swal2-input !m-0 !w-full" placeholder="Ej: 6201" value="${ciiuActual}">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Nombre de la Actividad</label>
+                    <input id="swal-input2" class="swal2-input !m-0 !w-full" placeholder="Ej: Programación informática" value="${nombreActual}">
+                </div>
+            </div>
+        `,
+        focusConfirm: false,
         showCancelButton: true,
         confirmButtonColor: '#2563eb',
         cancelButtonColor: '#64748b',
         confirmButtonText: 'Guardar cambios',
         cancelButtonText: 'Cancelar',
-        inputValidator: (value) => {
-            if (!value) {
-                return '¡Debes ingresar un código!'
+        preConfirm: () => {
+            const ciiu = document.getElementById('swal-input1').value.trim();
+            const nombre = document.getElementById('swal-input2').value.trim();
+            if (!ciiu || !nombre) {
+                Swal.showValidationMessage('¡Debes completar ambos campos!');
+                return false;
             }
+            return { ciiu: ciiu, nombre: nombre }
         },
         customClass: {
-            popup: 'rounded-3xl',
-            input: 'rounded-xl border-gray-200 text-sm font-bold',
+            popup: 'rounded-[2.5rem] p-10',
             confirmButton: 'rounded-2xl px-6 py-3 font-bold text-sm',
             cancelButton: 'rounded-2xl px-6 py-3 font-bold text-sm'
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            // Crear formulario dinámico para enviar el POST
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = 'index.php?controlador=usuario&accion=actualizarCiiu';
             
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'ciiu_personalizado';
-            input.value = result.value;
+            const inputCiiu = document.createElement('input');
+            inputCiiu.type = 'hidden';
+            inputCiiu.name = 'ciiu_personalizado';
+            inputCiiu.value = result.value.ciiu;
             
-            form.appendChild(input);
+            const inputNombre = document.createElement('input');
+            inputNombre.type = 'hidden';
+            inputNombre.name = 'ciiu_nombre_personalizado';
+            inputNombre.value = result.value.nombre;
+            
+            form.appendChild(inputCiiu);
+            form.appendChild(inputNombre);
             document.body.appendChild(form);
             form.submit();
         }

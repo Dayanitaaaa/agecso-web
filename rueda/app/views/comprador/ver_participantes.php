@@ -251,7 +251,12 @@
                                 <i class="fas fa-building text-gray-300 text-sm group-hover:text-sky-400 transition-colors"></i>
                             </div>
                             <p class="text-[10px] font-black text-gray-900 line-clamp-2 uppercase tracking-tight"><?php echo htmlspecialchars($p['razon_social']); ?></p>
-                            <p class="text-[9px] font-bold text-sky-500 mt-1 uppercase tracking-tighter">CIIU: <?php echo htmlspecialchars($p['ciiu_personalizado'] ?: ($p['ciiu_clase'] ?? 'N/A')); ?></p>
+                            <p class="text-[9px] font-bold text-sky-500 mt-1 uppercase tracking-tighter">
+                                CIIU: <?php echo htmlspecialchars($p['ciiu_personalizado'] ?: ($p['ciiu_clase'] ?? 'N/A')); ?>
+                            </p>
+                            <?php if (!empty($p['ciiu_nombre_personalizado'])): ?>
+                                <p class="text-[8px] text-gray-400 font-medium line-clamp-1 italic mt-0.5"><?php echo htmlspecialchars($p['ciiu_nombre_personalizado']); ?></p>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>

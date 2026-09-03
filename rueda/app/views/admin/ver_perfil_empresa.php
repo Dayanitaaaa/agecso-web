@@ -44,7 +44,9 @@
                         <div class="flex flex-wrap items-center gap-4 text-xs font-bold text-gray-400 mt-2">
                             <span class="flex items-center">
                                 <i class="fas fa-tag mr-2 text-amber-500"></i>
-                                <?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?: ($perfil['ciiu_clase'] ?? 'N/A')); ?> - <?php echo htmlspecialchars($perfil['nombreSector'] ?? 'Sin sector'); ?>
+                                <span class="font-black text-gray-700"><?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?: ($perfil['ciiu_clase'] ?? 'N/A')); ?></span>
+                                <span class="mx-2">-</span>
+                                <span class="text-gray-500"><?php echo htmlspecialchars($perfil['ciiu_nombre_personalizado'] ?: ($perfil['nombreSector'] ?? 'Sin sector')); ?></span>
                             </span>
                             <span class="flex items-center">
                                 <i class="fas fa-map-marker-alt mr-2 text-amber-500"></i>

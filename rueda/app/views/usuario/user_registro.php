@@ -188,19 +188,33 @@ $regData = $_SESSION['reg_data'] ?? [];
                 </div>
 
                 <!-- CIIU Personalizado -->
-                <div class="relative">
-                    <label for="ciiu_personalizado" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Código CIIU (Actividad Económica)</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                            <i class="fas fa-barcode text-xs"></i>
+                        <label for="ciiu_personalizado" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Código CIIU</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <i class="fas fa-barcode text-xs"></i>
+                            </div>
+                            <input type="text" id="ciiu_personalizado" name="ciiu_personalizado" required 
+                                value="<?php echo htmlspecialchars($regData['ciiu_personalizado'] ?? ''); ?>"
+                                class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium"
+                                placeholder="Ej: 6201">
                         </div>
-                        <input type="text" id="ciiu_personalizado" name="ciiu_personalizado" required 
-                            value="<?php echo htmlspecialchars($regData['ciiu_personalizado'] ?? ''); ?>"
-                            class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium"
-                            placeholder="Ej: 6201">
                     </div>
-                    <p class="mt-1.5 text-[10px] text-gray-400 ml-1">Ingresa el código CIIU de tu actividad económica principal.</p>
+                    <div class="relative">
+                        <label for="ciiu_nombre_personalizado" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Nombre de la Actividad</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <i class="fas fa-info-circle text-xs"></i>
+                            </div>
+                            <input type="text" id="ciiu_nombre_personalizado" name="ciiu_nombre_personalizado" required 
+                                value="<?php echo htmlspecialchars($regData['ciiu_nombre_personalizado'] ?? ''); ?>"
+                                class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium"
+                                placeholder="Ej: Actividades de programación informática">
+                        </div>
+                    </div>
                 </div>
+                <p class="mt-1.5 text-[10px] text-gray-400 ml-1">Ingresa el código y nombre de tu actividad económica principal según el RUT.</p>
             </div>
 
             <div class="pt-6">
