@@ -44,9 +44,6 @@
         <!-- SECCIÓN: ¿QUÉ DESEAS HACER HOY? (INTERACTIVA VENDEDOR) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <a href="index.php?controlador=vendedor&accion=seleccionarRuedaCompradores" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(13,148,136,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
-                <div class="w-20 h-20 bg-teal-50 rounded-[2rem] flex items-center justify-center mb-6 group-hover:bg-[#0d9488] group-hover:rotate-[10deg] transition-all duration-500">
-                    <i class="fas fa-users text-3xl text-[#0d9488] group-hover:text-white transition-colors"></i>
-                </div>
                 <h3 class="text-xl font-black text-gray-900 mb-2">Buscar Clientes</h3>
                 <p class="text-gray-500 text-sm font-medium leading-relaxed">Encuentra compradores interesados y solicita reuniones en sus mesas asignadas.</p>
                 <div class="mt-6 flex items-center text-[#0d9488] font-black text-xs uppercase tracking-widest">
@@ -55,9 +52,6 @@
             </a>
 
             <a href="index.php?controlador=vendedor&accion=seleccionarRuedaMisOfertas" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(20,184,166,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
-                <div class="w-20 h-20 bg-emerald-50 rounded-[2rem] flex items-center justify-center mb-6 group-hover:bg-emerald-500 group-hover:rotate-[-10deg] transition-all duration-500">
-                    <i class="fas fa-box-open text-3xl text-emerald-500 group-hover:text-white transition-colors"></i>
-                </div>
                 <h3 class="text-xl font-black text-gray-900 mb-2">Mis Productos</h3>
                 <p class="text-gray-500 text-sm font-medium leading-relaxed">Publica y gestiona lo que ofreces para que los compradores puedan encontrarte.</p>
                 <div class="mt-6 flex items-center text-emerald-500 font-black text-xs uppercase tracking-widest">
@@ -66,9 +60,6 @@
             </a>
 
             <a href="index.php?controlador=vendedor&accion=seleccionarRuedaDemandas" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(99,102,241,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
-                <div class="w-20 h-20 bg-indigo-50 rounded-[2rem] flex items-center justify-center mb-6 group-hover:bg-indigo-500 group-hover:rotate-[10deg] transition-all duration-500">
-                    <i class="fas fa-bullhorn text-3xl text-indigo-500 group-hover:text-white transition-colors"></i>
-                </div>
                 <h3 class="text-xl font-black text-gray-900 mb-2">Ver Requerimientos</h3>
                 <p class="text-gray-500 text-sm font-medium leading-relaxed">Explora qué necesitan comprar las empresas hoy y ofrece tus soluciones directamente.</p>
                 <div class="mt-6 flex items-center text-indigo-500 font-black text-xs uppercase tracking-widest">

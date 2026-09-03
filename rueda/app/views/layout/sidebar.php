@@ -16,20 +16,20 @@ if ($userRole === 'admin') {
         ['label' => 'Configurar Ruedas', 'icon' => 'fas fa-cog', 'accion' => 'crearRueda', 'controlador' => 'admin'],
         ['label' => 'Estadísticas', 'icon' => 'fas fa-chart-line', 'accion' => 'verEstadisticas', 'controlador' => 'admin'],
     ];
-    $sidebar_bg = 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900';
-    $header_bg = 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900';
-    $footer_bg = 'bg-slate-900';
-} elseif ($userRole === 'comprador') {
+    $sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
+    $header_bg = 'bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
+    $footer_bg = 'bg-[#00a2ff]';
+} elseif ($userRole === 'comprador' || $controlador === 'comprador') {
     $menu_items = [
         ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'comprador'],
         ['label' => 'Gestión de Citas', 'icon' => 'fas fa-handshake', 'accion' => 'verReuniones', 'controlador' => 'comprador'],
         ['label' => 'Buscar Vendedores', 'icon' => 'fas fa-search-dollar', 'accion' => 'verParticipantes', 'controlador' => 'comprador'],
         ['label' => 'Mis Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'comprador'],
     ];
-    $sidebar_bg = 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900';
-    $header_bg = 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900';
-    $footer_bg = 'bg-slate-900';
-} elseif ($userRole === 'vendedor' || $userRole === 'proveedor') {
+    $sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
+    $header_bg = 'bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
+    $footer_bg = 'bg-[#00a2ff]';
+} elseif ($userRole === 'vendedor' || $userRole === 'proveedor' || $controlador === 'vendedor') {
     $menu_items = [
         ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'vendedor'],
         ['label' => 'Gestión de Citas', 'icon' => 'fas fa-handshake', 'accion' => 'verReuniones', 'controlador' => 'vendedor'],
