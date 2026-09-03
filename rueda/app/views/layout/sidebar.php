@@ -3,8 +3,9 @@ $userRole = isset($_SESSION['slugRole']) ? strtolower(trim($_SESSION['slugRole']
 $current_page = $_GET['accion'] ?? '';
 $controlador = $_GET['controlador'] ?? '';
 
-// Definir los ítems del menú según el rol
+// Definir los ítems del menú y colores según el rol
 $menu_items = [];
+$sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]'; // Default azul
 
 if ($userRole === 'admin') {
     $menu_items = [
@@ -13,26 +14,29 @@ if ($userRole === 'admin') {
         ['label' => 'Configurar Ruedas', 'icon' => 'fas fa-cog', 'accion' => 'crearRueda', 'controlador' => 'admin'],
         ['label' => 'Estadísticas', 'icon' => 'fas fa-chart-line', 'accion' => 'verEstadisticas', 'controlador' => 'admin'],
     ];
+    $sidebar_bg = 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900';
 } elseif ($userRole === 'comprador') {
     $menu_items = [
         ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'comprador'],
         ['label' => 'Gestión de Citas', 'icon' => 'fas fa-handshake', 'accion' => 'verReuniones', 'controlador' => 'comprador'],
-        ['label' => 'Mercado de Ofertas', 'icon' => 'fas fa-store', 'accion' => 'verParticipantes', 'controlador' => 'comprador'],
-        ['label' => 'Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'comprador'],
+        ['label' => 'Buscar Vendedores', 'icon' => 'fas fa-search-dollar', 'accion' => 'verParticipantes', 'controlador' => 'comprador'],
+        ['label' => 'Mis Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'comprador'],
     ];
+    $sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
 } elseif ($userRole === 'vendedor' || $userRole === 'proveedor') {
     $menu_items = [
         ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'vendedor'],
         ['label' => 'Gestión de Citas', 'icon' => 'fas fa-handshake', 'accion' => 'verReuniones', 'controlador' => 'vendedor'],
-        ['label' => 'Mis Ofertas', 'icon' => 'fas fa-bullhorn', 'accion' => 'verTodasMisOfertas', 'controlador' => 'vendedor'],
-        ['label' => 'Explorar Demandas', 'icon' => 'fas fa-search-dollar', 'accion' => 'explorarDemandas', 'controlador' => 'vendedor'],
-        ['label' => 'Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'vendedor'],
+        ['label' => 'Mis Productos/Servicios', 'icon' => 'fas fa-box-open', 'accion' => 'verTodasMisOfertas', 'controlador' => 'vendedor'],
+        ['label' => 'Buscar Clientes', 'icon' => 'fas fa-users', 'accion' => 'explorarDemandas', 'controlador' => 'vendedor'],
+        ['label' => 'Mis Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'vendedor'],
     ];
+    $sidebar_bg = 'bg-gradient-to-b from-[#0d9488] via-[#14b8a6] to-[#0f766e]';
 }
 ?>
 
 <!-- Sidebar Lateral -->
-<aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0 border-r border-sky-400/10 bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]">
+<aside id="sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0 border-r border-black/5 shadow-2xl <?php echo $sidebar_bg; ?>">
     <div class="h-full px-4 py-6 overflow-y-auto flex flex-col">
         <!-- Logo -->
         <a href="https://agecso.org/" class="flex items-center gap-3 px-2 mb-10 hover:opacity-90 transition-opacity">

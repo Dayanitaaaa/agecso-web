@@ -19,17 +19,41 @@
             <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
             <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
             <div class="relative z-10">
-                <span class="bg-white/20 text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full backdrop-blur-sm">Mercado de Negocios</span>
-                <h1 class="text-3xl sm:text-4xl font-black mt-3 tracking-tight">Catálogo de Ofertas</h1>
+                <nav class="flex mb-4" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3 text-[10px] font-black uppercase tracking-widest text-white/60">
+                        <li class="inline-flex items-center">
+                            <a href="index.php?controlador=comprador&accion=dashboard" class="hover:text-white transition-colors">Panel</a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right mx-2 text-[8px]"></i>
+                                <span class="text-white">Buscar Vendedores</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+                <h1 class="text-3xl sm:text-4xl font-black tracking-tight leading-tight">Catálogo de Proveedores</h1>
                 <p class="text-white/90 mt-2 flex items-center text-sm sm:text-base font-medium">
                     <i class="fas fa-shopping-basket mr-2 text-white/80"></i> <?php echo htmlspecialchars($rueda['tituloRueda']); ?>
                 </p>
             </div>
             <div class="relative z-10 flex flex-wrap gap-3.5">
+                <a href="index.php?controlador=comprador&accion=dashboard" class="bg-white/15 hover:bg-white/25 text-white border border-white/20 px-6 py-3 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2 backdrop-blur-sm">
+                    <i class="fas fa-arrow-left text-xs"></i> Volver al Panel
+                </a>
                 <a href="index.php?controlador=comprador&accion=verReuniones&rueda_id=<?php echo $ruedaId; ?>" class="bg-white text-[#00a2ff] px-6 py-3 rounded-full font-black text-sm shadow-xl hover:-translate-y-0.5 transform transition-all duration-300 flex items-center gap-2">
                     <i class="fas fa-calendar-alt text-xs"></i> Mis Citas
                 </a>
             </div>
+        </div>
+
+        <div class="bg-blue-50/50 border border-blue-100 p-4 rounded-2xl mb-8 flex items-start gap-4">
+            <div class="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
+                <i class="fas fa-lightbulb text-sm"></i>
+            </div>
+            <p class="text-xs text-blue-800 font-bold leading-relaxed">
+                <b>Tip para negociar:</b> Usa el buscador para filtrar empresas por su nombre o producto. Haz clic en <b>"Solicitar Reunión"</b> en el proveedor que te interese para empezar a agendar tu cita comercial.
+            </p>
         </div>
 
         <!-- ======================================================

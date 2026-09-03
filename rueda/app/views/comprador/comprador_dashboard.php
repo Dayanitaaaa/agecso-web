@@ -8,27 +8,105 @@
         ?>
         
         <!-- BIENVENIDA Y ACCIONES RÁPIDAS -->
-        <div class="bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0] rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,162,255,0.15)] text-white relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0] rounded-[2.5rem] p-8 sm:p-10 shadow-[0_15px_40px_rgba(0,162,255,0.2)] text-white relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-8">
             <!-- Círculos decorativos de fondo -->
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+            <div class="absolute -right-10 -top-10 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
             <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
             
             <div class="relative z-10">
-                <span class="bg-white/20 text-white text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full backdrop-blur-sm">Panel de Control</span>
-                <h1 class="text-3xl sm:text-4xl font-black mt-3 tracking-tight">Centro de Mando: Comprador</h1>
-                <p class="text-white/90 mt-2 flex items-center text-sm sm:text-base font-medium">
-                    <i class="fas fa-building mr-2 text-white/80"></i> <?php echo htmlspecialchars($razon_social); ?> 
-                    <span class="mx-3 text-white/50">|</span>
-                    <i class="fas fa-user mr-2 text-white/80"></i> <?php echo htmlspecialchars($nombreSesion); ?>
+                <div class="inline-flex items-center px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                    <span class="relative flex h-2 w-2 mr-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                    </span>
+                    Sesión Iniciada
+                </div>
+                <h1 class="text-4xl sm:text-5xl font-black tracking-tight leading-tight">
+                    ¡Hola, <?php echo explode(' ', htmlspecialchars($nombreSesion))[0]; ?>! 👋
+                </h1>
+                <p class="text-white/80 mt-4 flex items-center text-base sm:text-lg font-bold">
+                    <i class="fas fa-building mr-2.5 opacity-70"></i> <?php echo htmlspecialchars($razon_social); ?>
                 </p>
             </div>
-            <div class="relative z-10 flex flex-wrap gap-3.5">
-                <a href="index.php?controlador=comprador&accion=verReuniones" class="bg-white text-[#00a2ff] hover:bg-sky-50 px-6 py-3 rounded-full font-bold text-sm shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_6px_20px_rgba(255,255,255,0.2)] hover:-translate-y-0.5 transform transition-all duration-300 flex items-center gap-2">
-                    <i class="fas fa-calendar-alt text-xs"></i> Mis Reuniones
+            
+            <div class="relative z-10 grid grid-cols-2 gap-4">
+                <a href="index.php?controlador=comprador&accion=verReuniones" class="bg-white/10 hover:bg-white/20 backdrop-blur-lg border border-white/30 p-4 rounded-3xl transition-all duration-300 group">
+                    <i class="fas fa-calendar-alt text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="text-xs font-black uppercase tracking-wider">Mis Citas</p>
                 </a>
-                <a href="index.php?controlador=comprador&accion=verEncuestas" class="bg-white/15 hover:bg-white/25 text-white border border-white/20 px-6 py-3 rounded-full font-bold text-sm shadow-sm hover:-translate-y-0.5 transform transition-all duration-300 flex items-center gap-2 backdrop-blur-sm">
-                    <i class="fas fa-poll-h text-xs"></i> Encuestas
+                <a href="index.php?controlador=usuario&accion=perfil" class="bg-white/10 hover:bg-white/20 backdrop-blur-lg border border-white/30 p-4 rounded-3xl transition-all duration-300 group">
+                    <i class="fas fa-user-circle text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                    <p class="text-xs font-black uppercase tracking-wider">Mi Perfil</p>
                 </a>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: ¿QUÉ DESEAS HACER HOY? (INTERACTIVA) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a href="index.php?controlador=comprador&accion=seleccionarRuedaParticipantes" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(0,162,255,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
+                <div class="w-20 h-20 bg-sky-50 rounded-[2rem] flex items-center justify-center mb-6 group-hover:bg-[#00a2ff] group-hover:rotate-[10deg] transition-all duration-500">
+                    <i class="fas fa-search-dollar text-3xl text-[#00a2ff] group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">Buscar Proveedores</h3>
+                <p class="text-gray-500 text-sm font-medium leading-relaxed">Explora el catálogo de empresas y productos disponibles en las ruedas activas.</p>
+                <div class="mt-6 flex items-center text-[#00a2ff] font-black text-xs uppercase tracking-widest">
+                    Ir al Catálogo <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <a href="index.php?controlador=comprador&accion=verReuniones" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(34,197,94,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
+                <div class="w-20 h-20 bg-emerald-50 rounded-[2rem] flex items-center justify-center mb-6 group-hover:bg-emerald-500 group-hover:rotate-[-10deg] transition-all duration-500">
+                    <i class="fas fa-handshake text-3xl text-emerald-500 group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">Gestionar Mis Citas</h3>
+                <p class="text-gray-500 text-sm font-medium leading-relaxed">Revisa tus reuniones agendadas, acepta solicitudes o propón nuevos horarios.</p>
+                <div class="mt-6 flex items-center text-emerald-500 font-black text-xs uppercase tracking-widest">
+                    Ver Agenda <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+
+            <a href="index.php?controlador=comprador&accion=verEncuestas" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(245,158,11,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
+                <div class="w-20 h-20 bg-amber-50 rounded-[2rem] flex items-center justify-center mb-6 group-hover:bg-amber-500 group-hover:rotate-[10deg] transition-all duration-500">
+                    <i class="fas fa-star text-3xl text-amber-500 group-hover:text-white transition-colors"></i>
+                </div>
+                <h3 class="text-xl font-black text-gray-900 mb-2">Calificar Negocios</h3>
+                <p class="text-gray-500 text-sm font-medium leading-relaxed">Diligencia tus encuestas de satisfacción y ayuda a medir el éxito de la rueda.</p>
+                <div class="mt-6 flex items-center text-amber-500 font-black text-xs uppercase tracking-widest">
+                    Ir a Encuestas <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </div>
+            </a>
+        </div>
+
+        <!-- GUÍA RÁPIDA (PARA USUARIOS QUE SE SIENTEN PERDIDOS) -->
+        <div class="bg-indigo-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
+            <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+            <div class="relative z-10">
+                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
+                    <i class="fas fa-magic text-indigo-300"></i> ¿Cómo empezar a hacer negocios?
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-indigo-200 border border-white/20">1</div>
+                        <div>
+                            <p class="font-black text-sm uppercase tracking-wider text-indigo-200 mb-1">Paso 1: Busca</p>
+                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Haz clic en <b>"Buscar Proveedores"</b> para ver quiénes están vendiendo lo que necesitas.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-indigo-200 border border-white/20">2</div>
+                        <div>
+                            <p class="font-black text-sm uppercase tracking-wider text-indigo-200 mb-1">Paso 2: Agenda</p>
+                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Dentro del catálogo, elige un vendedor y haz clic en <b>"Solicitar Reunión"</b> para proponer una hora.</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-indigo-200 border border-white/20">3</div>
+                        <div>
+                            <p class="font-black text-sm uppercase tracking-wider text-indigo-200 mb-1">Paso 3: Concreta</p>
+                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Ve a <b>"Mis Citas"</b> para confirmar tus reuniones aceptadas y prepárate para negociar.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -262,14 +340,14 @@
                                         </div>
                                     </div>
                                     <div class="flex gap-2">
-                                        <a href="index.php?controlador=comprador&accion=verParticipantes&id=<?php echo $r['id']; ?>" class="text-xs bg-sky-50 text-[#00a2ff] hover:bg-[#00a2ff] hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-sky-500/5 flex items-center gap-1.5">
-                                            <i class="fas fa-store text-[10px]"></i> Mercado
+                                        <a href="index.php?controlador=comprador&accion=verParticipantes&id=<?php echo $r['id']; ?>" class="text-xs bg-sky-600 text-white hover:bg-sky-700 px-6 py-3 rounded-full font-black transition-all duration-300 shadow-lg shadow-sky-500/20 flex items-center gap-2 group">
+                                            <i class="fas fa-search-dollar text-[10px]"></i> Ver Ofertas
                                         </a>
-                                        <a href="index.php?controlador=comprador&accion=apartarMesa&id=<?php echo $r['id']; ?>" class="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-emerald-500/5 flex items-center gap-1.5">
-                                            <i class="fas fa-chair text-[10px]"></i> Apartar Mesa
+                                        <a href="index.php?controlador=comprador&accion=apartarMesa&id=<?php echo $r['id']; ?>" class="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
+                                            <i class="fas fa-chair text-[10px]"></i> Mesa
                                         </a>
-                                        <a href="index.php?controlador=comprador&accion=verReuniones" class="text-xs bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white px-4 py-2.5 rounded-full font-extrabold transition-all duration-300 shadow-sm shadow-indigo-500/5 flex items-center gap-1.5">
-                                            <i class="far fa-calendar-check text-[10px]"></i> Citas
+                                        <a href="index.php?controlador=comprador&accion=verReuniones" class="text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
+                                            <i class="far fa-calendar-check text-[10px]"></i> Agenda
                                         </a>
                                     </div>
                                 </div>
