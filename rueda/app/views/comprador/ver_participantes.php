@@ -219,6 +219,11 @@
                                                 <i class="fas fa-check-circle mr-1"></i> Match Sector
                                             </span>
                                         <?php endif; ?>
+                                        <?php if (!empty($miCiiuMatch) && $oferta['ciiu_personalizado'] == $miCiiuMatch): ?>
+                                            <span class="text-[9px] bg-amber-500 text-white px-3 py-1 rounded-full font-black uppercase tracking-wider shadow-sm">
+                                                <i class="fas fa-star mr-1"></i> Match CIIU
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 

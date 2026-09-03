@@ -121,7 +121,7 @@ class VendedorController {
                 SELECT rn.*, ir.estadoInscripcion, rn.nombreRueda as tituloRueda, rn.descripcion as descripcionRueda
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
-                WHERE ir.empresaId = ?
+                WHERE ir.empresaId = ? AND rn.estadoRueda NOT IN ('finalizada', 'cancelada')
                 ORDER BY CASE WHEN rn.estadoRueda = 'activa' THEN 0 WHEN rn.estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, rn.fechaInicio DESC
             ");
             $stmt_mis_ruedas->execute([$empresa['id']]);
@@ -680,13 +680,18 @@ class VendedorController {
                 throw new Exception("Rueda de negocios no encontrada.");
             }
 
+            // Obtener mi CIIU para las sugerencias
+            $stmt_mi_ciiu = $this->pdo->prepare("SELECT ciiu_personalizado FROM empresas WHERE id = ?");
+            $stmt_mi_ciiu->execute([$miEmpresa['id']]);
+            $miCiiuMatch = $stmt_mi_ciiu->fetchColumn();
+
             // Obtener todos los sectores para filtros
             $stmt_sectores = $this->pdo->query("SELECT * FROM sectores ORDER BY nombreSector ASC");
             $todos_sectores = $stmt_sectores->fetchAll();
 
             // Obtener compradores con sus demandas y número de mesa si tienen
             $sql = "
-                SELECT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.descripcion, e.ciiu_personalizado, s.ciiu_clase,
+                SELECT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.descripcion, e.ciiu_personalizado, e.ciiu_nombre_personalizado, s.ciiu_clase,
                        (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1) as mesa_apartada
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
@@ -698,7 +703,9 @@ class VendedorController {
             $params = [$ruedaId, $ruedaId, $miEmpresa['id']];
 
             if (!empty($busqueda)) {
-                $sql .= " AND (e.razon_social LIKE ? OR e.descripcion LIKE ?)";
+                $sql .= " AND (e.razon_social LIKE ? OR e.descripcion LIKE ? OR e.ciiu_personalizado LIKE ? OR e.ciiu_nombre_personalizado LIKE ?)";
+                $params[] = "%$busqueda%";
+                $params[] = "%$busqueda%";
                 $params[] = "%$busqueda%";
                 $params[] = "%$busqueda%";
             }
@@ -1186,8 +1193,10 @@ class VendedorController {
             $params_demandas = [$ruedaId, $ruedaId, $miEmpresaId];
 
             if (!empty($busqueda)) {
-                $sql_demandas .= " AND (d.tituloDemanda LIKE ? OR d.descripcionDemanda LIKE ? OR e.razon_social LIKE ?)";
+                $sql_demandas .= " AND (d.tituloDemanda LIKE ? OR d.descripcionDemanda LIKE ? OR e.razon_social LIKE ? OR e.ciiu_personalizado LIKE ? OR e.ciiu_nombre_personalizado LIKE ?)";
                 $search_term = "%$busqueda%";
+                $params_demandas[] = $search_term;
+                $params_demandas[] = $search_term;
                 $params_demandas[] = $search_term;
                 $params_demandas[] = $search_term;
                 $params_demandas[] = $search_term;

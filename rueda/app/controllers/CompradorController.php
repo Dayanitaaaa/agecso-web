@@ -36,7 +36,7 @@ class CompradorController {
                 SELECT rn.*, ir.estadoInscripcion, rn.nombreRueda as tituloRueda, rn.descripcion as descripcionRueda
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
-                WHERE ir.empresaId = ?
+                WHERE ir.empresaId = ? AND rn.estadoRueda NOT IN ('finalizada', 'cancelada')
                 ORDER BY CASE WHEN rn.estadoRueda = 'activa' THEN 0 WHEN rn.estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, rn.fechaInicio DESC
             ");
             $stmt_mis_ruedas->execute([$empresa['id']]);
@@ -130,8 +130,10 @@ class CompradorController {
             $params_ofertas = [$empresa['id']];
 
             if (!empty($busqueda)) {
-                $sql_ofertas .= " AND (o.tituloOferta LIKE ? OR o.descripcionOferta LIKE ? OR e.razon_social LIKE ?)";
+                $sql_ofertas .= " AND (o.tituloOferta LIKE ? OR o.descripcionOferta LIKE ? OR e.razon_social LIKE ? OR e.ciiu_personalizado LIKE ? OR e.ciiu_nombre_personalizado LIKE ?)";
                 $search_term = "%$busqueda%";
+                $params_ofertas[] = $search_term;
+                $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;
@@ -279,10 +281,12 @@ class CompradorController {
                 throw new Exception("Rueda de negocios no encontrada.");
             }
 
-            // Obtener mi sector para las sugerencias
-            $stmt_mi_sector = $this->pdo->prepare("SELECT sectorId FROM empresas WHERE id = ?");
-            $stmt_mi_sector->execute([$miEmpresaId]);
-            $miSectorId = $stmt_mi_sector->fetchColumn();
+            // Obtener mi sector y CIIU para las sugerencias
+            $stmt_mi_info = $this->pdo->prepare("SELECT sectorId, ciiu_personalizado FROM empresas WHERE id = ?");
+            $stmt_mi_info->execute([$miEmpresaId]);
+            $miInfo = $stmt_mi_info->fetch();
+            $miSectorId = $miInfo['sectorId'] ?? null;
+            $miCiiuMatch = $miInfo['ciiu_personalizado'] ?? '';
 
             // Filtros de búsqueda para ofertas
             $busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : '';
@@ -290,7 +294,7 @@ class CompradorController {
 
             // 1. Obtener Ofertas (Prioridad del Comprador)
             $sql_ofertas = "
-                SELECT o.*, e.razon_social, s.nombreSector, e.ubicacionGeografica
+                SELECT o.*, e.razon_social, s.nombreSector, e.ubicacionGeografica, e.ciiu_personalizado, e.ciiu_nombre_personalizado
                 FROM ofertas o
                 JOIN empresas e ON o.empresaId = e.id
                 JOIN sectores s ON o.sectorId = s.id
@@ -304,8 +308,10 @@ class CompradorController {
             $params_ofertas = [$ruedaId, $ruedaId, $miEmpresaId];
 
             if (!empty($busqueda)) {
-                $sql_ofertas .= " AND (o.tituloOferta LIKE ? OR o.descripcionOferta LIKE ? OR e.razon_social LIKE ?)";
+                $sql_ofertas .= " AND (o.tituloOferta LIKE ? OR o.descripcionOferta LIKE ? OR e.razon_social LIKE ? OR e.ciiu_personalizado LIKE ? OR e.ciiu_nombre_personalizado LIKE ?)";
                 $search_term = "%$busqueda%";
+                $params_ofertas[] = $search_term;
+                $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;

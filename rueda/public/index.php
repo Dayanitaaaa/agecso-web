@@ -80,11 +80,11 @@ try {
     );
     $stmtActivar->execute([$hoy, $hoy]);
 
-    // 4. Finalizar: solo si autoFinalizada = 0 y la fecha de fin ya pasó
+    // 4. Finalizar: Cualquier rueda cuya fecha de fin ya pasó debe estar en estado finalizada
     $stmtFinalizar = $pdo->prepare(
         "UPDATE ruedas_negocios 
          SET estadoRueda = 'finalizada', autoFinalizada = 1
-         WHERE autoFinalizada = 0
+         WHERE estadoRueda NOT IN ('finalizada', 'cancelada')
            AND fechaFin < ?"
     );
     $stmtFinalizar->execute([$hoy]);

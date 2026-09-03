@@ -151,19 +151,28 @@ class PageController
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
                 ]);
 
-                $sql = "SELECT * FROM ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
+                $sql = "SELECT * FROM ruedas_negocios 
+                        WHERE estadoRueda NOT IN ('cancelada', 'finalizada') 
+                        AND (fechaFin >= CURDATE() OR fechaFin IS NULL)
+                        ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
                 if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
                 $stmt = $pdo_rueda->query($sql);
                 if ($stmt) $ruedas = $stmt->fetchAll();
             } catch (Exception $e) {
                 // 2. Intentar consulta en la conexión actual
                 try {
-                    $sql = "SELECT * FROM u152451479_agecso_rueda.ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
+                    $sql = "SELECT * FROM u152451479_agecso_rueda.ruedas_negocios 
+                            WHERE estadoRueda NOT IN ('cancelada', 'finalizada') 
+                            AND (fechaFin >= CURDATE() OR fechaFin IS NULL)
+                            ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
                     if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
                     $stmt = $this->pdo->query($sql);
                     if ($stmt) $ruedas = $stmt->fetchAll();
                 } catch (Exception $e2) {
-                    $sql = "SELECT * FROM ruedas_negocios WHERE estadoRueda != 'cancelada' ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
+                    $sql = "SELECT * FROM ruedas_negocios 
+                            WHERE estadoRueda NOT IN ('cancelada', 'finalizada') 
+                            AND (fechaFin >= CURDATE() OR fechaFin IS NULL)
+                            ORDER BY CASE WHEN estadoRueda = 'activa' THEN 0 WHEN estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, fechaInicio DESC";
                     if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
                     $stmt = $this->pdo->query($sql);
                     if ($stmt) $ruedas = $stmt->fetchAll();

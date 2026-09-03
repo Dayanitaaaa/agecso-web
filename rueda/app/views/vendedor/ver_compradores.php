@@ -113,6 +113,11 @@
                                         <span class="text-[9px] bg-teal-50 text-[#0d9488] px-3 py-1 rounded-full font-black uppercase tracking-wider border border-teal-100/50">
                                             <i class="fas fa-building mr-1 opacity-60"></i> <?php echo htmlspecialchars($c['razon_social'] ?? 'N/A'); ?>
                                         </span>
+                                        <?php if (!empty($miCiiuMatch) && $c['ciiu_personalizado'] == $miCiiuMatch): ?>
+                                            <span class="text-[9px] bg-amber-500 text-white px-3 py-1 rounded-full font-black uppercase tracking-wider shadow-sm">
+                                                <i class="fas fa-star mr-1"></i> Match CIIU
+                                            </span>
+                                        <?php endif; ?>
                                         <?php if (!empty($c['mesa_apartada'])): ?>
                                             <span class="text-[9px] bg-amber-50 text-amber-600 px-3 py-1 rounded-full font-black uppercase tracking-wider border border-amber-100 flex items-center gap-1.5 shadow-sm">
                                                 <i class="fas fa-chair text-[10px] animate-pulse"></i> 
