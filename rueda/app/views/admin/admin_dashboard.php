@@ -3,8 +3,8 @@
 <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <div class="space-y-10">
         
-        <!-- BIENVENIDA Y ACCIONES RÁPIDAS (Tema Amarillo Sutil/Dorado para Admin) -->
-        <div class="bg-gradient-to-r from-[#fede32] via-[#ffe082] to-[#ffd54f] rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(254,222,50,0.12)] text-white relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <!-- BIENVENIDA Y ACCIONES RÁPIDAS (Tema Azul Oscuro para Admin) -->
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(15,23,42,0.15)] text-white relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <!-- Círculos decorativos de fondo -->
             <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
             <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
@@ -18,8 +18,8 @@
             </div>
             <div class="relative z-10 flex flex-wrap gap-3">
                 <button onclick="document.getElementById('modalCrearRueda').classList.remove('hidden')" 
-                        class="bg-gray-900 hover:bg-black text-amber-300 hover:text-amber-200 px-6 py-3.5 rounded-full font-black text-sm shadow-xl hover:-translate-y-0.5 transform transition-all duration-300 flex items-center gap-2.5">
-                    <i class="fas fa-plus-circle text-amber-400 text-base"></i> Crear Rueda de Negocio
+                        class="bg-gray-900 hover:bg-black text-slate-300 hover:text-slate-200 px-6 py-3.5 rounded-full font-black text-sm shadow-xl hover:-translate-y-0.5 transform transition-all duration-300 flex items-center gap-2.5">
+                    <i class="fas fa-plus-circle text-slate-400 text-base"></i> Crear Rueda de Negocio
                 </button>
             </div>
         </div>
@@ -27,47 +27,98 @@
         <!-- Enlaces de Desplazamiento Rápido -->
         <div class="bg-white p-6 rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100">
             <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center">
-                <i class="fas fa-rocket mr-2 text-amber-500"></i> Navegación Rápida
+                <i class="fas fa-rocket mr-2 text-slate-500"></i> Navegación Rápida
             </p>
             <div class="flex flex-wrap gap-2.5">
-                <a href="#ruedas" class="bg-amber-50/30 hover:bg-amber-500 hover:text-white text-amber-900 border border-amber-100/50 hover:border-amber-500 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5">
+                <a href="#ruedas" class="bg-slate-50/30 hover:bg-slate-800 hover:text-white text-slate-900 border border-slate-100/50 hover:border-slate-800 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5">
                     <i class="fas fa-calendar-alt text-[10px]"></i> Ruedas de Negocios
                 </a>
-                <a href="#solicitudes" class="bg-amber-50/30 hover:bg-amber-500 hover:text-white text-amber-900 border border-amber-100/50 hover:border-amber-500 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5">
+                <a href="#solicitudes" class="bg-slate-50/30 hover:bg-slate-800 hover:text-white text-slate-900 border border-slate-100/50 hover:border-slate-800 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5">
                     <i class="fas fa-user-plus text-[10px]"></i> Inscripciones
                 </a>
-                <a href="#empresas-pendientes" class="bg-amber-50/30 hover:bg-amber-500 hover:text-white text-amber-900 border border-amber-100/50 hover:border-amber-500 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5 relative">
+                <a href="#empresas-pendientes" class="bg-slate-50/30 hover:bg-slate-800 hover:text-white text-slate-900 border border-slate-100/50 hover:border-slate-800 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5 relative">
                     <i class="fas fa-building text-[10px]"></i> Empresas Pendientes
                     <?php if (!empty($empresas_pendientes)): ?>
-                        <span class="ml-1.5 bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black"><?php echo count($empresas_pendientes); ?></span>
+                        <span class="ml-1.5 bg-slate-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black"><?php echo count($empresas_pendientes); ?></span>
                     <?php endif; ?>
                 </a>
-                <a href="#reuniones-pendientes" class="bg-amber-50/30 hover:bg-amber-500 hover:text-white text-amber-900 border border-amber-100/50 hover:border-amber-500 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5 relative">
+                <a href="#reuniones-pendientes" class="bg-slate-50/30 hover:bg-slate-800 hover:text-white text-slate-900 border border-slate-100/50 hover:border-slate-800 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5 relative">
                     <i class="fas fa-handshake text-[10px]"></i> Reuniones Pendientes
                     <?php if (!empty($solicitudes_reuniones)): ?>
-                        <span class="ml-1.5 bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black"><?php echo count($solicitudes_reuniones); ?></span>
+                        <span class="ml-1.5 bg-slate-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black"><?php echo count($solicitudes_reuniones); ?></span>
                     <?php endif; ?>
                 </a>
-                <a href="#seguimiento" class="bg-amber-50/30 hover:bg-amber-500 hover:text-white text-amber-900 border border-amber-100/50 hover:border-amber-500 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5">
+                <a href="#seguimiento" class="bg-slate-50/30 hover:bg-slate-800 hover:text-white text-slate-900 border border-slate-100/50 hover:border-slate-800 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5">
                     <i class="fas fa-chart-line text-[10px]"></i> Seguimiento Citas
                 </a>
-                <a href="#encuestas" class="bg-amber-50/30 hover:bg-amber-500 hover:text-white text-amber-900 border border-amber-100/50 hover:border-amber-500 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5">
+                <a href="#encuestas" class="bg-slate-50/30 hover:bg-slate-800 hover:text-white text-slate-900 border border-slate-100/50 hover:border-slate-800 px-4 py-2.5 rounded-full text-xs font-extrabold shadow-sm transition-all duration-300 flex items-center gap-1.5">
                     <i class="fas fa-poll-h text-[10px]"></i> Encuestas Recientes
                 </a>
             </div>
         </div>
 
+        <!-- SECCIÓN DE KPIs: RESUMEN GLOBAL (NUEVO) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Empresas Totales -->
+            <div class="bg-white p-6 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300 transform hover:-translate-y-1 flex items-center group">
+                <div class="p-4 bg-slate-50 text-slate-900 rounded-2xl mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-building text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Empresas</p>
+                    <p class="text-3xl font-black text-gray-800 mt-1"><?php echo number_format($total_empresas ?? 0); ?></p>
+                </div>
+            </div>
+            
+            <!-- Reuniones Totales -->
+            <div class="bg-white p-6 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300 transform hover:-translate-y-1 flex items-center group">
+                <div class="p-4 bg-emerald-50 text-emerald-600 rounded-2xl mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-handshake text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Citas Totales</p>
+                    <p class="text-3xl font-black text-gray-800 mt-1"><?php echo number_format($total_reuniones ?? 0); ?></p>
+                </div>
+            </div>
+
+            <!-- Negocios Proyectados -->
+            <div class="bg-white p-6 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300 transform hover:-translate-y-1 flex items-center group">
+                <div class="p-4 bg-blue-50 text-blue-600 rounded-2xl mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-chart-line text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Expectativa Negocio</p>
+                    <p class="text-2xl font-black text-gray-800 mt-1">$<?php echo number_format($negocios_cerrados ?? 0, 0); ?></p>
+                </div>
+            </div>
+
+            <!-- Ruedas Activas -->
+            <div class="bg-white p-6 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300 transform hover:-translate-y-1 flex items-center group">
+                <div class="p-4 bg-purple-50 text-purple-600 rounded-2xl mr-4 group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-calendar-check text-2xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Eventos Activos</p>
+                    <p class="text-3xl font-black text-gray-800 mt-1"><?php 
+                        $activas_count = 0;
+                        foreach($ruedas as $rr) if(in_array($rr['estadoRueda'], ['activa', 'inscripciones'])) $activas_count++;
+                        echo $activas_count;
+                    ?></p>
+                </div>
+            </div>
+        </div>
+
         <!-- SECCIÓN: Ruedas de Negocios Registradas -->
         <div id="ruedas" class="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl overflow-hidden border border-gray-100 scroll-mt-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
-            <div class="px-6 py-5 border-b border-gray-100 bg-amber-50/10 flex justify-between items-center">
+            <div class="px-6 py-5 border-b border-gray-100 bg-slate-50/10 flex justify-between items-center">
                 <div>
                     <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2">
-                        <i class="fas fa-calendar-alt text-amber-500"></i> Ruedas de Negocios
+                        <i class="fas fa-calendar-alt text-slate-800"></i> Ruedas de Negocios
                     </h3>
                     <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-1">Eventos configurados, franjas horarias y control de mesas</p>
                 </div>
                 <button onclick="document.getElementById('modalCrearRueda').classList.remove('hidden')" 
-                        class="bg-amber-500 hover:bg-amber-600 text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition flex items-center gap-1.5">
+                        class="bg-slate-900 hover:bg-black text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition flex items-center gap-1.5">
                     <i class="fas fa-plus"></i> Nueva Rueda
                 </button>
             </div>
@@ -90,13 +141,13 @@
                             </tr>
                         <?php else: ?>
                             <?php foreach ($ruedas as $r): ?>
-                                <tr class="hover:bg-amber-50/5 transition">
+                                <tr class="hover:bg-slate-50/5 transition">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center gap-3">
                                             <?php if (!empty($r['imagen'])): ?>
-                                                <img src="<?php echo htmlspecialchars($r['imagen']); ?>" alt="Banner" class="w-10 h-10 rounded-xl object-cover border border-amber-200 flex-shrink-0">
+                                                <img src="<?php echo htmlspecialchars($r['imagen']); ?>" alt="Banner" class="w-10 h-10 rounded-xl object-cover border border-slate-200 flex-shrink-0">
                                             <?php else: ?>
-                                                <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-sm flex-shrink-0">
+                                                <div class="w-10 h-10 rounded-xl bg-slate-500/10 text-slate-600 flex items-center justify-center font-black text-sm flex-shrink-0">
                                                     <i class="fas fa-handshake"></i>
                                                 </div>
                                             <?php endif; ?>
@@ -108,7 +159,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600 font-bold">
                                         <div class="flex items-center gap-1.5">
-                                            <i class="fas fa-calendar text-amber-500 text-[10px]"></i>
+                                            <i class="fas fa-calendar text-slate-500 text-[10px]"></i>
                                             <span><?php echo date('d/m/Y', strtotime($r['fechaInicio'])); ?> - <?php echo date('d/m/Y', strtotime($r['fechaFin'])); ?></span>
                                         </div>
                                     </td>
@@ -139,7 +190,7 @@
                                         <?php
                                             $estadoClases = [
                                                 'activa' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-                                                'inscripciones' => 'bg-amber-50 text-amber-700 border border-amber-200',
+                                                'inscripciones' => 'bg-slate-50 text-slate-700 border border-slate-200',
                                                 'planeacion' => 'bg-blue-50 text-blue-700 border border-blue-200',
                                                 'finalizada' => 'bg-gray-100 text-gray-600 border border-gray-200',
                                                 'cancelada' => 'bg-red-50 text-red-600 border border-red-200'
@@ -152,7 +203,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-xs font-bold">
                                         <button onclick='abrirModalEditarRueda(<?php echo json_encode($r, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' 
-                                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-50 hover:bg-amber-500 text-amber-700 hover:text-white rounded-full font-black text-xs transition duration-200 shadow-sm border border-amber-200 hover:border-amber-500">
+                                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-50 hover:bg-slate-800 text-slate-700 hover:text-white rounded-full font-black text-xs transition duration-200 shadow-sm border border-slate-200 hover:border-slate-800">
                                             <i class="fas fa-edit text-[10px]"></i> Editar
                                         </button>
                                     </td>
@@ -166,9 +217,9 @@
 
         <!-- Nueva sección: Empresas Pendientes de Aprobación -->
         <div id="empresas-pendientes" class="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl overflow-hidden border border-gray-100 scroll-mt-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
-            <div class="px-6 py-5 border-b border-gray-100 bg-amber-50/10 flex justify-between items-center">
-                <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2"><i class="fas fa-building text-amber-500"></i> Empresas Pendientes de Aprobación</h3>
-                <span class="bg-amber-500 text-white text-xs px-2.5 py-1 rounded-full font-black shadow-sm"><?php echo count($empresas_pendientes); ?></span>
+            <div class="px-6 py-5 border-b border-gray-100 bg-slate-50/10 flex justify-between items-center">
+                <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2"><i class="fas fa-building text-slate-800"></i> Empresas Pendientes de Aprobación</h3>
+                <span class="bg-slate-600 text-white text-xs px-2.5 py-1 rounded-full font-black shadow-sm"><?php echo count($empresas_pendientes); ?></span>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-100">
@@ -187,7 +238,7 @@
                             </tr>
                         <?php else: ?>
                             <?php foreach ($empresas_pendientes as $ep): ?>
-                                <tr class="hover:bg-amber-50/5 transition">
+                                <tr class="hover:bg-slate-50/5 transition">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-bold text-gray-900"><?php echo htmlspecialchars($ep['razon_social']); ?></div>
                                         <div class="text-[10px] text-gray-400 font-bold uppercase tracking-wider mt-0.5"><?php echo htmlspecialchars($ep['tipo_persona']); ?></div>
@@ -195,7 +246,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-extrabold">
                                         <div class="flex flex-col gap-1.5 items-start">
                                             <span><?php echo htmlspecialchars($ep['nit']); ?></span>
-                                            <a href="https://www.rues.org.co/" target="_blank" class="inline-flex items-center text-[9px] font-black text-amber-600 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 px-1.5 py-0.5 rounded-md transition" title="Consultar NIT en el RUES Oficial de Colombia">
+                                            <a href="https://www.rues.org.co/" target="_blank" class="inline-flex items-center text-[9px] font-black text-slate-600 hover:text-slate-800 bg-slate-50 hover:bg-slate-100 px-1.5 py-0.5 rounded-md transition" title="Consultar NIT en el RUES Oficial de Colombia">
                                                 <i class="fas fa-search-dollar mr-1"></i> Verificar RUES
                                             </a>
                                         </div>
@@ -220,9 +271,9 @@
 
         <!-- Nueva sección: Solicitudes de Reunión Pendientes (Aprobación Admin) -->
         <div id="reuniones-pendientes" class="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl overflow-hidden border border-gray-100 scroll-mt-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
-            <div class="px-6 py-5 border-b border-gray-100 bg-amber-50/10 flex justify-between items-center">
-                <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2"><i class="fas fa-handshake text-amber-500"></i> Solicitudes de Reunión (Pendientes de Admin)</h3>
-                <span class="bg-amber-500 text-white text-xs px-2.5 py-1 rounded-full font-black shadow-sm"><?php echo count($solicitudes_reuniones); ?></span>
+            <div class="px-6 py-5 border-b border-gray-100 bg-slate-50/10 flex justify-between items-center">
+                <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2"><i class="fas fa-handshake text-slate-800"></i> Solicitudes de Reunión (Pendientes de Admin)</h3>
+                <span class="bg-slate-600 text-white text-xs px-2.5 py-1 rounded-full font-black shadow-sm"><?php echo count($solicitudes_reuniones); ?></span>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-100">
@@ -241,7 +292,7 @@
                             </tr>
                         <?php else: ?>
                             <?php foreach ($solicitudes_reuniones as $sr): ?>
-                                <tr class="hover:bg-amber-50/5 transition">
+                                <tr class="hover:bg-slate-50/5 transition">
                                     <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900 font-extrabold">
                                         <?php echo date('d/m/Y H:i', strtotime($sr['fechaHora'])); ?>
                                     </td>
@@ -270,12 +321,12 @@
 
         <!-- Nueva sección: Solicitudes de Inscripción Pendientes -->
         <div id="solicitudes" class="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl overflow-hidden border border-gray-100 scroll-mt-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
-            <div class="px-6 py-5 border-b border-gray-100 bg-amber-50/10 flex justify-between items-center">
+            <div class="px-6 py-5 border-b border-gray-100 bg-slate-50/10 flex justify-between items-center">
                 <div>
-                    <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2"><i class="fas fa-user-plus text-amber-500"></i> Solicitudes de Inscripción Pendientes</h3>
+                    <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2"><i class="fas fa-user-plus text-slate-800"></i> Solicitudes de Inscripción Pendientes</h3>
                     <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-1.5">Empresas que desean participar en ruedas de negocios</p>
                 </div>
-                <span class="bg-amber-500 text-white text-xs px-2.5 py-1 rounded-full font-black shadow-sm"><?php echo count($inscripciones_pendientes); ?></span>
+                <span class="bg-slate-600 text-white text-xs px-2.5 py-1 rounded-full font-black shadow-sm"><?php echo count($inscripciones_pendientes); ?></span>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -294,7 +345,7 @@
                             </tr>
                         <?php else: ?>
                             <?php foreach ($inscripciones_pendientes as $ins): ?>
-                                <tr class="hover:bg-amber-50/5 transition">
+                                <tr class="hover:bg-slate-50/5 transition">
                                     <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-900 font-extrabold"><?php echo date('d/m/Y H:i', strtotime($ins['createdAt'])); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-bold text-gray-900"><?php echo htmlspecialchars($ins['razon_social'] ?? 'Empresa no encontrada'); ?></div>
@@ -306,6 +357,115 @@
                                             <a href="index.php?controlador=admin&accion=gestionarInscripcion&id=<?php echo $ins['id']; ?>&estado=aceptada" class="text-emerald-600 hover:text-emerald-800 font-extrabold text-xs">Aceptar</a>
                                             <a href="index.php?controlador=admin&accion=gestionarInscripcion&id=<?php echo $ins['id']; ?>&estado=rechazada" class="text-red-500 hover:text-red-700 font-extrabold text-xs">Rechazar</a>
                                         </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: SEGUIMIENTO DE CITAS (NUEVO) -->
+        <div id="seguimiento" class="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl overflow-hidden border border-gray-100 scroll-mt-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
+            <div class="px-6 py-5 border-b border-gray-100 bg-slate-50/10 flex justify-between items-center">
+                <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2"><i class="fas fa-history text-slate-800"></i> Últimas Citas Gestionadas</h3>
+                <span class="bg-slate-600 text-white text-xs px-2.5 py-1 rounded-full font-black shadow-sm">Recientes</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-100">
+                    <thead class="bg-gray-50/50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Fecha/Hora</th>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Participantes</th>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Estado</th>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Mesa / Link</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        <?php if (empty($reuniones_detalladas)): ?>
+                            <tr>
+                                <td colspan="4" class="px-6 py-6 text-center text-gray-400 italic text-sm">No hay citas registradas recientemente.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($reuniones_detalladas as $rdet): ?>
+                                <tr class="hover:bg-slate-50/5 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-600 font-bold">
+                                        <?php echo date('d/m/Y H:i', strtotime($rdet['fechaHora'])); ?>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-[10px] text-sky-600 font-black uppercase">C: <?php echo htmlspecialchars($rdet['comprador']); ?></div>
+                                        <div class="text-[10px] text-teal-600 font-black uppercase">V: <?php echo htmlspecialchars($rdet['vendedor']); ?></div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs">
+                                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase border <?php 
+                                            echo match($rdet['estadoCita']) {
+                                                'realizada' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                                                'cancelada' => 'bg-red-50 text-red-700 border-red-200',
+                                                'agendada' => 'bg-blue-50 text-blue-700 border-blue-200',
+                                                default => 'bg-gray-50 text-gray-700 border-gray-200'
+                                            };
+                                        ?>">
+                                            <?php echo htmlspecialchars($rdet['estadoCita']); ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-medium">
+                                        <?php if (!empty($rdet['numeroMesa'])): ?>
+                                            <span class="bg-purple-50 text-purple-700 px-2 py-0.5 rounded-md text-[10px] font-black">Mesa <?php echo $rdet['numeroMesa']; ?></span>
+                                        <?php elseif(!empty($rdet['linkReunion'])): ?>
+                                            <i class="fas fa-video text-sky-500"></i> Virtual
+                                        <?php else: ?>
+                                            <span class="text-gray-300">N/A</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECCIÓN: ENCUESTAS RECIENTES (NUEVO) -->
+        <div id="encuestas" class="bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl overflow-hidden border border-gray-100 scroll-mt-6 hover:shadow-[0_8px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
+            <div class="px-6 py-5 border-b border-gray-100 bg-slate-50/10 flex justify-between items-center">
+                <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2"><i class="fas fa-poll-h text-slate-800"></i> Opiniones y Feedback</h3>
+                <span class="bg-slate-600 text-white text-xs px-2.5 py-1 rounded-full font-black shadow-sm">Encuestas</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-100">
+                    <thead class="bg-gray-50/50">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Fecha</th>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Empresa / Rol</th>
+                            <th class="px-6 py-4 text-center text-xs font-extrabold text-gray-400 uppercase tracking-wider">Calif.</th>
+                            <th class="px-6 py-4 text-left text-xs font-extrabold text-gray-400 uppercase tracking-wider">Comentarios</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-100">
+                        <?php if (empty($encuestas_recientes)): ?>
+                            <tr>
+                                <td colspan="4" class="px-6 py-6 text-center text-gray-400 italic text-sm">No hay encuestas registradas recientemente.</td>
+                            </tr>
+                        <?php else: ?>
+                            <?php foreach ($encuestas_recientes as $enc): ?>
+                                <tr class="hover:bg-slate-50/5 transition">
+                                    <td class="px-6 py-4 whitespace-nowrap text-xs text-gray-500 font-bold">
+                                        <?php echo date('d/m/y', strtotime($enc['createdAt'])); ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm font-bold text-gray-900"><?php echo htmlspecialchars($enc['razon_social']); ?></div>
+                                        <div class="text-[9px] font-black uppercase <?php echo $enc['rolCalificador'] == 'comprador' ? 'text-sky-600' : 'text-teal-600'; ?>">
+                                            <?php echo $enc['rolCalificador']; ?>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <div class="inline-flex items-center px-2 py-1 rounded-full bg-amber-50 text-amber-600 text-[10px] font-black border border-amber-100">
+                                            <?php echo $enc['calificacion']; ?> <i class="fas fa-star ml-1"></i>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-xs text-gray-600 italic">
+                                        <?php echo !empty($enc['comentario']) ? '"' . htmlspecialchars($enc['comentario']) . '"' : '<span class="text-gray-300">Sin comentarios</span>'; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -341,7 +501,7 @@
                 <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
                     <!-- Título con Icono -->
                     <div class="flex items-center gap-2.5 mb-6 text-left">
-                        <div class="p-2 bg-amber-500/10 text-amber-600 rounded-xl">
+                        <div class="p-2 bg-slate-500/10 text-slate-600 rounded-xl">
                             <i class="fas fa-edit text-lg"></i>
                         </div>
                         <h3 class="text-xl font-extrabold text-gray-800 tracking-tight">Editar Rueda de Negocios</h3>
@@ -351,19 +511,19 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Título de la Rueda <span class="text-red-500">*</span></label>
                             <input type="text" name="titulo" id="edit_titulo" required 
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200">
+                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200">
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Descripción del Evento <span class="text-red-500">*</span></label>
                             <textarea name="descripcion" id="edit_descripcion" rows="3" required 
-                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 resize-none"></textarea>
+                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 resize-none"></textarea>
                         </div>
 
                         <!-- Imagen de la Rueda -->
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fas fa-image text-amber-500"></i> Imagen o Banner de la Rueda
+                                <i class="fas fa-image text-slate-500"></i> Imagen o Banner de la Rueda
                             </label>
                             <div class="flex items-center gap-3 p-3 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
                                 <div id="edit_previewContainer" class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0">
@@ -371,7 +531,7 @@
                                     <img id="edit_imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
                                 </div>
                                 <div class="flex-1">
-                                    <input type="file" name="imagen" id="edit_imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" onchange="previewEditImage(this)">
+                                    <input type="file" name="imagen" id="edit_imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 cursor-pointer" onchange="previewEditImage(this)">
                                     <p class="text-[10px] text-gray-400 mt-1">Sube una nueva foto para reemplazar la actual.</p>
                                 </div>
                             </div>
@@ -414,9 +574,9 @@
                         </div>
 
                         <!-- Duración de Citas -->
-                        <div class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-3 flex items-center justify-between text-left">
+                        <div class="bg-slate-50/60 border border-slate-200/60 rounded-2xl p-3 flex items-center justify-between text-left">
                             <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-xs">
+                                <div class="w-8 h-8 rounded-xl bg-slate-500/10 text-slate-600 flex items-center justify-center font-black text-xs">
                                     <i class="fas fa-stopwatch"></i>
                                 </div>
                                 <div>
@@ -426,7 +586,7 @@
                             </div>
                             <div class="relative">
                                 <select name="duracion_cita" id="edit_duracion_cita" required 
-                                        class="bg-amber-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-300 pr-7">
+                                        class="bg-slate-900 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-300 pr-7">
                                     <option value="10">10 Minutos</option>
                                     <option value="15">15 Minutos</option>
                                     <option value="30" selected>30 Minutos</option>
@@ -443,7 +603,7 @@
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Estado del Evento</label>
                                 <div class="relative">
-                                    <select name="estado" id="edit_estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 appearance-none bg-white">
+                                    <select name="estado" id="edit_estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
                                         <option value="planeacion">Planeación</option>
                                         <option value="inscripciones">Inscripciones</option>
                                         <option value="activa">Activa</option>
@@ -459,7 +619,7 @@
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Modalidad</label>
                                 <div class="relative">
                                     <select name="modalidad" id="edit_modalidad_select" onchange="toggleEditUbicacion()" 
-                                            class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 appearance-none bg-white">
+                                            class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
                                         <option value="virtual">Virtual</option>
                                         <option value="presencial">Presencial</option>
                                     </select>
@@ -474,13 +634,13 @@
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Lugar / Dirección del Evento <span class="text-red-500">*</span></label>
                                 <input type="text" name="ubicacion" id="edit_ubicacion_input" 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200" 
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200" 
                                     placeholder="Ej: Calle 123 # 45-67, Centro de Convenciones">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Cantidad de Mesas Disponibles</label>
                                 <input type="number" name="cantidad_mesas" id="edit_cantidad_mesas_input" min="1" value="1"
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200">
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200">
                                 <p class="text-[10px] text-gray-400 mt-1.5 ml-1">
                                     <i class="fas fa-info-circle text-sky-400"></i>
                                     Define el número total de mesas físicas asignadas para este evento.
@@ -502,7 +662,7 @@
                             class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
                         Cancelar
                     </button>
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-amber-500 text-sm font-extrabold text-white hover:bg-amber-600 shadow-[0_4px_15px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
+                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-slate-900 text-sm font-extrabold text-white hover:bg-black shadow-[0_4px_15px_rgba(15,23,42,0.2)] hover:shadow-[0_6px_20px_rgba(15,23,42,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
                         Guardar Cambios
                     </button>
                 </div>
@@ -533,7 +693,7 @@
                 <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
                     <!-- Título con Icono -->
                     <div class="flex items-center gap-2.5 mb-6 text-left">
-                        <div class="p-2 bg-amber-500/10 text-amber-600 rounded-xl">
+                        <div class="p-2 bg-slate-500/10 text-slate-600 rounded-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                             </svg>
@@ -545,24 +705,24 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Nombre Completo <span class="text-red-500">*</span></label>
                             <input type="text" name="nombre" required 
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200"
+                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200"
                                    placeholder="Ej: Ana María García">
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Correo Electrónico <span class="text-red-500">*</span></label>
                             <input type="email" name="correo" required 
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200"
+                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200"
                                    placeholder="admin2@agecso.com">
                         </div>
 
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Contraseña Temporal <span class="text-red-500">*</span></label>
                             <input type="password" name="password" required 
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200"
+                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200"
                                    placeholder="********">
                             <p class="text-[10px] text-gray-400 mt-1.5 ml-1">
-                                <i class="fas fa-lock text-amber-400"></i>
+                                <i class="fas fa-lock text-slate-400"></i>
                                 El nuevo administrador podrá cambiarla después.
                             </p>
                         </div>
@@ -575,7 +735,7 @@
                             class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
                         Cancelar
                     </button>
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-amber-500 text-sm font-extrabold text-white hover:bg-amber-600 shadow-[0_4px_15px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
+                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-slate-900 text-sm font-extrabold text-white hover:bg-black shadow-[0_4px_15px_rgba(15,23,42,0.2)] hover:shadow-[0_6px_20px_rgba(15,23,42,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
                         Crear Administrador
                     </button>
                 </div>
@@ -606,7 +766,7 @@
                 <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
                     <!-- Título con Icono -->
                     <div class="flex items-center gap-2.5 mb-6 text-left">
-                        <div class="p-2 bg-amber-500/10 text-amber-600 rounded-xl">
+                        <div class="p-2 bg-slate-500/10 text-slate-600 rounded-xl">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -618,21 +778,21 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Título de la Rueda <span class="text-red-500">*</span></label>
                             <input type="text" name="titulo" required 
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200"
+                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200"
                                    placeholder="Ej: Rueda Regional de Agro 2026">
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Descripción del Evento <span class="text-red-500">*</span></label>
                             <textarea name="descripcion" rows="3" required 
-                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 resize-none" 
+                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 resize-none" 
                                       placeholder="Detalles sobre el alcance, sectores invitados y objetivos..."></textarea>
                         </div>
 
                         <!-- Imagen / Banner de la Rueda -->
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fas fa-image text-amber-500"></i> Imagen o Banner de la Rueda
+                                <i class="fas fa-image text-slate-500"></i> Imagen o Banner de la Rueda
                             </label>
                             <div class="flex items-center gap-3 p-3 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
                                 <div id="create_previewContainer" class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0">
@@ -640,7 +800,7 @@
                                     <img id="create_imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
                                 </div>
                                 <div class="flex-1">
-                                    <input type="file" name="imagen" id="create_imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" onchange="previewCreateImage(this)">
+                                    <input type="file" name="imagen" id="create_imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 cursor-pointer" onchange="previewCreateImage(this)">
                                     <p class="text-[10px] text-gray-400 mt-1">Formatos: JPG, PNG, WEBP.</p>
                                 </div>
                             </div>
@@ -649,15 +809,15 @@
                         <!-- Fechas de Inscripción -->
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-amber-600">Inscripciones Inicio</label>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-600">Inscripciones Inicio</label>
                                 <input type="text" name="fecha_inscripcion_inicio" id="fecha_inscripcion_inicio" required 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 bg-white cursor-pointer"
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 bg-white cursor-pointer"
                                     placeholder="Seleccionar fecha...">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-amber-600">Inscripciones Fin</label>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-600">Inscripciones Fin</label>
                                 <input type="text" name="fecha_inscripcion_fin" id="fecha_inscripcion_fin" required 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 bg-white cursor-pointer"
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 bg-white cursor-pointer"
                                     placeholder="Seleccionar fecha...">
                             </div>
                         </div>
@@ -703,9 +863,9 @@
                         </div>
 
                         <!-- Duración de Citas -->
-                        <div class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-3 flex items-center justify-between">
+                        <div class="bg-slate-50/60 border border-slate-200/60 rounded-2xl p-3 flex items-center justify-between">
                             <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-xs">
+                                <div class="w-8 h-8 rounded-xl bg-slate-500/10 text-slate-600 flex items-center justify-center font-black text-xs">
                                     <i class="fas fa-stopwatch"></i>
                                 </div>
                                 <div>
@@ -715,7 +875,7 @@
                             </div>
                             <div class="relative">
                                 <select name="duracion_cita" required 
-                                        class="bg-amber-500 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-300 pr-7">
+                                        class="bg-slate-900 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-300 pr-7">
                                     <option value="10">10 Minutos</option>
                                     <option value="15">15 Minutos</option>
                                     <option value="30" selected>30 Minutos</option>
@@ -732,7 +892,7 @@
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Estado Inicial</label>
                                 <div class="relative">
-                                    <select name="estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 appearance-none bg-white">
+                                    <select name="estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
                                         <option value="planeacion">Planeación</option>
                                         <option value="inscripciones">Inscripciones</option>
                                         <option value="activa">Activa</option>
@@ -746,7 +906,7 @@
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Modalidad</label>
                                 <div class="relative">
                                     <select name="modalidad" id="modalidad_select" onchange="toggleUbicacion()" 
-                                            class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 appearance-none bg-white">
+                                            class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
                                         <option value="virtual">Virtual</option>
                                         <option value="presencial">Presencial</option>
                                     </select>
@@ -761,13 +921,13 @@
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Lugar / Dirección del Evento <span class="text-red-500">*</span></label>
                                 <input type="text" name="ubicacion" id="ubicacion_input" 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200" 
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200" 
                                     placeholder="Ej: Calle 123 # 45-67, Centro de Convenciones">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Cantidad de Mesas Disponibles</label>
                                 <input type="number" name="cantidad_mesas" id="cantidad_mesas_input" min="1" value="1"
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200">
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200">
                                 <p class="text-[10px] text-gray-400 mt-1.5 ml-1">
                                     <i class="fas fa-info-circle text-sky-400"></i>
                                     Define el número total de mesas físicas asignadas para este evento.
@@ -789,7 +949,7 @@
                             class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
                         Cancelar
                     </button>
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-amber-500 text-sm font-extrabold text-white hover:bg-amber-600 shadow-[0_4px_15px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
+                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-slate-900 text-sm font-extrabold text-white hover:bg-black shadow-[0_4px_15px_rgba(15,23,42,0.2)] hover:shadow-[0_6px_20px_rgba(15,23,42,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
                         Crear Evento
                     </button>
                 </div>

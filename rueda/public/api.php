@@ -65,7 +65,15 @@ switch ($resource) {
         break;
 
     case 'auth':
-        // Aquí irá el login vía JWT para la App
+        require_once __DIR__ . '/../app/controllers/api/AuthApiController.php';
+        $controller = new AuthApiController($pdo);
+        if ($action == 'login') {
+            $controller->login();
+        } elseif ($action == 'me') {
+            $controller->me();
+        } elseif ($action == 'refresh') {
+            $controller->refresh();
+        }
         break;
 
     default:
