@@ -354,6 +354,9 @@
                                         <a href="index.php?controlador=vendedor&accion=verReuniones" class="text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
                                             <i class="far fa-calendar-check text-[10px]"></i> Agenda
                                         </a>
+                                        <button onclick="abrirModalOferta(<?php echo $r['id']; ?>)" class="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
+                                            <i class="fas fa-plus text-[10px]"></i> Nueva Oferta
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="p-5 bg-gray-50/30 grid grid-cols-2 text-center divide-x divide-gray-100">
@@ -523,62 +526,19 @@
     </div>
 </div>
 
-<!-- Modal de Encuesta de Satisfacción -->
-<div id="modalEncuesta" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="document.getElementById('modalEncuesta').classList.add('hidden')"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100">
-            <form action="index.php?controlador=vendedor&accion=registrarEncuesta" method="POST">
-                <input type="hidden" name="reunion_id" id="encuesta_reunion_id">
-                <div class="bg-white px-6 pt-6 pb-4 sm:p-7 sm:pb-5">
-                    <h3 class="text-xl leading-6 font-black text-gray-900 mb-4 flex items-center"><i class="fas fa-poll-h text-amber-500 mr-2"></i> Encuesta de Satisfacción</h3>
-                    <div class="space-y-4">
-                        <p class="text-sm text-gray-500 bg-gray-50 px-3.5 py-2.5 rounded-2xl border border-gray-100">Califica al comprador: <span id="encuesta_nombre_empresa" class="font-extrabold text-gray-800"></span></p>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700">Calificación General (1 a 5)</label>
-                            <select name="calificacion" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm focus:ring-[#0d9488] focus:border-[#0d9488]">
-                                <option value="5">5 - Excelente</option>
-                                <option value="4">4 - Muy buena</option>
-                                <option value="3">3 - Buena</option>
-                                <option value="2">2 - Regular</option>
-                                <option value="1">1 - Mala</option>
-                            </select>
-                        </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700">Expectativa de Negocio</label>
-                            <select name="expectativa_cumplida" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm focus:ring-[#0d9488] focus:border-[#0d9488]">
-                                <option value="inmediato">Inmediato</option>
-                                <option value="corto_plazo">Corto Plazo</option>
-                                <option value="mediano_plazo">Mediano Plazo</option>
-                                <option value="ninguno">Ninguno</option>
-                            </select>
-                        </div>
+<script>
+function abrirModalOferta(ruedaId) {
+    document.getElementById('cita_rueda_id_oferta').value = ruedaId;
+    document.getElementById('modalOferta').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700">¿Fue una cita efectiva?</label>
-                            <div class="mt-2 flex space-x-6">
-                                <label class="flex items-center text-sm font-medium text-gray-700 cursor-pointer"><input type="radio" name="efectividad_cita" value="1" checked class="mr-2 text-[#0d9488] focus:ring-[#0d9488]"> Sí</label>
-                                <label class="flex items-center text-sm font-medium text-gray-700 cursor-pointer"><input type="radio" name="efectividad_cita" value="0" class="mr-2 text-[#0d9488] focus:ring-[#0d9488]"> No</label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700">Comentarios</label>
-                            <textarea name="comentario" rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm focus:ring-[#0d9488] focus:border-[#0d9488]" placeholder="Escribe tus comentarios aquí..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-6 py-4 sm:px-7 sm:flex sm:flex-row-reverse rounded-b-3xl gap-2">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-full border border-transparent shadow-md px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-sm font-extrabold text-white transition duration-200">Enviar Encuesta</button>
-                    <button type="button" onclick="document.getElementById('modalEncuesta').classList.add('hidden')" class="mt-3 w-full inline-flex justify-center rounded-full border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-extrabold text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto transition duration-200">Cancelar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+function cerrarModalOferta() {
+    document.getElementById('modalOferta').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+</script>
 
 <?php require_once __DIR__ . '/../layout/modal_encuesta.php'; ?>
 
