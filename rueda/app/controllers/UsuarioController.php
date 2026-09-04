@@ -124,6 +124,11 @@ class UsuarioController {
                     $password = $_POST['password'] ?? '';
                     $passwordConfirm = $_POST['password_confirm'] ?? '';
                     $regData = $_SESSION['reg_data'] ?? null;
+                    $politicaAceptada = !empty($_POST['politica_datos']);
+
+                    if (!$politicaAceptada) {
+                        throw new Exception("Debes leer y autorizar la Política de Tratamiento y Protección de Datos Personales para continuar.");
+                    }
 
                     if (!$regData || empty($email) || empty($password)) {
                         throw new Exception("Datos incompletos para el registro.");

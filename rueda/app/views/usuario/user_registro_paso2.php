@@ -77,6 +77,62 @@ include __DIR__ . '/../layout/header.php';
                             placeholder="••••••••">
                     </div>
                 </div>
+
+                <!-- POLÍTICA DE TRATAMIENTO Y PROTECCIÓN DE DATOS PERSONALES -->
+                <div class="mt-4 pt-4 border-t border-gray-100">
+                    <div class="flex items-center gap-2 mb-2 ml-1">
+                        <i class="fas fa-shield-alt text-blue-600 text-sm"></i>
+                        <h3 class="text-xs font-black uppercase tracking-wider text-gray-800">Política de Tratamiento y Protección de Datos Personales</h3>
+                    </div>
+
+                    <!-- Contenedor scrollable con el texto completo de la política -->
+                    <div class="bg-gray-50/90 border border-gray-200/80 rounded-2xl p-4 text-xs text-gray-600 leading-relaxed max-h-44 overflow-y-auto space-y-3 shadow-inner custom-scrollbar">
+                        <p class="font-bold text-gray-800">
+                            En AGECSO – Asociación Grupo de Empresarios y Comerciantes de Sabana de Occidente, estamos comprometidos con la protección y el uso responsable de los datos personales suministrados por empresarios, comerciantes, aliados y demás usuarios que se registren en nuestra plataforma.
+                        </p>
+                        
+                        <div>
+                            <p class="font-bold text-gray-700 mb-1">Los datos recopilados serán utilizados exclusivamente para:</p>
+                            <ul class="list-disc pl-4 space-y-1 text-gray-600">
+                                <li>Gestionar el registro y vinculación a AGECSO.</li>
+                                <li>Informar sobre eventos, programas, beneficios, oportunidades comerciales y actividades de la Asociación.</li>
+                                <li>Facilitar conexiones y relacionamiento empresarial, cuando exista autorización para ello.</li>
+                                <li>Mantener actualizada nuestra base de datos y mejorar nuestros servicios.</li>
+                            </ul>
+                        </div>
+
+                        <p>
+                            AGECSO se compromete a proteger la información personal, utilizarla únicamente para las finalidades autorizadas y aplicar las medidas necesarias para evitar su pérdida, alteración, acceso o uso no autorizado.
+                        </p>
+
+                        <p>
+                            Al registrarse en nuestra página web, el titular autoriza el tratamiento de sus datos personales de acuerdo con esta política y con la normativa colombiana vigente sobre protección de datos personales.
+                        </p>
+
+                        <p>
+                            El titular podrá solicitar en cualquier momento la consulta, actualización, corrección o eliminación de sus datos, así como retirar su autorización cuando legalmente sea procedente.
+                        </p>
+
+                        <p>
+                            Para ejercer sus derechos o realizar consultas relacionadas con el tratamiento de datos personales, puede comunicarse con AGECSO a través de los canales oficiales publicados en nuestra página web.
+                        </p>
+
+                        <p class="font-black text-blue-700 pt-1 border-t border-gray-200/60">
+                            AGECSO – Conectamos los nodos del desarrollo económico.
+                        </p>
+                    </div>
+
+                    <!-- Casilla de Autorización -->
+                    <div class="mt-3.5 flex items-start gap-3 p-3 bg-blue-50/40 border border-blue-100 rounded-xl">
+                        <div class="flex items-center h-5">
+                            <input id="politica_datos" name="politica_datos" type="checkbox" required value="1"
+                                class="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer">
+                        </div>
+                        <label for="politica_datos" class="text-xs font-bold text-gray-700 cursor-pointer select-none leading-snug">
+                            He leído y autorizo el tratamiento de mis datos personales de acuerdo con la <span class="text-blue-600 underline font-extrabold">Política de Protección de Datos de AGECSO</span>.
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <div class="pt-6 flex flex-col sm:flex-row items-center gap-4">
@@ -97,6 +153,7 @@ document.querySelector('form').addEventListener('submit', function(e) {
     const pass = document.getElementById('password').value;
     const confirm = document.getElementById('password_confirm').value;
     const email = document.getElementById('correo').value.toLowerCase();
+    const politicaCheck = document.getElementById('politica_datos');
 
     if (pass.length < 6) {
         e.preventDefault();
@@ -114,6 +171,14 @@ document.querySelector('form').addEventListener('submit', function(e) {
     if (!emailOk) {
         e.preventDefault();
         alert('Ingresa un correo válido (ej: usuario@empresa.com)');
+        return;
+    }
+
+    if (politicaCheck && !politicaCheck.checked) {
+        e.preventDefault();
+        alert('Debes aceptar la Política de Tratamiento y Protección de Datos Personales para registrarte.');
+        politicaCheck.focus();
+        return;
     }
 });
 </script>
