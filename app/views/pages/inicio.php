@@ -575,7 +575,7 @@
                     ['img' => 'aliados13.jpeg', 'url' => '#'],
                     ['img' => 'aliados14.jpeg', 'url' => 'https://panaca.co/'],
                     ['img' => 'aliados15.png', 'url' => 'https://www.realsc.co/'],
-                    ['img' => 'aliados16.jpeg', 'url' => '#']
+                    ['img' => 'aliados16.jpeg', 'url' => 'https://colanta.com/']
                 ];
                 // Loop twice to ensure infinite, seamless scrolling
                 for ($i = 0; $i < 2; $i++) {
