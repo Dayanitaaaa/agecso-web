@@ -9,6 +9,11 @@ class CompradorController {
             session_start();
         }
         
+        // Asegurar que vendedorId permita NULL para soportar apartados de mesa sin vendedor
+        try {
+            $this->pdo->exec("ALTER TABLE reuniones MODIFY COLUMN vendedorId INT(10) UNSIGNED NULL DEFAULT NULL");
+        } catch (Exception $e) {}
+        
         // Verificar si el usuario está logueado y es comprador (slugRole = 'comprador')
         $userRole = isset($_SESSION['slugRole']) ? strtolower(trim($_SESSION['slugRole'])) : '';
         if (!isset($_SESSION['usuario_id']) || $userRole !== 'comprador') {
@@ -1178,11 +1183,24 @@ class CompradorController {
 
                 // Crear registro de apartado de mesa (sin vendedor asignado aún)
                 $estado_apartado = 'mesa_apartada';
-                $stmt = $this->pdo->prepare("
-                    INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
-                    VALUES (?, ?, NULL, ?, ?, NULL, ?, 'comprador', 'comprador', 1)
-                ");
-                $stmt->execute([$rueda_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa_limpio]);
+                try {
+                    $this->pdo->exec("ALTER TABLE reuniones MODIFY COLUMN vendedorId INT(10) UNSIGNED NULL DEFAULT NULL");
+                } catch (Exception $e) {}
+
+                try {
+                    $stmt = $this->pdo->prepare("
+                        INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
+                        VALUES (?, ?, NULL, ?, ?, NULL, ?, 'comprador', 'comprador', 1)
+                    ");
+                    $stmt->execute([$rueda_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa_limpio]);
+                } catch (PDOException $pdoEx) {
+                    // Si el esquema no permite NULL directamente, usar 0 como identificador de mesa sin asignar
+                    $stmt = $this->pdo->prepare("
+                        INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
+                        VALUES (?, ?, 0, ?, ?, NULL, ?, 'comprador', 'comprador', 1)
+                    ");
+                    $stmt->execute([$rueda_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa_limpio]);
+                }
 
                 header("Location: index.php?controlador=comprador&accion=verReuniones&msg=mesa_apartada");
                 exit();
