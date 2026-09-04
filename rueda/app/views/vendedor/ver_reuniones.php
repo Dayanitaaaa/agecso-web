@@ -106,7 +106,7 @@
                                     <div>
                                         <p class="font-extrabold text-gray-900"><?php echo htmlspecialchars($cita['nombre_comprador'] ?? 'N/A'); ?></p>
                                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1"><?php echo htmlspecialchars($cita['tituloRueda'] ?? 'N/A'); ?></p>
-                                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual'): ?>
+                                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda_actual['cantidadMesas'] ?? 0) > 0): ?>
                                             <div class="flex flex-wrap gap-1.5 mt-1.5">
                                                 <span class="text-[9px] bg-orange-50 text-orange-600 border border-orange-100 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
                                                     <i class="fas fa-map-marker-alt mr-1"></i> Presencial
@@ -155,7 +155,7 @@
                                     <div>
                                         <p class="font-extrabold text-gray-900"><?php echo htmlspecialchars($cita['nombre_comprador'] ?? 'N/A'); ?></p>
                                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1"><?php echo htmlspecialchars($cita['tituloRueda'] ?? 'N/A'); ?></p>
-                                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual'): ?>
+                                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda_actual['cantidadMesas'] ?? 0) > 0): ?>
                                             <div class="flex flex-wrap gap-1.5 mt-1.5">
                                                 <span class="text-[9px] bg-orange-50 text-orange-600 border border-orange-100 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
                                                     <i class="fas fa-map-marker-alt mr-1"></i> Presencial
@@ -214,7 +214,7 @@
                                     <div>
                                         <p class="font-extrabold text-gray-900"><?php echo htmlspecialchars($cita['nombre_comprador'] ?? 'N/A'); ?></p>
                                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1"><?php echo htmlspecialchars($cita['tituloRueda'] ?? 'N/A'); ?></p>
-                                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual'): ?>
+                                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda_actual['cantidadMesas'] ?? 0) > 0): ?>
                                             <div class="flex flex-wrap gap-1.5 mt-1.5">
                                                 <span class="text-[9px] bg-orange-50 text-orange-600 border border-orange-100 px-2 py-0.5 rounded-full font-black uppercase tracking-wider">
                                                     <i class="fas fa-map-marker-alt mr-1"></i> Presencial
@@ -293,7 +293,7 @@
                                             <p class="text-xs font-bold text-gray-700 truncate" title="<?php echo htmlspecialchars($rueda_actual['ubicacion'] ?? 'Ubicación no definida'); ?>">
                                                 <?php echo htmlspecialchars($rueda_actual['ubicacion'] ?? 'Ubicación no definida'); ?>
                                             </p>
-                                            <?php if (!empty($cita['numero_mesa'])): ?>
+                                            <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda_actual['cantidadMesas'] ?? 0) > 0 && !empty($cita['numero_mesa'])): ?>
                                                 <div class="mt-2 pt-2 border-t border-orange-100 flex items-center justify-between">
                                                     <span class="text-[9px] font-bold text-orange-600 uppercase">Mesa / Stand:</span>
                                                     <span class="text-sm font-black text-orange-700"><?php echo htmlspecialchars($cita['numero_mesa']); ?></span>
@@ -368,7 +368,7 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         <p class="text-[10px] font-bold text-gray-500 uppercase tracking-wider"><?php echo htmlspecialchars($cita['tituloRueda'] ?? 'N/A'); ?></p>
-                                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual'): ?>
+                                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda_actual['cantidadMesas'] ?? 0) > 0): ?>
                                             <p class="text-[9px] text-orange-600 font-black mt-1 uppercase">
                                                 <i class="fas fa-map-marker-alt mr-1"></i> Presencial 
                                                 <?php if(!empty($cita['numero_mesa'])) echo " - Mesa " . htmlspecialchars($cita['numero_mesa']); ?>

@@ -96,7 +96,7 @@
                                     <div>
                                         <p class="font-extrabold text-gray-900"><?php echo htmlspecialchars($cita['nombre_vendedor'] ?? 'N/A'); ?></p>
                                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1"><?php echo htmlspecialchars($cita['tituloRueda'] ?? 'N/A'); ?></p>
-                                        <?php if (!empty($cita['numero_mesa'])): ?>
+                                        <?php if (($cita['modalidad'] ?? 'virtual') !== 'virtual' && !empty($cita['numero_mesa'])): ?>
                                             <p class="text-[10px] text-[#00a2ff] font-bold mt-1 uppercase">
                                                 <i class="fas fa-chair mr-1"></i> <?php echo htmlspecialchars($cita['numero_mesa']); ?>
                                             </p>
@@ -138,7 +138,7 @@
                         </div>
                     <?php else: ?>
                         <?php foreach ($citas_programadas as $cita): ?>
-                            <?php $esMesaApartada = ($cita['estadoCita'] == 'mesa_apartada'); ?>
+                            <?php $esMesaApartada = ($cita['estadoCita'] == 'mesa_apartada' && ($cita['modalidad'] ?? 'virtual') !== 'virtual'); ?>
                             <div class="bg-white p-5 rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-gray-100 hover:border-emerald-200 transition-all duration-300 transform hover:-translate-y-1">
                                 <div class="flex justify-between items-start mb-3">
                                     <div>
@@ -154,7 +154,7 @@
                                             <p class="font-extrabold text-gray-900"><?php echo htmlspecialchars($cita['nombre_vendedor'] ?? 'N/A'); ?></p>
                                         <?php endif; ?>
                                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1"><?php echo htmlspecialchars($cita['tituloRueda'] ?? 'N/A'); ?></p>
-                                        <?php if (!empty($cita['numero_mesa'])): ?>
+                                        <?php if (($cita['modalidad'] ?? 'virtual') !== 'virtual' && !empty($cita['numero_mesa'])): ?>
                                             <p class="text-[10px] text-[#00a2ff] font-bold mt-1 uppercase">
                                                 <i class="fas fa-chair mr-1"></i> <?php echo htmlspecialchars($cita['numero_mesa']); ?>
                                             </p>
@@ -162,8 +162,10 @@
                                     </div>
                                     <?php if ($esMesaApartada): ?>
                                         <span class="text-[10px] bg-amber-50 text-amber-600 border border-amber-100 px-2.5 py-1 rounded-full font-black uppercase tracking-wider"><i class="fas fa-chair mr-1"></i> Mesa Apartada</span>
-                                    <?php else: ?>
+                                    <?php elseif (($cita['modalidad'] ?? 'virtual') !== 'virtual'): ?>
                                         <span class="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 px-2.5 py-1 rounded-full font-black uppercase tracking-wider"><i class="fas fa-check-circle mr-1"></i> Agendada</span>
+                                    <?php else: ?>
+                                        <span class="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 px-2.5 py-1 rounded-full font-black uppercase tracking-wider"><i class="fas fa-check-circle mr-1"></i> Confirmada</span>
                                     <?php endif; ?>
                                 </div>
                                 <div class="text-xs text-gray-600 font-bold bg-gray-50 px-3 py-2 rounded-xl border border-gray-100 inline-flex items-center mb-4">

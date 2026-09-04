@@ -366,7 +366,8 @@ class VendedorController {
 
             // Obtener citas del vendedor FILTRADAS POR RUEDA
             $sql_citas = "
-                SELECT r.*, e.razon_social as nombre_comprador, rn.nombreRueda as tituloRueda, rn.id as ruedaId
+                SELECT r.*, e.razon_social as nombre_comprador, rn.nombreRueda as tituloRueda, 
+                       rn.id as ruedaId, rn.modalidad, rn.cantidadMesas
                 FROM reuniones r
                 JOIN empresas e ON r.compradorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id

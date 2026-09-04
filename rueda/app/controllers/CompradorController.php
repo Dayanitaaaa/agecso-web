@@ -557,7 +557,9 @@ class CompradorController {
 
             // Obtener citas del comprador FILTRADAS POR RUEDA
             $sql_citas = "
-                SELECT r.*, e.razon_social as nombre_vendedor, COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, rn.id as ruedaId
+                SELECT r.*, e.razon_social as nombre_vendedor, 
+                       COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, 
+                       rn.id as ruedaId, rn.modalidad, rn.cantidadMesas
                 FROM reuniones r
                 LEFT JOIN empresas e ON r.vendedorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
@@ -934,7 +936,7 @@ class CompradorController {
 
                 $stmt = $this->pdo->prepare("
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, linkReunion, numero_mesa, estadoCita, ultimaAccionPor, propositor, contadorContrapropuestas) 
-                    VALUES (?, ?, ?, ?, ?, ?, 'pendiente', 'comprador', 'comprador', 0)
+                    VALUES (?, ?, ?, ?, ?, ?, 'pendiente', 'comprador', 'comprador', 1)
                 ");
                 $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link, $mesa]);
 
@@ -1172,7 +1174,7 @@ class CompradorController {
                 $estado_apartado = 'mesa_apartada';
                 $stmt = $this->pdo->prepare("
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
-                    VALUES (?, ?, ?, ?, ?, NULL, ?, 'comprador', 'comprador', 0)
+                    VALUES (?, ?, ?, ?, ?, NULL, ?, 'comprador', 'comprador', 1)
                 ");
                 $stmt->execute([$rueda_id, $comprador_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa]);
 

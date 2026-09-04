@@ -218,7 +218,7 @@
                                             <i class="fas fa-check-circle text-[10px]"></i> Reunión <?php echo ucfirst($estado_reunion); ?>
                                         </button>
                                     <?php endif; ?>
-                                <?php elseif (!empty($demanda['mesa_apartada'])): ?>
+                                <?php elseif (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda_actual['cantidadMesas'] ?? 0) > 0 && !empty($demanda['mesa_apartada'])): ?>
                                     <button onclick="solicitarReunion(<?php echo $demanda['empresaId']; ?>, <?php echo $rueda_actual['id']; ?>, '<?php echo htmlspecialchars(addslashes($demanda['razon_social'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($demanda['nombreSector'] ?? 'Sin sector especificado.')); ?>', '<?php echo $demanda['mesa_apartada']; ?>')" 
                                             class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-lg shadow-amber-500/20 flex flex-col items-center justify-center gap-0.5 group-hover:scale-[1.02] transform">
                                         <span class="flex items-center gap-2">
@@ -282,18 +282,20 @@
                             </div>
                         </div>
 
-                        <div id="info_mesa_apartada" class="flex items-center gap-3 pt-3 border-t border-teal-100/50">
-                            <div class="p-2 bg-amber-100 text-amber-600 rounded-xl shrink-0">
-                                <i class="fas fa-map-marker-alt"></i>
+                        <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda_actual['cantidadMesas'] ?? 0) > 0): ?>
+                            <div id="info_mesa_apartada" class="flex items-center gap-3 pt-3 border-t border-teal-100/50">
+                                <div class="p-2 bg-amber-100 text-amber-600 rounded-xl shrink-0">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-amber-600 tracking-wider uppercase">Ubicación de la Cita</p>
+                                    <p class="font-bold text-gray-800 text-sm mt-0.5">
+                                        Mesa <span id="modal_numero_mesa" class="text-amber-700 font-black"></span> 
+                                        (Reservada por el comprador)
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-amber-600 tracking-wider uppercase">Ubicación de la Cita</p>
-                                <p class="font-bold text-gray-800 text-sm mt-0.5">
-                                    Mesa <span id="modal_numero_mesa" class="text-amber-700 font-black"></span> 
-                                    (Reservada por el comprador)
-                                </p>
-                            </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Campos del Formulario -->

@@ -36,14 +36,16 @@
             </div>
         </div>
 
-        <div class="bg-teal-50/50 border border-teal-100 p-4 rounded-2xl mb-10 flex items-start gap-4">
-            <div class="p-2 bg-teal-100 text-teal-600 rounded-xl shrink-0">
-                <i class="fas fa-lightbulb text-sm"></i>
+        <?php if (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0): ?>
+            <div class="bg-teal-50/50 border border-teal-100 p-4 rounded-2xl mb-10 flex items-start gap-4">
+                <div class="p-2 bg-teal-100 text-teal-600 rounded-xl shrink-0">
+                    <i class="fas fa-lightbulb text-sm"></i>
+                </div>
+                <p class="text-xs text-teal-800 font-bold leading-relaxed">
+                    <b>Estrategia de venta:</b> Revisa las demandas específicas de cada comprador. Si ves una <b>Mesa Apartada</b>, significa que el comprador está esperando solicitudes físicas en ese lugar. ¡Solicita tu cita ahora!
+                </p>
             </div>
-            <p class="text-xs text-teal-800 font-bold leading-relaxed">
-                <b>Estrategia de venta:</b> Revisa las demandas específicas de cada comprador. Si ves una <b>Mesa Apartada</b>, significa que el comprador está esperando solicitudes físicas en ese lugar. ¡Solicita tu cita ahora!
-            </p>
-        </div>
+        <?php endif; ?>
 
         <!-- FILTROS DE BÚSQUEDA -->
         <div class="bg-white p-6 rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 mb-10">
@@ -88,7 +90,8 @@
         <div class="mb-14">
             <div class="flex items-center justify-between mb-8">
                 <h2 class="text-sm font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3">
-                    <i class="fas fa-chair text-[#0d9488]"></i> Compradores en Mesa (Esperando Solicitud)
+                    <i class="fas <?php echo ($rueda['modalidad'] ?? 'virtual') === 'virtual' ? 'fa-building' : 'fa-chair'; ?> text-[#0d9488]"></i> 
+                    <?php echo ($rueda['modalidad'] ?? 'virtual') === 'virtual' ? 'Compradores Participantes' : 'Compradores en Mesa (Esperando Solicitud)'; ?>
                 </h2>
                 <div class="bg-teal-50 px-4 py-1.5 rounded-full border border-teal-100">
                     <span class="text-[10px] font-black text-[#0d9488] uppercase tracking-wider"><?php echo count($compradores); ?> resultados</span>
@@ -118,7 +121,7 @@
                                                 <i class="fas fa-star mr-1"></i> Match CIIU
                                             </span>
                                         <?php endif; ?>
-                                        <?php if (!empty($c['mesa_apartada'])): ?>
+                                        <?php if (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0 && !empty($c['mesa_apartada'])): ?>
                                             <span class="text-[9px] bg-amber-50 text-amber-600 px-3 py-1 rounded-full font-black uppercase tracking-wider border border-amber-100 flex items-center gap-1.5 shadow-sm">
                                                 <i class="fas fa-chair text-[10px] animate-pulse"></i> 
                                                 Mesa <?php echo htmlspecialchars($c['mesa_apartada']); ?> Apartada
@@ -127,7 +130,7 @@
                                     </div>
                                 </div>
                                 
-                                <?php if (!empty($c['mesa_apartada'])): ?>
+                                <?php if (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0 && !empty($c['mesa_apartada'])): ?>
                                         <div class="flex items-center gap-2 mb-2">
                                             <span class="bg-amber-100 text-amber-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter border border-amber-200 shadow-sm">
                                                 <i class="fas fa-chair mr-1"></i> Ubicado en Mesa: <?php echo htmlspecialchars($c['mesa_apartada']); ?>
@@ -180,7 +183,7 @@
                                                 <i class="fas fa-check-circle text-[10px]"></i> Reunión <?php echo ucfirst($estado_reunion); ?>
                                             </button>
                                         <?php endif; ?>
-                                    <?php elseif (!empty($c['mesa_apartada'])): ?>
+                                    <?php elseif (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0 && !empty($c['mesa_apartada'])): ?>
                                         <button onclick="abrirModalSolicitud(<?php echo $c['id']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado')); ?>', '<?php echo $c['fecha_apartado']; ?>', '<?php echo $c['mesa_apartada']; ?>')" 
                                                 class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-lg shadow-amber-500/20 flex flex-col items-center justify-center gap-0.5 group-hover:scale-[1.02] transform">
                                             <span class="flex items-center gap-2">
@@ -253,18 +256,20 @@
                             </div>
                         </div>
 
-                        <div id="info_mesa_apartada" class="flex items-center gap-3 pt-3 border-t border-teal-100/50">
-                            <div class="p-2 bg-amber-100 text-amber-600 rounded-xl shrink-0">
-                                <i class="fas fa-map-marker-alt"></i>
+                        <?php if (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0): ?>
+                            <div id="info_mesa_apartada" class="flex items-center gap-3 pt-3 border-t border-teal-100/50">
+                                <div class="p-2 bg-amber-100 text-amber-600 rounded-xl shrink-0">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-bold text-amber-600 tracking-wider uppercase">Ubicación de la Cita</p>
+                                    <p class="font-bold text-gray-800 text-sm mt-0.5">
+                                        Mesa <span id="modal_numero_mesa" class="text-amber-700 font-black"></span> 
+                                        (Reservada por el comprador)
+                                    </p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-[10px] font-bold text-amber-600 tracking-wider uppercase">Ubicación de la Cita</p>
-                                <p class="font-bold text-gray-800 text-sm mt-0.5">
-                                    Mesa <span id="modal_numero_mesa" class="text-amber-700 font-black"></span> 
-                                    (Reservada por el comprador)
-                                </p>
-                            </div>
-                        </div>
+                        <?php endif; ?>
                     </div>
                     
                     <!-- Campos del Formulario -->

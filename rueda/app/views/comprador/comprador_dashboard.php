@@ -334,9 +334,11 @@
                                         <a href="index.php?controlador=comprador&accion=verParticipantes&id=<?php echo $r['id']; ?>" class="text-xs bg-sky-600 text-white hover:bg-sky-700 px-6 py-3 rounded-full font-black transition-all duration-300 shadow-lg shadow-sky-500/20 flex items-center gap-2 group">
                                             <i class="fas fa-search-dollar text-[10px]"></i> Ver Ofertas
                                         </a>
-                                        <a href="index.php?controlador=comprador&accion=apartarMesa&id=<?php echo $r['id']; ?>" class="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
-                                            <i class="fas fa-chair text-[10px]"></i> Mesa
-                                        </a>
+                                        <?php if (($r['modalidad'] ?? 'virtual') !== 'virtual' && ($r['cantidadMesas'] ?? 0) > 0): ?>
+                                            <a href="index.php?controlador=comprador&accion=apartarMesa&id=<?php echo $r['id']; ?>" class="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
+                                                <i class="fas fa-chair text-[10px]"></i> Mesa
+                                            </a>
+                                        <?php endif; ?>
                                         <a href="index.php?controlador=comprador&accion=verReuniones" class="text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
                                             <i class="far fa-calendar-check text-[10px]"></i> Agenda
                                         </a>

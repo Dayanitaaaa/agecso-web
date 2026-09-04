@@ -45,7 +45,7 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <a href="index.php?controlador=vendedor&accion=seleccionarRuedaCompradores" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(13,148,136,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
                 <h3 class="text-xl font-black text-gray-900 mb-2">Buscar Clientes</h3>
-                <p class="text-gray-500 text-sm font-medium leading-relaxed">Encuentra compradores interesados y solicita reuniones en sus mesas asignadas.</p>
+                <p class="text-gray-500 text-sm font-medium leading-relaxed">Encuentra compradores interesados y solicita reuniones para presentar tus ofertas.</p>
                 <div class="mt-6 flex items-center text-[#0d9488] font-black text-xs uppercase tracking-widest">
                     Ver Compradores <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
                 </div>
@@ -87,14 +87,14 @@
                         <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-indigo-200 border border-white/20">2</div>
                         <div>
                             <p class="font-black text-sm uppercase tracking-wider text-indigo-200 mb-1">Paso 2: Busca</p>
-                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Haz clic en <b>"Buscar Clientes"</b> para ver a los compradores y solicitarles una cita en su mesa.</p>
+                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Haz clic en <b>"Buscar Clientes"</b> para ver a los compradores y solicitarles una cita.</p>
                         </div>
                     </div>
                     <div class="flex gap-4">
                         <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-indigo-200 border border-white/20">3</div>
                         <div>
                             <p class="font-black text-sm uppercase tracking-wider text-indigo-200 mb-1">Paso 3: Prepárate</p>
-                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Revisa <b>"Mis Citas"</b> constantemente. Cuando acepten tu solicitud, tendrás una mesa y hora fija para negociar.</p>
+                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Revisa <b>"Mis Citas"</b> constantemente. Cuando acepten tu solicitud, tendrás una hora fija para negociar.</p>
                         </div>
                     </div>
                 </div>

@@ -388,7 +388,7 @@
                             </p>
                         </div>
 
-                        <?php if ($rueda['modalidad'] === 'virtual'): ?>
+                        <?php if (($rueda['modalidad'] ?? 'virtual') === 'virtual' || ($rueda['cantidadMesas'] ?? 0) <= 0): ?>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Link de Reunión (Opcional)</label>
                                 <input type="url" name="link_reunion" placeholder="https://meet.google.com/..." 
