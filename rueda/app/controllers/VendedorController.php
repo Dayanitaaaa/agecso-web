@@ -724,7 +724,7 @@ class VendedorController {
 
             // Obtener compradores con sus demandas y número de mesa si tienen
             $sql = "
-                SELECT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.descripcion, e.ciiu_personalizado, e.ciiu_nombre_personalizado, s.ciiu_clase,
+                SELECT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.ciiu_personalizado, e.ciiu_nombre_personalizado, s.ciiu_clase, s.nombreSector,
                        (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1) as mesa_apartada
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
@@ -736,8 +736,7 @@ class VendedorController {
             $params = [$ruedaId, $ruedaId, $miEmpresa['id']];
 
             if (!empty($busqueda)) {
-                $sql .= " AND (e.razon_social LIKE ? OR e.descripcion LIKE ? OR e.ciiu_personalizado LIKE ? OR e.ciiu_nombre_personalizado LIKE ?)";
-                $params[] = "%$busqueda%";
+                $sql .= " AND (e.razon_social LIKE ? OR e.ciiu_personalizado LIKE ? OR e.ciiu_nombre_personalizado LIKE ?)";
                 $params[] = "%$busqueda%";
                 $params[] = "%$busqueda%";
                 $params[] = "%$busqueda%";

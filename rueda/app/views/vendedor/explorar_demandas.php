@@ -199,15 +199,19 @@
                             </div>
                             
                             <div class="px-7 pb-7">
-                                <?php if ($tiene_reunion): ?>
-                                    <span class="inline-flex items-center justify-center w-full px-4 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] bg-gray-100 text-gray-400 border border-gray-100">
-                                        <i class="fas fa-check mr-2"></i> Ya tienes reunión
-                                    </span>
+                                <?php if (!empty($demanda['mesa_apartada'])): ?>
+                                    <button onclick="solicitarReunion(<?php echo $demanda['empresaId']; ?>, <?php echo $rueda_actual['id']; ?>, '<?php echo htmlspecialchars(addslashes($demanda['razon_social'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($demanda['nombreSector'] ?? 'Sin sector especificado.')); ?>', '<?php echo $demanda['mesa_apartada']; ?>')" 
+                                            class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-lg shadow-amber-500/20 flex flex-col items-center justify-center gap-0.5 group-hover:scale-[1.02] transform">
+                                        <span class="flex items-center gap-2">
+                                            <i class="fas fa-calendar-check text-[10px]"></i> Solicitar a esta Mesa
+                                        </span>
+                                        <span class="text-[8px] opacity-90 font-bold uppercase tracking-widest">Mesa <?php echo $demanda['mesa_apartada']; ?> está esperando</span>
+                                    </button>
                                 <?php else: ?>
-                                <button onclick="solicitarReunion(<?php echo $demanda['empresaId']; ?>, <?php echo $rueda_actual['id']; ?>, '<?php echo htmlspecialchars(addslashes($demanda['razon_social'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($demanda['descripcion'] ?? 'Sin descripción.')); ?>', '<?php echo $demanda['mesa_apartada'] ?? ''; ?>')" 
-                                            class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2">
-                                        <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Reunión
-                                </button>
+                                    <button onclick="solicitarReunion(<?php echo $demanda['empresaId']; ?>, <?php echo $rueda_actual['id']; ?>, '<?php echo htmlspecialchars(addslashes($demanda['razon_social'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($demanda['nombreSector'] ?? 'Sin sector especificado.')); ?>')" 
+                                            class="w-full bg-teal-600 hover:bg-teal-700 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2">
+                                        <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Cita
+                                    </button>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -253,7 +257,7 @@
                                 <i class="fas fa-building"></i>
                             </div>
                             <div>
-                                <p class="text-[10px] font-bold text-[#0d9488] tracking-wider uppercase">Empresa Compradora</p>
+                                <p class="text-[10px] font-bold text-[#0d9488] tracking-wider uppercase">Sector Económico</p>
                                 <p id="nombre_comprador" class="font-black text-gray-900 text-base mt-0.5"></p>
                                 <p id="modal_descripcion_comprador" class="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-3"></p>
                             </div>
