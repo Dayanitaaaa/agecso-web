@@ -1182,7 +1182,7 @@ class CompradorController {
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
                     VALUES (?, ?, NULL, ?, ?, NULL, ?, 'comprador', 'comprador', 1)
                 ");
-                $stmt->execute([$rueda_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa]);
+                $stmt->execute([$rueda_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa_limpio]);
 
                 header("Location: index.php?controlador=comprador&accion=verReuniones&msg=mesa_apartada");
                 exit();

@@ -140,25 +140,38 @@ class ReunionApiController extends BaseApiController {
 
             // 3. Obtener mesas ocupadas
             if ($fecha_hora) {
-                // Si se envía fecha_hora, verificar mesas ocupadas en ese bloque temporal
+                // Si se envía fecha_hora, verificar mesas ocupadas en ese bloque temporal y mesas apartadas para esa fecha
                 $fechaBase = strtotime($fecha_hora);
-                // Restamos 1 minuto menos de la duración para permitir citas seguidas
+                $fechaSolo = date('Y-m-d', $fechaBase);
                 $buffer = $duracion - 1;
                 $horaInicio = date('Y-m-d H:i:s', strtotime("-$buffer minutes", $fechaBase));
                 $horaFin = date('Y-m-d H:i:s', strtotime("+$buffer minutes", $fechaBase));
 
-                // Obtener mesas ocupadas: cualquier mesa con cita activa en ese rango
-                $stmt_ocupadas = $this->pdo->prepare("
+                // Una mesa está ocupada si:
+                // a) Está apartada por un comprador para esa fecha o evento (estado 'mesa_apartada')
+                // b) Tiene una cita agendada/en curso en ese rango de horas
+                $sql = "
                     SELECT DISTINCT numero_mesa FROM reuniones 
                     WHERE ruedaId = ? 
-                    AND estadoCita IN ('mesa_apartada', 'pendiente', 'aceptada', 'agendada', 'realizada', 'negociando')
                     AND numero_mesa IS NOT NULL
-                    AND (fechaHora BETWEEN ? AND ?)
-                ");
-                $stmt_ocupadas->execute([$rueda_id, $horaInicio, $horaFin]);
-                $ocupadas_por_otros = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
+                    AND (
+                        (estadoCita = 'mesa_apartada' AND DATE(fechaHora) = ?)
+                        OR (estadoCita IN ('pendiente', 'aceptada', 'agendada', 'realizada', 'negociando') AND (fechaHora BETWEEN ? AND ?))
+                    )
+                ";
+                $params = [$rueda_id, $fechaSolo, $horaInicio, $horaFin];
+
+                // Si viene comprador_id, no bloquear al mismo comprador si ya es su mesa
+                if ($comprador_id) {
+                    $sql .= " AND (compradorId != ? OR estadoCita != 'mesa_apartada')";
+                    $params[] = $comprador_id;
+                }
+
+                $stmt_ocupadas = $this->pdo->prepare($sql);
+                $stmt_ocupadas->execute($params);
+                $ocupadas_raw = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
             } else {
-                // Si no se envía fecha_hora, obtener todas las mesas ocupadas en la rueda
+                // Si no se envía fecha_hora, obtener todas las mesas con apartado o citas activas
                 $stmt_ocupadas = $this->pdo->prepare("
                     SELECT DISTINCT numero_mesa FROM reuniones 
                     WHERE ruedaId = ? 
@@ -166,30 +179,42 @@ class ReunionApiController extends BaseApiController {
                     AND numero_mesa IS NOT NULL
                 ");
                 $stmt_ocupadas->execute([$rueda_id]);
-                $ocupadas_por_otros = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
+                $ocupadas_raw = $stmt_ocupadas->fetchAll(PDO::FETCH_COLUMN);
             }
 
-            // 4. Generar lista de mesas disponibles
+            // Normalizar números de mesa ocupadas (extraer solo los dígitos para comparación robusta)
+            $ocupadas_numeros = [];
+            $ocupadas_etiquetas = [];
+            foreach ($ocupadas_raw as $mesa_str) {
+                $num = preg_replace('/[^0-9]/', '', (string)$mesa_str);
+                if ($num !== '') {
+                    $num_int = (int)$num;
+                    if (!in_array($num_int, $ocupadas_numeros)) {
+                        $ocupadas_numeros[] = $num_int;
+                        $ocupadas_etiquetas[] = "Mesa $num_int";
+                    }
+                }
+            }
+
+            // 4. Generar lista de mesas disponibles (números enteros limpios para los selectores)
             $disponibles = [];
             for ($i = 1; $i <= $total_mesas; $i++) {
-                $nombre_mesa = "Mesa $i";
-                // Una mesa está disponible si:
-                // - No está ocupada por OTRO comprador
-                if (!in_array($nombre_mesa, $ocupadas_por_otros)) {
-                    $disponibles[] = $nombre_mesa;
+                if (!in_array($i, $ocupadas_numeros)) {
+                    $disponibles[] = (string)$i;
                 }
             }
             
             error_log("[MESAS_DEBUG] Mesas disponibles: " . json_encode($disponibles));
+            error_log("[MESAS_DEBUG] Mesas ocupadas: " . json_encode($ocupadas_etiquetas));
             error_log("[MESAS_DEBUG] Mesa asignada al comprador: " . ($mesa_asignada ?? 'ninguna'));
 
             // Incluir siempre información de mesas ocupadas para mostrar en el frontend
             $response = [
                 'mesas' => $disponibles,
-                'mesa_sugerida' => $mesa_asignada,
+                'mesa_sugerida' => $mesa_asignada ? preg_replace('/[^0-9]/', '', (string)$mesa_asignada) : null,
                 'debug' => [
                     'total_mesas_configuradas' => $total_mesas,
-                    'mesas_ocupadas' => $ocupadas_por_otros
+                    'mesas_ocupadas' => $ocupadas_etiquetas
                 ]
             ];
             
