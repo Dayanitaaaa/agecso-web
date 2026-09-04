@@ -462,7 +462,7 @@
                 </button>
             </div>
 
-            <form action="index.php?controlador=comprador&accion=registrarDemanda" method="POST">
+            <form action="index.php?controlador=comprador&accion=registrarRequerimiento" method="POST">
                 <input type="hidden" name="empresa_id" value="<?php echo $empresa['id']; ?>">
                 <input type="hidden" name="rueda_id" id="nueva_demanda_rueda_id">
                 <input type="hidden" name="redirect_to" value="dashboard">
