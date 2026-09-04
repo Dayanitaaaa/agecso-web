@@ -114,7 +114,8 @@
                                             <span class="text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow-sm
                                                 <?php echo $estado_reunion === 'aceptada' ? 'bg-emerald-500 text-white' : 
                                                     ($estado_reunion === 'realizada' ? 'bg-blue-500 text-white' : 
-                                                    'bg-amber-500 text-white'); ?>">
+                                                    ($estado_reunion === 'cancelada' || $estado_reunion === 'rechazada' ? 'bg-rose-500 text-white' : 
+                                                    'bg-amber-500 text-white')); ?>">
                                                 <i class="fas fa-handshake mr-1"></i>
                                                 <?php echo ucfirst($estado_reunion ?? ''); ?>
                                             </span>
@@ -199,7 +200,25 @@
                             </div>
                             
                             <div class="px-7 pb-7">
-                                <?php if (!empty($demanda['mesa_apartada'])): ?>
+                                <?php if ($tiene_reunion): ?>
+                                    <?php if (in_array($estado_reunion, ['pendiente', 'aceptada', 'agendada', 'negociando'])): ?>
+                                        <button disabled class="w-full bg-gray-50 text-gray-400 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-gray-100 flex items-center justify-center gap-2">
+                                            <i class="fas fa-clock text-[10px]"></i> Reunión ya solicitada
+                                        </button>
+                                    <?php elseif ($estado_reunion === 'cancelada' || $estado_reunion === 'rechazada'): ?>
+                                        <button onclick="solicitarReunion(<?php echo $demanda['empresaId']; ?>, <?php echo $rueda_actual['id']; ?>, '<?php echo htmlspecialchars(addslashes($demanda['razon_social'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($demanda['nombreSector'] ?? 'Sin sector especificado.')); ?>', '<?php echo $demanda['mesa_apartada'] ?? ''; ?>')" 
+                                                class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 border border-rose-200 flex flex-col items-center justify-center gap-0.5">
+                                            <span class="flex items-center gap-2">
+                                                <i class="fas fa-redo text-[10px]"></i> Reintentar Solicitud
+                                            </span>
+                                            <span class="text-[8px] opacity-90 font-bold uppercase tracking-widest">(Anterior fue <?php echo $estado_reunion; ?>)</span>
+                                        </button>
+                                    <?php else: ?>
+                                        <button disabled class="w-full bg-blue-50 text-blue-400 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-blue-100 flex items-center justify-center gap-2">
+                                            <i class="fas fa-check-circle text-[10px]"></i> Reunión <?php echo ucfirst($estado_reunion); ?>
+                                        </button>
+                                    <?php endif; ?>
+                                <?php elseif (!empty($demanda['mesa_apartada'])): ?>
                                     <button onclick="solicitarReunion(<?php echo $demanda['empresaId']; ?>, <?php echo $rueda_actual['id']; ?>, '<?php echo htmlspecialchars(addslashes($demanda['razon_social'] ?? '')); ?>', '<?php echo htmlspecialchars(addslashes($demanda['nombreSector'] ?? 'Sin sector especificado.')); ?>', '<?php echo $demanda['mesa_apartada']; ?>')" 
                                             class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-lg shadow-amber-500/20 flex flex-col items-center justify-center gap-0.5 group-hover:scale-[1.02] transform">
                                         <span class="flex items-center gap-2">

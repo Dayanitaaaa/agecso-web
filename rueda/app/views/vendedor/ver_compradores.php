@@ -156,8 +156,31 @@
                             </div>
                             
                             <div class="px-7 pb-7">
+                                <?php 
+                                    $tiene_reunion = isset($reuniones_index[$c['id']]);
+                                    $estado_reunion = $tiene_reunion ? $reuniones_index[$c['id']] : null;
+                                ?>
+
                                 <?php if ($rueda['estadoRueda'] === 'activa'): ?>
-                                    <?php if (!empty($c['mesa_apartada'])): ?>
+                                    <?php if ($tiene_reunion): ?>
+                                        <?php if (in_array($estado_reunion, ['pendiente', 'aceptada', 'agendada', 'negociando'])): ?>
+                                            <button disabled class="w-full bg-gray-50 text-gray-400 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-gray-100 flex items-center justify-center gap-2">
+                                                <i class="fas fa-clock text-[10px]"></i> Reunión ya solicitada
+                                            </button>
+                                        <?php elseif ($estado_reunion === 'cancelada' || $estado_reunion === 'rechazada'): ?>
+                                            <button onclick="abrirModalSolicitud(<?php echo $c['id']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado')); ?>')" 
+                                                    class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 border border-rose-200 flex flex-col items-center justify-center gap-0.5">
+                                                <span class="flex items-center gap-2">
+                                                    <i class="fas fa-redo text-[10px]"></i> Reintentar Solicitud
+                                                </span>
+                                                <span class="text-[8px] opacity-90 font-bold uppercase tracking-widest">(Anterior fue <?php echo $estado_reunion; ?>)</span>
+                                            </button>
+                                        <?php else: ?>
+                                            <button disabled class="w-full bg-blue-50 text-blue-400 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-blue-100 flex items-center justify-center gap-2">
+                                                <i class="fas fa-check-circle text-[10px]"></i> Reunión <?php echo ucfirst($estado_reunion); ?>
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php elseif (!empty($c['mesa_apartada'])): ?>
                                         <button onclick="abrirModalSolicitud(<?php echo $c['id']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado')); ?>', '<?php echo $c['fecha_apartado']; ?>', '<?php echo $c['mesa_apartada']; ?>')" 
                                                 class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-lg shadow-amber-500/20 flex flex-col items-center justify-center gap-0.5 group-hover:scale-[1.02] transform">
                                             <span class="flex items-center gap-2">

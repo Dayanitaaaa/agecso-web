@@ -48,15 +48,16 @@ class VendedorController {
                 $empresa['membresia_estado'] = 'activo';
             }
 
-            // --- NUEVA LÓGICA DE LIMPIEZA AUTOMÁTICA ---
-            // Cancelar citas pendientes/negociando que ya pasaron
+            // --- LÓGICA DE LIMPIEZA DE CITAS EXPIRADAS ---
+            // Solo cancelamos citas que quedaron en 'pendiente' o 'negociando' y ya pasaron hace más de 24 horas
+            // Esto evita que se cancelen citas recién creadas por desfases de minutos o zonas horarias.
             $this->pdo->prepare("
                 UPDATE reuniones 
-                SET estadoCita = 'cancelada', ultimaAccionPor = NULL
+                SET estadoCita = 'cancelada', ultimaAccionPor = 'system'
                 WHERE vendedorId = ? 
                 AND estadoCita IN ('pendiente', 'negociando') 
-                AND fechaHora < ?
-            ")->execute([$empresa['id'], SYSTEM_TIME]);
+                AND fechaHora < DATE_SUB(NOW(), INTERVAL 24 HOUR)
+            ")->execute([$empresa['id']]);
             // --------------------------------------------
 
             $stmt_oferta = $this->pdo->prepare("SELECT * FROM ofertas WHERE empresaId = ?");
@@ -778,6 +779,20 @@ class VendedorController {
                 $c['reunion_apartada_id'] = $mesaInfo ? $mesaInfo['reunionId'] : null;
             }
 
+            // Obtener reuniones existentes del vendedor en esta rueda para ocultar botones de solicitud
+            $stmt_reuniones = $this->pdo->prepare("
+                SELECT compradorId, estadoCita
+                FROM reuniones 
+                WHERE vendedorId = ? AND ruedaId = ?
+            ");
+            $stmt_reuniones->execute([$miEmpresa['id'], $ruedaId]);
+            $reuniones_existentes = $stmt_reuniones->fetchAll();
+            
+            $reuniones_index = [];
+            foreach ($reuniones_existentes as $reunion) {
+                $reuniones_index[$reunion['compradorId']] = $reunion['estadoCita'];
+            }
+
             require_once '../app/views/vendedor/ver_compradores.php';
         } catch (Exception $e) {
             $error_msg = $e->getMessage();
@@ -1127,11 +1142,11 @@ class VendedorController {
                 ORDER BY ciiu_clase ASC
             ")->fetchAll();
 
-            // Obtener reuniones existentes del vendedor en esta rueda
+            // Obtener todas las reuniones del vendedor en esta rueda para mostrar estados en las tarjetas
             $stmt_reuniones = $this->pdo->prepare("
                 SELECT r.compradorId, r.estadoCita
                 FROM reuniones r
-                WHERE r.vendedorId = ? AND r.ruedaId = ? AND r.estadoCita NOT IN ('cancelada')
+                WHERE r.vendedorId = ? AND r.ruedaId = ?
             ");
             $stmt_reuniones->execute([$empresa['id'], $rueda_id]);
             $reuniones_existentes = $stmt_reuniones->fetchAll();
@@ -1296,6 +1311,20 @@ class VendedorController {
             ");
             $stmt_ofertas->execute([$miEmpresaId, $ruedaId]);
             $ofertas_rueda = $stmt_ofertas->fetchAll();
+
+            // 5. Obtener reuniones existentes para ocultar botones
+            $stmt_reuniones = $this->pdo->prepare("
+                SELECT compradorId, estadoCita
+                FROM reuniones 
+                WHERE vendedorId = ? AND ruedaId = ?
+            ");
+            $stmt_reuniones->execute([$miEmpresaId, $ruedaId]);
+            $reuniones_existentes = $stmt_reuniones->fetchAll();
+            
+            $reuniones_index = [];
+            foreach ($reuniones_existentes as $reunion) {
+                $reuniones_index[$reunion['compradorId']] = $reunion['estadoCita'];
+            }
 
             require_once '../app/views/vendedor/ver_mis_ofertas.php';
         } catch (Exception $e) {

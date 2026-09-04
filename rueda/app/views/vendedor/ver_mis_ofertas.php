@@ -106,11 +106,33 @@
                         </p>
                         
                         <div class="mt-auto pt-4 relative z-10">
+                            <?php 
+                                $tiene_reunion = isset($reuniones_index[$demanda['empresaId']]);
+                                $estado_reunion = $tiene_reunion ? $reuniones_index[$demanda['empresaId']] : null;
+                            ?>
+
                             <?php if ($rueda['estadoRueda'] === 'activa'): ?>
-                                <button onclick="abrirModalCitaDemanda(<?php echo $demanda['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($demanda['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($demanda['tituloDemanda'] ?? 'N/A')); ?>')" 
-                                        class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md shadow-teal-500/10">
-                                    Solicitar Cita
-                                </button>
+                                <?php if ($tiene_reunion): ?>
+                                    <?php if (in_array($estado_reunion, ['pendiente', 'aceptada', 'agendada', 'negociando'])): ?>
+                                        <button disabled class="w-full bg-gray-50 text-gray-400 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-not-allowed border border-gray-100">
+                                            Solicitada
+                                        </button>
+                                    <?php elseif ($estado_reunion === 'cancelada' || $estado_reunion === 'rechazada'): ?>
+                                        <button onclick="abrirModalCitaDemanda(<?php echo $demanda['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($demanda['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($demanda['tituloDemanda'] ?? 'N/A')); ?>')" 
+                                                class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 border border-rose-200">
+                                            Reintentar
+                                        </button>
+                                    <?php else: ?>
+                                        <button disabled class="w-full bg-blue-50 text-blue-400 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border border-blue-100">
+                                            <?php echo ucfirst($estado_reunion); ?>
+                                        </button>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <button onclick="abrirModalCitaDemanda(<?php echo $demanda['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($demanda['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($demanda['tituloDemanda'] ?? 'N/A')); ?>')" 
+                                            class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 shadow-md shadow-teal-500/10">
+                                        Solicitar Cita
+                                    </button>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <button disabled class="w-full bg-gray-100 text-gray-400 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-not-allowed border border-gray-100" title="Rueda no activa">
                                     <i class="fas fa-lock mr-1"></i> Bloqueado
@@ -222,12 +244,36 @@
                                 </div>
                             </div>
                             
-                            <div class="px-7 pb-7">
+                            <div class="px-7 pb-7 mt-auto">
+                                <?php 
+                                    $tiene_reunion = isset($reuniones_index[$demanda['empresaId']]);
+                                    $estado_reunion = $tiene_reunion ? $reuniones_index[$demanda['empresaId']] : null;
+                                ?>
+
                                 <?php if ($rueda['estadoRueda'] === 'activa'): ?>
-                                    <button onclick="abrirModalCitaDemanda(<?php echo $demanda['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($demanda['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($demanda['tituloDemanda'] ?? 'N/A')); ?>')" 
-                                            class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2">
-                                        <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Reunión
-                                    </button>
+                                    <?php if ($tiene_reunion): ?>
+                                        <?php if (in_array($estado_reunion, ['pendiente', 'aceptada', 'agendada', 'negociando'])): ?>
+                                            <button disabled class="w-full bg-gray-50 text-gray-400 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-gray-100 flex items-center justify-center gap-2">
+                                                <i class="fas fa-clock text-[10px]"></i> Ya solicitada
+                                            </button>
+                                        <?php elseif ($estado_reunion === 'cancelada' || $estado_reunion === 'rechazada'): ?>
+                                            <button onclick="abrirModalCitaDemanda(<?php echo $demanda['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($demanda['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($demanda['tituloDemanda'] ?? 'N/A')); ?>')" 
+                                                    class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 border border-rose-200 flex flex-col items-center justify-center gap-0.5">
+                                                <span class="flex items-center gap-2">
+                                                    <i class="fas fa-redo text-[10px]"></i> Reintentar Solicitud
+                                                </span>
+                                            </button>
+                                        <?php else: ?>
+                                            <button disabled class="w-full bg-blue-50 text-blue-400 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-blue-100 flex items-center justify-center gap-2">
+                                                <i class="fas fa-check-circle text-[10px]"></i> Reunión <?php echo ucfirst($estado_reunion); ?>
+                                            </button>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <button onclick="abrirModalCitaDemanda(<?php echo $demanda['empresaId']; ?>, '<?php echo addslashes(htmlspecialchars($demanda['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($demanda['tituloDemanda'] ?? 'N/A')); ?>')" 
+                                                class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2">
+                                            <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Cita
+                                        </button>
+                                    <?php endif; ?>
                                 <?php else: ?>
                                     <button disabled class="w-full bg-gray-50 text-gray-300 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-gray-100 flex items-center justify-center gap-2">
                                         <i class="fas fa-lock text-[10px]"></i> Agendamiento Cerrado
