@@ -70,6 +70,17 @@ class AdminController {
             $stats = $impactoModel->getEstadisticasGlobales();
             $total_empresas = $this->pdo->query("SELECT COUNT(*) FROM empresas")->fetchColumn();
             
+            // --- LÓGICA DE LIMPIEZA DE CITAS EXPIRADAS (DESACTIVADA TEMPORALMENTE PARA PRUEBAS) ---
+            /*
+            $this->pdo->query("
+                UPDATE reuniones 
+                SET estadoCita = 'cancelada', ultimaAccionPor = 'system_admin_dashboard'
+                WHERE estadoCita IN ('pendiente', 'negociando') 
+                AND fechaHora < DATE_SUB(NOW(), INTERVAL 48 HOUR)
+            ");
+            */
+            // --------------------------------------------
+            
             // 3. Empresas pendientes de aprobación
             error_log('[DEBUG] dashboard: consultando empresas pendientes');
             $stmt_pendientes = $this->pdo->query("SELECT e.*, u.email FROM empresas e JOIN usuarios u ON e.usuarioId = u.id WHERE e.estado_verificacion = 'pendiente'");

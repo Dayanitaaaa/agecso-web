@@ -48,16 +48,16 @@ class VendedorController {
                 $empresa['membresia_estado'] = 'activo';
             }
 
-            // --- LÓGICA DE LIMPIEZA DE CITAS EXPIRADAS ---
-            // Solo cancelamos citas que quedaron en 'pendiente' o 'negociando' y ya pasaron hace más de 24 horas
-            // Esto evita que se cancelen citas recién creadas por desfases de minutos o zonas horarias.
+            // --- LÓGICA DE LIMPIEZA DE CITAS EXPIRADAS (DESACTIVADA TEMPORALMENTE PARA PRUEBAS) ---
+            /*
             $this->pdo->prepare("
                 UPDATE reuniones 
-                SET estadoCita = 'cancelada', ultimaAccionPor = 'system'
+                SET estadoCita = 'cancelada', ultimaAccionPor = 'system_seller_dashboard'
                 WHERE vendedorId = ? 
                 AND estadoCita IN ('pendiente', 'negociando') 
-                AND fechaHora < DATE_SUB(NOW(), INTERVAL 24 HOUR)
+                AND fechaHora < DATE_SUB(NOW(), INTERVAL 48 HOUR)
             ")->execute([$empresa['id']]);
+            */
             // --------------------------------------------
 
             $stmt_oferta = $this->pdo->prepare("SELECT * FROM ofertas WHERE empresaId = ?");

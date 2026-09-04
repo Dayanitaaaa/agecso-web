@@ -305,11 +305,11 @@ class MatchmakingModel {
                 UPDATE reuniones 
                 SET estadoCita = 'realizada',
                     ultimaAccionPor = CASE 
-                        WHEN ultimaAccionPor IS NULL THEN 'system' 
+                        WHEN ultimaAccionPor IS NULL THEN 'system_auto_finalize' 
                         ELSE ultimaAccionPor 
                     END
                 WHERE estadoCita IN ('pendiente', 'negociando', 'aceptada', 'agendada')
-                AND DATE_ADD(fechaHora, INTERVAL 1 HOUR) < NOW()
+                AND DATE_ADD(fechaHora, INTERVAL 3 HOUR) < NOW()
             ";
             
             $stmt = $pdo->prepare($sql);

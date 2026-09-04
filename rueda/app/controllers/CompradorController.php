@@ -31,6 +31,18 @@ class CompradorController {
                 throw new Exception("No se encontró información de la empresa para este usuario.");
             }
 
+            // --- LÓGICA DE LIMPIEZA DE CITAS EXPIRADAS (DESACTIVADA TEMPORALMENTE PARA PRUEBAS) ---
+            /*
+            $this->pdo->prepare("
+                UPDATE reuniones 
+                SET estadoCita = 'cancelada', ultimaAccionPor = 'system_buyer_dashboard'
+                WHERE compradorId = ? 
+                AND estadoCita IN ('pendiente', 'negociando') 
+                AND fechaHora < DATE_SUB(NOW(), INTERVAL 48 HOUR)
+            ")->execute([$empresa['id']]);
+            */
+            // --------------------------------------------
+
             // Obtener mis inscripciones a ruedas (Aceptadas, Pendientes, etc.)
             $stmt_mis_ruedas = $this->pdo->prepare("
                 SELECT rn.*, ir.estadoInscripcion, rn.nombreRueda as tituloRueda, rn.descripcion as descripcionRueda
