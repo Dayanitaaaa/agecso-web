@@ -340,6 +340,9 @@
                                         <a href="index.php?controlador=comprador&accion=verReuniones" class="text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
                                             <i class="far fa-calendar-check text-[10px]"></i> Agenda
                                         </a>
+                                        <button onclick="abrirModalDemanda(<?php echo $r['id']; ?>)" class="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
+                                            <i class="fas fa-plus text-[10px]"></i> Nueva Demanda
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="p-5 bg-gray-50/30 grid grid-cols-2 text-center divide-x divide-gray-100">
@@ -444,62 +447,81 @@
     </div>
 </div>
 
-<!-- Modal de Encuesta de Satisfacción -->
-<div id="modalEncuesta" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+
+<!-- Modal Nueva Demanda -->
+<div id="modalNuevaDemanda" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="document.getElementById('modalEncuesta').classList.add('hidden')"></div>
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="cerrarModalDemanda()"></div>
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100">
-            <form action="index.php?controlador=comprador&accion=registrarEncuesta" method="POST">
-                <input type="hidden" name="reunion_id" id="encuesta_reunion_id">
-                <div class="bg-white px-6 pt-6 pb-4 sm:p-7 sm:pb-5">
-                    <h3 class="text-xl leading-6 font-black text-gray-900 mb-4 flex items-center"><i class="fas fa-poll-h text-amber-500 mr-2"></i> Encuesta de Satisfacción</h3>
-                    <div class="space-y-4">
-                        <p class="text-sm text-gray-500 bg-gray-50 px-3.5 py-2.5 rounded-2xl border border-gray-100">Califica al vendedor: <span id="encuesta_nombre_empresa" class="font-extrabold text-gray-800"></span></p>
-                        
+        
+        <div class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border border-white/20">
+            <div class="absolute top-6 right-8 z-10">
+                <button type="button" onclick="cerrarModalDemanda()" 
+                        class="bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-700 p-2 rounded-full transition-colors focus:outline-none">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form action="index.php?controlador=comprador&accion=registrarDemanda" method="POST">
+                <input type="hidden" name="empresa_id" value="<?php echo $empresa['id']; ?>">
+                <input type="hidden" name="rueda_id" id="nueva_demanda_rueda_id">
+                <input type="hidden" name="redirect_to" value="dashboard">
+                
+                <div class="bg-white px-8 pt-10 pb-8">
+                    <div class="mb-8 text-center sm:text-left">
+                        <div class="w-12 h-12 bg-sky-100 text-[#00a2ff] rounded-2xl flex items-center justify-center mb-4 mx-auto sm:mx-0">
+                            <i class="fas fa-bullhorn text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-gray-800 tracking-tight">Publicar Nueva Demanda</h3>
+                        <p class="text-xs text-gray-400 font-bold mt-2 uppercase tracking-widest">¿Qué producto o servicio estás buscando?</p>
+                    </div>
+
+                    <div class="space-y-6">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700">Calificación General (1 a 5)</label>
-                            <select name="calificacion" required class="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm focus:ring-[#00a2ff] focus:border-[#00a2ff]">
-                                <option value="5">5 - Excelente</option>
-                                <option value="4">4 - Muy buena</option>
-                                <option value="3">3 - Buena</option>
-                                <option value="2">2 - Regular</option>
-                                <option value="1">1 - Mala</option>
-                            </select>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Título de la Demanda <span class="text-red-500">*</span></label>
+                            <input type="text" name="tituloDemanda" required 
+                                   class="w-full px-4 py-3 border-gray-200 rounded-2xl text-xs font-bold focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] placeholder-gray-400 bg-gray-50 transition-all"
+                                   placeholder="Ej: Requiero 500 toneladas de fertilizante orgánico">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700">Expectativa de Negocio</label>
-                            <select name="expectativa_cumplida" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm focus:ring-[#00a2ff] focus:border-[#00a2ff]">
-                                <option value="inmediato">Inmediato</option>
-                                <option value="corto_plazo">Corto Plazo</option>
-                                <option value="mediano_plazo">Mediano Plazo</option>
-                                <option value="ninguno">Ninguno</option>
-                            </select>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Descripción del Requerimiento <span class="text-red-500">*</span></label>
+                            <textarea name="descripcionDemanda" rows="3" required 
+                                      class="w-full px-4 py-3 border-gray-200 rounded-2xl text-xs font-bold focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] placeholder-gray-400 bg-gray-50 transition-all"
+                                      placeholder="Describe especificaciones técnicas, plazos de entrega y otros detalles relevantes..."></textarea>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700">¿Fue una cita efectiva?</label>
-                            <div class="mt-2 flex space-x-6">
-                                <label class="flex items-center text-sm font-medium text-gray-700 cursor-pointer"><input type="radio" name="efectividad_cita" value="1" checked class="mr-2 text-[#00a2ff] focus:ring-[#00a2ff]"> Sí</label>
-                                <label class="flex items-center text-sm font-medium text-gray-700 cursor-pointer"><input type="radio" name="efectividad_cita" value="0" class="mr-2 text-[#00a2ff] focus:ring-[#00a2ff]"> No</label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700">Comentarios</label>
-                            <textarea name="comentario" rows="3" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm focus:ring-[#00a2ff] focus:border-[#00a2ff]" placeholder="Escribe tus comentarios aquí..."></textarea>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Palabras Clave (Opcional)</label>
+                            <input type="text" name="tags" 
+                                   class="w-full px-4 py-3 border-gray-200 rounded-2xl text-xs font-bold focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] placeholder-gray-400 bg-gray-50 transition-all"
+                                   placeholder="Ej: orgánico, exportación, entrega-inmediata">
+                            <p class="text-[9px] text-gray-400 mt-2 ml-1 italic font-medium">Separa las etiquetas por comas (,)</p>
                         </div>
                     </div>
                 </div>
+
                 <div class="bg-gray-50 px-6 py-4 sm:px-7 sm:flex sm:flex-row-reverse rounded-b-3xl gap-2">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-full border border-transparent shadow-md px-5 py-2.5 bg-blue-600 text-sm font-extrabold text-white hover:bg-blue-700 sm:ml-3 sm:w-auto transition duration-200">Enviar Encuesta</button>
-                    <button type="button" onclick="document.getElementById('modalEncuesta').classList.add('hidden')" class="mt-3 w-full inline-flex justify-center rounded-full border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-extrabold text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto transition duration-200">Cancelar</button>
+                    <button type="submit" class="w-full inline-flex justify-center rounded-full border border-transparent shadow-md px-5 py-2.5 bg-[#00a2ff] hover:bg-[#008ae0] text-sm font-extrabold text-white transition duration-200">Guardar Demanda</button>
+                    <button type="button" onclick="cerrarModalDemanda()" class="mt-3 w-full inline-flex justify-center rounded-full border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-extrabold text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto transition duration-200">Cancelar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+function abrirModalDemanda(ruedaId) {
+    document.getElementById('nueva_demanda_rueda_id').value = ruedaId;
+    document.getElementById('modalNuevaDemanda').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function cerrarModalDemanda() {
+    document.getElementById('modalNuevaDemanda').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+</script>
 
 <?php require_once __DIR__ . '/../layout/modal_encuesta.php'; ?>
 
