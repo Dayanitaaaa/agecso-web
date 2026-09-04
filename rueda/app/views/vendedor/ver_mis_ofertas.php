@@ -378,8 +378,8 @@
                             </div>
                         <?php endif; ?>
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Mensaje / Objetivo</label>
-                            <textarea name="descripcion" rows="3" required 
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Mensaje / Objetivo (Opcional)</label>
+                            <textarea name="descripcion" rows="3" 
                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200 resize-none" 
                                       placeholder="Describe tu interés en esta demanda..."></textarea>
                         </div>
