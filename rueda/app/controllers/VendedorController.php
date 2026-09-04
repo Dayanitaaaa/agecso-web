@@ -336,7 +336,7 @@ class VendedorController {
 
             // Obtener ruedas en las que está inscrito el vendedor
             $stmt_ruedas = $this->pdo->prepare("
-                SELECT rn.id, rn.nombreRueda as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin
+                SELECT rn.id, rn.nombreRueda as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin, rn.modalidad, rn.ubicacion, rn.cantidadMesas
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ? AND ir.estadoInscripcion = 'aceptada'

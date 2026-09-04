@@ -532,7 +532,7 @@ class CompradorController {
 
             // Obtener ruedas en las que está inscrito el comprador
             $stmt_ruedas = $this->pdo->prepare("
-                SELECT rn.id, COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin, rn.modalidad, rn.ubicacion
+                SELECT rn.id, COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin, rn.modalidad, rn.ubicacion, rn.cantidadMesas
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ? AND ir.estadoInscripcion = 'aceptada'
