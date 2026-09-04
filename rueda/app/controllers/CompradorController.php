@@ -613,6 +613,10 @@ class CompradorController {
         }
     }
 
+    public function registrarDemanda() {
+        $this->registrarRequerimiento();
+    }
+
     public function registrarRequerimiento() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
