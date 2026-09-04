@@ -574,7 +574,7 @@
                     ['img' => 'aliados12.png', 'url' => '#'],
                     ['img' => 'aliados13.jpeg', 'url' => '#'],
                     ['img' => 'aliados14.jpeg', 'url' => 'https://panaca.co/'],
-                    ['img' => 'aliados15.png', 'url' => '#'],
+                    ['img' => 'aliados15.png', 'url' => 'https://www.realsc.co/'],
                     ['img' => 'aliados16.jpeg', 'url' => '#']
                 ];
                 // Loop twice to ensure infinite, seamless scrolling
