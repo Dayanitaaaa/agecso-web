@@ -209,11 +209,11 @@ class VendedorController {
             // Resumen de KPIs para el Dashboard (Vendedor)
             $stmt_kpis = $this->pdo->prepare("
                 SELECT 
-                    (SELECT COUNT(*) FROM reuniones WHERE vendedorId = ?) as total_citas,
-                    (SELECT COUNT(*) FROM reuniones WHERE vendedorId = ? AND estadoCita = 'realizada') as citas_realizadas,
-                    (SELECT COUNT(*) FROM reuniones WHERE vendedorId = ? AND (estadoCita = 'agendada' OR estadoCita = 're-agendado')) as citas_agendadas,
-                    (SELECT COUNT(*) FROM reuniones WHERE vendedorId = ? AND (estadoCita IN ('pendiente', 'negociando')) AND ultimaAccionPor = 'comprador') as citas_por_gestionar,
-                    (SELECT SUM(montoEstimado) FROM reuniones WHERE vendedorId = ? AND estadoCita = 'realizada') as volumen_negocio,
+                    (SELECT COUNT(*) FROM reuniones WHERE vendedorId = ? AND compradorId != vendedorId) as total_citas,
+                    (SELECT COUNT(*) FROM reuniones WHERE vendedorId = ? AND estadoCita = 'realizada' AND compradorId != vendedorId) as citas_realizadas,
+                    (SELECT COUNT(*) FROM reuniones WHERE vendedorId = ? AND (estadoCita = 'agendada' OR estadoCita = 're-agendado') AND compradorId != vendedorId) as citas_agendadas,
+                    (SELECT COUNT(*) FROM reuniones WHERE vendedorId = ? AND (estadoCita IN ('pendiente', 'negociando')) AND ultimaAccionPor = 'comprador' AND compradorId != vendedorId) as citas_por_gestionar,
+                    (SELECT SUM(montoEstimado) FROM reuniones WHERE vendedorId = ? AND estadoCita = 'realizada' AND compradorId != vendedorId) as volumen_negocio,
                     (SELECT COUNT(*) FROM ofertas WHERE empresaId = ?) as total_ofertas,
                     (SELECT COUNT(*) FROM inscripciones_ruedas WHERE empresaId = ? AND estadoInscripcion = 'aceptada') as ruedas_activas_count
             ");
@@ -372,6 +372,7 @@ class VendedorController {
                 JOIN empresas e ON r.compradorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
                 WHERE r.vendedorId = ?
+                AND r.compradorId != r.vendedorId -- Filtrar registros inconsistentes
             ";
             $params = [$empresa['id']];
             
@@ -697,6 +698,16 @@ class VendedorController {
                 throw new Exception("ID de rueda no especificado.");
             }
 
+            // LIMPIEZA AUTOMÁTICA DE REGISTROS CORRUPTOS (Bug anterior: compradorId == vendedorId)
+            // Esto asegura que si existía un registro erróneo que bloqueaba la vista, se corrija ahora.
+            $this->pdo->prepare("
+                UPDATE reuniones 
+                SET vendedorId = NULL, estadoCita = 'mesa_apartada' 
+                WHERE ruedaId = ? 
+                AND compradorId = vendedorId 
+                AND estadoCita != 'mesa_apartada'
+            ")->execute([$ruedaId]);
+
             // Obtener datos de la empresa del vendedor
             $stmt = $this->pdo->prepare("SELECT * FROM empresas WHERE usuarioId = ?");
             $stmt->execute([$_SESSION['usuario_id']]);
@@ -785,6 +796,8 @@ class VendedorController {
                 SELECT compradorId, estadoCita
                 FROM reuniones 
                 WHERE vendedorId = ? AND ruedaId = ?
+                AND compradorId != vendedorId -- Evitar registros inconsistentes de bug anterior
+                AND estadoCita != 'mesa_apartada' -- Las mesas apartadas no son citas aún
             ");
             $stmt_reuniones->execute([$miEmpresa['id'], $ruedaId]);
             $reuniones_existentes = $stmt_reuniones->fetchAll();
@@ -1064,6 +1077,15 @@ class VendedorController {
                 exit();
             }
 
+            // LIMPIEZA AUTOMÁTICA DE REGISTROS CORRUPTOS
+            $this->pdo->prepare("
+                UPDATE reuniones 
+                SET vendedorId = NULL, estadoCita = 'mesa_apartada' 
+                WHERE ruedaId = ? 
+                AND compradorId = vendedorId 
+                AND estadoCita != 'mesa_apartada'
+            ")->execute([$rueda_id]);
+
             // Obtener la empresa del vendedor
             $stmt = $this->pdo->prepare("SELECT * FROM empresas WHERE usuarioId = ?");
             $stmt->execute([$_SESSION['usuario_id']]);
@@ -1148,6 +1170,8 @@ class VendedorController {
                 SELECT r.compradorId, r.estadoCita
                 FROM reuniones r
                 WHERE r.vendedorId = ? AND r.ruedaId = ?
+                AND r.compradorId != r.vendedorId -- Evitar registros inconsistentes de bug anterior
+                AND r.estadoCita != 'mesa_apartada' -- Las mesas apartadas no son citas aún
             ");
             $stmt_reuniones->execute([$empresa['id'], $rueda_id]);
             $reuniones_existentes = $stmt_reuniones->fetchAll();

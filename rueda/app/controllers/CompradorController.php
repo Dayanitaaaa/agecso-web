@@ -180,10 +180,10 @@ class CompradorController {
             // Resumen de KPIs para el Dashboard
             $stmt_kpis = $this->pdo->prepare("
                 SELECT 
-                    (SELECT COUNT(*) FROM reuniones WHERE compradorId = ?) as total_citas,
-                    (SELECT COUNT(*) FROM reuniones WHERE compradorId = ? AND estadoCita = 'realizada') as citas_realizadas,
-                    (SELECT COUNT(*) FROM reuniones WHERE compradorId = ? AND (estadoCita = 'agendada' OR estadoCita = 're-agendado')) as citas_agendadas,
-                    (SELECT COUNT(*) FROM reuniones WHERE compradorId = ? AND (estadoCita IN ('pendiente', 'negociando')) AND ultimaAccionPor = 'vendedor') as citas_por_gestionar,
+                    (SELECT COUNT(*) FROM reuniones WHERE compradorId = ? AND vendedorId != compradorId) as total_citas,
+                    (SELECT COUNT(*) FROM reuniones WHERE compradorId = ? AND estadoCita = 'realizada' AND vendedorId != compradorId) as citas_realizadas,
+                    (SELECT COUNT(*) FROM reuniones WHERE compradorId = ? AND (estadoCita = 'agendada' OR estadoCita = 're-agendado') AND vendedorId != compradorId) as citas_agendadas,
+                    (SELECT COUNT(*) FROM reuniones WHERE compradorId = ? AND (estadoCita IN ('pendiente', 'negociando')) AND ultimaAccionPor = 'vendedor' AND vendedorId != compradorId) as citas_por_gestionar,
                     (SELECT COUNT(*) FROM demandas WHERE empresaId = ?) as total_demandas,
                     (SELECT COUNT(*) FROM inscripciones_ruedas WHERE empresaId = ? AND estadoInscripcion = 'aceptada') as ruedas_activas_count
             ");
@@ -585,6 +585,12 @@ class CompradorController {
             foreach ($todas_citas as $c) {
                 // Normalizar estado
                 $estado = strtolower(trim((string)$c['estadoCita']));
+
+                // CORRECCIÓN: Si el vendedorId es igual al compradorId, es un error de data o un apartado
+                // Forzamos que se trate como mesa_apartada para no confundir al usuario
+                if ($c['vendedorId'] == $c['compradorId'] && $estado !== 'mesa_apartada') {
+                    $estado = 'mesa_apartada';
+                }
 
                 if ($estado === 'mesa_apartada') {
                     // Mesas apartadas sin propuesta de vendedor aún
@@ -1174,9 +1180,9 @@ class CompradorController {
                 $estado_apartado = 'mesa_apartada';
                 $stmt = $this->pdo->prepare("
                     INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, ultimaAccionPor, propositor, contadorContrapropuestas) 
-                    VALUES (?, ?, ?, ?, ?, NULL, ?, 'comprador', 'comprador', 1)
+                    VALUES (?, ?, NULL, ?, ?, NULL, ?, 'comprador', 'comprador', 1)
                 ");
-                $stmt->execute([$rueda_id, $comprador_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa]);
+                $stmt->execute([$rueda_id, $comprador_id, $fecha_hora_defecto, $estado_apartado, $numero_mesa]);
 
                 header("Location: index.php?controlador=comprador&accion=verReuniones&msg=mesa_apartada");
                 exit();
