@@ -465,8 +465,8 @@ class VendedorController {
                 $rueda_id = $_POST['rueda_id'] ?? null;
                 $sector_id = $_POST['sector_id'] ?? $_POST['categoria_id'] ?? 1;
                 
-                // CAPTURA EXACTA SEGÚN ERROR DETECTADO
-                $titulo = $_POST['titulo'] ?? $_POST['titulo_oferta'] ?? $_POST['nombre_producto'] ?? null;
+                // CAPTURA EXACTA SEGÚN FORMULARIO DE DASHBOARD
+                $titulo = $_POST['titulo'] ?? $_POST['titulo_oferta'] ?? $_POST['nombre_producto'] ?? $_POST['producto_servicio'] ?? null;
                 $descripcion = $_POST['descripcion'] ?? $_POST['descripcion_oferta'] ?? null;
                 
                 $tags_input = $_POST['tags'] ?? $_POST['tags_busqueda'] ?? '';
