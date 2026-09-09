@@ -560,7 +560,7 @@
             <div class="logo-slider-track">
                 <?php
                 $logos = [
-                    ['img' => 'aliados1.jpeg', 'url' => '#'],
+                    ['img' => 'aliados1.jpeg', 'url' => 'https://www.intexzona.com.co/'],
                     ['img' => 'aliados2.jpeg', 'url' => '#'],
                     ['img' => 'aliados3.png', 'url' => '#'],
                     ['img' => 'aliados4.jpg', 'url' => '#'],
@@ -569,10 +569,10 @@
                     ['img' => 'aliados7.png', 'url' => '#'],
                     ['img' => 'aliados8.png', 'url' => '#'],
                     ['img' => 'aliados9.png', 'url' => 'https://www.fna.gov.co/'],
-                    ['img' => 'aliados10.png', 'url' => '#'],
-                    ['img' => 'aliados11.jpeg', 'url' => '#'],
-                    ['img' => 'aliados12.png', 'url' => '#'],
-                    ['img' => 'aliados13.jpeg', 'url' => '#'],
+                    ['img' => 'aliados10.png', 'url' => 'https://valuesaaa.com/'],
+                    ['img' => 'aliados11.jpeg', 'url' => 'https://transitodemosquera.com/'],
+                    ['img' => 'aliados12.png', 'url' => 'https://fundacionzoraida.org/'],
+                    ['img' => 'aliados13.jpeg', 'url' => 'https://cinco5.org/'],
                     ['img' => 'aliados14.jpeg', 'url' => 'https://panaca.co/'],
                     ['img' => 'aliados15.png', 'url' => 'https://www.realsc.co/'],
                     ['img' => 'aliados16.jpeg', 'url' => 'https://colanta.com/']
@@ -607,14 +607,25 @@
             <div class="logo-slider-track">
                 <?php
                 $consejo_logos = [
-                    '1concejod.jpeg', '2concejod..jpeg', '3concejod..jpeg', 
-                    '4concejod..jpeg', '5concejod..png', '6concejod..jpeg', '8concejod..jpeg'
+                    ['img' => '1concejod.jpeg', 'url' => 'https://ecoindustriasas.com/?srsltid=AfmBOoqyxlsv4phmakZEAMElMAz1HwHpxBr61M1EGHa_BWlsG1V5K73C'],
+                    ['img' => '2concejod..jpeg', 'url' => 'https://synergyallsolutions.com.co/'],
+                    ['img' => '3concejod..jpeg', 'url' => 'https://dcpublicidad.com/'],
+                    ['img' => '4concejod..jpeg', 'url' => 'https://www.politecnicodeoccidente.edu.co/'],
+                    ['img' => '5concejod..png', 'url' => 'https://www.gruporichten.com/'],
+                    ['img' => '6concejod..jpeg', 'url' => 'https://www.instagram.com/eprismadesign/'],
+                    ['img' => '8concejod..jpeg', 'url' => '#']
                 ];
                 // Loop twice to ensure infinite, seamless scrolling
                 for ($i = 0; $i < 2; $i++) {
                     foreach ($consejo_logos as $logo) {
                         echo '<div class="logo-slide">';
-                        echo '<img src="' . APP_URL . '/assets/img/' . $logo . '" alt="Logo Consejo Directivo">';
+                        if (!empty($logo['url']) && $logo['url'] !== '#') {
+                            echo '<a href="' . $logo['url'] . '" target="_blank">';
+                        }
+                        echo '<img src="' . APP_URL . '/assets/img/' . $logo['img'] . '" alt="Logo Consejo Directivo">';
+                        if (!empty($logo['url']) && $logo['url'] !== '#') {
+                            echo '</a>';
+                        }
                         echo '</div>';
                     }
                 }
