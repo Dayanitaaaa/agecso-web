@@ -780,6 +780,53 @@ class AdminController {
         exit();
     }
 
+    /**
+     * Limpiar todas las ruedas de prueba o ruedas seleccionadas
+     */
+    public function limpiarRuedasPrueba() {
+        try {
+            $this->pdo->beginTransaction();
+            $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+
+            // Buscar IDs de ruedas de prueba
+            $stmt = $this->pdo->query("
+                SELECT id FROM ruedas_negocios 
+                WHERE LOWER(nombreRueda) LIKE '%prueba%' 
+                   OR LOWER(nombreRueda) LIKE '%test%' 
+                   OR LOWER(nombreRueda) LIKE '%expoempresarial%'
+                   OR nombreRueda IS NULL 
+                   OR TRIM(nombreRueda) = ''
+            ");
+            $ruedaIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+            if (!empty($ruedaIds)) {
+                $inClause = implode(',', array_map('intval', $ruedaIds));
+
+                $this->pdo->exec("DELETE FROM encuestas_satisfaccion WHERE reunionId IN (SELECT id FROM reuniones WHERE ruedaId IN ($inClause))");
+                $this->pdo->exec("DELETE FROM trazabilidad_seguimiento WHERE reunionId IN (SELECT id FROM reuniones WHERE ruedaId IN ($inClause))");
+                $this->pdo->exec("DELETE FROM reuniones WHERE ruedaId IN ($inClause)");
+                $this->pdo->exec("DELETE FROM ofertas WHERE ruedaId IN ($inClause)");
+                $this->pdo->exec("DELETE FROM demandas WHERE ruedaId IN ($inClause)");
+                $this->pdo->exec("DELETE FROM inscripciones_ruedas WHERE ruedaId IN ($inClause)");
+                $this->pdo->exec("DELETE FROM ruedas_negocios WHERE id IN ($inClause)");
+            }
+
+            $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+            $this->pdo->commit();
+
+            Logger::log("Limpieza masiva de ruedas de prueba ejecutada con éxito por Admin", 'system');
+            header("Location: index.php?controlador=admin&accion=dashboard&msg=ruedas_limpiadas#ruedas");
+            exit();
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+            Logger::logCurrentRoleError("Error en limpieza de ruedas de prueba", ['error' => $e->getMessage()]);
+            $error_msg = "Error al limpiar ruedas de prueba: " . $e->getMessage();
+            require_once '../app/views/layout/error.php';
+            exit();
+        }
+    }
+
     public function guardarMembresia() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {

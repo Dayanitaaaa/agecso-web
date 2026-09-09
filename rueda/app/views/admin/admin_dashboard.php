@@ -28,6 +28,14 @@
                     </div>
                     <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 text-sm"><i class="fas fa-times"></i></button>
                 </div>
+            <?php elseif ($_GET['msg'] === 'ruedas_limpiadas'): ?>
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-6 py-4 rounded-2xl font-bold flex items-center justify-between shadow-sm animate-fade-in">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check-circle text-emerald-600 text-xl"></i>
+                        <span>Todas las ruedas de prueba y sus registros vinculados han sido eliminados del sistema exitosamente.</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 text-sm"><i class="fas fa-times"></i></button>
+                </div>
             <?php endif; ?>
         <?php endif; ?>
 
@@ -145,10 +153,17 @@
                     </h3>
                     <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-1">Eventos configurados, franjas horarias y control de mesas</p>
                 </div>
-                <button onclick="document.getElementById('modalCrearRueda').classList.remove('hidden')" 
-                        class="bg-slate-900 hover:bg-black text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition flex items-center gap-1.5">
-                    <i class="fas fa-plus"></i> Nueva Rueda
-                </button>
+                <div class="flex items-center gap-2">
+                    <a href="index.php?controlador=admin&accion=limpiarRuedasPrueba" 
+                       onclick="return confirm('¿Deseas eliminar automáticamente todas las ruedas de prueba (Prueba, prueba 2, Expoempresarial, ruedas sin título) y sus datos relacionados?');"
+                       class="bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition border border-rose-200 flex items-center gap-1.5">
+                        <i class="fas fa-trash-alt"></i> Limpiar Pruebas
+                    </a>
+                    <button onclick="document.getElementById('modalCrearRueda').classList.remove('hidden')" 
+                            class="bg-slate-900 hover:bg-black text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition flex items-center gap-1.5">
+                        <i class="fas fa-plus"></i> Nueva Rueda
+                    </button>
+                </div>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-100">
@@ -182,6 +197,18 @@
                                             <div>
                                                 <div class="text-sm font-extrabold text-gray-900"><?php echo htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda')); ?></div>
                                                 <div class="text-[10px] text-gray-400 font-bold max-w-xs truncate"><?php echo htmlspecialchars($r['descripcion'] ?? ''); ?></div>
+                                                <!-- Acciones directas debajo del nombre -->
+                                                <div class="flex items-center gap-3 mt-1.5">
+                                                    <button onclick='abrirModalEditarRueda(<?php echo json_encode($r, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' class="text-[10px] font-black text-slate-600 hover:text-black flex items-center gap-1 hover:underline">
+                                                        <i class="fas fa-edit text-[9px]"></i> Editar
+                                                    </button>
+                                                    <span class="text-gray-300 text-xs">•</span>
+                                                    <a href="index.php?controlador=admin&accion=eliminarRueda&id=<?php echo (int)$r['id']; ?>" 
+                                                       onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente esta rueda de negocios y todos sus datos relacionados?');" 
+                                                       class="text-[10px] font-black text-rose-600 hover:text-rose-800 flex items-center gap-1 hover:underline">
+                                                        <i class="fas fa-trash-alt text-[9px]"></i> Eliminar
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
