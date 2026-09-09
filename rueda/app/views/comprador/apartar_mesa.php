@@ -146,25 +146,31 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Seleccionar Mesa Disponible</label>
-                                <div class="relative">
-                                    <select name="numero_mesa" id="numero_mesa_select" required
-                                           class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 appearance-none bg-white font-bold">
-                                        <option value="">-- Seleccionar Mesa --</option>
-                                    </select>
-                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
-                                        <i class="fas fa-chair text-xs"></i>
+                                <div class="flex items-center justify-between mb-3 ml-1">
+                                    <label class="block text-sm font-bold text-gray-700">Seleccionar Mesa Disponible</label>
+                                    <div class="flex items-center gap-3 text-[11px] font-black uppercase tracking-wider">
+                                        <span class="flex items-center gap-1.5 text-emerald-600">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Libre
+                                        </span>
+                                        <span class="flex items-center gap-1.5 text-slate-400">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-slate-300"></span> Ocupada
+                                        </span>
                                     </div>
                                 </div>
-                                <div id="mesa_info_text" class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
-                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                    Cargando mesas disponibles...
+
+                                <!-- Input oculto para enviar el valor seleccionado en el formulario -->
+                                <input type="hidden" name="numero_mesa" id="numero_mesa_input" required>
+
+                                <!-- Contenedor de la Cuadrícula Visual de Mesas -->
+                                <div id="mesas_grid_container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 p-4 bg-slate-50/80 rounded-3xl border border-slate-200/80 min-h-[140px] items-center justify-center">
+                                    <div class="col-span-full text-center py-6 text-xs text-gray-400 font-bold flex items-center justify-center gap-2">
+                                        <i class="fas fa-spinner fa-spin text-[#00a2ff]"></i> Cargando mapa de mesas...
+                                    </div>
                                 </div>
-                                <div id="mesas_ocupadas_info" class="mt-3 hidden">
-                                    <p class="text-xs text-red-600 font-bold flex items-center gap-1">
-                                        <i class="fas fa-times-circle"></i>
-                                        Mesas ocupadas: <span id="lista_ocupadas"></span>
-                                    </p>
+
+                                <div id="mesa_info_text" class="text-xs text-gray-400 mt-2.5 ml-1 flex items-center gap-1 font-bold">
+                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
+                                    Selecciona una fecha para ver las mesas disponibles.
                                 </div>
                             </div>
                             
@@ -216,60 +222,126 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 async function cargarMesasDisponibles() {
-    const select = document.getElementById('numero_mesa_select');
+    const grid = document.getElementById('mesas_grid_container');
+    const inputOculto = document.getElementById('numero_mesa_input');
     const infoText = document.getElementById('mesa_info_text');
-    const ocupadasInfo = document.getElementById('mesas_ocupadas_info');
-    const listaOcupadas = document.getElementById('lista_ocupadas');
     const fechaInput = document.getElementById('fecha_apartado');
     const ruedaId = "<?php echo $ruedaId; ?>";
     const compradorId = "<?php echo $miEmpresaId; ?>";
 
-    if (!select || !fechaInput) return;
+    if (!grid || !fechaInput) return;
     if (!fechaInput.value) {
-        select.innerHTML = '<option value="">-- Selecciona una fecha primero --</option>';
+        grid.innerHTML = '<div class="col-span-full text-center py-6 text-xs text-gray-400 font-bold">Selecciona una fecha para ver el mapa de mesas.</div>';
         return;
     }
 
     const fechaHora = fechaInput.value + ' 05:00:00';
+    grid.innerHTML = '<div class="col-span-full text-center py-6 text-xs text-gray-400 font-bold flex items-center justify-center gap-2"><i class="fas fa-spinner fa-spin text-[#00a2ff]"></i> Consultando disponibilidad...</div>';
 
-    select.innerHTML = '<option value="">Cargando mesas...</option>';
-    select.disabled = true;
-    ocupadasInfo.classList.add('hidden');
+    // Limpiar selección previa
+    if (inputOculto) inputOculto.value = '';
 
     try {
         const response = await fetch(`index.php?controlador=api/reunion&accion=getMesasDisponibles&rueda_id=${ruedaId}&comprador_id=${compradorId}&fecha_hora=${encodeURIComponent(fechaHora)}`);
         const result = await response.json();
         
-        console.log('Resultado API:', result);
+        grid.innerHTML = '';
 
-        select.innerHTML = '<option value="">-- Seleccionar Mesa --</option>';
-        
-        if (result.status === 'success' && result.data && result.data.mesas) {
-            const mesasLibres = result.data.mesas;
-            const mesasOcupadas = (result.data.debug && result.data.debug.mesas_ocupadas) ? result.data.debug.mesas_ocupadas : [];
+        if (result.status === 'success' && result.data) {
+            const mesasLibres = (result.data.mesas || []).map(m => parseInt(m));
+            const totalMesas = result.data.debug?.total_mesas_configuradas || (mesasLibres.length > 0 ? Math.max(...mesasLibres) : 10);
 
-            if (mesasLibres.length > 0) {
-                mesasLibres.forEach(mesa => {
-                    const opt = document.createElement('option');
-                    opt.value = mesa;
-                    opt.textContent = `Mesa ${mesa} (Disponible)`;
-                    select.appendChild(opt);
-                });
-                select.disabled = false;
-                infoText.innerHTML = `<i class="fas fa-check-circle text-green-500"></i> ${mesasLibres.length} mesas libres para esta fecha.`;
-            } else {
-                select.innerHTML = '<option value="">No hay mesas disponibles</option>';
-                infoText.innerHTML = '<i class="fas fa-times-circle text-red-500"></i> No hay mesas libres en la fecha seleccionada.';
+            if (totalMesas === 0) {
+                grid.innerHTML = '<div class="col-span-full text-center py-6 text-xs text-rose-500 font-bold">No hay mesas configuradas para este evento.</div>';
+                return;
             }
 
-            if (mesasOcupadas.length > 0) {
-                ocupadasInfo.classList.remove('hidden');
-                listaOcupadas.textContent = mesasOcupadas.join(', ');
+            let libresCount = 0;
+
+            for (let i = 1; i <= totalMesas; i++) {
+                const esLibre = mesasLibres.includes(i);
+                if (esLibre) libresCount++;
+
+                const card = document.createElement('div');
+                card.dataset.mesa = i;
+
+                if (esLibre) {
+                    card.className = "mesa-card relative bg-white border-2 border-slate-200 hover:border-[#00a2ff] hover:bg-sky-50/40 rounded-2xl p-3.5 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 group";
+                    card.innerHTML = `
+                        <div class="w-10 h-10 rounded-xl bg-sky-50 text-[#00a2ff] group-hover:bg-[#00a2ff] group-hover:text-white flex items-center justify-center text-base transition-colors duration-200">
+                            <i class="fas fa-chair"></i>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-xs font-black text-gray-800">Mesa ${i}</span>
+                            <span class="inline-block mt-0.5 text-[9px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100 uppercase tracking-wider">Libre</span>
+                        </div>
+                        <div class="check-badge absolute -top-1.5 -right-1.5 w-5 h-5 bg-[#00a2ff] text-white rounded-full hidden items-center justify-center text-[10px] shadow-sm font-black">
+                            <i class="fas fa-check"></i>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', function() {
+                        seleccionarMesaVisual(i, card);
+                    });
+                } else {
+                    card.className = "mesa-card relative bg-slate-100/70 border border-slate-200/60 rounded-2xl p-3.5 flex flex-col items-center justify-center gap-2 opacity-60 cursor-not-allowed select-none";
+                    card.innerHTML = `
+                        <div class="w-10 h-10 rounded-xl bg-slate-200/80 text-slate-400 flex items-center justify-center text-base">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-xs font-bold text-slate-500">Mesa ${i}</span>
+                            <span class="inline-block mt-0.5 text-[9px] font-bold text-slate-400 bg-slate-200/70 px-2 py-0.5 rounded-full uppercase tracking-wider">Ocupada</span>
+                        </div>
+                    `;
+                }
+
+                grid.appendChild(card);
+            }
+
+            if (libresCount > 0) {
+                infoText.innerHTML = `<i class="fas fa-check-circle text-emerald-500 text-sm"></i> <span class="text-emerald-700 font-bold">${libresCount} ${libresCount === 1 ? 'mesa disponible' : 'mesas disponibles'} para el día seleccionado. Haz clic en la mesa que prefieras.</span>`;
+            } else {
+                infoText.innerHTML = `<i class="fas fa-times-circle text-rose-500 text-sm"></i> <span class="text-rose-700 font-bold">Todas las mesas están ocupadas para esta fecha. Selecciona otro día.</span>`;
             }
         }
     } catch (error) {
         console.error("Error:", error);
-        select.innerHTML = '<option value="">Error al cargar</option>';
+        grid.innerHTML = '<div class="col-span-full text-center py-6 text-xs text-rose-500 font-bold">Error al cargar el mapa de mesas. Intenta nuevamente.</div>';
+    }
+}
+
+function seleccionarMesaVisual(numeroMesa, cardElement) {
+    const inputOculto = document.getElementById('numero_mesa_input');
+    if (inputOculto) {
+        inputOculto.value = numeroMesa;
+    }
+
+    // Desmarcar todas las tarjetas libres
+    document.querySelectorAll('.mesa-card').forEach(c => {
+        if (!c.classList.contains('cursor-not-allowed')) {
+            c.classList.remove('border-[#00a2ff]', 'bg-sky-50', 'ring-4', 'ring-sky-100', 'shadow-md', '-translate-y-1');
+            c.classList.add('border-slate-200', 'bg-white');
+            const check = c.querySelector('.check-badge');
+            if (check) {
+                check.classList.remove('flex');
+                check.classList.add('hidden');
+            }
+        }
+    });
+
+    // Marcar tarjeta seleccionada
+    cardElement.classList.remove('border-slate-200', 'bg-white');
+    cardElement.classList.add('border-[#00a2ff]', 'bg-sky-50', 'ring-4', 'ring-sky-100', 'shadow-md', '-translate-y-1');
+    const check = cardElement.querySelector('.check-badge');
+    if (check) {
+        check.classList.remove('hidden');
+        check.classList.add('flex');
+    }
+
+    const infoText = document.getElementById('mesa_info_text');
+    if (infoText) {
+        infoText.innerHTML = `<i class="fas fa-check-circle text-[#00a2ff] text-sm"></i> <span class="text-gray-900 font-extrabold">Has seleccionado la Mesa ${numeroMesa}. Completa el mensaje y haz clic en Apartar Mesa.</span>`;
     }
 }
 </script>
