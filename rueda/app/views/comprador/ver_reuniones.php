@@ -178,6 +178,7 @@
                                     $citaAceptada = in_array($cita['estadoCita'], ['aceptada', 'agendada']);
                                     $esPropositor = ($cita['propositor'] ?? '') === 'comprador';
                                     $puedeAgregarLink = $citaAceptada && $esPropositor && empty($linkReunion);
+                                    $esVirtual = (($cita['modalidad'] ?? ($rueda_actual['modalidad'] ?? 'virtual')) === 'virtual');
                                     
                                     // Verificar si ya es hora de la reunión (permitir 5 minutos antes)
                                     $fechaReunion = strtotime($cita['fechaHora']);
@@ -185,38 +186,57 @@
                                     $esHoraDeReunion = $ahora >= ($fechaReunion - 300); // 5 minutos de gracia
                                     
                                     // Datos para el calendario
-                                    $tituloEvento = urlencode("Reunión AGESCO: " . ($cita['nombre_vendedor'] ?? 'Socio'));
+                                    $tituloEvento = urlencode("Reunión AGECSO: " . ($cita['nombre_vendedor'] ?? 'Socio'));
                                     $fechaInicio = date('Ymd\THis', strtotime($cita['fechaHora']));
                                     $fechaFin = date('Ymd\THis', strtotime($cita['fechaHora'] . ' +30 minutes'));
-                                    $detallesEvento = urlencode("Cita de negocios agendada en la Rueda de Negocios AGESCO.\n\nSocio: " . ($cita['nombre_vendedor'] ?? 'N/A') . "\nLink: " . ($linkReunion ?: 'Pendiente'));
-                                    $ubicacionEvento = urlencode($esUrlValida ? $linkReunion : ($rueda_actual['ubicacion'] ?? 'Virtual'));
+                                    $detallesEvento = urlencode("Cita de negocios agendada en la Rueda de Negocios AGECSO.\n\nSocio: " . ($cita['nombre_vendedor'] ?? 'N/A') . "\nLink: " . ($linkReunion ?: 'Presencial'));
+                                    $ubicacionEvento = urlencode($esUrlValida ? $linkReunion : ($rueda_actual['ubicacion'] ?? 'Presencial'));
                                     
                                     $googleUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text={$tituloEvento}&dates={$fechaInicio}/{$fechaFin}&details={$detallesEvento}&location={$ubicacionEvento}";
                                     ?>
 
-                                    <?php if ($esUrlValida): ?>
-                                        <?php if ($esHoraDeReunion): ?>
-                                            <a href="<?php echo htmlspecialchars($linkReunion); ?>" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-emerald-500/10 uppercase tracking-wider">
-                                                <i class="fas fa-video mr-2"></i> Unirse a Reunión
-                                            </a>
-                                        <?php else: ?>
-                                            <button disabled class="block w-full text-center bg-gray-100 text-gray-400 py-3 rounded-xl text-xs font-black cursor-not-allowed border border-gray-200 uppercase tracking-wider">
-                                                <i class="fas fa-lock mr-2"></i> Unirse (Disponible a las <?php echo date('H:i', $fechaReunion); ?>)
-                                            </button>
-                                        <?php endif; ?>
-                                    <?php elseif ($puedeAgregarLink): ?>
-                                        <button onclick="abrirModalLink(<?php echo $cita['id']; ?>)" 
-                                                class="block w-full text-center bg-[#00a2ff] hover:bg-[#008ae0] text-white py-3 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-sky-500/10 uppercase tracking-wider">
-                                            <i class="fas fa-link mr-2"></i> Vincular Link
-                                        </button>
-                                    <?php else: ?>
-                                        <div class="bg-gray-50 text-gray-400 py-3 rounded-xl text-xs text-center italic w-full font-bold border border-gray-100">
-                                            <?php if (!$citaAceptada): ?>
-                                                <i class="fas fa-clock mr-1"></i> Pendiente de aceptar fecha
-                                            <?php elseif (!$esPropositor): ?>
-                                                <i class="fas fa-hourglass-half mr-1"></i> Esperando link del vendedor
+                                    <?php if ($esVirtual): ?>
+                                        <?php if ($esUrlValida): ?>
+                                            <?php if ($esHoraDeReunion): ?>
+                                                <a href="<?php echo htmlspecialchars($linkReunion); ?>" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-emerald-500/10 uppercase tracking-wider">
+                                                    <i class="fas fa-video mr-2"></i> Unirse a Reunión
+                                                </a>
                                             <?php else: ?>
-                                                <i class="fas fa-hourglass-half mr-1"></i> Esperando link de reunión
+                                                <button disabled class="block w-full text-center bg-gray-100 text-gray-400 py-3 rounded-xl text-xs font-black cursor-not-allowed border border-gray-200 uppercase tracking-wider">
+                                                    <i class="fas fa-lock mr-2"></i> Unirse (Disponible a las <?php echo date('H:i', $fechaReunion); ?>)
+                                                </button>
+                                            <?php endif; ?>
+                                        <?php elseif ($puedeAgregarLink): ?>
+                                            <button onclick="abrirModalLink(<?php echo $cita['id']; ?>)" 
+                                                    class="block w-full text-center bg-[#00a2ff] hover:bg-[#008ae0] text-white py-3 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-sky-500/10 uppercase tracking-wider">
+                                                <i class="fas fa-link mr-2"></i> Vincular Link
+                                            </button>
+                                        <?php else: ?>
+                                            <div class="bg-gray-50 text-gray-400 py-3 rounded-xl text-xs text-center italic w-full font-bold border border-gray-100">
+                                                <?php if (!$citaAceptada): ?>
+                                                    <i class="fas fa-clock mr-1"></i> Pendiente de aceptar fecha
+                                                <?php elseif (!$esPropositor): ?>
+                                                    <i class="fas fa-hourglass-half mr-1"></i> Esperando link del vendedor
+                                                <?php else: ?>
+                                                    <i class="fas fa-hourglass-half mr-1"></i> Esperando link de reunión
+                                                <?php endif; ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <!-- Diseño para Reunión Presencial -->
+                                        <div class="w-full bg-orange-50 border border-orange-100 rounded-2xl p-3.5">
+                                            <div class="flex items-center gap-2 text-orange-700 mb-1">
+                                                <i class="fas fa-map-marker-alt text-xs"></i>
+                                                <span class="text-[10px] font-black uppercase tracking-wider">Reunión Presencial</span>
+                                            </div>
+                                            <p class="text-xs font-bold text-gray-800 truncate" title="<?php echo htmlspecialchars($rueda_actual['ubicacion'] ?? 'Ubicación no definida'); ?>">
+                                                <?php echo htmlspecialchars($rueda_actual['ubicacion'] ?? 'Ubicación no definida'); ?>
+                                            </p>
+                                            <?php if (!empty($cita['numero_mesa'])): ?>
+                                                <div class="mt-2 pt-2 border-t border-orange-200/60 flex items-center justify-between">
+                                                    <span class="text-[10px] font-bold text-orange-700 uppercase">Mesa / Stand:</span>
+                                                    <span class="text-sm font-black text-orange-800 bg-white px-2.5 py-0.5 rounded-lg border border-orange-200">Mesa <?php echo preg_replace('/[^0-9]/', '', (string)$cita['numero_mesa']); ?></span>
+                                                </div>
                                             <?php endif; ?>
                                         </div>
                                     <?php endif; ?>
@@ -231,12 +251,19 @@
                                                 <a href="<?php echo $googleUrl; ?>" target="_blank" class="flex items-center gap-3 px-4 py-2.5 hover:bg-sky-50 rounded-lg text-[10px] font-bold text-gray-700 transition-colors">
                                                     <i class="fab fa-google text-red-500 text-sm"></i> Google Calendar
                                                 </a>
-                                                <button onclick="descargarICS('<?php echo addslashes($cita['nombre_vendedor'] ?? 'Socio'); ?>', '<?php echo $cita['fechaHora']; ?>', '<?php echo addslashes($linkReunion ?: 'Pendiente'); ?>', '<?php echo addslashes($rueda_actual['ubicacion'] ?? 'Virtual'); ?>')" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-sky-50 rounded-lg text-[10px] font-bold text-gray-700 transition-colors">
+                                                <button onclick="descargarICS('<?php echo addslashes($cita['nombre_vendedor'] ?? 'Socio'); ?>', '<?php echo $cita['fechaHora']; ?>', '<?php echo addslashes($linkReunion ?: 'Presencial'); ?>', '<?php echo addslashes($rueda_actual['ubicacion'] ?? 'Presencial'); ?>')" class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-sky-50 rounded-lg text-[10px] font-bold text-gray-700 transition-colors">
                                                     <i class="fab fa-apple text-gray-800 text-sm"></i> Apple / Outlook (ICS)
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
+
+                                    <?php if (strtotime($cita['fechaHora']) <= time() && !$esMesaApartada): ?>
+                                        <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_vendedor'] ?? 'Socio')); ?>', '<?php echo date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'] ?? 'Rueda')); ?>', 'satisfaccion')" 
+                                                class="w-full bg-[#002e53] hover:bg-[#00a2ff] text-white py-2.5 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-sky-900/10 uppercase tracking-wider flex items-center justify-center gap-2 mt-1">
+                                            <i class="fas fa-chart-line"></i> Registrar Resultado
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>
