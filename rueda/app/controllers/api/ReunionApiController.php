@@ -136,9 +136,7 @@ class ReunionApiController extends BaseApiController {
                 $mi_mesa = $stmt_mi_mesa->fetch();
                 if ($mi_mesa) {
                     $mesa_asignada = $mi_mesa['numero_mesa'];
-                    if ($mi_mesa['estadoCita'] === 'mesa_apartada') {
-                        $ya_tiene_mesa = true;
-                    }
+                    $ya_tiene_mesa = true;
                 }
             }
 

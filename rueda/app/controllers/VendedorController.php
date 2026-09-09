@@ -629,35 +629,54 @@ class VendedorController {
                     throw new Exception("El comprador ya tiene una cita agendada en este bloque de tiempo ($duracion min).");
                 }
 
-                // 1. Buscar el apartado de mesa existente
-                $stmt_mesa = $this->pdo->prepare("SELECT id FROM reuniones WHERE ruedaId = ? AND compradorId = ? AND estadoCita = 'mesa_apartada' LIMIT 1");
+                // 1. Obtener la mesa asignada al comprador en esta rueda (si ya tiene una)
+                $stmt_mesa = $this->pdo->prepare("
+                    SELECT numero_mesa FROM reuniones 
+                    WHERE ruedaId = ? AND compradorId = ? 
+                    AND numero_mesa IS NOT NULL 
+                    AND estadoCita NOT IN ('cancelada', 'rechazada')
+                    LIMIT 1
+                ");
                 $stmt_mesa->execute([$rueda_id, $comprador_id]);
-                $apartado = $stmt_mesa->fetch();
+                $mesaInfo = $stmt_mesa->fetch();
+                $mesaFinal = $mesaInfo ? $mesaInfo['numero_mesa'] : ($numero_mesa ?: null);
 
                 $this->pdo->beginTransaction();
 
                 try {
-                    if ($apartado) {
-                        $reunion_id = $apartado['id'];
-                        // Actualizar el registro existente SIN la columna inexistente fechaLimiteNegociacion
+                    // Si el comprador tenía un apartado vacío (placeholder), podemos reutilizarlo o crear una nueva cita
+                    $stmt_ap = $this->pdo->prepare("
+                        SELECT id FROM reuniones 
+                        WHERE ruedaId = ? AND compradorId = ? 
+                        AND estadoCita = 'mesa_apartada' 
+                        AND (vendedorId IS NULL OR vendedorId = 0)
+                        LIMIT 1
+                    ");
+                    $stmt_ap->execute([$rueda_id, $comprador_id]);
+                    $apartadoVacio = $stmt_ap->fetch();
+
+                    if ($apartadoVacio) {
+                        $reunion_id = $apartadoVacio['id'];
                         $stmt = $this->pdo->prepare("
                             UPDATE reuniones 
                             SET vendedorId = ?, 
                                 fechaHora = ?, 
                                 estadoCita = 'pendiente', 
+                                linkReunion = ?,
+                                numero_mesa = ?,
                                 ultimaAccionPor = 'vendedor', 
                                 propositor = 'vendedor',
                                 contadorContrapropuestas = 1
                             WHERE id = ?
                         ");
-                        $stmt->execute([$vendedor_id, $fecha_hora, $reunion_id]);
+                        $stmt->execute([$vendedor_id, $fecha_hora, $link_reunion, $mesaFinal, $reunion_id]);
                     } else {
-                        // Crear uno nuevo si no existe
+                        // Crear nueva cita para este bloque horario específico
                         $stmt = $this->pdo->prepare("
                             INSERT INTO reuniones (ruedaId, compradorId, vendedorId, fechaHora, estadoCita, linkReunion, numero_mesa, contadorContrapropuestas, ultimaAccionPor, propositor) 
                             VALUES (?, ?, ?, ?, 'pendiente', ?, ?, 1, 'vendedor', 'vendedor')
                         ");
-                        $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $numero_mesa]);
+                        $stmt->execute([$rueda_id, $comprador_id, $vendedor_id, $fecha_hora, $link_reunion, $mesaFinal]);
                         $reunion_id = $this->pdo->lastInsertId();
                     }
 
@@ -738,7 +757,7 @@ class VendedorController {
             // Obtener compradores con sus demandas y número de mesa si tienen
             $sql = "
                 SELECT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.ciiu_personalizado, e.ciiu_nombre_personalizado, s.ciiu_clase, s.nombreSector,
-                       (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1) as mesa_apartada
+                       (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND numero_mesa IS NOT NULL AND estadoCita NOT IN ('cancelada', 'rechazada') LIMIT 1) as mesa_apartada
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
                 LEFT JOIN sectores s ON e.sectorId = s.id
@@ -775,13 +794,15 @@ class VendedorController {
                 $stmt_dem->execute([$c['empresaId'], $ruedaId]);
                 $c['demandas'] = $stmt_dem->fetchAll();
 
-                // Verificar mesa apartada
+                // Verificar mesa apartada o asignada
                 $stmt_mesa = $this->pdo->prepare("
                     SELECT numero_mesa, fechaHora, id as reunionId
                     FROM reuniones 
                     WHERE compradorId = ? 
                     AND ruedaId = ? 
-                    AND estadoCita = 'mesa_apartada'
+                    AND numero_mesa IS NOT NULL
+                    AND estadoCita NOT IN ('cancelada', 'rechazada')
+                    ORDER BY (estadoCita = 'mesa_apartada') DESC, id ASC
                     LIMIT 1
                 ");
                 $stmt_mesa->execute([$c['empresaId'], $ruedaId]);
@@ -1137,8 +1158,8 @@ class VendedorController {
                 $stmt_o->execute([$emp['empresaId'], $rueda_id]);
                 $emp_ofertas = $stmt_o->fetchAll();
 
-                // 4. Buscar si la empresa tiene una mesa apartada en esta rueda
-                $stmt_m = $this->pdo->prepare("SELECT numero_mesa FROM reuniones WHERE compradorId = ? AND ruedaId = ? AND estadoCita = 'mesa_apartada' LIMIT 1");
+                // 4. Buscar si la empresa tiene una mesa asignada en esta rueda
+                $stmt_m = $this->pdo->prepare("SELECT numero_mesa FROM reuniones WHERE compradorId = ? AND ruedaId = ? AND numero_mesa IS NOT NULL AND estadoCita NOT IN ('cancelada', 'rechazada') LIMIT 1");
                 $stmt_m->execute([$emp['empresaId'], $rueda_id]);
                 $mesaInfo = $stmt_m->fetch();
 

@@ -1086,11 +1086,13 @@ class CompradorController {
 
             $miEmpresaId = $miEmpresa['id'];
 
-            // Verificar si el comprador ya tiene una mesa apartada en esta rueda
+            // Verificar si el comprador ya tiene una mesa asignada en esta rueda en cualquier estado activo
             $stmt_mesa_existente = $this->pdo->prepare("
                 SELECT * FROM reuniones 
                 WHERE ruedaId = ? AND compradorId = ? 
-                AND estadoCita = 'mesa_apartada'
+                AND numero_mesa IS NOT NULL 
+                AND estadoCita NOT IN ('cancelada', 'rechazada')
+                ORDER BY (estadoCita = 'mesa_apartada') DESC, id ASC
                 LIMIT 1
             ");
             $stmt_mesa_existente->execute([$ruedaId, $miEmpresaId]);
@@ -1104,7 +1106,7 @@ class CompradorController {
     }
 
     /**
-     * Liberar la mesa apartada por el comprador para permitir elegir otra
+     * Desocupar / Liberar la mesa asignada al comprador para permitir elegir otra o retirarse del espacio
      */
     public function liberarMesa() {
         try {
@@ -1121,11 +1123,22 @@ class CompradorController {
                 throw new Exception("Empresa no encontrada.");
             }
 
-            $stmt = $this->pdo->prepare("
+            $empresaId = $miEmpresa['id'];
+
+            // 1. Eliminar cualquier apartado de mesa puro (sin vendedor)
+            $stmt_del = $this->pdo->prepare("
                 DELETE FROM reuniones 
                 WHERE ruedaId = ? AND compradorId = ? AND estadoCita = 'mesa_apartada'
             ");
-            $stmt->execute([$ruedaId, $miEmpresa['id']]);
+            $stmt_del->execute([$ruedaId, $empresaId]);
+
+            // 2. Desvincular la mesa de cualquier reunión pendiente para que la mesa quede 100% libre
+            $stmt_upd = $this->pdo->prepare("
+                UPDATE reuniones 
+                SET numero_mesa = NULL 
+                WHERE ruedaId = ? AND compradorId = ? AND estadoCita IN ('pendiente', 'negociando', 'aceptada', 'agendada')
+            ");
+            $stmt_upd->execute([$ruedaId, $empresaId]);
 
             header("Location: index.php?controlador=comprador&accion=apartarMesa&id=" . $ruedaId . "&msg=mesa_liberada");
             exit();
@@ -1192,16 +1205,17 @@ class CompradorController {
                 $minutos_aleatorios = str_pad(rand(0, 59), 2, "0", STR_PAD_LEFT);
                 $fecha_hora_defecto = $fecha_apartado . " 05:$minutos_aleatorios:$segundos_aleatorios";
 
-                // VALIDACIÓN: Verificar que el comprador no tenga ya una mesa apartada en esta rueda
+                // VALIDACIÓN: Verificar que el comprador no tenga ya una mesa en esta rueda
                 $stmt_mesa = $this->pdo->prepare("
                     SELECT COUNT(*) as tiene_mesa FROM reuniones 
                     WHERE compradorId = ? 
                     AND ruedaId = ? 
-                    AND estadoCita = 'mesa_apartada'
+                    AND numero_mesa IS NOT NULL
+                    AND estadoCita NOT IN ('cancelada', 'rechazada')
                 ");
                 $stmt_mesa->execute([$comprador_id, $rueda_id]);
                 if ($stmt_mesa->fetch()['tiene_mesa'] > 0) {
-                    throw new Exception("Ya tienes una mesa apartada en esta rueda.");
+                    throw new Exception("Ya tienes una mesa asignada en esta rueda. Desocupa tu mesa actual si deseas elegir otra.");
                 }
 
                 $numero_mesa_limpio = preg_replace('/[^0-9]/', '', $numero_mesa);
