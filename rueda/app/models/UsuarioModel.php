@@ -204,16 +204,31 @@ class UsuarioModel {
      * Buscar usuario por email
      */
     public function getByEmail($email) {
-        $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE email = ? AND isActive = 1");
+        $email = strtolower(trim((string)$email));
+        $stmt = $this->db->prepare("SELECT * FROM usuarios WHERE LOWER(TRIM(email)) = ? AND (isActive = 1 OR isActive IS NULL) LIMIT 1");
         $stmt->execute([$email]);
         return $stmt->fetch();
+    }
+
+    /**
+     * Asegurar que existan las columnas de reset_token y reset_expires
+     */
+    private function ensureResetColumnsExist() {
+        try {
+            $stmt = $this->db->query("SHOW COLUMNS FROM usuarios LIKE 'reset_token'");
+            if ($stmt && !$stmt->fetch()) {
+                $this->db->exec("ALTER TABLE usuarios ADD COLUMN reset_token VARCHAR(255) NULL, ADD COLUMN reset_expires DATETIME NULL");
+            }
+        } catch (Exception $e) {}
     }
 
     /**
      * Guardar token de recuperación
      */
     public function setResetToken($email, $token, $expires) {
-        $stmt = $this->db->prepare("UPDATE usuarios SET reset_token = ?, reset_expires = ? WHERE email = ?");
+        $this->ensureResetColumnsExist();
+        $email = strtolower(trim((string)$email));
+        $stmt = $this->db->prepare("UPDATE usuarios SET reset_token = ?, reset_expires = ? WHERE LOWER(TRIM(email)) = ?");
         return $stmt->execute([$token, $expires, $email]);
     }
 

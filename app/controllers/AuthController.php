@@ -66,7 +66,8 @@ class AuthController {
         $success = '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $email = trim($_POST['email'] ?? '');
+            require_once __DIR__ . '/../../rueda/includes/MailerService.php';
+            $email = strtolower(trim($_POST['email'] ?? ''));
 
             if (empty($email)) {
                 $error = 'Por favor ingresa tu correo electrónico.';
@@ -79,25 +80,14 @@ class AuthController {
                     if ($this->adminModel->setResetToken($email, $token, $expires)) {
                         $resetLink = APP_URL . "/?page=reset-password&token=" . $token;
                         
-                        // Preparar correo
-                        $to = $email;
-                        $subject = "Recuperar Contraseña - " . APP_NAME;
-                        $message = "Hola " . $usuario['nombre'] . ",\n\n";
-                        $message .= "Has solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para continuar:\n\n";
-                        $message .= $resetLink . "\n\n";
-                        $message .= "Este enlace expirará en 1 hora.\n\n";
-                        $message .= "Si no solicitaste esto, puedes ignorar este correo.\n";
-                        $headers = "From: no-reply@agecso.org" . "\r\n" .
-                                   "Reply-To: contacto@agecso.org" . "\r\n" .
-                                   "X-Mailer: PHP/" . phpversion();
+                        $nombre = $usuario['nombre'] ?? 'Administrador';
+                        $enviado = MailerService::sendPasswordReset($email, $nombre, $resetLink);
 
-                        // Enviar correo (usando mail() básico para Hostinger)
-                        if (@mail($to, $subject, $message, $headers)) {
-                            $success = 'Se ha enviado un enlace de recuperación a tu correo.';
+                        if ($enviado) {
+                            $success = 'Se ha enviado un enlace de recuperación a tu correo electrónico. Revisa tu bandeja de entrada o spam.';
                         } else {
-                            // Fallback para debug si mail() falla en local
-                            error_log("Error enviando correo a $email. Link: $resetLink");
-                            $success = 'Se ha generado el enlace (ver logs). Por favor revisa tu bandeja de entrada.';
+                            error_log("[Admin PasswordReset] Link generado para $email: $resetLink");
+                            $success = 'Si el correo existe en nuestro sistema, recibirás un enlace pronto.';
                         }
                     }
                 } else {

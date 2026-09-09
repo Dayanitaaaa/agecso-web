@@ -346,24 +346,28 @@ class UsuarioController {
     }
 
     public function logout() {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         session_destroy();
-        header("Location: index.php");
+        header("Location: index.php?controlador=usuario&accion=login");
         exit();
     }
 
     /**
-     * Olvidé mi contraseña - Solicitar token
+     * Olvidé mi contraseña - Formulario y envío de correo
      */
     public function forgotPassword() {
         try {
+            require_once __DIR__ . '/../../includes/MailerService.php';
+
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
 
             $mensaje = "";
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-                $email = trim($_POST['correo'] ?? '');
+                $email = strtolower(trim($_POST['correo'] ?? $_POST['email'] ?? ''));
 
                 if (empty($email)) {
                     throw new Exception("Por favor ingresa tu correo electrónico.");
@@ -375,34 +379,28 @@ class UsuarioController {
                     $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
 
                     if ($this->usuarioModel->setResetToken($email, $token, $expires)) {
-                        $resetLink = "https://rueda.agecso.org/index.php?controlador=usuario&accion=resetPassword&token=" . $token;
+                        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || ($_SERVER['SERVER_PORT'] ?? '') == 443) ? "https://" : "http://";
+                        $host = $_SERVER['HTTP_HOST'] ?? 'rueda.agecso.org';
+                        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
+                        $resetLink = $protocol . $host . $scriptName . "?controlador=usuario&accion=resetPassword&token=" . $token;
                         
-                        // Preparar correo
-                        $to = $email;
-                        $subject = "Recuperar Contraseña - Rueda de Negocios AGECSO";
-                        $message = "Hola " . $usuario['nombreUsuario'] . ",\n\n";
-                        $message .= "Has solicitado restablecer tu contraseña en la Rueda de Negocios. Haz clic en el siguiente enlace para continuar:\n\n";
-                        $message .= $resetLink . "\n\n";
-                        $message .= "Este enlace expirará en 1 hora.\n\n";
-                        $message .= "Si no solicitaste esto, puedes ignorar este correo.\n";
-                        $headers = "From: no-reply@agecso.org" . "\r\n" .
-                                   "Reply-To: contacto@agecso.org" . "\r\n" .
-                                   "X-Mailer: PHP/" . phpversion();
+                        $nombre = $usuario['nombreUsuario'] ?? 'Empresario(a)';
+                        $enviado = MailerService::sendPasswordReset($email, $nombre, $resetLink);
 
-                        if (@mail($to, $subject, $message, $headers)) {
-                            $mensaje = "<div class='bg-green-100 p-3 rounded mb-4 text-green-700'>Se ha enviado un enlace de recuperación a tu correo.</div>";
+                        if ($enviado) {
+                            $mensaje = "<div class='bg-emerald-50 border border-emerald-200 p-4 rounded-2xl mb-4 text-emerald-800 text-sm font-bold flex items-center gap-3'><i class='fas fa-check-circle text-emerald-600 text-lg'></i> Hemos enviado un enlace a tu correo electrónico. Por favor revisa tu bandeja de entrada o spam.</div>";
                         } else {
-                            error_log("Error enviando correo a $email. Link: $resetLink");
-                            $mensaje = "<div class='bg-green-100 p-3 rounded mb-4 text-green-700'>Se ha generado el enlace (ver logs). Por favor revisa tu bandeja de entrada.</div>";
+                            error_log("[PasswordReset] Link generado para $email: $resetLink");
+                            $mensaje = "<div class='bg-blue-50 border border-blue-200 p-4 rounded-2xl mb-4 text-blue-800 text-sm font-bold flex items-center gap-3'><i class='fas fa-info-circle text-blue-600 text-lg'></i> Si el correo existe en nuestro sistema, recibirás las instrucciones de recuperación.</div>";
                         }
                     }
                 } else {
-                    $mensaje = "<div class='bg-green-100 p-3 rounded mb-4 text-green-700'>Si el correo existe en nuestro sistema, recibirás un enlace pronto.</div>";
+                    $mensaje = "<div class='bg-blue-50 border border-blue-200 p-4 rounded-2xl mb-4 text-blue-800 text-sm font-bold flex items-center gap-3'><i class='fas fa-info-circle text-blue-600 text-lg'></i> Si el correo existe en nuestro sistema, recibirás las instrucciones de recuperación.</div>";
                 }
             }
             require_once __DIR__ . '/../views/usuario/forgot_password.php';
         } catch (Exception $e) {
-            $mensaje = "<div class='bg-red-100 p-3 rounded mb-4 text-red-700'>" . $e->getMessage() . "</div>";
+            $mensaje = "<div class='bg-red-50 border border-red-200 p-4 rounded-2xl mb-4 text-red-700 text-sm font-bold flex items-center gap-3'><i class='fas fa-exclamation-triangle text-red-500 text-lg'></i> " . htmlspecialchars($e->getMessage()) . "</div>";
             require_once __DIR__ . '/../views/usuario/forgot_password.php';
         }
     }

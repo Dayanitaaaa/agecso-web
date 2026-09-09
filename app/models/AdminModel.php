@@ -8,9 +8,22 @@ class AdminModel extends BaseModel {
      * Buscar usuario por email
      */
     public function getByEmail($email) {
-        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE email = ? AND activo = 1");
+        $email = strtolower(trim((string)$email));
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE LOWER(TRIM(email)) = ? AND (activo = 1 OR activo IS NULL) LIMIT 1");
         $stmt->execute([$email]);
         return $stmt->fetch();
+    }
+
+    /**
+     * Asegurar que existan las columnas de reset_token y reset_expires
+     */
+    private function ensureResetColumnsExist() {
+        try {
+            $stmt = $this->pdo->query("SHOW COLUMNS FROM {$this->table} LIKE 'reset_token'");
+            if ($stmt && !$stmt->fetch()) {
+                $this->pdo->exec("ALTER TABLE {$this->table} ADD COLUMN reset_token VARCHAR(255) NULL, ADD COLUMN reset_expires DATETIME NULL");
+            }
+        } catch (Exception $e) {}
     }
 
     /**
@@ -24,7 +37,9 @@ class AdminModel extends BaseModel {
      * Guardar token de recuperación
      */
     public function setResetToken($email, $token, $expires) {
-        $stmt = $this->pdo->prepare("UPDATE {$this->table} SET reset_token = ?, reset_expires = ? WHERE email = ?");
+        $this->ensureResetColumnsExist();
+        $email = strtolower(trim((string)$email));
+        $stmt = $this->pdo->prepare("UPDATE {$this->table} SET reset_token = ?, reset_expires = ? WHERE LOWER(TRIM(email)) = ?");
         return $stmt->execute([$token, $expires, $email]);
     }
 
