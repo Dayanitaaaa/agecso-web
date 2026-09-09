@@ -153,17 +153,10 @@
                     </h3>
                     <p class="text-[11px] text-gray-400 font-bold uppercase tracking-wider mt-1">Eventos configurados, franjas horarias y control de mesas</p>
                 </div>
-                <div class="flex items-center gap-2">
-                    <a href="index.php?controlador=admin&accion=limpiarRuedasPrueba" 
-                       onclick="return confirm('¿Deseas eliminar automáticamente todas las ruedas de prueba (Prueba, prueba 2, Expoempresarial, ruedas sin título) y sus datos relacionados?');"
-                       class="bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition border border-rose-200 flex items-center gap-1.5">
-                        <i class="fas fa-trash-alt"></i> Limpiar Pruebas
-                    </a>
-                    <button onclick="document.getElementById('modalCrearRueda').classList.remove('hidden')" 
-                            class="bg-slate-900 hover:bg-black text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition flex items-center gap-1.5">
-                        <i class="fas fa-plus"></i> Nueva Rueda
-                    </button>
-                </div>
+                <button onclick="document.getElementById('modalCrearRueda').classList.remove('hidden')" 
+                        class="bg-slate-900 hover:bg-black text-white text-xs px-4 py-2 rounded-full font-black shadow-sm transition flex items-center gap-1.5">
+                    <i class="fas fa-plus"></i> Nueva Rueda
+                </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-100">
