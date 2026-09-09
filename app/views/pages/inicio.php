@@ -568,7 +568,7 @@
                     ['img' => 'aliados6.jpg', 'url' => '#'],
                     ['img' => 'aliados7.png', 'url' => '#'],
                     ['img' => 'aliados8.png', 'url' => '#'],
-                    ['img' => 'aliados9.png', 'url' => '#'],
+                    ['img' => 'aliados9.png', 'url' => 'https://www.fna.gov.co/'],
                     ['img' => 'aliados10.png', 'url' => '#'],
                     ['img' => 'aliados11.jpeg', 'url' => '#'],
                     ['img' => 'aliados12.png', 'url' => '#'],
