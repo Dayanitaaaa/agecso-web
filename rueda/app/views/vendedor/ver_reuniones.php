@@ -320,10 +320,10 @@
                                     </div>
                                 </div>
 
-                                <?php if (strtotime($cita['fechaHora']) < time()): ?>
-                                    <button onclick="abrirModalResultado(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_comprador'] ?? 'N/A')); ?>')" 
-                                            class="w-full bg-[#0f766e] hover:bg-[#0d9488] text-white py-2.5 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-teal-500/10 uppercase tracking-wider">
-                                        <i class="fas fa-chart-line mr-2"></i> Registrar Resultado
+                                <?php if (strtotime($cita['fechaHora']) <= time()): ?>
+                                    <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_comprador'] ?? 'Socio')); ?>', '<?php echo date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'] ?? 'Rueda')); ?>', 'satisfaccion')" 
+                                            class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-2.5 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-teal-500/10 uppercase tracking-wider flex items-center justify-center gap-2 mt-2">
+                                        <i class="fas fa-chart-line"></i> Registrar Resultado
                                     </button>
                                 <?php endif; ?>
                             </div>
@@ -398,7 +398,7 @@
                                             $ya_paso = (date('Y-m-d', strtotime($cita['fechaHora'])) < date('Y-m-d', strtotime(SYSTEM_TIME)));
                                             if (($ya_paso || $cita['estadoCita'] == 'realizada') && $cita['estadoCita'] != 'cancelada'): 
                                         ?>
-                                            <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_comprador'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'])); ?>', '<?php echo date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>')" 
+                                            <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_comprador'] ?? 'N/A')); ?>', '<?php echo date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'])); ?>', 'satisfaccion')" 
                                                     class="text-[10px] font-black text-[#0d9488] hover:text-white bg-teal-50 hover:bg-[#0d9488] border border-teal-100 px-4 py-2 rounded-full transition-all duration-300 uppercase tracking-wider">
                                                 <i class="fas fa-star mr-1"></i> Calificar
                                             </button>
@@ -576,33 +576,7 @@ async function cargarMesasGestionar(fechaHora) {
         select.innerHTML = '<option value="">Error al cargar mesas</option>';
     }
 }
-</script>
 
-<!-- Reutilizamos el modal de encuesta si es necesario -->
-<script>
-function abrirModalEncuesta(reunionId, razon_social) {
-    if (document.getElementById('encuesta_reunion_id')) {
-        document.getElementById('encuesta_reunion_id').value = reunionId;
-    }
-    if (document.getElementById('encuesta_nombre_empresa')) {
-        document.getElementById('encuesta_nombre_empresa').innerText = razon_social;
-    }
-    if (document.getElementById('modalEncuesta')) {
-        document.getElementById('modalEncuesta').classList.remove('hidden');
-    }
-}
-
-function abrirModalResultado(citaId, nombreComprador) {
-    if (document.getElementById('resultado_cita_id')) {
-        document.getElementById('resultado_cita_id').value = citaId;
-    }
-    if (document.getElementById('nombre_comprador_resultado')) {
-        document.getElementById('nombre_comprador_resultado').innerText = nombreComprador;
-    }
-    if (document.getElementById('modalResultado')) {
-        document.getElementById('modalResultado').classList.remove('hidden');
-    }
-}
 function toggleCalendarDropdown(btn) {
     const dropdown = btn.nextElementSibling;
     const allDropdowns = document.querySelectorAll('.calendar-dropdown');
@@ -657,6 +631,7 @@ function descargarICS(nombreSocio, fechaHora, link, ubicacion) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+}
 </script>
 
 <?php require_once __DIR__ . '/../layout/modal_encuesta.php'; ?>
@@ -694,42 +669,6 @@ function descargarICS(nombreSocio, fechaHora, link, ubicacion) {
                             class="mt-3 w-full inline-flex justify-center rounded-full border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-black text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto transition-all duration-200">
                         Cancelar
                     </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para registrar resultado de la reunión -->
-<div id="modalResultado" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="document.getElementById('modalResultado').classList.add('hidden')"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
-        <div class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100 animate-modal">
-            <form action="index.php?controlador=vendedor&accion=registrarResultado" method="POST">
-                <input type="hidden" name="cita_id" id="resultado_cita_id">
-                <div class="bg-white px-6 pt-6 pb-5 sm:p-7 sm:pb-6">
-                    <h3 class="text-xl leading-6 font-black text-gray-900 mb-5 flex items-center">
-                        <i class="fas fa-chart-line text-[#0d9488] mr-2"></i> Resultado de Reunión
-                    </h3>
-                    <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 mb-5">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Comprador</p>
-                        <p class="text-sm font-black text-gray-900"><span id="nombre_comprador_resultado"></span></p>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-black text-gray-700">Monto aproximado del Negocio ($)</label>
-                            <input type="number" name="monto_negocio" required class="mt-2 block w-full bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-3 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all font-bold" placeholder="0.00">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-black text-gray-700">Notas y Acuerdos</label>
-                            <textarea name="notas_resultado" rows="4" required class="mt-2 block w-full bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-3 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all" placeholder="Resumen de la reunión y próximos pasos..."></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-gray-50 px-6 py-4 sm:px-7 sm:flex sm:flex-row-reverse rounded-b-[2.5rem] gap-2">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-full border border-transparent shadow-md px-5 py-2.5 bg-[#0d9488] hover:bg-[#0f766e] text-sm font-black text-white transition-all duration-300 sm:ml-3 sm:w-auto">Finalizar Reunión</button>
-                    <button type="button" onclick="document.getElementById('modalResultado').classList.add('hidden')" class="mt-3 w-full inline-flex justify-center rounded-full border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-black text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto transition-all duration-200">Cancelar</button>
                 </div>
             </form>
         </div>
