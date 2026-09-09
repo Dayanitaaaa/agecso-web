@@ -60,13 +60,17 @@
 
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Fecha para apartar la mesa</label>
-                            <input type="date" name="fecha_apartado" id="fecha_apartado" required
-                                   class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-white font-bold"
-                                   min="<?php echo date('Y-m-d'); ?>"
-                                   max="<?php echo $rueda['fechaFin']; ?>">
+                            <div class="relative">
+                                <input type="text" name="fecha_apartado" id="fecha_apartado" required
+                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm pl-12 pr-4 py-3.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-white font-black cursor-pointer text-gray-800"
+                                       placeholder="Selecciona una fecha...">
+                                <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
+                                    <i class="far fa-calendar-alt text-lg"></i>
+                                </div>
+                            </div>
                             <p class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
                                 <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                La fecha debe estar entre <?php echo date('d/m/Y'); ?> y <?php echo date('d/m/Y', strtotime($rueda['fechaFin'])); ?>.
+                                Rueda disponible del <?php echo date('d/m/Y', strtotime($rueda['fechaInicio'])); ?> al <?php echo date('d/m/Y', strtotime($rueda['fechaFin'])); ?>.
                             </p>
                         </div>
 
@@ -114,12 +118,28 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Capturar cambio de fecha para recargar mesas
-    const fechaInput = document.getElementById('fecha_apartado');
-    if (fechaInput) {
-        fechaInput.addEventListener('change', cargarMesasDisponibles);
+    const minFecha = "<?php echo (strtotime($rueda['fechaInicio']) > time()) ? date('Y-m-d', strtotime($rueda['fechaInicio'])) : date('Y-m-d'); ?>";
+    const maxFecha = "<?php echo date('Y-m-d', strtotime($rueda['fechaFin'])); ?>";
+    const defaultFecha = minFecha;
+
+    if (document.getElementById('fecha_apartado')) {
+        flatpickr("#fecha_apartado", {
+            locale: "es",
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "D, j \\de F \\de Y",
+            altInputClass: "block w-full border border-gray-200 rounded-2xl shadow-sm pl-12 pr-4 py-3.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-white font-black cursor-pointer text-gray-800",
+            minDate: minFecha,
+            maxDate: maxFecha,
+            defaultDate: defaultFecha,
+            disableMobile: "true",
+            animate: true,
+            onChange: function(selectedDates, dateStr) {
+                cargarMesasDisponibles();
+            }
+        });
     }
-    
+
     cargarMesasDisponibles();
 });
 

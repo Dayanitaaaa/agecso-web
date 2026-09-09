@@ -57,13 +57,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-amber-600">Inscripciones Inicio <span class="text-red-500">*</span></label>
-                            <input type="date" name="fecha_inscripcion_inicio" required 
-                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200">
+                            <input type="text" name="fecha_inscripcion_inicio" id="fecha_inscripcion_inicio" required 
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 bg-white cursor-pointer"
+                                placeholder="Seleccionar fecha">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-amber-600">Inscripciones Fin <span class="text-red-500">*</span></label>
-                            <input type="date" name="fecha_inscripcion_fin" required 
-                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200">
+                            <input type="text" name="fecha_inscripcion_fin" id="fecha_inscripcion_fin" required 
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 bg-white cursor-pointer"
+                                placeholder="Seleccionar fecha">
                         </div>
                     </div>
 
@@ -71,13 +73,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Inicio de la Rueda <span class="text-red-500">*</span></label>
-                            <input type="date" name="fecha_inicio" required 
-                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-400 transition duration-200">
+                            <input type="text" name="fecha_inicio" id="fecha_inicio" required 
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-400 transition duration-200 bg-white cursor-pointer"
+                                placeholder="Seleccionar fecha">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Fin de la Rueda <span class="text-red-500">*</span></label>
-                            <input type="date" name="fecha_fin" required 
-                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-400 transition duration-200">
+                            <input type="text" name="fecha_fin" id="fecha_fin" required 
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-400 transition duration-200 bg-white cursor-pointer"
+                                placeholder="Seleccionar fecha">
                         </div>
                     </div>
 
@@ -225,6 +229,40 @@ function toggleUbicacion() {
 
 document.addEventListener("DOMContentLoaded", function() {
     toggleUbicacion();
+
+    const configDate = {
+        locale: "es",
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d/m/Y",
+        disableMobile: "true",
+        animate: true
+    };
+
+    const fpInscInicio = flatpickr("#fecha_inscripcion_inicio", {
+        ...configDate,
+        onChange: function(selectedDates, dateStr) {
+            if (fpInscFin) fpInscFin.set("minDate", dateStr);
+        }
+    });
+
+    const fpInscFin = flatpickr("#fecha_inscripcion_fin", {
+        ...configDate,
+        onChange: function(selectedDates, dateStr) {
+            if (fpInicio) fpInicio.set("minDate", dateStr);
+        }
+    });
+
+    const fpInicio = flatpickr("#fecha_inicio", {
+        ...configDate,
+        onChange: function(selectedDates, dateStr) {
+            if (fpFin) fpFin.set("minDate", dateStr);
+        }
+    });
+
+    const fpFin = flatpickr("#fecha_fin", {
+        ...configDate
+    });
 
     // Configuración elegante de selector de Hora para Citas (Flatpickr)
     const configTime = {
