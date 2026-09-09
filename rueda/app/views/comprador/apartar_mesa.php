@@ -21,98 +21,170 @@
             </div>
         </div>
 
-        <!-- FORMULARIO PARA APARTAR MESA -->
-        <div class="max-w-2xl mx-auto bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
-            <div class="bg-gradient-to-r from-[#00a2ff] to-[#4dbfff] px-8 py-6">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 bg-white/20 rounded-2xl backdrop-blur-md">
-                        <i class="fas fa-chair text-white text-xl"></i>
+        <?php if (!empty($_GET['msg']) && $_GET['msg'] === 'mesa_liberada'): ?>
+            <div class="max-w-2xl mx-auto bg-amber-50 border border-amber-200 text-amber-800 p-4 rounded-2xl flex items-center justify-between shadow-sm font-bold">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-info-circle text-amber-500 text-xl"></i>
+                    <span>Tu mesa anterior ha sido liberada. Ahora puedes seleccionar una nueva mesa o fecha.</span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-amber-400 hover:text-amber-700"><i class="fas fa-times"></i></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($mesaExistente)): ?>
+            <!-- TARJETA CUANDO EL COMPRADOR YA TIENE UNA MESA APARTADA -->
+            <div class="max-w-2xl mx-auto bg-white rounded-[2.5rem] shadow-[0_10px_40px_rgba(0,162,255,0.08)] border border-sky-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-[#002e53] to-[#00a2ff] px-8 py-7 text-white text-center relative overflow-hidden">
+                    <div class="w-16 h-16 bg-white/10 rounded-3xl mx-auto flex items-center justify-center text-3xl mb-3 backdrop-blur-md border border-white/20">
+                        <i class="fas fa-chair text-white"></i>
                     </div>
-                    <div>
-                        <h2 class="text-white font-black text-xl tracking-tight">Seleccionar Mesa</h2>
-                        <p class="text-white/80 text-xs font-bold uppercase tracking-wider mt-0.5">Elige tu mesa para la rueda de negocios</p>
+                    <span class="bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 text-[11px] font-black uppercase tracking-widest px-3 py-1 rounded-full">
+                        Mesa Asignada y Activa
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-black mt-2 tracking-tight">¡Ya Tienes Mesa Apartada!</h2>
+                    <p class="text-white/80 text-xs font-bold mt-1">Tu espacio físico en esta Rueda de Negocios está asegurado</p>
+                </div>
+
+                <div class="p-8 sm:p-10 space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-sky-50/50 border border-sky-100 rounded-2xl p-5 text-center">
+                            <span class="text-[10px] font-black text-sky-600 uppercase tracking-wider block mb-1">Tu Número de Mesa</span>
+                            <span class="text-3xl font-black text-[#002e53]">
+                                Mesa <?php echo preg_replace('/[^0-9]/', '', (string)$mesaExistente['numero_mesa']); ?>
+                            </span>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 text-center">
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-wider block mb-1">Fecha de tu Espacio</span>
+                            <span class="text-base font-black text-slate-800 flex items-center justify-center gap-1.5 mt-1">
+                                <i class="far fa-calendar-alt text-[#00a2ff]"></i>
+                                <?php echo date('d/m/Y', strtotime($mesaExistente['fechaHora'])); ?>
+                            </span>
+                        </div>
+                    </div>
+
+                    <?php if (!empty($rueda['ubicacion'])): ?>
+                        <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt text-orange-500 text-lg mt-0.5"></i>
+                            <div>
+                                <h4 class="text-xs font-black text-orange-900 uppercase tracking-wider">Lugar del Evento</h4>
+                                <p class="text-xs font-bold text-orange-800 mt-0.5"><?php echo htmlspecialchars($rueda['ubicacion']); ?></p>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="bg-gray-50 rounded-2xl p-4 text-center">
+                        <p class="text-xs text-gray-500 font-bold leading-relaxed">
+                            Los proveedores interesados en tus requerimientos solicitarán citas directamente a tu mesa asignada.
+                        </p>
+                    </div>
+
+                    <div class="pt-4 flex flex-col sm:flex-row gap-3">
+                        <a href="index.php?controlador=comprador&accion=verReuniones&rueda_id=<?php echo $ruedaId; ?>" 
+                           class="flex-1 bg-[#00a2ff] hover:bg-[#008ae0] text-white py-3.5 px-6 rounded-full font-black text-xs uppercase tracking-wider text-center shadow-lg shadow-sky-500/20 transition duration-200 flex items-center justify-center gap-2">
+                            <i class="fas fa-calendar-check"></i> Ver Mi Agenda de Citas
+                        </a>
+                        <a href="index.php?controlador=comprador&accion=liberarMesa&id=<?php echo $ruedaId; ?>" 
+                           onclick="return confirm('¿Estás seguro de que deseas liberar tu mesa actual? Podrás seleccionar otra mesa disponible inmediatamente.');"
+                           class="bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white border border-rose-200 py-3.5 px-6 rounded-full font-black text-xs uppercase tracking-wider text-center transition duration-200 flex items-center justify-center gap-2">
+                            <i class="fas fa-undo"></i> Cambiar / Liberar Mesa
+                        </a>
                     </div>
                 </div>
             </div>
-            
-            <div class="p-8">
-                <form action="index.php?controlador=comprador&accion=procesarApartarMesa" method="POST">
-                    <input type="hidden" name="rueda_id" value="<?php echo $ruedaId; ?>">
-                    <input type="hidden" name="comprador_id" value="<?php echo $miEmpresaId; ?>">
-                    
-                    <div class="space-y-6">
-                        <?php if ($rueda['modalidad'] === 'virtual'): ?>
-                            <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-4">
-                                <p class="text-xs text-purple-800 font-black leading-relaxed">
-                                    <i class="fas fa-video mr-1.5 text-purple-500"></i> 
-                                    <strong>Reunión Virtual:</strong> Esta rueda se realizará en línea.
-                                </p>
-                            </div>
-                        <?php else: ?>
-                            <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-4">
-                                <p class="text-xs text-orange-800 font-black leading-relaxed">
-                                    <i class="fas fa-map-marker-alt mr-1.5 text-orange-500"></i> 
-                                    <strong>Reunión Presencial:</strong> Esta rueda se realiza físicamente en: <br>
-                                    <span class="font-bold text-orange-900 ml-5"><?php echo htmlspecialchars($rueda['ubicacion']); ?></span>
-                                </p>
-                            </div>
-                        <?php endif; ?>
-
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Fecha para apartar la mesa</label>
-                            <div class="relative">
-                                <input type="text" name="fecha_apartado" id="fecha_apartado" required
-                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm pl-12 pr-4 py-3.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-white font-black cursor-pointer text-gray-800"
-                                       placeholder="Selecciona una fecha...">
-                                <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
-                                    <i class="far fa-calendar-alt text-lg"></i>
-                                </div>
-                            </div>
-                            <p class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
-                                <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                Rueda disponible del <?php echo date('d/m/Y', strtotime($rueda['fechaInicio'])); ?> al <?php echo date('d/m/Y', strtotime($rueda['fechaFin'])); ?>.
-                            </p>
+        <?php else: ?>
+            <!-- FORMULARIO PARA APARTAR MESA -->
+            <div class="max-w-2xl mx-auto bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-[#00a2ff] to-[#4dbfff] px-8 py-6">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-white/20 rounded-2xl backdrop-blur-md">
+                            <i class="fas fa-chair text-white text-xl"></i>
                         </div>
-
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Seleccionar Mesa Disponible</label>
-                            <div class="relative">
-                                <select name="numero_mesa" id="numero_mesa_select" required
-                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 appearance-none bg-white font-bold">
-                                    <option value="">-- Seleccionar Mesa --</option>
-                                </select>
-                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
-                                    <i class="fas fa-chair text-xs"></i>
+                            <h2 class="text-white font-black text-xl tracking-tight">Seleccionar Mesa</h2>
+                            <p class="text-white/80 text-xs font-bold uppercase tracking-wider mt-0.5">Elige tu mesa para la rueda de negocios</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-8">
+                    <form action="index.php?controlador=comprador&accion=procesarApartarMesa" method="POST">
+                        <input type="hidden" name="rueda_id" value="<?php echo $ruedaId; ?>">
+                        <input type="hidden" name="comprador_id" value="<?php echo $miEmpresaId; ?>">
+                        
+                        <div class="space-y-6">
+                            <?php if ($rueda['modalidad'] === 'virtual'): ?>
+                                <div class="bg-purple-50 border border-purple-100 rounded-2xl p-4 mb-4">
+                                    <p class="text-xs text-purple-800 font-black leading-relaxed">
+                                        <i class="fas fa-video mr-1.5 text-purple-500"></i> 
+                                        <strong>Reunión Virtual:</strong> Esta rueda se realizará en línea.
+                                    </p>
+                                </div>
+                            <?php else: ?>
+                                <div class="bg-orange-50 border border-orange-100 rounded-2xl p-4 mb-4">
+                                    <p class="text-xs text-orange-800 font-black leading-relaxed">
+                                        <i class="fas fa-map-marker-alt mr-1.5 text-orange-500"></i> 
+                                        <strong>Reunión Presencial:</strong> Esta rueda se realiza físicamente en: <br>
+                                        <span class="font-bold text-orange-900 ml-5"><?php echo htmlspecialchars($rueda['ubicacion']); ?></span>
+                                    </p>
+                                </div>
+                            <?php endif; ?>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Fecha para apartar la mesa</label>
+                                <div class="relative">
+                                    <input type="text" name="fecha_apartado" id="fecha_apartado" required
+                                           class="block w-full border border-gray-200 rounded-2xl shadow-sm pl-12 pr-4 py-3.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-white font-black cursor-pointer text-gray-800"
+                                           placeholder="Selecciona una fecha...">
+                                    <div class="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
+                                        <i class="far fa-calendar-alt text-lg"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
+                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
+                                    Rueda disponible del <?php echo date('d/m/Y', strtotime($rueda['fechaInicio'])); ?> al <?php echo date('d/m/Y', strtotime($rueda['fechaFin'])); ?>.
+                                </p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Seleccionar Mesa Disponible</label>
+                                <div class="relative">
+                                    <select name="numero_mesa" id="numero_mesa_select" required
+                                           class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 appearance-none bg-white font-bold">
+                                        <option value="">-- Seleccionar Mesa --</option>
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff]">
+                                        <i class="fas fa-chair text-xs"></i>
+                                    </div>
+                                </div>
+                                <div id="mesa_info_text" class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
+                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
+                                    Cargando mesas disponibles...
+                                </div>
+                                <div id="mesas_ocupadas_info" class="mt-3 hidden">
+                                    <p class="text-xs text-red-600 font-bold flex items-center gap-1">
+                                        <i class="fas fa-times-circle"></i>
+                                        Mesas ocupadas: <span id="lista_ocupadas"></span>
+                                    </p>
                                 </div>
                             </div>
-                            <div id="mesa_info_text" class="text-xs text-gray-400 mt-2 ml-1 flex items-center gap-1 font-bold">
-                                <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                Cargando mesas disponibles...
-                            </div>
-                            <div id="mesas_ocupadas_info" class="mt-3 hidden">
-                                <p class="text-xs text-red-600 font-bold flex items-center gap-1">
-                                    <i class="fas fa-times-circle"></i>
-                                    Mesas ocupadas: <span id="lista_ocupadas"></span>
-                                </p>
+                            
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Mensaje / Objetivo</label>
+                                <textarea name="descripcion" rows="3" required 
+                                          class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 resize-none" 
+                                          placeholder="Describe qué tipo de reuniones deseas tener..."></textarea>
                             </div>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2 ml-1">Mensaje / Objetivo</label>
-                            <textarea name="descripcion" rows="3" required 
-                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 resize-none" 
-                                      placeholder="Describe qué tipo de reuniones deseas tener..."></textarea>
+                        <div class="mt-8 pt-6 border-t border-gray-100">
+                            <button type="submit" class="w-full bg-[#00a2ff] hover:bg-[#008ae0] text-white py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all duration-300 shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2">
+                                <i class="fas fa-chair text-xs"></i> Apartar Mesa
+                            </button>
                         </div>
-                    </div>
-                    
-                    <div class="mt-8 pt-6 border-t border-gray-100">
-                        <button type="submit" class="w-full bg-[#00a2ff] hover:bg-[#008ae0] text-white py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all duration-300 shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2">
-                            <i class="fas fa-chair text-xs"></i> Apartar Mesa
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
     </div>
 </div>
 

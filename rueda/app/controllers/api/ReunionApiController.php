@@ -121,11 +121,12 @@ class ReunionApiController extends BaseApiController {
                 return $this->sendError("La rueda de negocios no tiene mesas configuradas. Contacta al administrador.", 400);
             }
 
-            // 2. Verificar si el comprador ya tiene una mesa asignada en esta rueda
+            // 2. Verificar si el comprador ya tiene una mesa asignada/apartada en esta rueda
             $mesa_asignada = null;
+            $ya_tiene_mesa = false;
             if ($comprador_id) {
                 $stmt_mi_mesa = $this->pdo->prepare("
-                    SELECT numero_mesa FROM reuniones 
+                    SELECT numero_mesa, estadoCita, fechaHora FROM reuniones 
                     WHERE ruedaId = ? AND compradorId = ? 
                     AND numero_mesa IS NOT NULL 
                     AND estadoCita NOT IN ('cancelada', 'rechazada')
@@ -135,6 +136,9 @@ class ReunionApiController extends BaseApiController {
                 $mi_mesa = $stmt_mi_mesa->fetch();
                 if ($mi_mesa) {
                     $mesa_asignada = $mi_mesa['numero_mesa'];
+                    if ($mi_mesa['estadoCita'] === 'mesa_apartada') {
+                        $ya_tiene_mesa = true;
+                    }
                 }
             }
 
@@ -148,7 +152,7 @@ class ReunionApiController extends BaseApiController {
                 $horaFin = date('Y-m-d H:i:s', strtotime("+$buffer minutes", $fechaBase));
 
                 // Una mesa está ocupada si:
-                // a) Está apartada por un comprador para esa fecha o evento (estado 'mesa_apartada')
+                // a) Está apartada por cualquier comprador para esa fecha o evento (estado 'mesa_apartada')
                 // b) Tiene una cita agendada/en curso en ese rango de horas
                 $sql = "
                     SELECT DISTINCT numero_mesa FROM reuniones 
@@ -160,12 +164,6 @@ class ReunionApiController extends BaseApiController {
                     )
                 ";
                 $params = [$rueda_id, $fechaSolo, $horaInicio, $horaFin];
-
-                // Si viene comprador_id, no bloquear al mismo comprador si ya es su mesa
-                if ($comprador_id) {
-                    $sql .= " AND (compradorId != ? OR estadoCita != 'mesa_apartada')";
-                    $params[] = $comprador_id;
-                }
 
                 $stmt_ocupadas = $this->pdo->prepare($sql);
                 $stmt_ocupadas->execute($params);
@@ -211,6 +209,8 @@ class ReunionApiController extends BaseApiController {
             // Incluir siempre información de mesas ocupadas para mostrar en el frontend
             $response = [
                 'mesas' => $disponibles,
+                'ya_tiene_mesa' => $ya_tiene_mesa,
+                'mesa_comprador' => $mesa_asignada ? preg_replace('/[^0-9]/', '', (string)$mesa_asignada) : null,
                 'mesa_sugerida' => $mesa_asignada ? preg_replace('/[^0-9]/', '', (string)$mesa_asignada) : null,
                 'debug' => [
                     'total_mesas_configuradas' => $total_mesas,

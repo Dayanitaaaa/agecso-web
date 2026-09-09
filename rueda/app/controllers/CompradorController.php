@@ -1085,7 +1085,50 @@ class CompradorController {
             }
 
             $miEmpresaId = $miEmpresa['id'];
+
+            // Verificar si el comprador ya tiene una mesa apartada en esta rueda
+            $stmt_mesa_existente = $this->pdo->prepare("
+                SELECT * FROM reuniones 
+                WHERE ruedaId = ? AND compradorId = ? 
+                AND estadoCita = 'mesa_apartada'
+                LIMIT 1
+            ");
+            $stmt_mesa_existente->execute([$ruedaId, $miEmpresaId]);
+            $mesaExistente = $stmt_mesa_existente->fetch();
+
             require_once '../app/views/comprador/apartar_mesa.php';
+        } catch (Exception $e) {
+            $error_msg = $e->getMessage();
+            require_once '../app/views/layout/error.php';
+        }
+    }
+
+    /**
+     * Liberar la mesa apartada por el comprador para permitir elegir otra
+     */
+    public function liberarMesa() {
+        try {
+            $ruedaId = $_POST['rueda_id'] ?? $_GET['rueda_id'] ?? $_GET['id'] ?? null;
+            if (!$ruedaId) {
+                throw new Exception("ID de rueda no especificado.");
+            }
+
+            $stmt_c = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
+            $stmt_c->execute([$_SESSION['usuario_id']]);
+            $miEmpresa = $stmt_c->fetch();
+
+            if (!$miEmpresa) {
+                throw new Exception("Empresa no encontrada.");
+            }
+
+            $stmt = $this->pdo->prepare("
+                DELETE FROM reuniones 
+                WHERE ruedaId = ? AND compradorId = ? AND estadoCita = 'mesa_apartada'
+            ");
+            $stmt->execute([$ruedaId, $miEmpresa['id']]);
+
+            header("Location: index.php?controlador=comprador&accion=apartarMesa&id=" . $ruedaId . "&msg=mesa_liberada");
+            exit();
         } catch (Exception $e) {
             $error_msg = $e->getMessage();
             require_once '../app/views/layout/error.php';
