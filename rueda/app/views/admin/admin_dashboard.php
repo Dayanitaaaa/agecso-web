@@ -190,18 +190,6 @@
                                             <div>
                                                 <div class="text-sm font-extrabold text-gray-900"><?php echo htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda')); ?></div>
                                                 <div class="text-[10px] text-gray-400 font-bold max-w-xs truncate"><?php echo htmlspecialchars($r['descripcion'] ?? ''); ?></div>
-                                                <!-- Acciones directas debajo del nombre -->
-                                                <div class="flex items-center gap-3 mt-1.5">
-                                                    <button onclick='abrirModalEditarRueda(<?php echo json_encode($r, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' class="text-[10px] font-black text-slate-600 hover:text-black flex items-center gap-1 hover:underline">
-                                                        <i class="fas fa-edit text-[9px]"></i> Editar
-                                                    </button>
-                                                    <span class="text-gray-300 text-xs">•</span>
-                                                    <a href="index.php?controlador=admin&accion=eliminarRueda&id=<?php echo (int)$r['id']; ?>" 
-                                                       onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente esta rueda de negocios y todos sus datos relacionados?');" 
-                                                       class="text-[10px] font-black text-rose-600 hover:text-rose-800 flex items-center gap-1 hover:underline">
-                                                        <i class="fas fa-trash-alt text-[9px]"></i> Eliminar
-                                                    </a>
-                                                </div>
                                             </div>
                                         </div>
                                     </td>
