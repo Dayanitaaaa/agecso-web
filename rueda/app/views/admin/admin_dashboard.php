@@ -3,6 +3,34 @@
 <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <div class="space-y-10">
         
+        <?php if (!empty($_GET['msg'])): ?>
+            <?php if ($_GET['msg'] === 'rueda_eliminada'): ?>
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-6 py-4 rounded-2xl font-bold flex items-center justify-between shadow-sm animate-fade-in">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check-circle text-emerald-600 text-xl"></i>
+                        <span>La rueda de negocios y todos sus registros asociados han sido eliminados correctamente.</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 text-sm"><i class="fas fa-times"></i></button>
+                </div>
+            <?php elseif ($_GET['msg'] === 'rueda_creada'): ?>
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-6 py-4 rounded-2xl font-bold flex items-center justify-between shadow-sm animate-fade-in">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check-circle text-emerald-600 text-xl"></i>
+                        <span>Rueda de negocios creada exitosamente.</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 text-sm"><i class="fas fa-times"></i></button>
+                </div>
+            <?php elseif ($_GET['msg'] === 'rueda_actualizada'): ?>
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-6 py-4 rounded-2xl font-bold flex items-center justify-between shadow-sm animate-fade-in">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check-circle text-emerald-600 text-xl"></i>
+                        <span>Rueda de negocios actualizada correctamente.</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 text-sm"><i class="fas fa-times"></i></button>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
+
         <!-- BIENVENIDA Y ACCIONES RÁPIDAS (Tema Azul Oscuro para Admin) -->
         <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(15,23,42,0.15)] text-white relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <!-- Círculos decorativos de fondo -->
@@ -202,10 +230,17 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-xs font-bold">
-                                        <button onclick='abrirModalEditarRueda(<?php echo json_encode($r, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' 
-                                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-50 hover:bg-slate-800 text-slate-700 hover:text-white rounded-full font-black text-xs transition duration-200 shadow-sm border border-slate-200 hover:border-slate-800">
-                                            <i class="fas fa-edit text-[10px]"></i> Editar
-                                        </button>
+                                        <div class="flex items-center justify-center gap-2">
+                                            <button onclick='abrirModalEditarRueda(<?php echo json_encode($r, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>)' 
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-800 text-slate-700 hover:text-white rounded-full font-black text-xs transition duration-200 shadow-sm border border-slate-200 hover:border-slate-800">
+                                                <i class="fas fa-edit text-[10px]"></i> Editar
+                                            </button>
+                                            <a href="index.php?controlador=admin&accion=eliminarRueda&id=<?php echo (int)$r['id']; ?>" 
+                                               onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente la rueda \'<?php echo addslashes(htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda'))); ?>\' y todos sus datos relacionados (reuniones, ofertas, demandas, inscripciones)?\n\nEsta acción no se puede deshacer.');"
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-full font-black text-xs transition duration-200 shadow-sm border border-rose-200 hover:border-rose-600">
+                                                <i class="fas fa-trash-alt text-[10px]"></i> Eliminar
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -657,14 +692,21 @@
                 </div>
                 
                 <!-- Acciones del Footer -->
-                <div class="bg-gray-50/50 border-t border-gray-100 px-6 py-4 sm:px-8 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-                    <button type="button" onclick="document.getElementById('modalEditarRueda').classList.add('hidden')" 
-                            class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
-                        Cancelar
-                    </button>
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-slate-900 text-sm font-extrabold text-white hover:bg-black shadow-[0_4px_15px_rgba(15,23,42,0.2)] hover:shadow-[0_6px_20px_rgba(15,23,42,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
-                        Guardar Cambios
-                    </button>
+                <div class="bg-gray-50/50 border-t border-gray-100 px-6 py-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <a id="btn_eliminar_rueda_modal" href="#" 
+                       onclick="return confirm('¿Confirmas que deseas eliminar esta rueda de negocios definitivamente y todos sus datos relacionados?');" 
+                       class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white text-xs font-black transition border border-rose-200 hover:border-rose-600">
+                        <i class="fas fa-trash-alt text-[10px]"></i> Eliminar Rueda
+                    </a>
+                    <div class="flex flex-col-reverse sm:flex-row items-center gap-3 w-full sm:w-auto">
+                        <button type="button" onclick="document.getElementById('modalEditarRueda').classList.add('hidden')" 
+                                class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-slate-900 text-sm font-extrabold text-white hover:bg-black shadow-[0_4px_15px_rgba(15,23,42,0.2)] hover:shadow-[0_6px_20px_rgba(15,23,42,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
+                            Guardar Cambios
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -1035,6 +1077,11 @@
         document.getElementById('edit_descripcion').value = rueda.descripcion || '';
         document.getElementById('edit_estado').value = rueda.estadoRueda || 'planeacion';
         document.getElementById('edit_duracion_cita').value = rueda.duracionCitaMinutos || 30;
+
+        const btnEliminar = document.getElementById('btn_eliminar_rueda_modal');
+        if (btnEliminar && rueda.id) {
+            btnEliminar.href = 'index.php?controlador=admin&accion=eliminarRueda&id=' + encodeURIComponent(rueda.id);
+        }
         
         const mod = rueda.modalidad || 'virtual';
         document.getElementById('edit_modalidad_select').value = mod;

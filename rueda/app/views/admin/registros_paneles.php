@@ -163,12 +163,13 @@
                                 <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Cronograma</th>
                                 <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Modalidad y Ubicación</th>
                                 <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Estado</th>
+                                <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Acción</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-slate-100">
                             <?php if (empty($ruedas)): ?>
                                 <tr>
-                                    <td colspan="4" class="px-8 py-20 text-center text-slate-400 font-extrabold italic">No hay ruedas registradas</td>
+                                    <td colspan="5" class="px-8 py-20 text-center text-slate-400 font-extrabold italic">No hay ruedas registradas</td>
                                 </tr>
                             <?php else: ?>
                                 <?php foreach ($ruedas as $r): ?>
@@ -210,6 +211,13 @@
                                             <span class="inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-md <?php echo $statusClass; ?>">
                                                 <?php echo ucfirst($estado); ?>
                                             </span>
+                                        </td>
+                                        <td class="px-8 py-5 text-center">
+                                            <a href="index.php?controlador=admin&accion=eliminarRueda&id=<?php echo (int)$r['id']; ?>&origen=registros" 
+                                               onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente la rueda \'<?php echo addslashes(htmlspecialchars($r['tituloRueda'] ?? 'Rueda')); ?>\' y todos sus datos relacionados?');"
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-full font-black text-xs transition duration-200 border border-rose-200 hover:border-rose-600 shadow-sm">
+                                                <i class="fas fa-trash-alt text-[10px]"></i> Eliminar
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

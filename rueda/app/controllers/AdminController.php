@@ -757,7 +757,13 @@ class AdminController {
 
                 $this->pdo->commit();
                 Logger::log("Rueda de negocios ID $ruedaId eliminada con éxito por Admin", 'system');
-                header("Location: index.php?controlador=admin&accion=dashboard&msg=rueda_eliminada");
+                
+                $origen = $_GET['origen'] ?? 'dashboard';
+                if ($origen === 'registros') {
+                    header("Location: index.php?controlador=admin&accion=verRegistrosPaneles&msg=rueda_eliminada#ruedas");
+                } else {
+                    header("Location: index.php?controlador=admin&accion=dashboard&msg=rueda_eliminada#ruedas");
+                }
                 exit();
             } catch (Exception $e) {
                 $this->pdo->rollBack();
