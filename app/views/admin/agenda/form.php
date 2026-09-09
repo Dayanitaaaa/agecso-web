@@ -71,9 +71,15 @@
                     </div>
 
                     <div class="col-md-8">
-                        <label class="form-label fw-bold">Enlace del Botón de Acción / Registro (Opcional)</label>
-                        <input type="url" name="link_registro" class="form-control" value="<?= htmlspecialchars($item['link_registro'] ?? '') ?>" placeholder="https://forms.gle/... o https://rueda.agecso.org">
-                        <small class="text-muted">Si lo dejas vacío, el botón no se mostrará o llevará al formulario general.</small>
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label fw-bold mb-0">Enlace del Botón de Acción / Registro (Opcional)</label>
+                            <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2 rounded-pill" style="font-size: 0.75rem;" 
+                                    onclick="document.querySelector('[name=link_registro]').value='<?= defined('BUSINESS_PLATFORM_URL') ? BUSINESS_PLATFORM_URL : 'https://rueda.agecso.org' ?>/index.php?controlador=usuario&accion=registro'; document.querySelector('[name=texto_boton]').value='Inscribirme';">
+                                <i class="bi bi-link-45deg"></i> Usar Registro Rueda
+                            </button>
+                        </div>
+                        <input type="url" name="link_registro" class="form-control" value="<?= htmlspecialchars($item['link_registro'] ?? '') ?>" placeholder="https://rueda.agecso.org/index.php?controlador=usuario&accion=registro">
+                        <small class="text-muted">Si es una convocatoria de rueda/connect, se redirige automáticamente al registro de empresas.</small>
                     </div>
 
                     <div class="col-md-4">

@@ -376,15 +376,25 @@
 
                         <!-- Botón CTA -->
                         <div class="mt-2">
-                            <?php if (!empty($act['link_registro'])): ?>
-                                <a href="<?= htmlspecialchars($act['link_registro']) ?>" target="_blank" 
+                            <?php 
+                            $textoCompleto = strtolower(($act['titulo'] ?? '') . ' ' . ($act['descripcion'] ?? '') . ' ' . ($act['tipo'] ?? ''));
+                            $esRuedaOConnect = (strpos($textoCompleto, 'rueda') !== false || strpos($textoCompleto, 'connect') !== false || strpos($textoCompleto, 'matchmaking') !== false);
+                            
+                            $urlRegistroRueda = defined('BUSINESS_PLATFORM_URL') ? BUSINESS_PLATFORM_URL . '/index.php?controlador=usuario&accion=registro' : 'https://rueda.agecso.org/index.php?controlador=usuario&accion=registro';
+                            
+                            $urlDestino = !empty($act['link_registro']) ? $act['link_registro'] : ($esRuedaOConnect ? $urlRegistroRueda : (APP_URL . '/agenda'));
+                            $textoBoton = !empty($act['texto_boton']) ? $act['texto_boton'] : ($esRuedaOConnect ? 'Inscribirme' : 'Ver Detalles');
+                            $esEnlaceInscripcion = !empty($act['link_registro']) || $esRuedaOConnect;
+                            ?>
+                            <?php if ($esEnlaceInscripcion): ?>
+                                <a href="<?= htmlspecialchars($urlDestino) ?>" <?= (strpos($urlDestino, 'http') === 0 ? 'target="_blank"' : '') ?> 
                                    class="btn btn-warning w-100 fw-bold py-3 rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2 text-dark fs-6">
-                                    <i class="bi bi-box-arrow-up-right"></i> <?= htmlspecialchars($act['texto_boton'] ?? 'Inscribirme') ?>
+                                    <i class="bi bi-box-arrow-up-right"></i> <?= htmlspecialchars($textoBoton) ?>
                                 </a>
                             <?php else: ?>
                                 <a href="<?= APP_URL ?>/agenda" 
                                    class="btn btn-outline-light w-100 fw-bold py-3 rounded-pill d-flex align-items-center justify-content-center gap-2 fs-6">
-                                    <i class="bi bi-info-circle"></i> Ver Detalles
+                                    <i class="bi bi-info-circle"></i> <?= htmlspecialchars($textoBoton) ?>
                                 </a>
                             <?php endif; ?>
                         </div>

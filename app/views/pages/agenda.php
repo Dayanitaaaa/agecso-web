@@ -110,15 +110,18 @@
 
                                 <!-- Botón de Registro / Acción -->
                                 <div class="px-4 pb-4 pt-0">
-                                    <?php if (!empty($act['link_registro'])): ?>
-                                        <a href="<?= htmlspecialchars($act['link_registro']) ?>" target="_blank" class="btn btn-primary w-100 fw-bold rounded-pill py-2.5 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                                            <i class="bi bi-box-arrow-up-right"></i> <?= htmlspecialchars($act['texto_boton'] ?? 'Inscribirme') ?>
-                                        </a>
-                                    <?php else: ?>
-                                        <a href="<?= APP_URL ?>/contacto" class="btn btn-outline-primary w-100 fw-bold rounded-pill py-2.5 d-flex align-items-center justify-content-center gap-2">
-                                            <i class="bi bi-info-circle"></i> Más Información
-                                        </a>
-                                    <?php endif; ?>
+                                    <?php 
+                                    $textoCompleto = strtolower(($act['titulo'] ?? '') . ' ' . ($act['descripcion'] ?? '') . ' ' . ($act['tipo'] ?? ''));
+                                    $esRuedaOConnect = (strpos($textoCompleto, 'rueda') !== false || strpos($textoCompleto, 'connect') !== false || strpos($textoCompleto, 'matchmaking') !== false);
+                                    
+                                    $urlRegistroRueda = defined('BUSINESS_PLATFORM_URL') ? BUSINESS_PLATFORM_URL . '/index.php?controlador=usuario&accion=registro' : 'https://rueda.agecso.org/index.php?controlador=usuario&accion=registro';
+                                    
+                                    $urlDestino = !empty($act['link_registro']) ? $act['link_registro'] : ($esRuedaOConnect ? $urlRegistroRueda : (APP_URL . '/contacto'));
+                                    $textoBoton = !empty($act['texto_boton']) ? $act['texto_boton'] : ($esRuedaOConnect ? 'Inscribirme' : 'Más Información');
+                                    ?>
+                                    <a href="<?= htmlspecialchars($urlDestino) ?>" <?= (strpos($urlDestino, 'http') === 0 ? 'target="_blank"' : '') ?> class="btn btn-primary w-100 fw-bold rounded-pill py-2.5 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                        <i class="bi bi-box-arrow-up-right"></i> <?= htmlspecialchars($textoBoton) ?>
+                                    </a>
                                 </div>
                             </div>
                         </div>
