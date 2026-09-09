@@ -138,8 +138,23 @@
                         </div>
                     <?php else: ?>
                         <?php foreach ($citas_programadas as $cita): ?>
-                            <?php $esMesaApartada = ($cita['estadoCita'] == 'mesa_apartada' && ($cita['modalidad'] ?? 'virtual') !== 'virtual'); ?>
-                            <div class="bg-white p-5 rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-gray-100 hover:border-emerald-200 transition-all duration-300 transform hover:-translate-y-1">
+                            <?php 
+                            $esMesaApartada = ($cita['estadoCita'] == 'mesa_apartada' && ($cita['modalidad'] ?? 'virtual') !== 'virtual'); 
+                            $duracion = (int)($cita['duracionCitaMinutos'] ?? ($rueda_actual['duracionCitaMinutos'] ?? 30));
+                            if ($duracion <= 0) $duracion = 30;
+
+                            $fechaInicioTs = strtotime($cita['fechaHora']);
+                            $fechaFinTs = $fechaInicioTs + ($duracion * 60);
+                            $ahora = time();
+
+                            $esFutura = $ahora < ($fechaInicioTs - 300);
+                            $enCurso = ($ahora >= ($fechaInicioTs - 300) && $ahora < $fechaFinTs);
+                            $tiempoCumplido = ($ahora >= $fechaFinTs);
+
+                            $horaInicioStr = date('H:i', $fechaInicioTs);
+                            $horaFinStr = date('H:i', $fechaFinTs);
+                            ?>
+                            <div class="bg-white p-5 rounded-2xl shadow-[0_4px_12px_rgba(0,0,0,0.03)] border <?php echo $tiempoCumplido ? 'border-indigo-100 bg-indigo-50/10' : ($enCurso ? 'border-emerald-200 ring-2 ring-emerald-100' : 'border-gray-100'); ?> hover:border-emerald-200 transition-all duration-300 transform hover:-translate-y-1">
                                 <div class="flex justify-between items-start mb-3">
                                     <div>
                                         <?php if ($esMesaApartada): ?>
@@ -156,21 +171,43 @@
                                         <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mt-1"><?php echo htmlspecialchars($cita['tituloRueda'] ?? 'N/A'); ?></p>
                                         <?php if (($cita['modalidad'] ?? 'virtual') !== 'virtual' && !empty($cita['numero_mesa'])): ?>
                                             <p class="text-[10px] text-[#00a2ff] font-bold mt-1 uppercase">
-                                                <i class="fas fa-chair mr-1"></i> <?php echo htmlspecialchars($cita['numero_mesa']); ?>
+                                                <i class="fas fa-chair mr-1"></i> Mesa <?php echo preg_replace('/[^0-9]/', '', (string)$cita['numero_mesa']); ?>
                                             </p>
                                         <?php endif; ?>
                                     </div>
                                     <?php if ($esMesaApartada): ?>
                                         <span class="text-[10px] bg-amber-50 text-amber-600 border border-amber-100 px-2.5 py-1 rounded-full font-black uppercase tracking-wider"><i class="fas fa-chair mr-1"></i> Mesa Apartada</span>
-                                    <?php elseif (($cita['modalidad'] ?? 'virtual') !== 'virtual'): ?>
-                                        <span class="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 px-2.5 py-1 rounded-full font-black uppercase tracking-wider"><i class="fas fa-check-circle mr-1"></i> Agendada</span>
+                                    <?php elseif ($tiempoCumplido): ?>
+                                        <span class="text-[10px] bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-1 rounded-full font-black uppercase tracking-wider flex items-center gap-1"><i class="fas fa-flag-checkered text-indigo-500"></i> Finalizada</span>
+                                    <?php elseif ($enCurso): ?>
+                                        <span class="text-[10px] bg-emerald-500 text-white px-2.5 py-1 rounded-full font-black uppercase tracking-wider flex items-center gap-1.5 shadow-sm animate-pulse"><span class="w-1.5 h-1.5 rounded-full bg-white"></span> En Curso</span>
                                     <?php else: ?>
-                                        <span class="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 px-2.5 py-1 rounded-full font-black uppercase tracking-wider"><i class="fas fa-check-circle mr-1"></i> Confirmada</span>
+                                        <span class="text-[10px] bg-emerald-50 text-emerald-600 border border-emerald-100 px-2.5 py-1 rounded-full font-black uppercase tracking-wider"><i class="fas fa-check-circle mr-1"></i> Agendada</span>
                                     <?php endif; ?>
                                 </div>
-                                <div class="text-xs text-gray-600 font-bold bg-gray-50 px-3 py-2 rounded-xl border border-gray-100 inline-flex items-center mb-4">
-                                    <i class="far fa-calendar-check mr-2 text-emerald-500"></i> <?php echo $esMesaApartada ? date('d/m/Y', strtotime($cita['fechaHora'])) : date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>
+                                <div class="text-xs text-gray-700 font-bold bg-gray-50 px-3 py-2 rounded-xl border border-gray-100 inline-flex items-center gap-2 mb-4">
+                                    <i class="far fa-calendar-alt text-[#00a2ff]"></i> 
+                                    <span><?php echo date('d/m/Y', $fechaInicioTs); ?></span>
+                                    <?php if (!$esMesaApartada): ?>
+                                        <span class="text-gray-300">|</span>
+                                        <span class="text-[#002e53] font-black"><?php echo $horaInicioStr; ?> - <?php echo $horaFinStr; ?></span>
+                                        <span class="text-[10px] text-gray-400 font-bold">(<?php echo $duracion; ?> min)</span>
+                                    <?php endif; ?>
                                 </div>
+
+                                <?php if ($tiempoCumplido && !$esMesaApartada): ?>
+                                    <!-- Alerta informativa de tiempo de cita cumplido -->
+                                    <div class="bg-indigo-50/90 border border-indigo-100 rounded-2xl p-3 flex items-start gap-2.5 text-indigo-900 mb-3">
+                                        <i class="fas fa-info-circle text-indigo-500 text-sm mt-0.5"></i>
+                                        <div class="text-xs">
+                                            <p class="font-extrabold text-indigo-950">¡Tiempo estimado cumplido (<?php echo $duracion; ?> min)!</p>
+                                            <p class="text-[11px] text-indigo-700 font-medium mt-0.5 leading-relaxed">
+                                                Esta reunión ha concluido. El espacio del comprador ha quedado libre para recibir su siguiente cita.
+                                            </p>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+
                                 <div class="flex flex-col gap-2">
                                     <?php 
                                     $linkReunion = trim($cita['linkReunion'] ?? '');
@@ -180,16 +217,11 @@
                                     $puedeAgregarLink = $citaAceptada && $esPropositor && empty($linkReunion);
                                     $esVirtual = (($cita['modalidad'] ?? ($rueda_actual['modalidad'] ?? 'virtual')) === 'virtual');
                                     
-                                    // Verificar si ya es hora de la reunión (permitir 5 minutos antes)
-                                    $fechaReunion = strtotime($cita['fechaHora']);
-                                    $ahora = time();
-                                    $esHoraDeReunion = $ahora >= ($fechaReunion - 300); // 5 minutos de gracia
-                                    
                                     // Datos para el calendario
                                     $tituloEvento = urlencode("Reunión AGECSO: " . ($cita['nombre_vendedor'] ?? 'Socio'));
-                                    $fechaInicio = date('Ymd\THis', strtotime($cita['fechaHora']));
-                                    $fechaFin = date('Ymd\THis', strtotime($cita['fechaHora'] . ' +30 minutes'));
-                                    $detallesEvento = urlencode("Cita de negocios agendada en la Rueda de Negocios AGECSO.\n\nSocio: " . ($cita['nombre_vendedor'] ?? 'N/A') . "\nLink: " . ($linkReunion ?: 'Presencial'));
+                                    $fechaInicio = date('Ymd\THis', $fechaInicioTs);
+                                    $fechaFin = date('Ymd\THis', $fechaFinTs);
+                                    $detallesEvento = urlencode("Cita de negocios agendada en la Rueda de Negocios AGECSO.\n\nSocio: " . ($cita['nombre_vendedor'] ?? 'N/A') . "\nDuración: " . $duracion . " minutos\nLink: " . ($linkReunion ?: 'Presencial'));
                                     $ubicacionEvento = urlencode($esUrlValida ? $linkReunion : ($rueda_actual['ubicacion'] ?? 'Presencial'));
                                     
                                     $googleUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text={$tituloEvento}&dates={$fechaInicio}/{$fechaFin}&details={$detallesEvento}&location={$ubicacionEvento}";
@@ -197,13 +229,13 @@
 
                                     <?php if ($esVirtual): ?>
                                         <?php if ($esUrlValida): ?>
-                                            <?php if ($esHoraDeReunion): ?>
+                                            <?php if ($enCurso || $tiempoCumplido): ?>
                                                 <a href="<?php echo htmlspecialchars($linkReunion); ?>" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-emerald-500/10 uppercase tracking-wider">
                                                     <i class="fas fa-video mr-2"></i> Unirse a Reunión
                                                 </a>
                                             <?php else: ?>
                                                 <button disabled class="block w-full text-center bg-gray-100 text-gray-400 py-3 rounded-xl text-xs font-black cursor-not-allowed border border-gray-200 uppercase tracking-wider">
-                                                    <i class="fas fa-lock mr-2"></i> Unirse (Disponible a las <?php echo date('H:i', $fechaReunion); ?>)
+                                                    <i class="fas fa-lock mr-2"></i> Unirse (Disponible a las <?php echo $horaInicioStr; ?>)
                                                 </button>
                                             <?php endif; ?>
                                         <?php elseif ($puedeAgregarLink): ?>
@@ -258,8 +290,13 @@
                                         </div>
                                     </div>
 
-                                    <?php if (strtotime($cita['fechaHora']) <= time() && !$esMesaApartada): ?>
-                                        <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_vendedor'] ?? 'Socio')); ?>', '<?php echo date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'] ?? 'Rueda')); ?>', 'satisfaccion')" 
+                                    <?php if ($tiempoCumplido && !$esMesaApartada): ?>
+                                        <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_vendedor'] ?? 'Socio')); ?>', '<?php echo date('d/m/Y H:i', $fechaInicioTs); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'] ?? 'Rueda')); ?>', 'satisfaccion')" 
+                                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-2xl text-xs font-black transition-all duration-300 shadow-md shadow-indigo-500/20 uppercase tracking-wider flex items-center justify-center gap-2 mt-1">
+                                            <i class="fas fa-chart-line"></i> Registrar Resultado
+                                        </button>
+                                    <?php elseif ($ahora >= $fechaInicioTs && !$esMesaApartada): ?>
+                                        <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_vendedor'] ?? 'Socio')); ?>', '<?php echo date('d/m/Y H:i', $fechaInicioTs); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'] ?? 'Rueda')); ?>', 'satisfaccion')" 
                                                 class="w-full bg-[#002e53] hover:bg-[#00a2ff] text-white py-2.5 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-sky-900/10 uppercase tracking-wider flex items-center justify-center gap-2 mt-1">
                                             <i class="fas fa-chart-line"></i> Registrar Resultado
                                         </button>
