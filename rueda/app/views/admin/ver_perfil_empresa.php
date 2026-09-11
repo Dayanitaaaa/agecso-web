@@ -4,15 +4,15 @@
     <div class="max-w-4xl mx-auto">
         <!-- Encabezado del Perfil -->
         <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 overflow-hidden mb-8">
-            <div class="h-36 bg-gradient-to-r from-[#fede32] via-[#ffe34d] to-[#e6b300] relative">
+            <div class="h-36 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 relative">
                 <!-- Círculos decorativos de fondo -->
-                <div class="absolute -right-5 -top-5 w-24 h-24 bg-white/20 rounded-full blur-xl"></div>
-                <div class="absolute left-10 bottom-2 w-16 h-14 bg-white/10 rounded-full blur-lg"></div>
+                <div class="absolute -right-5 -top-5 w-24 h-24 bg-white/5 rounded-full blur-xl"></div>
+                <div class="absolute left-10 bottom-2 w-16 h-14 bg-white/5 rounded-full blur-lg"></div>
             </div>
             <div class="px-8 pb-8">
                 <div class="relative flex justify-between items-end -mt-14 mb-6">
                     <div class="p-1.5 bg-white rounded-3xl shadow-sm border border-gray-100">
-                        <div class="w-24 h-24 rounded-2xl bg-amber-50 border border-amber-100/50 flex items-center justify-center text-amber-500 text-4xl font-black">
+                        <div class="w-24 h-24 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-800 text-4xl font-black">
                             <?php echo strtoupper(substr($perfil['razon_social'] ?? 'E', 0, 1)); ?>
                         </div>
                     </div>
@@ -193,16 +193,16 @@
                     </div>
                 </div>
 
-                <!-- Panel de Acciones Admin (Dorado y Carbón Contrastado) -->
+                <!-- Panel de Acciones Admin (Slate Contrastado) -->
                 <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl shadow-xl p-8 text-white relative overflow-hidden border border-slate-800">
                     <!-- Círculo de fondo decorativo -->
-                    <div class="absolute -right-12 -bottom-12 w-28 h-28 bg-[#fede32]/10 rounded-full blur-2xl"></div>
+                    <div class="absolute -right-12 -bottom-12 w-28 h-28 bg-white/5 rounded-full blur-2xl"></div>
                     
-                    <h3 class="font-extrabold text-md mb-6 flex items-center gap-2 border-b border-white/5 pb-4"><i class="fas fa-user-shield text-[#fede32]"></i> Estado en la Rueda</h3>
+                    <h3 class="font-extrabold text-md mb-6 flex items-center gap-2 border-b border-white/5 pb-4"><i class="fas fa-user-shield text-slate-300"></i> Estado en la Rueda</h3>
                     <div class="space-y-4 relative z-10">
                         <div class="flex justify-between items-center py-2 border-b border-white/5">
                             <span class="text-slate-400 text-xs font-bold">ID de Registro</span>
-                            <span class="font-mono text-xs text-[#fede32] font-extrabold">#<?php echo str_pad($perfil['id'], 5, '0', STR_PAD_LEFT); ?></span>
+                            <span class="font-mono text-xs text-slate-200 font-extrabold">#<?php echo str_pad($perfil['id'], 5, '0', STR_PAD_LEFT); ?></span>
                         </div>
                         <div class="flex justify-between items-center py-2 border-b border-white/5">
                             <span class="text-slate-400 text-xs font-bold">Perfil Actual</span>
@@ -212,7 +212,7 @@
                     <div class="mt-8 space-y-3 relative z-10">
                         <?php if ($estado !== 'aprobada'): ?>
                             <a href="index.php?controlador=admin&accion=gestionarEmpresa&id=<?php echo $perfil['id']; ?>&estado=aprobada" 
-                               class="block w-full text-center bg-[#fede32] hover:bg-[#e6b300] text-slate-900 py-3 rounded-xl font-black transition duration-200 text-xs shadow-md shadow-[#fede32]/10">
+                               class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl font-black transition duration-200 text-xs shadow-md shadow-emerald-500/20">
                                 <i class="fas fa-check mr-1.5"></i> Aprobar Registro
                             </a>
                         <?php endif; ?>
@@ -267,7 +267,7 @@
                             </div>
 
                             <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold py-3 rounded-xl transition duration-200 flex items-center justify-center gap-1.5 shadow-md">
-                                <i class="fas fa-save text-xs text-[#fede32]"></i> Guardar Cambios
+                                <i class="fas fa-save text-xs text-slate-300"></i> Guardar Cambios
                             </button>
                         </form>
                     </div>

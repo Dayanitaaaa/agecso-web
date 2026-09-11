@@ -16,19 +16,19 @@ if (strpos($role, 'admin') !== false) {
 
 // Configurar clases de Tailwind dinámicamente según el rol
 $headerGradients = [
-    'admin' => 'bg-gradient-to-r from-[#fede32] via-[#ffe082] to-[#ffd54f] text-white',
+    'admin' => 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white',
     'vendedor' => 'bg-gradient-to-r from-[#0d9488] via-[#14b8a6] to-[#0f766e] text-white',
     'comprador' => 'bg-gradient-to-r from-sky-400 via-sky-500 to-blue-600 text-white'
 ];
 
 $iconBgColors = [
-    'admin' => 'bg-amber-50 text-amber-600 border border-amber-100/50',
+    'admin' => 'bg-slate-100 text-slate-800 border border-slate-200',
     'vendedor' => 'bg-teal-50 text-[#0d9488] border border-teal-100/50',
     'comprador' => 'bg-sky-50 text-sky-600 border border-sky-100/50'
 ];
 
 $textColors = [
-    'admin' => 'text-amber-500',
+    'admin' => 'text-slate-800',
     'vendedor' => 'text-[#0d9488]',
     'comprador' => 'text-sky-500'
 ];
@@ -40,13 +40,13 @@ $sidebarClasses = [
 ];
 
 $sidebarAccentText = [
-    'admin' => 'text-[#fede32]',
+    'admin' => 'text-slate-200',
     'vendedor' => 'text-teal-200',
     'comprador' => 'text-sky-300'
 ];
 
 $badgeColors = [
-    'admin' => 'bg-amber-50 text-amber-800 border border-amber-200/50',
+    'admin' => 'bg-slate-100 text-slate-800 border border-slate-200',
     'vendedor' => 'bg-teal-50 text-teal-800 border border-teal-200/50',
     'comprador' => 'bg-sky-50 text-sky-800 border border-sky-200/50'
 ];

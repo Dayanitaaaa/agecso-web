@@ -4,13 +4,13 @@
     <div class="space-y-10">
         
         <!-- Header -->
-        <div class="bg-gradient-to-r from-[#fede32] via-[#ffe082] to-[#ffd54f] rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(254,222,50,0.12)] text-white relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
-            <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(15,23,42,0.25)] text-white relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
+            <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
             <div class="relative z-10">
-                <span class="bg-black/10 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border border-white/10">Métricas</span>
+                <span class="bg-white/10 text-slate-300 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border border-white/10">Métricas</span>
                 <h1 class="text-3xl sm:text-4xl font-black mt-3 tracking-tight">Estadísticas Generales del Sistema</h1>
-                <p class="text-white mt-2 flex items-center text-sm sm:text-base font-bold">
+                <p class="text-slate-300 mt-2 flex items-center text-sm sm:text-base font-medium">
                     <i class="fas fa-chart-line mr-2"></i> Visión general del rendimiento de la plataforma
                 </p>
             </div>
@@ -18,8 +18,8 @@
 
         <!-- Estadísticas Rápidas -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-white p-6 rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 flex items-center border-l-4 border-[#fede32]">
-                <div class="p-4 bg-amber-50 text-amber-500 rounded-2xl mr-4">
+            <div class="bg-white p-6 rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 flex items-center border-l-4 border-slate-900">
+                <div class="p-4 bg-slate-100 text-slate-800 rounded-2xl mr-4">
                     <i class="fas fa-building text-2xl"></i>
                 </div>
                 <div>
@@ -28,8 +28,8 @@
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 flex items-center border-l-4 border-amber-400">
-                <div class="p-4 bg-amber-50 text-amber-500 rounded-2xl mr-4">
+            <div class="bg-white p-6 rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 flex items-center border-l-4 border-blue-600">
+                <div class="p-4 bg-blue-50 text-blue-600 rounded-2xl mr-4">
                     <i class="fas fa-handshake text-2xl"></i>
                 </div>
                 <div>
@@ -54,7 +54,7 @@
             <!-- Gráfica de Ventas (Chart.js) -->
             <div class="lg:col-span-2 bg-white shadow-[0_4px_25px_rgba(0,0,0,0.01)] rounded-3xl p-6 border border-gray-100">
                 <h3 class="text-lg font-extrabold text-gray-800 tracking-tight flex items-center gap-2 mb-4">
-                    <i class="fas fa-chart-bar text-amber-500"></i> Ventas Mensuales de Membresías
+                    <i class="fas fa-chart-bar text-slate-800"></i> Ventas Mensuales de Membresías
                 </h3>
                 <div class="relative h-64 w-full">
                     <canvas id="graficaMembresias"></canvas>

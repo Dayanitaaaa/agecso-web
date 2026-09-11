@@ -4,13 +4,13 @@
     <div class="space-y-10">
         
         <!-- Header -->
-        <div class="bg-gradient-to-r from-[#fede32] via-[#ffe082] to-[#ffd54f] rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(254,222,50,0.12)] text-white relative overflow-hidden">
-            <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
-            <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(15,23,42,0.25)] text-white relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
+            <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
             <div class="relative z-10">
-                <span class="bg-black/10 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border border-white/10">Configuración</span>
+                <span class="bg-white/10 text-slate-300 text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full border border-white/10">Configuración</span>
                 <h1 class="text-3xl sm:text-4xl font-black mt-3 tracking-tight">Crear Nueva Rueda de Negocios</h1>
-                <p class="text-white mt-2 flex items-center text-sm sm:text-base font-bold">
+                <p class="text-slate-300 mt-2 flex items-center text-sm sm:text-base font-medium">
                     <i class="fas fa-calendar-plus mr-2"></i> Configura un nuevo evento de rueda de negocios
                 </p>
             </div>
@@ -25,29 +25,29 @@
                     <div>
                         <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Título de la Rueda <span class="text-red-500">*</span></label>
                         <input type="text" name="titulo" required 
-                               class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200"
+                               class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200"
                                placeholder="Ej: Rueda Regional de Agro 2026">
                     </div>
                     
                     <div>
                         <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Descripción del Evento <span class="text-red-500">*</span></label>
                         <textarea name="descripcion" rows="4" required 
-                                  class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 resize-none" 
+                                  class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200 resize-none" 
                                   placeholder="Detalles sobre el alcance, sectores invitados y objetivos..."></textarea>
                     </div>
 
                     <!-- Imagen / Banner de la Rueda -->
                     <div>
                         <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
-                            <i class="fas fa-image text-amber-500"></i> Imagen o Banner de la Rueda (Opcional)
+                            <i class="fas fa-image text-slate-700"></i> Imagen o Banner de la Rueda (Opcional)
                         </label>
-                        <div class="flex items-center gap-4 p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-amber-400 bg-gray-50/50 transition duration-200">
+                        <div class="flex items-center gap-4 p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-slate-400 bg-gray-50/50 transition duration-200">
                             <div id="previewContainer" class="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0">
                                 <i class="fas fa-image text-gray-400 text-2xl" id="previewPlaceholder"></i>
                                 <img id="imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
                             </div>
                             <div class="flex-1">
-                                <input type="file" name="imagen" id="imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200 cursor-pointer" onchange="previewImage(this)">
+                                <input type="file" name="imagen" id="imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-white hover:file:bg-black cursor-pointer" onchange="previewImage(this)">
                                 <p class="text-[11px] text-gray-400 mt-1.5">Formatos: JPG, PNG, WEBP. Tamaño recomendado: 800x500 px.</p>
                             </div>
                         </div>
@@ -56,15 +56,15 @@
                     <!-- Fechas de Inscripción -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-amber-600">Inscripciones Inicio <span class="text-red-500">*</span></label>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-700">Inscripciones Inicio <span class="text-red-500">*</span></label>
                             <input type="text" name="fecha_inscripcion_inicio" id="fecha_inscripcion_inicio" required 
-                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 bg-white cursor-pointer"
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200 bg-white cursor-pointer"
                                 placeholder="Seleccionar fecha">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-amber-600">Inscripciones Fin <span class="text-red-500">*</span></label>
+                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-700">Inscripciones Fin <span class="text-red-500">*</span></label>
                             <input type="text" name="fecha_inscripcion_fin" id="fecha_inscripcion_fin" required 
-                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200 bg-white cursor-pointer"
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200 bg-white cursor-pointer"
                                 placeholder="Seleccionar fecha">
                         </div>
                     </div>
@@ -110,9 +110,9 @@
                     </div>
 
                     <!-- Duración de Citas -->
-                    <div class="bg-amber-50/60 border border-amber-200/60 rounded-2xl p-4 flex items-center justify-between">
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center font-black text-sm">
+                            <div class="w-10 h-10 rounded-xl bg-slate-900/10 text-slate-800 flex items-center justify-center font-black text-sm">
                                 <i class="fas fa-stopwatch"></i>
                             </div>
                             <div>
@@ -122,7 +122,7 @@
                         </div>
                         <div class="relative">
                             <select name="duracion_cita" required 
-                                    class="bg-amber-500 text-white text-xs font-black px-6 py-2 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-300 pr-8">
+                                    class="bg-slate-900 text-white text-xs font-black px-6 py-2.5 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-400 pr-8">
                                 <option value="10">10 Minutos</option>
                                 <option value="15">15 Minutos</option>
                                 <option value="30" selected>30 Minutos</option>
@@ -138,7 +138,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Estado Inicial</label>
-                            <select name="estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200">
+                            <select name="estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200">
                                 <option value="planeacion">Planeación</option>
                                 <option value="inscripciones">Inscripciones</option>
                                 <option value="activa">Activa</option>
@@ -147,7 +147,7 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Modalidad</label>
                             <select name="modalidad" id="modalidad_select" onchange="toggleUbicacion()" 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200">
+                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200">
                                 <option value="virtual">Virtual</option>
                                 <option value="presencial">Presencial</option>
                             </select>
@@ -158,13 +158,13 @@
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Lugar / Dirección del Evento <span class="text-red-500">*</span></label>
                             <input type="text" name="ubicacion" id="ubicacion_input" 
-                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200" 
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200" 
                                 placeholder="Ej: Calle 123 # 45-67, Centro de Convenciones">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Cantidad de Mesas Disponibles</label>
                             <input type="number" name="cantidad_mesas" id="cantidad_mesas_input" min="1" value="1"
-                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-amber-50 focus:border-amber-400 transition duration-200">
+                                class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200">
                             <p class="text-[10px] text-gray-400 mt-1.5 ml-1">
                                 <i class="fas fa-info-circle text-sky-400"></i>
                                 Define el número total de mesas físicas asignadas para este evento.
@@ -182,7 +182,7 @@
                         <a href="index.php?controlador=admin&accion=dashboard" class="inline-flex justify-center rounded-full border border-gray-200 px-6 py-3 bg-white text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200">
                             Cancelar
                         </a>
-                        <button type="submit" class="inline-flex justify-center rounded-full border border-transparent px-8 py-3 bg-amber-500 text-sm font-extrabold text-white hover:bg-amber-600 shadow-[0_4px_15px_rgba(245,158,11,0.2)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.35)] hover:-translate-y-0.5 transition duration-200 transform">
+                        <button type="submit" class="inline-flex justify-center rounded-full border border-transparent px-8 py-3 bg-slate-900 text-sm font-extrabold text-white hover:bg-black shadow-[0_4px_15px_rgba(15,23,42,0.2)] hover:shadow-[0_6px_20px_rgba(15,23,42,0.35)] hover:-translate-y-0.5 transition duration-200 transform">
                             Crear Rueda
                         </button>
                     </div>

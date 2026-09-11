@@ -3,18 +3,18 @@
 <div class="min-h-screen bg-slate-50/50 py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <!-- HEADER PREMIUM (Tema Amarillo/Dorado Admin) -->
-        <div class="bg-gradient-to-r from-[#fede32] via-[#ffe082] to-[#ffd54f] rounded-3xl p-8 mb-10 shadow-[0_10px_40px_rgba(254,222,50,0.15)] text-white relative overflow-hidden">
-            <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/20 rounded-full blur-3xl"></div>
-            <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-white/20 rounded-full blur-3xl"></div>
+        <!-- HEADER PREMIUM (Tema Slate Admin) -->
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 mb-10 shadow-[0_10px_40px_rgba(15,23,42,0.25)] text-white relative overflow-hidden">
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
+            <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
             
             <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>
-                    <span class="bg-black/10 text-white text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
+                    <span class="bg-white/10 text-slate-300 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
                         Supervisión General
                     </span>
                     <h1 class="text-4xl font-black mt-4 tracking-tight text-white drop-shadow-sm">Registros Completos</h1>
-                    <p class="text-amber-900/80 mt-2 font-bold">Auditoría completa de citas, ruedas de negocios y retroalimentación de socios.</p>
+                    <p class="text-slate-300 mt-2 font-medium">Auditoría completa de citas, ruedas de negocios y retroalimentación de socios.</p>
                 </div>
             </div>
         </div>
@@ -23,21 +23,21 @@
             
             <!-- SECCIÓN 1: CITAS Y NEGOCIOS -->
             <div id="seguimiento" class="bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden transition-all duration-500 hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-                <div class="bg-gradient-to-r from-[#fede32] via-[#ffe082] to-[#ffd54f] px-8 py-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-8 py-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white text-xl backdrop-blur-sm border border-white/20">
+                        <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white text-xl backdrop-blur-sm border border-white/10">
                             <i class="fas fa-handshake"></i>
                         </div>
                         <div>
                             <h2 class="text-white font-black text-xl tracking-tight">Seguimiento de Citas y Negocios</h2>
                             <div class="flex items-center gap-2 mt-1">
-                                <span class="text-amber-50 text-xs font-bold uppercase opacity-80">Volumen Total:</span>
+                                <span class="text-slate-300 text-xs font-bold uppercase opacity-80">Volumen Total:</span>
                                 <span class="bg-white/20 text-white text-xs font-black px-2.5 py-0.5 rounded-full"><?php echo (int)($total_reuniones ?? 0); ?></span>
                             </div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="text-white/80 text-xs font-bold bg-black/10 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/5">
+                        <span class="text-white/80 text-xs font-bold bg-white/10 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/10">
                             Página <?php echo (int)($pageReuniones ?? 1); ?> de <?php echo (int)($totalPagesReuniones ?? 1); ?>
                         </span>
                     </div>
@@ -121,13 +121,13 @@
                     <div class="flex items-center gap-2">
                         <?php if (($pageReuniones ?? 1) > 1): ?>
                             <a href="index.php?controlador=admin&accion=verRegistrosPaneles&page_reuniones=<?php echo (int)($pageReuniones - 1); ?>&page_encuestas=<?php echo (int)($pageEncuestas ?? 1); ?>&page_ruedas=<?php echo (int)($pageRuedas ?? 1); ?>#seguimiento"
-                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 shadow-sm">
+                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 shadow-sm">
                                 <i class="fas fa-chevron-left mr-2"></i> Anterior
                             </a>
                         <?php endif; ?>
                         <?php if (($pageReuniones ?? 1) < ($totalPagesReuniones ?? 1)): ?>
                             <a href="index.php?controlador=admin&accion=verRegistrosPaneles&page_reuniones=<?php echo (int)($pageReuniones + 1); ?>&page_encuestas=<?php echo (int)($pageEncuestas ?? 1); ?>&page_ruedas=<?php echo (int)($pageRuedas ?? 1); ?>#seguimiento"
-                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 shadow-sm">
+                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 shadow-sm">
                                 Siguiente <i class="fas fa-chevron-right ml-2"></i>
                             </a>
                         <?php endif; ?>
@@ -137,20 +137,20 @@
 
             <!-- SECCIÓN 2: RUEDAS DE NEGOCIOS -->
             <div id="ruedas" class="bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden transition-all duration-500 hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-                <div class="bg-gradient-to-r from-[#fede32] via-[#ffe082] to-[#ffd54f] px-8 py-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-8 py-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white text-xl backdrop-blur-sm border border-white/20">
+                        <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white text-xl backdrop-blur-sm border border-white/10">
                             <i class="fas fa-bullseye"></i>
                         </div>
                         <div>
                             <h2 class="text-white font-black text-xl tracking-tight">Ruedas de Negocios</h2>
                             <div class="flex items-center gap-2 mt-1">
-                                <span class="text-amber-100 text-xs font-bold uppercase opacity-80">Gestionadas:</span>
+                                <span class="text-slate-300 text-xs font-bold uppercase opacity-80">Gestionadas:</span>
                                 <span class="bg-white/20 text-white text-xs font-black px-2.5 py-0.5 rounded-full"><?php echo (int)($total_ruedas ?? 0); ?></span>
                             </div>
                         </div>
                     </div>
-                    <div class="text-white/80 text-xs font-bold bg-black/10 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/5">
+                    <div class="text-white/80 text-xs font-bold bg-white/10 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/10">
                         Página <?php echo (int)($pageRuedas ?? 1); ?> de <?php echo (int)($totalPagesRuedas ?? 1); ?>
                     </div>
                 </div>
@@ -234,13 +234,13 @@
                     <div class="flex items-center gap-2">
                         <?php if (($pageRuedas ?? 1) > 1): ?>
                             <a href="index.php?controlador=admin&accion=verRegistrosPaneles&page_ruedas=<?php echo (int)($pageRuedas - 1); ?>&page_reuniones=<?php echo (int)($pageReuniones ?? 1); ?>&page_encuestas=<?php echo (int)($pageEncuestas ?? 1); ?>#ruedas"
-                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 shadow-sm">
+                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 shadow-sm">
                                 <i class="fas fa-chevron-left mr-2"></i> Anterior
                             </a>
                         <?php endif; ?>
                         <?php if (($pageRuedas ?? 1) < ($totalPagesRuedas ?? 1)): ?>
                             <a href="index.php?controlador=admin&accion=verRegistrosPaneles&page_ruedas=<?php echo (int)($pageRuedas + 1); ?>&page_reuniones=<?php echo (int)($pageReuniones ?? 1); ?>&page_encuestas=<?php echo (int)($pageEncuestas ?? 1); ?>#ruedas"
-                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 shadow-sm">
+                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 shadow-sm">
                                 Siguiente <i class="fas fa-chevron-right ml-2"></i>
                             </a>
                         <?php endif; ?>
@@ -250,20 +250,20 @@
 
             <!-- SECCIÓN 3: ENCUESTAS DE SATISFACCIÓN -->
             <div id="encuestas" class="bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden transition-all duration-500 hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-                <div class="bg-gradient-to-r from-[#fede32] via-[#ffe082] to-[#ffd54f] px-8 py-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-8 py-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-white text-xl backdrop-blur-sm border border-white/20">
+                        <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white text-xl backdrop-blur-sm border border-white/10">
                             <i class="fas fa-star-half-alt"></i>
                         </div>
                         <div>
                             <h2 class="text-white font-black text-xl tracking-tight">Encuestas de Satisfacción</h2>
                             <div class="flex items-center gap-2 mt-1">
-                                <span class="text-amber-100 text-xs font-bold uppercase opacity-80">Retroalimentación:</span>
+                                <span class="text-slate-300 text-xs font-bold uppercase opacity-80">Retroalimentación:</span>
                                 <span class="bg-white/20 text-white text-xs font-black px-2.5 py-0.5 rounded-full"><?php echo (int)($total_encuestas ?? 0); ?></span>
                             </div>
                         </div>
                     </div>
-                    <div class="text-white/80 text-xs font-bold bg-black/10 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/5">
+                    <div class="text-white/80 text-xs font-bold bg-white/10 px-4 py-2 rounded-xl backdrop-blur-sm border border-white/10">
                         Página <?php echo (int)($pageEncuestas ?? 1); ?> de <?php echo (int)($totalPagesEncuestas ?? 1); ?>
                     </div>
                 </div>
@@ -296,7 +296,7 @@
                                         <td class="px-8 py-5">
                                             <div>
                                                 <p class="text-sm font-black text-slate-900"><?php echo htmlspecialchars($enc['nombreUsuario'] ?? ''); ?></p>
-                                                <p class="text-[10px] font-extrabold text-amber-600 uppercase"><?php echo htmlspecialchars($enc['razon_social'] ?? 'Sin empresa'); ?></p>
+                                                <p class="text-[10px] font-extrabold text-slate-500 uppercase"><?php echo htmlspecialchars($enc['razon_social'] ?? 'Sin empresa'); ?></p>
                                             </div>
                                         </td>
                                         <td class="px-8 py-5 text-center">
@@ -314,7 +314,7 @@
                                                     <i class="<?php echo $i <= ($enc['calificacion'] ?? 0) ? 'fas' : 'far'; ?> fa-star"></i>
                                                 <?php endfor; ?>
                                             </div>
-                                            <p class="text-[9px] font-black text-amber-600 mt-1"><?php echo ($enc['calificacion'] ?? 0); ?> / 5.0</p>
+                                            <p class="text-[9px] font-black text-slate-700 mt-1"><?php echo ($enc['calificacion'] ?? 0); ?> / 5.0</p>
                                         </td>
                                         <td class="px-8 py-5 text-center">
                                             <?php if (!empty($enc['expectativaCumplida']) && $enc['expectativaCumplida'] !== 'ninguno'): ?>
@@ -336,7 +336,7 @@
                                         </td>
                                         <td class="px-8 py-5 text-center">
                                             <a href="index.php?controlador=admin&accion=verDetalleEncuesta&id=<?php echo $enc['id']; ?>" 
-                                               class="inline-flex items-center justify-center w-10 h-10 bg-amber-50 text-amber-600 rounded-2xl hover:bg-amber-500 hover:text-white transition-all duration-300 shadow-sm border border-amber-100 hover:shadow-lg hover:-translate-y-1"
+                                               class="inline-flex items-center justify-center w-10 h-10 bg-slate-100 text-slate-700 rounded-2xl hover:bg-slate-900 hover:text-white transition-all duration-300 shadow-sm border border-slate-200 hover:shadow-lg hover:-translate-y-1"
                                                title="Ver Auditoría Completa">
                                                 <i class="fas fa-eye"></i>
                                             </a>
@@ -356,13 +356,13 @@
                     <div class="flex items-center gap-2">
                         <?php if (($pageEncuestas ?? 1) > 1): ?>
                             <a href="index.php?controlador=admin&accion=verRegistrosPaneles&page_reuniones=<?php echo (int)($pageReuniones ?? 1); ?>&page_encuestas=<?php echo (int)($pageEncuestas - 1); ?>&page_ruedas=<?php echo (int)($pageRuedas ?? 1); ?>#encuestas"
-                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 shadow-sm">
+                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 shadow-sm">
                                 <i class="fas fa-chevron-left mr-2"></i> Anterior
                             </a>
                         <?php endif; ?>
                         <?php if (($pageEncuestas ?? 1) < ($totalPagesEncuestas ?? 1)): ?>
                             <a href="index.php?controlador=admin&accion=verRegistrosPaneles&page_reuniones=<?php echo (int)($pageReuniones ?? 1); ?>&page_encuestas=<?php echo (int)($pageEncuestas + 1); ?>&page_ruedas=<?php echo (int)($pageRuedas ?? 1); ?>#encuestas"
-                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-amber-50 hover:border-amber-300 transition-all duration-300 shadow-sm">
+                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 shadow-sm">
                                 Siguiente <i class="fas fa-chevron-right ml-2"></i>
                             </a>
                         <?php endif; ?>
