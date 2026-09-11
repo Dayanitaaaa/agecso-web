@@ -213,11 +213,11 @@
                                             </span>
                                         </td>
                                         <td class="px-8 py-5 text-center">
-                                            <a href="index.php?controlador=admin&accion=eliminarRueda&id=<?php echo (int)$r['id']; ?>&origen=registros" 
-                                               onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente la rueda \'<?php echo addslashes(htmlspecialchars($r['tituloRueda'] ?? 'Rueda')); ?>\' y todos sus datos relacionados?');"
-                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-full font-black text-xs transition duration-200 border border-rose-200 hover:border-rose-600 shadow-sm">
+                                            <button type="button"
+                                               onclick="confirmarEliminarRueda(<?php echo (int)$r['id']; ?>, '<?php echo addslashes(htmlspecialchars($r['tituloRueda'] ?? 'Rueda')); ?>')"
+                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-full font-black text-xs transition duration-200 border border-rose-200 hover:border-rose-600 shadow-sm cursor-pointer">
                                                 <i class="fas fa-trash-alt text-[10px]"></i> Eliminar
-                                            </a>
+                                            </button>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
@@ -390,5 +390,54 @@
         background: #cbd5e1;
     }
 </style>
+
+<script>
+function confirmarEliminarRueda(ruedaId, tituloRueda, origen = 'registros') {
+    Swal.fire({
+        title: '¿Eliminar rueda permanentemente?',
+        html: `
+            <div class="text-left mt-2">
+                <p class="text-sm text-gray-600 font-medium mb-2">
+                    Estás a punto de eliminar la siguiente rueda de negocios:
+                </p>
+                <div class="my-3 p-3.5 bg-rose-50/80 rounded-2xl border border-rose-100 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-rose-500/20">
+                        <i class="fas fa-calendar-times text-base"></i>
+                    </div>
+                    <div class="min-w-0">
+                        <span class="text-xs font-black text-rose-800 uppercase tracking-wider block">Rueda de Negocios</span>
+                        <span class="text-sm font-extrabold text-gray-900 truncate block">
+                            "${tituloRueda}"
+                        </span>
+                    </div>
+                </div>
+                <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200/60 text-xs text-amber-900 font-medium flex items-start gap-2.5">
+                    <i class="fas fa-exclamation-triangle text-amber-500 text-sm mt-0.5 shrink-0"></i>
+                    <span>Esta acción eliminará todas las citas, ofertas, demandas e inscripciones asociadas. <strong>Esta acción no se puede deshacer.</strong></span>
+                </div>
+            </div>
+        `,
+        icon: 'warning',
+        iconColor: '#f43f5e',
+        showCancelButton: true,
+        confirmButtonColor: '#e11d48',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: '<i class="fas fa-trash-alt mr-1.5"></i> Sí, eliminar definitivamente',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true,
+        focusCancel: true,
+        background: '#ffffff',
+        customClass: {
+            popup: 'rounded-[2rem] shadow-2xl border border-gray-100 p-6',
+            confirmButton: 'rounded-full font-black px-6 py-3 text-xs uppercase tracking-wider shadow-lg shadow-rose-500/20 transition-all',
+            cancelButton: 'rounded-full font-bold px-6 py-3 text-xs uppercase tracking-wider transition-all'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `index.php?controlador=admin&accion=eliminarRueda&id=${encodeURIComponent(ruedaId)}&origen=${encodeURIComponent(origen)}`;
+        }
+    });
+}
+</script>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>

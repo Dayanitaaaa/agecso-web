@@ -243,11 +243,11 @@
                                                     class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-800 text-slate-700 hover:text-white rounded-full font-black text-xs transition duration-200 shadow-sm border border-slate-200 hover:border-slate-800">
                                                 <i class="fas fa-edit text-[10px]"></i> Editar
                                             </button>
-                                            <a href="index.php?controlador=admin&accion=eliminarRueda&id=<?php echo (int)$r['id']; ?>" 
-                                               onclick="return confirm('¿Estás seguro de que deseas eliminar permanentemente la rueda \'<?php echo addslashes(htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda'))); ?>\' y todos sus datos relacionados (reuniones, ofertas, demandas, inscripciones)?\n\nEsta acción no se puede deshacer.');"
-                                               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-full font-black text-xs transition duration-200 shadow-sm border border-rose-200 hover:border-rose-600">
+                                            <button type="button"
+                                                    onclick="confirmarEliminarRueda(<?php echo (int)$r['id']; ?>, '<?php echo addslashes(htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda'))); ?>')"
+                                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white rounded-full font-black text-xs transition duration-200 shadow-sm border border-rose-200 hover:border-rose-600">
                                                 <i class="fas fa-trash-alt text-[10px]"></i> Eliminar
-                                            </a>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -701,11 +701,10 @@
                 
                 <!-- Acciones del Footer -->
                 <div class="bg-gray-50/50 border-t border-gray-100 px-6 py-4 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <a id="btn_eliminar_rueda_modal" href="#" 
-                       onclick="return confirm('¿Confirmas que deseas eliminar esta rueda de negocios definitivamente y todos sus datos relacionados?');" 
-                       class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white text-xs font-black transition border border-rose-200 hover:border-rose-600">
+                    <button type="button" id="btn_eliminar_rueda_modal" 
+                       class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-rose-50 hover:bg-rose-600 text-rose-600 hover:text-white text-xs font-black transition border border-rose-200 hover:border-rose-600 cursor-pointer">
                         <i class="fas fa-trash-alt text-[10px]"></i> Eliminar Rueda
-                    </a>
+                    </button>
                     <div class="flex flex-col-reverse sm:flex-row items-center gap-3 w-full sm:w-auto">
                         <button type="button" onclick="document.getElementById('modalEditarRueda').classList.add('hidden')" 
                                 class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
@@ -1079,6 +1078,53 @@
 
     let fpEditInicio, fpEditFin, fpEditHoraInicio, fpEditHoraFin;
 
+    function confirmarEliminarRueda(ruedaId, tituloRueda, origen = 'dashboard') {
+        Swal.fire({
+            title: '¿Eliminar rueda permanentemente?',
+            html: `
+                <div class="text-left mt-2">
+                    <p class="text-sm text-gray-600 font-medium mb-2">
+                        Estás a punto de eliminar la siguiente rueda de negocios:
+                    </p>
+                    <div class="my-3 p-3.5 bg-rose-50/80 rounded-2xl border border-rose-100 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-rose-500/20">
+                            <i class="fas fa-calendar-times text-base"></i>
+                        </div>
+                        <div class="min-w-0">
+                            <span class="text-xs font-black text-rose-800 uppercase tracking-wider block">Rueda de Negocios</span>
+                            <span class="text-sm font-extrabold text-gray-900 truncate block">
+                                "${tituloRueda}"
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-3.5 bg-amber-50 rounded-2xl border border-amber-200/60 text-xs text-amber-900 font-medium flex items-start gap-2.5">
+                        <i class="fas fa-exclamation-triangle text-amber-500 text-sm mt-0.5 shrink-0"></i>
+                        <span>Esta acción eliminará todas las citas, ofertas, demandas e inscripciones asociadas. <strong>Esta acción no se puede deshacer.</strong></span>
+                    </div>
+                </div>
+            `,
+            icon: 'warning',
+            iconColor: '#f43f5e',
+            showCancelButton: true,
+            confirmButtonColor: '#e11d48',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: '<i class="fas fa-trash-alt mr-1.5"></i> Sí, eliminar definitivamente',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            focusCancel: true,
+            background: '#ffffff',
+            customClass: {
+                popup: 'rounded-[2rem] shadow-2xl border border-gray-100 p-6',
+                confirmButton: 'rounded-full font-black px-6 py-3 text-xs uppercase tracking-wider shadow-lg shadow-rose-500/20 transition-all',
+                cancelButton: 'rounded-full font-bold px-6 py-3 text-xs uppercase tracking-wider transition-all'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `index.php?controlador=admin&accion=eliminarRueda&id=${encodeURIComponent(ruedaId)}&origen=${encodeURIComponent(origen)}`;
+            }
+        });
+    }
+
     function abrirModalEditarRueda(rueda) {
         document.getElementById('edit_rueda_id').value = rueda.id || '';
         document.getElementById('edit_titulo').value = rueda.nombreRueda || rueda.tituloRueda || '';
@@ -1088,7 +1134,9 @@
 
         const btnEliminar = document.getElementById('btn_eliminar_rueda_modal');
         if (btnEliminar && rueda.id) {
-            btnEliminar.href = 'index.php?controlador=admin&accion=eliminarRueda&id=' + encodeURIComponent(rueda.id);
+            btnEliminar.onclick = function() {
+                confirmarEliminarRueda(rueda.id, rueda.nombreRueda || rueda.tituloRueda || 'Rueda', 'dashboard');
+            };
         }
         
         const mod = rueda.modalidad || 'virtual';
