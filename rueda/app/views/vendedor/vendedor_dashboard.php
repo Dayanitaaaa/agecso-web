@@ -495,13 +495,31 @@
                 <div class="bg-white px-6 pt-6 pb-4 sm:p-7 sm:pb-5">
                     <h3 class="text-xl leading-6 font-black text-gray-900 mb-4 flex items-center"><i class="fas fa-plus-circle text-teal-600 mr-2"></i> Nueva Oferta Comercial</h3>
                     <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700">Categoría del Producto</label>
-                            <select name="sector_id" class="mt-1 block w-full border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm focus:ring-[#0d9488] focus:border-[#0d9488]">
-                                <?php foreach ($todos_sectores as $sec): ?>
-                                    <option value="<?php echo $sec['id']; ?>"><?php echo htmlspecialchars($sec['nombreSector']); ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Código CIIU</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-barcode text-xs"></i>
+                                    </div>
+                                    <input type="text" name="ciiu_personalizado" required
+                                           value="<?php echo htmlspecialchars($empresa['ciiu_personalizado'] ?? ''); ?>"
+                                           class="mt-1 block w-full pl-8 border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm font-bold text-gray-800 focus:ring-[#0d9488] focus:border-[#0d9488]" 
+                                           placeholder="Ej: 6201">
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">Nombre de la Actividad / Categoría</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-tag text-xs"></i>
+                                    </div>
+                                    <input type="text" name="ciiu_nombre_personalizado" required
+                                           value="<?php echo htmlspecialchars($empresa['ciiu_nombre_personalizado'] ?? ''); ?>"
+                                           class="mt-1 block w-full pl-8 border border-gray-300 rounded-xl shadow-sm p-2.5 text-sm font-bold text-gray-800 focus:ring-[#0d9488] focus:border-[#0d9488]" 
+                                           placeholder="Ej: Actividades de programación informática">
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700">Nombre del Producto o Servicio</label>

@@ -479,18 +479,23 @@
                     </div>
                     
                     <div class="space-y-5 text-left">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Categoría del Sector</label>
-                            <div class="relative">
-                                <select name="sector_id" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200 appearance-none bg-white font-bold text-gray-700">
-                                    <?php foreach ($todos_sectores as $sec): ?>
-                                        <option value="<?php echo $sec['id']; ?>" <?php echo $sec['id'] == $miSectorId ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($sec['nombreSector']); ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#0d9488]">
-                                    <i class="fas fa-chevron-down text-[10px]"></i>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Código CIIU <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <input type="text" name="ciiu_personalizado" required 
+                                           value="<?php echo htmlspecialchars($empresa['ciiu_personalizado'] ?? ''); ?>"
+                                           class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200 font-bold text-gray-800" 
+                                           placeholder="Ej: 6201">
+                                </div>
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Actividad / Categoría Económica <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <input type="text" name="ciiu_nombre_personalizado" required 
+                                           value="<?php echo htmlspecialchars($empresa['ciiu_nombre_personalizado'] ?? ''); ?>"
+                                           class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition duration-200 font-bold text-gray-800" 
+                                           placeholder="Ej: Actividades de programación informática">
                                 </div>
                             </div>
                         </div>

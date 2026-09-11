@@ -457,16 +457,33 @@ class VendedorController {
     public function registrarOferta() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
+                // Asegurar columnas en ofertas si no existen
+                try {
+                    $stmt_col = $this->pdo->query("SHOW COLUMNS FROM ofertas LIKE 'ciiu_personalizado'");
+                    if ($stmt_col && !$stmt_col->fetch()) {
+                        $this->pdo->exec("
+                            ALTER TABLE ofertas 
+                            ADD COLUMN ciiu_personalizado VARCHAR(20) NULL,
+                            ADD COLUMN ciiu_nombre_personalizado VARCHAR(255) NULL
+                        ");
+                    }
+                } catch (Exception $e) {}
+
                 // Priorizar ID de empresa desde sesión si falla el POST
                 $empresa_id = $_POST['empresa_id'] ?? null;
-                if (!$empresa_id) {
-                    $stmt_e = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
-                    $stmt_e->execute([$_SESSION['usuario_id']]);
-                    $empresa_id = $stmt_e->fetchColumn();
+                $stmt_e = $this->pdo->prepare("SELECT * FROM empresas WHERE usuarioId = ?");
+                $stmt_e->execute([$_SESSION['usuario_id']]);
+                $empresaData = $stmt_e->fetch();
+
+                if (!$empresa_id && $empresaData) {
+                    $empresa_id = $empresaData['id'];
                 }
 
                 $rueda_id = $_POST['rueda_id'] ?? null;
-                $sector_id = $_POST['sector_id'] ?? $_POST['categoria_id'] ?? 1;
+                $sector_id = $_POST['sector_id'] ?? $empresaData['sectorId'] ?? 1;
+
+                $ciiu_personalizado = trim($_POST['ciiu_personalizado'] ?? $empresaData['ciiu_personalizado'] ?? '');
+                $ciiu_nombre_personalizado = trim($_POST['ciiu_nombre_personalizado'] ?? $empresaData['ciiu_nombre_personalizado'] ?? '');
                 
                 // CAPTURA EXACTA SEGÚN FORMULARIO DE DASHBOARD
                 $titulo = $_POST['titulo'] ?? $_POST['titulo_oferta'] ?? $_POST['nombre_producto'] ?? $_POST['producto_servicio'] ?? null;
@@ -488,10 +505,17 @@ class VendedorController {
                 $tags_array = array_filter(array_map('trim', explode(',', $tags_input)));
                 $tags_json = json_encode(array_values($tags_array));
 
-                $stmt = $this->pdo->prepare("INSERT INTO ofertas (empresaId, ruedaId, sectorId, tituloOferta, descripcionOferta, tagsBusqueda, isActive) VALUES (?, ?, ?, ?, ?, ?, 1)");
-                $stmt->execute([$empresa_id, $rueda_id, $sector_id, $titulo, $descripcion, $tags_json]);
+                try {
+                    $stmt = $this->pdo->prepare("INSERT INTO ofertas (empresaId, ruedaId, sectorId, tituloOferta, descripcionOferta, tagsBusqueda, ciiu_personalizado, ciiu_nombre_personalizado, isActive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)");
+                    $stmt->execute([$empresa_id, $rueda_id, $sector_id, $titulo, $descripcion, $tags_json, $ciiu_personalizado, $ciiu_nombre_personalizado]);
+                } catch (Exception $e) {
+                    // Fallback para esquemas anteriores
+                    $stmt = $this->pdo->prepare("INSERT INTO ofertas (empresaId, ruedaId, sectorId, tituloOferta, descripcionOferta, tagsBusqueda, isActive) VALUES (?, ?, ?, ?, ?, ?, 1)");
+                    $stmt->execute([$empresa_id, $rueda_id, $sector_id, $titulo, $descripcion, $tags_json]);
+                }
 
-                header("Location: index.php?controlador=vendedor&accion=dashboard&msg=oferta_registrada");
+                $redirectUrl = !empty($_POST['redirect_to']) ? $_POST['redirect_to'] : 'index.php?controlador=vendedor&accion=dashboard&msg=oferta_registrada';
+                header("Location: " . $redirectUrl);
                 exit();
             } catch (Exception $e) {
                 $error_msg = $e->getMessage();

@@ -107,16 +107,28 @@
                                         $tags = json_decode($oferta['tagsBusqueda'] ?? '[]', true);
                                         $tags_str = is_array($tags) ? implode(', ', $tags) : '';
                                     ?>
-                                    <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100 hover:border-teal-100 hover:shadow-md transition-all duration-300 group">
-                                        <div class="flex items-start justify-between mb-3">
-                                            <h4 class="font-black text-gray-900 text-base leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($oferta['tituloOferta']); ?></h4>
-                                            <div class="bg-white px-2 py-1 rounded-lg shadow-sm">
-                                                <span class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">
-                                                    <?php echo date('d M', strtotime($oferta['createdAt'])); ?>
-                                                </span>
+                                    <div class="bg-gray-50 p-6 rounded-3xl border border-gray-100 hover:border-teal-100 hover:shadow-md transition-all duration-300 group flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-start justify-between mb-2">
+                                                <h4 class="font-black text-gray-900 text-base leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($oferta['tituloOferta']); ?></h4>
+                                                <div class="bg-white px-2 py-1 rounded-lg shadow-sm shrink-0 ml-2">
+                                                    <span class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">
+                                                        <?php echo date('d M', strtotime($oferta['createdAt'])); ?>
+                                                    </span>
+                                                </div>
                                             </div>
+
+                                            <?php if (!empty($oferta['ciiu_personalizado']) || !empty($oferta['ciiu_nombre_personalizado'])): ?>
+                                                <div class="mb-3">
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-teal-50 text-[#0d9488] border border-teal-100/60 max-w-full truncate" title="<?php echo htmlspecialchars(($oferta['ciiu_personalizado'] ? $oferta['ciiu_personalizado'] . ' - ' : '') . ($oferta['ciiu_nombre_personalizado'] ?? '')); ?>">
+                                                        <i class="fas fa-barcode text-[8px] opacity-70"></i>
+                                                        <span class="truncate"><?php echo htmlspecialchars(($oferta['ciiu_personalizado'] ? $oferta['ciiu_personalizado'] . ' - ' : '') . ($oferta['ciiu_nombre_personalizado'] ?? '')); ?></span>
+                                                    </span>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <p class="text-gray-500 text-xs leading-relaxed mb-4 line-clamp-3 font-medium"><?php echo htmlspecialchars($oferta['descripcionOferta']); ?></p>
                                         </div>
-                                        <p class="text-gray-500 text-xs leading-relaxed mb-4 line-clamp-3 font-medium"><?php echo htmlspecialchars($oferta['descripcionOferta']); ?></p>
                                         <?php if ($tags_str): ?>
                                             <div class="flex flex-wrap gap-1.5 mt-auto">
                                                 <?php foreach ($tags as $tag): ?>
@@ -145,7 +157,7 @@
                 <form action="index.php?controlador=vendedor&accion=registrarOferta" method="POST">
                     <input type="hidden" name="empresa_id" value="<?php echo $empresa['id']; ?>">
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-6">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-2">Seleccionar Rueda de Negocios</label>
                             <select name="rueda_id" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-bold text-gray-700 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all cursor-pointer shadow-inner">
@@ -158,16 +170,31 @@
                             </select>
                         </div>
                         
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Categoría del Producto</label>
-                            <select name="sector_id" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-bold text-gray-700 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all cursor-pointer shadow-inner">
-                                <option value="">-- Selecciona una categoría --</option>
-                                <?php foreach ($todos_sectores as $sec): ?>
-                                    <option value="<?php echo $sec['id']; ?>" <?php echo $sec['id'] == $miSectorId ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($sec['nombreSector']); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Código CIIU <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-barcode text-sm"></i>
+                                    </div>
+                                    <input type="text" name="ciiu_personalizado" required 
+                                           value="<?php echo htmlspecialchars($empresa['ciiu_personalizado'] ?? ''); ?>"
+                                           placeholder="Ej: 6201" 
+                                           class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-11 pr-5 py-3.5 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all shadow-inner">
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-bold text-gray-700 mb-2">Actividad / Categoría Económica <span class="text-red-500">*</span></label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-tag text-sm"></i>
+                                    </div>
+                                    <input type="text" name="ciiu_nombre_personalizado" required 
+                                           value="<?php echo htmlspecialchars($empresa['ciiu_nombre_personalizado'] ?? ''); ?>"
+                                           placeholder="Ej: Actividades de programación informática" 
+                                           class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-11 pr-5 py-3.5 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all shadow-inner">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
