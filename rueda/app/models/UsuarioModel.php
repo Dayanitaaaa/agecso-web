@@ -258,6 +258,100 @@ class UsuarioModel {
         return $stmt->execute([$nuevoCiiu, $nuevoNombre, $usuarioId]);
     }
 
+    /**
+     * Actualizar perfil completo (Usuario + Empresa) para cualquier rol
+     */
+    public function actualizarPerfilCompleto($usuarioId, $data) {
+        try {
+            $this->db->beginTransaction();
+
+            // 1. Actualizar datos de usuario
+            if (!empty($data['email']) || !empty($data['nombreUsuario'])) {
+                $params_u = [];
+                $sql_u = "UPDATE usuarios SET ";
+                $fields_u = [];
+                if (!empty($data['nombreUsuario'])) {
+                    $fields_u[] = "nombreUsuario = ?";
+                    $params_u[] = $data['nombreUsuario'];
+                }
+                if (!empty($data['email'])) {
+                    $fields_u[] = "email = ?";
+                    $params_u[] = $data['email'];
+                }
+                if (!empty($data['password'])) {
+                    $fields_u[] = "password = ?";
+                    $params_u[] = password_hash($data['password'], PASSWORD_DEFAULT);
+                }
+                if (!empty($fields_u)) {
+                    $sql_u .= implode(', ', $fields_u) . " WHERE id = ?";
+                    $params_u[] = $usuarioId;
+                    $stmt_u = $this->db->prepare($sql_u);
+                    $stmt_u->execute($params_u);
+                }
+            }
+
+            // 2. Asegurar que existan columnas en la tabla empresas
+            try {
+                $stmt_col = $this->db->query("SHOW COLUMNS FROM empresas LIKE 'descripcion'");
+                if ($stmt_col && !$stmt_col->fetch()) {
+                    $this->db->exec("ALTER TABLE empresas ADD COLUMN descripcion TEXT NULL");
+                }
+                $stmt_ciiu = $this->db->query("SHOW COLUMNS FROM empresas LIKE 'ciiu_personalizado'");
+                if ($stmt_ciiu && !$stmt_ciiu->fetch()) {
+                    $this->db->exec("ALTER TABLE empresas ADD COLUMN ciiu_personalizado VARCHAR(20) NULL, ADD COLUMN ciiu_nombre_personalizado VARCHAR(255) NULL");
+                }
+            } catch (Exception $e) {}
+
+            // 3. Verificar si existe registro de empresa
+            $stmt_check = $this->db->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
+            $stmt_check->execute([$usuarioId]);
+            $empresaId = $stmt_check->fetchColumn();
+
+            if ($empresaId) {
+                $sql_e = "UPDATE empresas SET 
+                            razon_social = ?, 
+                            representante_legal = ?, 
+                            nit = ?, 
+                            digito_verificacion = ?, 
+                            tipo_persona = ?, 
+                            tipo_asociacion = ?, 
+                            sub_tipo_asociacion = ?, 
+                            responsable_iva = ?, 
+                            tamaño_empresa = ?, 
+                            ubicacionGeografica = ?, 
+                            descripcion = ?,
+                            ciiu_personalizado = ?,
+                            ciiu_nombre_personalizado = ?
+                          WHERE id = ?";
+                $stmt_e = $this->db->prepare($sql_e);
+                $stmt_e->execute([
+                    $data['razon_social'] ?? $data['nombreUsuario'] ?? '',
+                    $data['representante_legal'] ?? '',
+                    $data['nit'] ?? '',
+                    $data['digito_verificacion'] ?? null,
+                    $data['tipo_persona'] ?? 'juridica',
+                    $data['tipo_asociacion'] ?? 'S.A.S.',
+                    $data['sub_tipo_asociacion'] ?? null,
+                    isset($data['responsable_iva']) ? (int)$data['responsable_iva'] : 0,
+                    $data['tamaño_empresa'] ?? 'micro',
+                    $data['ubicacionGeografica'] ?? '',
+                    $data['descripcion'] ?? '',
+                    $data['ciiu_personalizado'] ?? null,
+                    $data['ciiu_nombre_personalizado'] ?? null,
+                    $empresaId
+                ]);
+            }
+
+            $this->db->commit();
+            return true;
+        } catch (Exception $e) {
+            if ($this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            return $e->getMessage();
+        }
+    }
+
     private function writeDebugLogin($status, $email, $context = []) {
         $logFile = __DIR__ . '/../../logs/debug_login.txt';
         $timestamp = date('Y-m-d H:i:s');

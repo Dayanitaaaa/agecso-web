@@ -315,6 +315,69 @@ class UsuarioController {
     }
 
     /**
+     * Permite al usuario actualizar los datos completos de su perfil (Todos los roles)
+     */
+    public function actualizarPerfil() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        
+        if (!isset($_SESSION['usuario_id'])) {
+            header("Location: index.php?controlador=usuario&accion=login");
+            exit();
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            try {
+                $usuarioId = $_SESSION['usuario_id'];
+                $nombreUsuario = trim($_POST['nombreUsuario'] ?? $_POST['razon_social'] ?? '');
+                $email = trim($_POST['email'] ?? '');
+                $password = trim($_POST['password'] ?? '');
+
+                if (empty($nombreUsuario) || empty($email)) {
+                    throw new Exception("El nombre/razón social y el correo electrónico son obligatorios.");
+                }
+
+                $data = [
+                    'nombreUsuario' => $nombreUsuario,
+                    'email' => $email,
+                    'razon_social' => trim($_POST['razon_social'] ?? $nombreUsuario),
+                    'representante_legal' => trim($_POST['representante_legal'] ?? ''),
+                    'nit' => trim($_POST['nit'] ?? ''),
+                    'digito_verificacion' => trim($_POST['digito_verificacion'] ?? ''),
+                    'tipo_persona' => trim($_POST['tipo_persona'] ?? 'juridica'),
+                    'tipo_asociacion' => trim($_POST['tipo_asociacion'] ?? 'S.A.S.'),
+                    'sub_tipo_asociacion' => trim($_POST['sub_tipo_asociacion'] ?? ''),
+                    'responsable_iva' => isset($_POST['responsable_iva']) ? (int)$_POST['responsable_iva'] : 0,
+                    'tamaño_empresa' => trim($_POST['tamaño_empresa'] ?? 'micro'),
+                    'ubicacionGeografica' => trim($_POST['ubicacionGeografica'] ?? ''),
+                    'descripcion' => trim($_POST['descripcion'] ?? ''),
+                    'ciiu_personalizado' => trim($_POST['ciiu_personalizado'] ?? ''),
+                    'ciiu_nombre_personalizado' => trim($_POST['ciiu_nombre_personalizado'] ?? '')
+                ];
+
+                if (!empty($password)) {
+                    if (strlen($password) < 6) {
+                        throw new Exception("La nueva contraseña debe tener al menos 6 caracteres.");
+                    }
+                    $data['password'] = $password;
+                }
+
+                $resultado = $this->usuarioModel->actualizarPerfilCompleto($usuarioId, $data);
+
+                if ($resultado === true) {
+                    $_SESSION['nombreUsuario'] = $nombreUsuario;
+                    header("Location: index.php?controlador=usuario&accion=perfil&msg=perfil_actualizado");
+                } else {
+                    throw new Exception("Error al guardar cambios: " . $resultado);
+                }
+                exit();
+            } catch (Exception $e) {
+                header("Location: index.php?controlador=usuario&accion=perfil&msg=error&error_text=" . urlencode($e->getMessage()));
+                exit();
+            }
+        }
+    }
+
+    /**
      * Permite al usuario actualizar su código CIIU personalizado desde el perfil
      */
     public function actualizarCiiu() {

@@ -56,7 +56,7 @@ $badgeColors = [
     <div class="max-w-4xl mx-auto">
         <!-- Encabezado del Perfil -->
         <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 overflow-hidden mb-8">
-            <div class="px-8 py-10 relative overflow-hidden <?php echo $headerGradients[$theme]; ?>">
+            <div class="px-8 py-10 relative overflow-hidden <?php echo $headerGradients[$theme]; ?> flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <!-- Círculos decorativos de fondo -->
                 <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
                 <div class="absolute left-1/3 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
@@ -69,17 +69,31 @@ $badgeColors = [
                         <?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario']); ?>
                     </h1>
                 </div>
+
+                <div class="relative z-10">
+                    <button onclick="abrirModalEditarPerfil()" class="inline-flex items-center gap-2 bg-white/20 hover:bg-white text-white hover:text-slate-900 px-6 py-3 rounded-full text-xs font-black transition-all duration-300 border border-white/30 backdrop-blur-md shadow-lg">
+                        <i class="fas fa-user-edit text-sm"></i> Editar Perfil
+                    </button>
+                </div>
             </div>
             
             <?php if (isset($_GET['msg'])): ?>
                 <div class="px-8 py-4">
-                    <?php if ($_GET['msg'] === 'ciiu_actualizado'): ?>
+                    <?php if ($_GET['msg'] === 'perfil_actualizado'): ?>
                         <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2">
-                            <i class="fas fa-check-circle"></i> Código CIIU actualizado correctamente.
+                            <i class="fas fa-check-circle text-emerald-600"></i> Tu información de perfil ha sido actualizada exitosamente.
+                        </div>
+                    <?php elseif ($_GET['msg'] === 'ciiu_actualizado'): ?>
+                        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2">
+                            <i class="fas fa-check-circle text-emerald-600"></i> Código CIIU actualizado correctamente.
+                        </div>
+                    <?php elseif ($_GET['msg'] === 'error'): ?>
+                        <div class="bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2">
+                            <i class="fas fa-exclamation-triangle text-rose-600"></i> <?php echo htmlspecialchars($_GET['error_text'] ?? 'Hubo un error al actualizar los datos.'); ?>
                         </div>
                     <?php elseif ($_GET['msg'] === 'error_ciiu_vacio'): ?>
                         <div class="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-2">
-                            <i class="fas fa-exclamation-triangle"></i> El código CIIU no puede estar vacío.
+                            <i class="fas fa-exclamation-triangle text-amber-600"></i> El código CIIU no puede estar vacío.
                         </div>
                     <?php endif; ?>
                 </div>
@@ -289,7 +303,200 @@ $badgeColors = [
     </div>
 </div>
 
+<!-- Modal para Editar Perfil (Todos los roles) -->
+<div id="modalEditarPerfil" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Overlay -->
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="cerrarModalEditarPerfil()"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div class="inline-block align-bottom bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-gray-100">
+            <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-6 sm:px-8 py-5 text-white flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
+                        <i class="fas fa-user-edit text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black tracking-tight text-white">Editar Información de Perfil</h3>
+                        <p class="text-xs text-slate-300">Actualiza los datos de tu cuenta en la plataforma</p>
+                    </div>
+                </div>
+                <button type="button" onclick="cerrarModalEditarPerfil()" class="text-slate-400 hover:text-white transition">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <form action="index.php?controlador=usuario&accion=actualizarPerfil" method="POST" class="p-6 sm:p-8 space-y-6">
+                
+                <?php if ($theme === 'admin'): ?>
+                    <!-- Formulario Específico para Administrador -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nombre Completo <span class="text-red-500">*</span></label>
+                            <input type="text" name="nombreUsuario" required 
+                                   value="<?php echo htmlspecialchars($perfil['nombreUsuario'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Correo Electrónico <span class="text-red-500">*</span></label>
+                            <input type="email" name="email" required 
+                                   value="<?php echo htmlspecialchars($perfil['email'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Ubicación / Sede</label>
+                            <input type="text" name="ubicacionGeografica" 
+                                   value="<?php echo htmlspecialchars($perfil['ubicacionGeografica'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nueva Contraseña <span class="text-gray-400 font-normal lowercase">(opcional)</span></label>
+                            <input type="password" name="password" placeholder="Dejar en blanco para no cambiar"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Descripción / Cargo</label>
+                            <textarea name="descripcion" rows="3" 
+                                      class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 resize-none"><?php echo htmlspecialchars($perfil['descripcion'] ?? ''); ?></textarea>
+                        </div>
+                    </div>
+
+                <?php else: ?>
+                    <!-- Formulario para Empresas (Compradores y Vendedores) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Razón Social o Nombre de la Empresa <span class="text-red-500">*</span></label>
+                            <input type="text" name="razon_social" required 
+                                   value="<?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Representante Legal <span class="text-red-500">*</span></label>
+                            <input type="text" name="representante_legal" required 
+                                   value="<?php echo htmlspecialchars($perfil['representante_legal'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Correo Electrónico <span class="text-red-500">*</span></label>
+                            <input type="email" name="email" required 
+                                   value="<?php echo htmlspecialchars($perfil['email'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Identificación / NIT</label>
+                            <div class="flex gap-2">
+                                <input type="text" name="nit" 
+                                       value="<?php echo htmlspecialchars($perfil['nit'] ?? ''); ?>"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
+                                       placeholder="Ej: 900123456">
+                                <input type="text" name="digito_verificacion" maxlength="1"
+                                       value="<?php echo htmlspecialchars($perfil['digito_verificacion'] ?? ''); ?>"
+                                       class="w-16 text-center border border-gray-200 rounded-2xl px-2 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
+                                       placeholder="DV">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Tipo de Persona</label>
+                            <select name="tipo_persona" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
+                                <option value="juridica" <?php echo ($perfil['tipo_persona'] ?? '') === 'juridica' ? 'selected' : ''; ?>>Persona Jurídica</option>
+                                <option value="natural" <?php echo ($perfil['tipo_persona'] ?? '') === 'natural' ? 'selected' : ''; ?>>Persona Natural</option>
+                                <option value="esal" <?php echo ($perfil['tipo_persona'] ?? '') === 'esal' ? 'selected' : ''; ?>>ESAL / Sin Ánimo de Lucro</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Forma Jurídica</label>
+                            <input type="text" name="tipo_asociacion" 
+                                   value="<?php echo htmlspecialchars($perfil['tipo_asociacion'] ?? 'S.A.S.'); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
+                                   placeholder="Ej: S.A.S., Ltda., S.A.">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Responsabilidad IVA</label>
+                            <select name="responsable_iva" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
+                                <option value="0" <?php echo ($perfil['responsable_iva'] ?? 0) == 0 ? 'selected' : ''; ?>>No Responsable de IVA</option>
+                                <option value="1" <?php echo ($perfil['responsable_iva'] ?? 0) == 1 ? 'selected' : ''; ?>>Responsable de IVA</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Tamaño de Empresa</label>
+                            <select name="tamaño_empresa" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
+                                <option value="micro" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'micro' ? 'selected' : ''; ?>>Microempresa</option>
+                                <option value="pequeña" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'pequeña' ? 'selected' : ''; ?>>Pequeña Empresa</option>
+                                <option value="mediana" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'mediana' ? 'selected' : ''; ?>>Mediana Empresa</option>
+                                <option value="grande" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'grande' ? 'selected' : ''; ?>>Grande Empresa</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Ubicación / Ciudad</label>
+                            <input type="text" name="ubicacionGeografica" 
+                                   value="<?php echo htmlspecialchars($perfil['ubicacionGeografica'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
+                                   placeholder="Ej: Bogotá, Colombia">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Código CIIU</label>
+                            <input type="text" name="ciiu_personalizado" 
+                                   value="<?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
+                                   placeholder="Ej: 6201">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nombre Actividad Económica</label>
+                            <input type="text" name="ciiu_nombre_personalizado" 
+                                   value="<?php echo htmlspecialchars($perfil['ciiu_nombre_personalizado'] ?? ''); ?>"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
+                                   placeholder="Ej: Programación informática">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nueva Contraseña <span class="text-gray-400 font-normal lowercase">(opcional)</span></label>
+                            <input type="password" name="password" placeholder="Dejar en blanco para no cambiar tu contraseña actual"
+                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
+                        </div>
+
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Sobre la Empresa (Descripción Corporativa)</label>
+                            <textarea name="descripcion" rows="3" 
+                                      placeholder="Describe los productos, servicios, experiencia y propuesta de valor de tu empresa..."
+                                      class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] resize-none"><?php echo htmlspecialchars($perfil['descripcion'] ?? ''); ?></textarea>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <div class="pt-4 border-t border-gray-100 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
+                    <button type="button" onclick="cerrarModalEditarPerfil()" 
+                            class="w-full sm:w-auto px-6 py-3 rounded-full border border-gray-200 text-sm font-bold text-gray-600 hover:bg-gray-100 transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                            class="w-full sm:w-auto px-8 py-3 rounded-full bg-slate-900 hover:bg-black text-white text-sm font-black transition shadow-lg">
+                        <i class="fas fa-save mr-2"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+function abrirModalEditarPerfil() {
+    document.getElementById('modalEditarPerfil').classList.remove('hidden');
+}
+
+function cerrarModalEditarPerfil() {
+    document.getElementById('modalEditarPerfil').classList.add('hidden');
+}
+
 function editarCiiu(ciiuActual, nombreActual) {
     Swal.fire({
         title: 'Actualizar Actividad CIIU',
