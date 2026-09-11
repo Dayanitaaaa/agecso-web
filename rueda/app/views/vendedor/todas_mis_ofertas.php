@@ -159,15 +159,48 @@
                     
                     <div class="space-y-6">
                         <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-2">Seleccionar Rueda de Negocios</label>
-                            <select name="rueda_id" required class="w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-bold text-gray-700 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all cursor-pointer shadow-inner">
-                                <option value="">-- Selecciona una rueda --</option>
-                                <?php foreach ($ruedas_inscrito as $r): ?>
-                                    <option value="<?php echo $r['id']; ?>">
-                                    <?php echo htmlspecialchars($r['nombreRueda'] ?? $r['tituloRueda'] ?? 'Rueda sin nombre'); ?> (<?php echo date('d/m/Y', strtotime($r['fechaInicio'])); ?>)
-                                </option>
+                            <label class="block text-sm font-bold text-gray-700 mb-2.5 flex items-center justify-between">
+                                <span class="flex items-center gap-2">
+                                    <i class="fas fa-handshake text-[#0d9488]"></i> Seleccionar Rueda de Negocios <span class="text-red-500">*</span>
+                                </span>
+                                <span class="text-xs font-semibold text-gray-400">
+                                    <?php echo count($ruedas_inscrito); ?> rueda(s) disponible(s)
+                                </span>
+                            </label>
+                            
+                            <input type="hidden" name="rueda_id" id="selected_rueda_id" value="<?php echo (count($ruedas_inscrito) === 1) ? $ruedas_inscrito[0]['id'] : ''; ?>" required>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="ruedas_selector_grid">
+                                <?php foreach ($ruedas_inscrito as $r): 
+                                    $isSelected = (count($ruedas_inscrito) === 1);
+                                    $nombreRueda = $r['nombreRueda'] ?? $r['tituloRueda'] ?? 'Rueda sin nombre';
+                                    $fechaFmt = date('d/m/Y', strtotime($r['fechaInicio']));
+                                    $isVirtual = ($r['modalidad'] ?? '') === 'virtual';
+                                ?>
+                                    <div class="rueda-card-option cursor-pointer p-4 rounded-2xl border-2 transition-all duration-300 flex items-center justify-between gap-4 <?php echo $isSelected ? 'border-[#0d9488] bg-teal-50/40 shadow-sm ring-2 ring-teal-500/20' : 'border-gray-200 bg-white hover:border-teal-300 hover:bg-gray-50/60 shadow-sm'; ?>"
+                                         onclick="seleccionarRueda(<?php echo $r['id']; ?>, this)">
+                                        <div class="flex items-center gap-3.5 min-w-0">
+                                            <div class="icon-box w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all <?php echo $isSelected ? 'bg-[#0d9488] text-white shadow-md shadow-teal-500/20' : 'bg-teal-50 text-[#0d9488]'; ?>">
+                                                <i class="fas fa-calendar-alt text-base"></i>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <h4 class="text-sm font-extrabold text-gray-900 truncate"><?php echo htmlspecialchars($nombreRueda); ?></h4>
+                                                <div class="flex items-center gap-2 mt-1">
+                                                    <span class="text-[11px] font-bold text-gray-500 flex items-center gap-1">
+                                                        <i class="far fa-clock text-[10px] text-teal-600"></i> <?php echo $fechaFmt; ?>
+                                                    </span>
+                                                    <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full <?php echo $isVirtual ? 'bg-sky-50 text-sky-600 border border-sky-200' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'; ?>">
+                                                        <?php echo $isVirtual ? 'Virtual' : 'Presencial'; ?>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="radio-indicator shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all <?php echo $isSelected ? 'border-[#0d9488] bg-[#0d9488] text-white' : 'border-gray-300 bg-white text-transparent'; ?>">
+                                            <i class="fas fa-check text-[10px]"></i>
+                                        </div>
+                                    </div>
                                 <?php endforeach; ?>
-                            </select>
+                            </div>
                         </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -235,5 +268,42 @@
         <?php endif; ?>
     </div>
 </div>
+
+<script>
+function seleccionarRueda(id, element) {
+    document.getElementById('selected_rueda_id').value = id;
+    document.querySelectorAll('.rueda-card-option').forEach(card => {
+        card.classList.remove('border-[#0d9488]', 'bg-teal-50/40', 'shadow-sm', 'ring-2', 'ring-teal-500/20');
+        card.classList.add('border-gray-200', 'bg-white');
+        
+        const indicator = card.querySelector('.radio-indicator');
+        if (indicator) {
+            indicator.classList.remove('border-[#0d9488]', 'bg-[#0d9488]', 'text-white');
+            indicator.classList.add('border-gray-300', 'bg-white', 'text-transparent');
+        }
+        
+        const iconBox = card.querySelector('.icon-box');
+        if (iconBox) {
+            iconBox.classList.remove('bg-[#0d9488]', 'text-white', 'shadow-md', 'shadow-teal-500/20');
+            iconBox.classList.add('bg-teal-50', 'text-[#0d9488]');
+        }
+    });
+
+    element.classList.remove('border-gray-200', 'bg-white');
+    element.classList.add('border-[#0d9488]', 'bg-teal-50/40', 'shadow-sm', 'ring-2', 'ring-teal-500/20');
+    
+    const indicator = element.querySelector('.radio-indicator');
+    if (indicator) {
+        indicator.classList.remove('border-gray-300', 'bg-white', 'text-transparent');
+        indicator.classList.add('border-[#0d9488]', 'bg-[#0d9488]', 'text-white');
+    }
+    
+    const iconBox = element.querySelector('.icon-box');
+    if (iconBox) {
+        iconBox.classList.remove('bg-teal-50', 'text-[#0d9488]');
+        iconBox.classList.add('bg-[#0d9488]', 'text-white', 'shadow-md', 'shadow-teal-500/20');
+    }
+}
+</script>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>
