@@ -11,31 +11,31 @@ $footer_bg = 'bg-[#00a2ff]';
 
 if ($userRole === 'admin') {
     $menu_items = [
-        ['label' => 'Dashboard', 'icon' => 'fas fa-chart-pie', 'accion' => 'dashboard', 'controlador' => 'admin'],
-        ['label' => 'Auditoría Total', 'icon' => 'fas fa-clipboard-list', 'accion' => 'verRegistrosPaneles', 'controlador' => 'admin'],
-        ['label' => 'Configurar Ruedas', 'icon' => 'fas fa-cog', 'accion' => 'crearRueda', 'controlador' => 'admin'],
-        ['label' => 'Estadísticas', 'icon' => 'fas fa-chart-line', 'accion' => 'verEstadisticas', 'controlador' => 'admin'],
+        ['label' => 'Inicio', 'icon' => 'fas fa-home', 'accion' => 'dashboard', 'controlador' => 'admin'],
+        ['label' => 'Empresas y Registros', 'icon' => 'fas fa-building', 'accion' => 'verRegistrosPaneles', 'controlador' => 'admin'],
+        ['label' => 'Ruedas de Negocios', 'icon' => 'fas fa-calendar-alt', 'accion' => 'crearRueda', 'controlador' => 'admin'],
+        ['label' => 'Estadísticas', 'icon' => 'fas fa-chart-bar', 'accion' => 'verEstadisticas', 'controlador' => 'admin'],
     ];
     $sidebar_bg = 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900';
     $header_bg = 'bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900';
     $footer_bg = 'bg-slate-900';
 } elseif ($userRole === 'comprador' || $controlador === 'comprador') {
     $menu_items = [
-        ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'comprador'],
-        ['label' => 'Gestión de Citas', 'icon' => 'fas fa-handshake', 'accion' => 'verReuniones', 'controlador' => 'comprador'],
-        ['label' => 'Buscar Vendedores', 'icon' => 'fas fa-search-dollar', 'accion' => 'verParticipantes', 'controlador' => 'comprador'],
-        ['label' => 'Mis Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'comprador'],
+        ['label' => 'Inicio', 'icon' => 'fas fa-home', 'accion' => 'dashboard', 'controlador' => 'comprador'],
+        ['label' => 'Mis Citas', 'icon' => 'fas fa-calendar-check', 'accion' => 'verReuniones', 'controlador' => 'comprador'],
+        ['label' => 'Buscar Proveedores', 'icon' => 'fas fa-search', 'accion' => 'verParticipantes', 'controlador' => 'comprador'],
+        ['label' => 'Encuestas', 'icon' => 'fas fa-clipboard-check', 'accion' => 'verEncuestas', 'controlador' => 'comprador'],
     ];
     $sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
     $header_bg = 'bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
     $footer_bg = 'bg-[#00a2ff]';
 } elseif ($userRole === 'vendedor' || $userRole === 'proveedor' || $controlador === 'vendedor') {
     $menu_items = [
-        ['label' => 'Panel Principal', 'icon' => 'fas fa-th-large', 'accion' => 'dashboard', 'controlador' => 'vendedor'],
-        ['label' => 'Gestión de Citas', 'icon' => 'fas fa-handshake', 'accion' => 'verReuniones', 'controlador' => 'vendedor'],
-        ['label' => 'Mis Productos/Servicios', 'icon' => 'fas fa-box-open', 'accion' => 'verTodasMisOfertas', 'controlador' => 'vendedor'],
-        ['label' => 'Buscar Clientes', 'icon' => 'fas fa-users', 'accion' => 'explorarDemandas', 'controlador' => 'vendedor'],
-        ['label' => 'Mis Encuestas', 'icon' => 'fas fa-poll-h', 'accion' => 'verEncuestas', 'controlador' => 'vendedor'],
+        ['label' => 'Inicio', 'icon' => 'fas fa-home', 'accion' => 'dashboard', 'controlador' => 'vendedor'],
+        ['label' => 'Mis Citas', 'icon' => 'fas fa-calendar-check', 'accion' => 'verReuniones', 'controlador' => 'vendedor'],
+        ['label' => 'Mis Ofertas', 'icon' => 'fas fa-tags', 'accion' => 'verTodasMisOfertas', 'controlador' => 'vendedor'],
+        ['label' => 'Buscar Compradores', 'icon' => 'fas fa-search', 'accion' => 'explorarDemandas', 'controlador' => 'vendedor'],
+        ['label' => 'Encuestas', 'icon' => 'fas fa-clipboard-check', 'accion' => 'verEncuestas', 'controlador' => 'vendedor'],
     ];
     $sidebar_bg = 'bg-gradient-to-b from-[#0d9488] via-[#14b8a6] to-[#0f766e]';
     $header_bg = 'bg-gradient-to-r from-[#0d9488] via-[#14b8a6] to-[#0f766e]';
@@ -61,7 +61,7 @@ if ($userRole === 'admin') {
                     // Caso especial para el dashboard inicial
                     if ($current_page == '' && $item['accion'] == 'dashboard') $isActive = true;
                 ?>
-                <a href="<?php echo $url; ?>" class="flex items-center p-3 text-sm font-bold rounded-2xl transition-all duration-200 <?php echo $isActive ? 'bg-white/20 text-white' : 'text-white/80 hover:bg-white/10 hover:text-white'; ?>">
+                <a href="<?php echo $url; ?>" class="flex items-center p-3 text-sm font-bold rounded-2xl transition-all duration-200 <?php echo $isActive ? 'bg-white/20 text-white shadow-sm' : 'text-white/80 hover:bg-white/10 hover:text-white'; ?>">
                     <i class="<?php echo $item['icon']; ?> w-5 text-lg"></i>
                     <span class="ml-3"><?php echo $item['label']; ?></span>
                     <?php if ($item['accion'] == 'verReuniones' && isset($kpis['citas_por_gestionar']) && $kpis['citas_por_gestionar'] > 0): ?>
@@ -73,9 +73,9 @@ if ($userRole === 'admin') {
             <!-- Módulo de Mensajes (Solo Roles de Socio) -->
             <?php if ($userRole !== 'admin'): ?>
                 <a href="#" class="flex items-center p-3 text-sm font-bold rounded-2xl text-white/40 cursor-not-allowed group">
-                    <i class="fas fa-comments w-5 text-lg"></i>
-                    <span class="ml-3">Mensajes / Chat</span>
-                    <span class="ml-auto text-[9px] bg-white/20 px-2 py-0.5 rounded-full">Próximamente</span>
+                    <i class="fas fa-comment-dots w-5 text-lg"></i>
+                    <span class="ml-3">Mensajes</span>
+                    <span class="ml-auto text-[9px] bg-white/20 px-2 py-0.5 rounded-full font-bold">Próximamente</span>
                 </a>
             <?php endif; ?>
         </nav>
