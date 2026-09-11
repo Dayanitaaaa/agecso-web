@@ -4,7 +4,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- HEADER PREMIUM (Tema Slate Admin) -->
-        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 mb-10 shadow-[0_10px_40px_rgba(15,23,42,0.25)] text-white relative overflow-hidden">
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 mb-8 shadow-[0_10px_40px_rgba(15,23,42,0.25)] text-white relative overflow-hidden">
             <div class="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
             <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-white/5 rounded-full blur-3xl"></div>
             
@@ -13,13 +13,166 @@
                     <span class="bg-white/10 text-slate-300 text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/10 backdrop-blur-md">
                         Supervisión General
                     </span>
-                    <h1 class="text-4xl font-black mt-4 tracking-tight text-white drop-shadow-sm">Registros Completos</h1>
-                    <p class="text-slate-300 mt-2 font-medium">Auditoría completa de citas, ruedas de negocios y retroalimentación de socios.</p>
+                    <h1 class="text-3xl sm:text-4xl font-black mt-4 tracking-tight text-white drop-shadow-sm">Empresas y Registros del Sistema</h1>
+                    <p class="text-slate-300 mt-2 font-medium">Auditoría completa de empresas registradas, citas comerciales, ruedas de negocios y encuestas.</p>
                 </div>
+            </div>
+
+            <!-- Accesos rápidos a secciones -->
+            <div class="relative z-10 flex flex-wrap items-center gap-2.5 mt-8 pt-6 border-t border-white/10">
+                <a href="#empresas" class="inline-flex items-center gap-2 px-4 py-2 bg-white/15 hover:bg-white text-white hover:text-slate-900 rounded-full text-xs font-bold transition shadow-sm border border-white/10">
+                    <i class="fas fa-building text-[10px]"></i> Empresas <span class="bg-white/20 text-white hover:bg-slate-900 px-2 py-0.5 rounded-full text-[10px] font-black ml-1"><?php echo (int)($total_empresas ?? 0); ?></span>
+                </a>
+                <a href="#seguimiento" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white text-white hover:text-slate-900 rounded-full text-xs font-bold transition border border-white/10">
+                    <i class="fas fa-handshake text-[10px]"></i> Citas <span class="bg-white/20 text-white hover:bg-slate-900 px-2 py-0.5 rounded-full text-[10px] font-black ml-1"><?php echo (int)($total_reuniones ?? 0); ?></span>
+                </a>
+                <a href="#ruedas" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white text-white hover:text-slate-900 rounded-full text-xs font-bold transition border border-white/10">
+                    <i class="fas fa-calendar-alt text-[10px]"></i> Ruedas <span class="bg-white/20 text-white hover:bg-slate-900 px-2 py-0.5 rounded-full text-[10px] font-black ml-1"><?php echo (int)($total_ruedas ?? 0); ?></span>
+                </a>
+                <a href="#encuestas" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white text-white hover:text-slate-900 rounded-full text-xs font-bold transition border border-white/10">
+                    <i class="fas fa-star-half-alt text-[10px]"></i> Encuestas <span class="bg-white/20 text-white hover:bg-slate-900 px-2 py-0.5 rounded-full text-[10px] font-black ml-1"><?php echo (int)($total_encuestas ?? 0); ?></span>
+                </a>
             </div>
         </div>
 
         <div class="space-y-12">
+            
+            <!-- SECCIÓN 0: DIRECTORIO DE EMPRESAS REGISTRADAS -->
+            <div id="empresas" class="bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden transition-all duration-500 hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+                <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-8 py-7 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-white text-xl backdrop-blur-sm border border-white/10">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-white font-black text-xl tracking-tight">Directorio General de Empresas</h2>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-slate-300 text-xs font-bold uppercase opacity-80">Total Registradas:</span>
+                                <span class="bg-white/20 text-white text-xs font-black px-2.5 py-0.5 rounded-full"><?php echo (int)($total_empresas ?? 0); ?></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                        <div class="relative">
+                            <input type="text" id="buscarEmpresaInput" onkeyup="filtrarEmpresasTabla()" placeholder="Buscar empresa, NIT, email..." 
+                                   class="bg-white/10 text-white placeholder-slate-400 text-xs font-bold rounded-xl pl-9 pr-4 py-2.5 border border-white/15 focus:outline-none focus:bg-white focus:text-slate-900 focus:placeholder-gray-400 transition-all w-full sm:w-64">
+                            <i class="fas fa-search text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-xs pointer-events-none"></i>
+                        </div>
+                        <span class="text-white/80 text-xs font-bold bg-white/10 px-4 py-2.5 rounded-xl backdrop-blur-sm border border-white/10 text-center shrink-0">
+                            Pág. <?php echo (int)($pageEmpresas ?? 1); ?> de <?php echo (int)($totalPagesEmpresas ?? 1); ?>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-100" id="tablaEmpresas">
+                        <thead class="bg-slate-50/50">
+                            <tr>
+                                <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Empresa / Razón Social</th>
+                                <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Identificación (NIT)</th>
+                                <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Rol</th>
+                                <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Actividad Económica / CIIU</th>
+                                <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Estado</th>
+                                <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-100">
+                            <?php if (empty($empresas_registradas)): ?>
+                                <tr>
+                                    <td colspan="6" class="px-8 py-20 text-center text-slate-400 font-extrabold italic">No hay empresas registradas</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($empresas_registradas as $emp): 
+                                    $est = strtolower($emp['estado_verificacion'] ?? 'pendiente');
+                                    $rol = strtolower($emp['slugRole'] ?? ($emp['roleId'] == 2 ? 'comprador' : ($emp['roleId'] == 3 ? 'vendedor' : 'admin')));
+                                    $rolBadge = match($rol) {
+                                        'comprador' => 'bg-blue-50 text-blue-700 border-blue-100',
+                                        'vendedor', 'proveedor' => 'bg-teal-50 text-teal-700 border-teal-100',
+                                        default => 'bg-slate-100 text-slate-700 border-slate-200'
+                                    };
+                                    $estadoBadge = match($est) {
+                                        'aprobada' => 'bg-emerald-500 text-white shadow-emerald-200',
+                                        'rechazada' => 'bg-rose-500 text-white shadow-rose-200',
+                                        default => 'bg-amber-500 text-white shadow-amber-200'
+                                    };
+                                ?>
+                                    <tr class="empresa-row group hover:bg-slate-50/80 transition-all duration-300">
+                                        <td class="px-8 py-5">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-10 h-10 rounded-2xl bg-slate-100 text-slate-700 font-black flex items-center justify-center text-sm border border-slate-200 shrink-0">
+                                                    <?php echo strtoupper(substr($emp['razon_social'] ?? $emp['nombreUsuario'] ?? 'E', 0, 1)); ?>
+                                                </div>
+                                                <div class="min-w-0">
+                                                    <p class="text-sm font-black text-slate-900 truncate"><?php echo htmlspecialchars($emp['razon_social'] ?? $emp['nombreUsuario']); ?></p>
+                                                    <p class="text-[11px] font-bold text-slate-400 mt-0.5 truncate"><?php echo htmlspecialchars($emp['email']); ?></p>
+                                                    <?php if (!empty($emp['representante_legal'])): ?>
+                                                        <p class="text-[10px] text-slate-400 font-medium truncate">Rep: <?php echo htmlspecialchars($emp['representante_legal']); ?></p>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-8 py-5 whitespace-nowrap">
+                                            <span class="font-mono text-xs font-extrabold text-slate-700">
+                                                <?php echo htmlspecialchars($emp['nit'] ?? 'N/A'); ?>
+                                                <?php if (!empty($emp['digito_verificacion'])): ?>
+                                                    - <?php echo htmlspecialchars($emp['digito_verificacion']); ?>
+                                                <?php endif; ?>
+                                            </span>
+                                            <p class="text-[10px] text-slate-400 font-bold"><?php echo htmlspecialchars($emp['tipo_asociacion'] ?? 'S.A.S.'); ?></p>
+                                        </td>
+                                        <td class="px-8 py-5 text-center whitespace-nowrap">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-[9px] font-black uppercase border <?php echo $rolBadge; ?>">
+                                                <?php echo ucfirst($rol); ?>
+                                            </span>
+                                        </td>
+                                        <td class="px-8 py-5">
+                                            <p class="text-xs font-extrabold text-slate-800 line-clamp-1" title="<?php echo htmlspecialchars($emp['ciiu_nombre_personalizado'] ?: ($emp['nombreSector'] ?? 'Sin sector')); ?>">
+                                                <?php echo htmlspecialchars($emp['ciiu_nombre_personalizado'] ?: ($emp['nombreSector'] ?? 'Sin sector')); ?>
+                                            </p>
+                                            <p class="text-[10px] font-mono text-slate-400 font-bold mt-0.5">
+                                                CIIU: <?php echo htmlspecialchars($emp['ciiu_personalizado'] ?: ($emp['ciiu_clase'] ?? 'N/A')); ?>
+                                            </p>
+                                        </td>
+                                        <td class="px-8 py-5 text-center whitespace-nowrap">
+                                            <span class="inline-flex px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm <?php echo $estadoBadge; ?>">
+                                                <?php echo ucfirst($est); ?>
+                                            </span>
+                                        </td>
+                                        <td class="px-8 py-5 text-center whitespace-nowrap">
+                                            <a href="index.php?controlador=admin&accion=verPerfilEmpresa&id=<?php echo (int)$emp['id']; ?>" 
+                                               class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-slate-900 hover:bg-black text-white rounded-full font-black text-xs transition duration-200 shadow-sm">
+                                                <i class="fas fa-eye text-[10px]"></i> Ver Perfil
+                                            </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación Empresas -->
+                <div class="px-8 py-6 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+                    <span class="text-[11px] font-black text-slate-400 uppercase tracking-widest">
+                        Empresas en vista: <?php echo count($empresas_registradas ?? []); ?> de <?php echo (int)$total_empresas; ?>
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <?php if (($pageEmpresas ?? 1) > 1): ?>
+                            <a href="index.php?controlador=admin&accion=verRegistrosPaneles&page_empresas=<?php echo (int)($pageEmpresas - 1); ?>&page_reuniones=<?php echo (int)($pageReuniones ?? 1); ?>&page_ruedas=<?php echo (int)($pageRuedas ?? 1); ?>&page_encuestas=<?php echo (int)($pageEncuestas ?? 1); ?>#empresas"
+                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 shadow-sm">
+                                <i class="fas fa-chevron-left mr-2"></i> Anterior
+                            </a>
+                        <?php endif; ?>
+                        <?php if (($pageEmpresas ?? 1) < ($totalPagesEmpresas ?? 1)): ?>
+                            <a href="index.php?controlador=admin&accion=verRegistrosPaneles&page_empresas=<?php echo (int)($pageEmpresas + 1); ?>&page_reuniones=<?php echo (int)($pageReuniones ?? 1); ?>&page_ruedas=<?php echo (int)($pageRuedas ?? 1); ?>&page_encuestas=<?php echo (int)($pageEncuestas ?? 1); ?>#empresas"
+                               class="inline-flex items-center px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition-all duration-300 shadow-sm">
+                                Siguiente <i class="fas fa-chevron-right ml-2"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
             
             <!-- SECCIÓN 1: CITAS Y NEGOCIOS -->
             <div id="seguimiento" class="bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden transition-all duration-500 hover:shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
@@ -392,6 +545,21 @@
 </style>
 
 <script>
+function filtrarEmpresasTabla() {
+    const input = document.getElementById('buscarEmpresaInput');
+    const filter = input.value.toLowerCase().trim();
+    const rows = document.querySelectorAll('#tablaEmpresas .empresa-row');
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(filter)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
 function confirmarEliminarRueda(ruedaId, tituloRueda, origen = 'registros') {
     Swal.fire({
         title: '¿Eliminar rueda permanentemente?',

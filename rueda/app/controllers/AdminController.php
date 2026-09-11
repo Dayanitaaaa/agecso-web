@@ -166,21 +166,47 @@ class AdminController {
     }
 
     public function verRegistrosPaneles() {
+        $perPageEmpresas = 50;
         $perPageReuniones = 50;
         $perPageEncuestas = 50;
         $perPageRuedas = 50;
 
+        $pageEmpresas = isset($_GET['page_empresas']) ? max(1, (int)$_GET['page_empresas']) : 1;
         $pageReuniones = isset($_GET['page_reuniones']) ? max(1, (int)$_GET['page_reuniones']) : 1;
         $pageEncuestas = isset($_GET['page_encuestas']) ? max(1, (int)$_GET['page_encuestas']) : 1;
         $pageRuedas = isset($_GET['page_ruedas']) ? max(1, (int)$_GET['page_ruedas']) : 1;
 
+        $offsetEmpresas = ($pageEmpresas - 1) * $perPageEmpresas;
         $offsetReuniones = ($pageReuniones - 1) * $perPageReuniones;
         $offsetEncuestas = ($pageEncuestas - 1) * $perPageEncuestas;
         $offsetRuedas = ($pageRuedas - 1) * $perPageRuedas;
 
+        $total_empresas = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas")->fetchColumn();
         $total_reuniones = (int)$this->pdo->query("SELECT COUNT(*) FROM reuniones")->fetchColumn();
         $total_encuestas = (int)$this->pdo->query("SELECT COUNT(*) FROM encuestas_satisfaccion")->fetchColumn();
         $total_ruedas = (int)$this->pdo->query("SELECT COUNT(*) FROM ruedas_negocios")->fetchColumn();
+
+        $totalPagesEmpresas = (int)max(1, ceil($total_empresas / $perPageEmpresas));
+        $totalPagesReuniones = (int)max(1, ceil($total_reuniones / $perPageReuniones));
+        $totalPagesEncuestas = (int)max(1, ceil($total_encuestas / $perPageEncuestas));
+        $totalPagesRuedas = (int)max(1, ceil($total_ruedas / $perPageRuedas));
+
+        // 1. Consulta de Empresas Registradas
+        $stmt_empresas = $this->pdo->prepare("
+            SELECT e.*, u.email, u.nombreUsuario, r.nombreRole, r.slugRole, s.nombreSector
+            FROM empresas e
+            JOIN usuarios u ON e.usuarioId = u.id
+            JOIN roles r ON u.roleId = r.id
+            LEFT JOIN sectores s ON e.sectorId = s.id
+            ORDER BY e.createdAt DESC
+            LIMIT :limit OFFSET :offset
+        ");
+        $stmt_empresas->bindValue(':limit', $perPageEmpresas, PDO::PARAM_INT);
+        $stmt_empresas->bindValue(':offset', $offsetEmpresas, PDO::PARAM_INT);
+        $stmt_empresas->execute();
+        $empresas_registradas = $stmt_empresas->fetchAll();
+
+        // 2. Consulta de Reuniones
 
         $stmt_reuniones = $this->pdo->prepare("
             SELECT r.*, 
