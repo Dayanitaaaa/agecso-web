@@ -590,15 +590,84 @@ class AdminController {
                 require_once '../app/models/ImpactoModel.php';
                 $impactoModel = new ImpactoModel($this->pdo);
 
-                $stats_generales = $impactoModel->getEstadisticasGlobales();
+                // 1. Empresas
+                $total_empresas = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas")->fetchColumn();
+                $total_compradores = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas WHERE roleId = 2")->fetchColumn();
+                $total_vendedores = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas WHERE roleId = 3")->fetchColumn();
+                $total_pendientes_aprobacion = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas WHERE estado_verificacion = 'pendiente'")->fetchColumn();
 
-                // Obtener datos para vista de estadísticas generales
-                $total_empresas = $this->pdo->query("SELECT COUNT(*) FROM empresas")->fetchColumn();
+                // 2. Ruedas de Negocios
+                $total_ruedas = (int)$this->pdo->query("SELECT COUNT(*) FROM ruedas_negocios")->fetchColumn();
+                $total_ruedas_activas = (int)$this->pdo->query("SELECT COUNT(*) FROM ruedas_negocios WHERE estadoRueda IN ('activa', 'abierta', 'inscripciones')")->fetchColumn();
+
+                // 3. Citas / Reuniones
                 $total_reuniones = (int)$this->pdo->query("SELECT COUNT(*) FROM reuniones")->fetchColumn();
+                $citas_realizadas = (int)$this->pdo->query("SELECT COUNT(*) FROM reuniones WHERE estadoCita = 'realizada'")->fetchColumn();
+                $citas_agendadas = (int)$this->pdo->query("SELECT COUNT(*) FROM reuniones WHERE estadoCita IN ('aceptada', 'agendada')")->fetchColumn();
+                $citas_pendientes = (int)$this->pdo->query("SELECT COUNT(*) FROM reuniones WHERE estadoCita = 'pendiente'")->fetchColumn();
+                $citas_canceladas = (int)$this->pdo->query("SELECT COUNT(*) FROM reuniones WHERE estadoCita = 'cancelada'")->fetchColumn();
+
+                // 4. Negocio Proyectado / Acuerdos Totales
+                $monto_citas = (float)$this->pdo->query("SELECT COALESCE(SUM(montoEstimado), 0) FROM reuniones WHERE montoEstimado > 0")->fetchColumn();
+                $monto_encuestas = 0.0;
+                try {
+                    $monto_encuestas = (float)$this->pdo->query("SELECT COALESCE(SUM(posibilidadNegocio), 0) FROM encuestas_satisfaccion WHERE posibilidadNegocio > 0")->fetchColumn();
+                } catch (Exception $e) {}
+                $volumen_negocio_total = max($monto_citas, $monto_encuestas);
+
+                // 5. Satisfacción Promedio
+                $satisfaccion_promedio = 0.0;
+                $total_encuestas = 0;
+                try {
+                    $stmt_sat = $this->pdo->query("SELECT COUNT(*) as total, COALESCE(ROUND(AVG(calificacion), 1), 0.0) as promedio FROM encuestas_satisfaccion WHERE calificacion > 0");
+                    $sat_data = $stmt_sat->fetch();
+                    $total_encuestas = (int)($sat_data['total'] ?? 0);
+                    $satisfaccion_promedio = (float)($sat_data['promedio'] ?? 0.0);
+                } catch (Exception $e) {}
+
+                // 6. Recaudado por Membresías y Pagos
                 $recaudado_membresias = 0.0;
+                $pagos_recientes = [];
                 $labels_grafica = [];
                 $valores_grafica = [];
-                $pagos_recientes = [];
+                try {
+                    $recaudado_membresias = (float)$this->pdo->query("SELECT COALESCE(SUM(monto), 0) FROM pagos_membresias WHERE estado_pago = 'aprobado'")->fetchColumn();
+                    
+                    $stmt_pagos = $this->pdo->query("
+                        SELECT p.*, e.razon_social 
+                        FROM pagos_membresias p 
+                        JOIN empresas e ON p.empresa_id = e.id 
+                        WHERE p.estado_pago = 'aprobado' 
+                        ORDER BY p.fecha_pago DESC 
+                        LIMIT 5
+                    ");
+                    $pagos_recientes = $stmt_pagos->fetchAll();
+
+                    $stmt_mensual = $this->pdo->query("
+                        SELECT DATE_FORMAT(fecha_pago, '%b %Y') as mes, SUM(monto) as total
+                        FROM pagos_membresias
+                        WHERE estado_pago = 'aprobado'
+                        GROUP BY YEAR(fecha_pago), MONTH(fecha_pago)
+                        ORDER BY fecha_pago ASC
+                        LIMIT 12
+                    ");
+                    $ventas_mensuales = $stmt_mensual->fetchAll();
+                    foreach ($ventas_mensuales as $vm) {
+                        $labels_grafica[] = $vm['mes'];
+                        $valores_grafica[] = (float)$vm['total'];
+                    }
+                } catch (Exception $e) {}
+
+                // 7. Lista de Ruedas con Métricas Rápidas
+                $stmt_ruedas_list = $this->pdo->query("
+                    SELECT rn.*, 
+                           (SELECT COUNT(*) FROM inscripciones_ruedas WHERE ruedaId = rn.id AND estadoInscripcion = 'aceptada') as total_empresas_inscritas,
+                           (SELECT COUNT(*) FROM reuniones WHERE ruedaId = rn.id) as total_citas_rueda,
+                           (SELECT COALESCE(SUM(montoEstimado), 0) FROM reuniones WHERE ruedaId = rn.id) as volumen_rueda
+                    FROM ruedas_negocios rn
+                    ORDER BY rn.fechaInicio DESC
+                ");
+                $ruedas_list = $stmt_ruedas_list->fetchAll();
 
                 require_once '../app/views/admin/estadisticas_generales.php';
                 exit();
