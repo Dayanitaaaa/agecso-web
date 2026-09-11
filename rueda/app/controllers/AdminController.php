@@ -618,8 +618,8 @@ class AdminController {
 
                 // 1. Empresas
                 $total_empresas = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas")->fetchColumn();
-                $total_compradores = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas WHERE roleId = 2")->fetchColumn();
-                $total_vendedores = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas WHERE roleId = 3")->fetchColumn();
+                $total_compradores = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas e JOIN usuarios u ON e.usuarioId = u.id WHERE u.roleId = 2")->fetchColumn();
+                $total_vendedores = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas e JOIN usuarios u ON e.usuarioId = u.id WHERE u.roleId = 3")->fetchColumn();
                 $total_pendientes_aprobacion = (int)$this->pdo->query("SELECT COUNT(*) FROM empresas WHERE estado_verificacion = 'pendiente'")->fetchColumn();
 
                 // 2. Ruedas de Negocios
