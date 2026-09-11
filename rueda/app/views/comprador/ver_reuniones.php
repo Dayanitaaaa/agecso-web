@@ -5,57 +5,68 @@
 
         <!-- SELECTOR DE RUEDA REDISEÑADO -->
         <?php if (!empty($ruedas)): ?>
-        <div class="bg-white p-6 rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 mb-10">
-            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                <div class="flex-1 max-w-xl">
-                    <div class="flex items-center gap-2 mb-3">
-                        <i class="fas fa-filter text-[#00a2ff]"></i>
-                        <span class="text-sm font-extrabold text-gray-900">Filtrar por Rueda de Negocios</span>
+        <div class="bg-white rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 p-6 sm:p-7 mb-10">
+            <div class="flex items-center justify-between gap-4 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-sky-50 text-[#00a2ff] flex items-center justify-center shadow-sm">
+                        <i class="fas fa-filter text-xs"></i>
                     </div>
-                    <form method="GET" action="index.php">
-                        <input type="hidden" name="controlador" value="comprador">
-                        <input type="hidden" name="accion" value="verReuniones">
-                        <div class="relative group">
-                            <select name="rueda_id" onchange="this.form.submit()" 
-                                    class="appearance-none w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-bold text-gray-700 focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition-all cursor-pointer shadow-inner">
-                                <?php foreach ($ruedas as $r): ?>
-                                    <option value="<?php echo $r['id']; ?>" 
-                                            <?php echo ($rueda_id_filtro == $r['id']) ? 'selected' : ''; ?>>
-                                        <?php echo htmlspecialchars($r['tituloRueda'] ?? 'N/A'); ?> 
-                                        (<?php echo date('d/m/Y', strtotime($r['fechaInicio'])); ?> - <?php echo date('d/m/Y', strtotime($r['fechaFin'])); ?>)
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff] group-hover:scale-110 transition-transform">
-                                <i class="fas fa-chevron-down text-xs"></i>
+                    <div>
+                        <span class="text-sm font-extrabold text-gray-900">Filtrar por Rueda de Negocios</span>
+                        <p class="text-[11px] font-bold text-gray-400">Selecciona la rueda para visualizar y gestionar tus citas</p>
+                    </div>
+                </div>
+                <span class="text-xs font-black text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
+                    <?php echo count($ruedas); ?> rueda(s)
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+                <?php foreach ($ruedas as $r): 
+                    $isSelected = ($rueda_id_filtro == $r['id']);
+                    $nombreRueda = $r['tituloRueda'] ?? $r['nombreRueda'] ?? 'Rueda sin nombre';
+                    $fechaInicioFmt = date('d/m/Y', strtotime($r['fechaInicio']));
+                    $fechaFinFmt = date('d/m/Y', strtotime($r['fechaFin']));
+                    $isVirtual = ($r['modalidad'] ?? '') === 'virtual';
+                ?>
+                    <a href="index.php?controlador=comprador&accion=verReuniones&rueda_id=<?php echo $r['id']; ?>" 
+                       class="group p-4 rounded-2xl border-2 transition-all duration-300 flex items-center justify-between gap-3 text-left <?php echo $isSelected ? 'border-[#00a2ff] bg-sky-50/50 shadow-sm ring-2 ring-sky-500/20' : 'border-gray-200 bg-white hover:border-sky-300 hover:bg-gray-50/60 shadow-sm'; ?>">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all <?php echo $isSelected ? 'bg-[#00a2ff] text-white shadow-md shadow-sky-500/20' : 'bg-sky-50 text-[#00a2ff] group-hover:bg-[#00a2ff] group-hover:text-white'; ?>">
+                                <i class="fas fa-calendar-check text-sm"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="text-sm font-extrabold text-gray-900 truncate group-hover:text-[#00a2ff] transition-colors"><?php echo htmlspecialchars($nombreRueda); ?></h4>
+                                <div class="flex items-center gap-2 mt-1">
+                                    <span class="text-[11px] font-bold text-gray-500 flex items-center gap-1">
+                                        <i class="far fa-clock text-[10px] text-[#00a2ff]"></i> <?php echo $fechaInicioFmt; ?>
+                                        <?php if ($fechaInicioFmt !== $fechaFinFmt): ?>
+                                            - <?php echo $fechaFinFmt; ?>
+                                        <?php endif; ?>
+                                    </span>
+                                    <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full <?php echo $isVirtual ? 'bg-purple-50 text-purple-600 border border-purple-200' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'; ?>">
+                                        <?php echo $isVirtual ? 'Virtual' : 'Presencial'; ?>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </form>
-                </div>
-                <?php if ($rueda_actual): ?>
-                <div class="flex-1 lg:max-w-2xl bg-gradient-to-br from-sky-50/50 to-blue-50/30 rounded-2xl p-5 border border-sky-100/50">
-                    <div class="flex flex-wrap items-center gap-4">
-                        <div class="p-3 bg-white text-[#00a2ff] rounded-2xl shadow-sm">
-                            <i class="fas fa-calendar-check text-xl"></i>
+                        <div class="shrink-0 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all <?php echo $isSelected ? 'border-[#00a2ff] bg-[#00a2ff] text-white' : 'border-gray-300 bg-white text-transparent group-hover:border-sky-400'; ?>">
+                            <i class="fas fa-check text-[10px]"></i>
                         </div>
-                        <div class="flex-1">
-                            <p class="text-[10px] font-extrabold text-[#00a2ff] uppercase tracking-wider">Mostrando citas de:</p>
-                            <p class="text-base font-black text-gray-900"><?php echo htmlspecialchars($rueda_actual['tituloRueda'] ?? 'N/A'); ?></p>
-                        </div>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="text-[10px] bg-white border border-sky-100 text-[#00a2ff] px-3 py-1 rounded-full font-extrabold uppercase tracking-wider shadow-sm">
-                                <?php echo ($rueda_actual['estadoRueda'] == 'activa') ? 'Rueda Activa' : 'Rueda ' . ucfirst($rueda_actual['estadoRueda']); ?>
-                            </span>
-                            <?php if (trim(strtolower($rueda_actual['modalidad'] ?? 'virtual')) === 'virtual'): ?>
-                                <span class="text-[10px] bg-purple-50 text-purple-700 border border-purple-100 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider"><i class="fas fa-video mr-1"></i>Virtual</span>
-                            <?php else: ?>
-                                <span class="text-[10px] bg-orange-50 text-orange-700 border border-orange-100 px-3 py-1 rounded-full font-extrabold uppercase tracking-wider" title="Presencial: <?php echo htmlspecialchars($rueda_actual['ubicacion'] ?? ''); ?>"><i class="fas fa-map-marker-alt mr-1"></i>Presencial</span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-                <?php endif; ?>
+                    </a>
+                <?php endforeach; ?>
             </div>
+
+            <?php if ($rueda_actual && $total_citas > 0): ?>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 font-bold flex-wrap gap-2">
+                    <span class="flex items-center gap-1.5 text-[#00a2ff]">
+                        <i class="fas fa-check-circle"></i> Mostrando citas de: <strong><?php echo htmlspecialchars($rueda_actual['nombreRueda'] ?? $rueda_actual['tituloRueda'] ?? 'Rueda Actual'); ?></strong>
+                    </span>
+                    <span class="bg-sky-50 text-[#00a2ff] px-3 py-1 rounded-full border border-sky-100 font-black">
+                        <?php echo $total_citas; ?> cita(s) programada(s)
+                    </span>
+                </div>
+            <?php endif; ?>
         </div>
         <?php else: ?>
         <div class="bg-sky-50 border-2 border-sky-100 rounded-3xl p-6 shadow-sm flex items-center gap-4">
