@@ -328,150 +328,140 @@ $badgeColors = [
 
             <form action="index.php?controlador=usuario&accion=actualizarPerfil" method="POST" class="p-6 sm:p-8 space-y-6">
                 
-                <?php if ($theme === 'admin'): ?>
-                    <!-- Formulario Específico para Administrador -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nombre Completo <span class="text-red-500">*</span></label>
-                            <input type="text" name="nombreUsuario" required 
-                                   value="<?php echo htmlspecialchars($perfil['nombreUsuario'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Correo Electrónico <span class="text-red-500">*</span></label>
-                            <input type="email" name="email" required 
-                                   value="<?php echo htmlspecialchars($perfil['email'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Ubicación / Sede</label>
-                            <input type="text" name="ubicacionGeografica" 
-                                   value="<?php echo htmlspecialchars($perfil['ubicacionGeografica'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nueva Contraseña <span class="text-gray-400 font-normal lowercase">(opcional)</span></label>
-                            <input type="password" name="password" placeholder="Dejar en blanco para no cambiar"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Descripción / Cargo</label>
-                            <textarea name="descripcion" rows="3" 
-                                      class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 resize-none"><?php echo htmlspecialchars($perfil['descripcion'] ?? ''); ?></textarea>
-                        </div>
-                    </div>
+                <div class="space-y-6">
+                    <!-- 1. Información General y de Cuenta -->
+                    <div>
+                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fas fa-user-circle"></i> Información de Cuenta
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nombre / Razón Social <span class="text-red-500">*</span></label>
+                                <input type="text" name="razon_social" required 
+                                       value="<?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario'] ?? ''); ?>"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                                <input type="hidden" name="nombreUsuario" value="<?php echo htmlspecialchars($perfil['nombreUsuario'] ?? $perfil['razon_social'] ?? ''); ?>">
+                            </div>
 
-                <?php else: ?>
-                    <!-- Formulario para Empresas (Compradores y Vendedores) -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Razón Social o Nombre de la Empresa <span class="text-red-500">*</span></label>
-                            <input type="text" name="razon_social" required 
-                                   value="<?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
-                        </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Correo Electrónico <span class="text-red-500">*</span></label>
+                                <input type="email" name="email" required 
+                                       value="<?php echo htmlspecialchars($perfil['email'] ?? ''); ?>"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                            </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Representante Legal <span class="text-red-500">*</span></label>
-                            <input type="text" name="representante_legal" required 
-                                   value="<?php echo htmlspecialchars($perfil['representante_legal'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Correo Electrónico <span class="text-red-500">*</span></label>
-                            <input type="email" name="email" required 
-                                   value="<?php echo htmlspecialchars($perfil['email'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Identificación / NIT</label>
-                            <div class="flex gap-2">
-                                <input type="text" name="nit" 
-                                       value="<?php echo htmlspecialchars($perfil['nit'] ?? ''); ?>"
-                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
-                                       placeholder="Ej: 900123456">
-                                <input type="text" name="digito_verificacion" maxlength="1"
-                                       value="<?php echo htmlspecialchars($perfil['digito_verificacion'] ?? ''); ?>"
-                                       class="w-16 text-center border border-gray-200 rounded-2xl px-2 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
-                                       placeholder="DV">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nueva Contraseña <span class="text-gray-400 font-normal lowercase">(opcional)</span></label>
+                                <input type="password" name="password" placeholder="Dejar en blanco para conservar actual"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
                             </div>
                         </div>
+                    </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Tipo de Persona</label>
-                            <select name="tipo_persona" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
-                                <option value="juridica" <?php echo ($perfil['tipo_persona'] ?? '') === 'juridica' ? 'selected' : ''; ?>>Persona Jurídica</option>
-                                <option value="natural" <?php echo ($perfil['tipo_persona'] ?? '') === 'natural' ? 'selected' : ''; ?>>Persona Natural</option>
-                                <option value="esal" <?php echo ($perfil['tipo_persona'] ?? '') === 'esal' ? 'selected' : ''; ?>>ESAL / Sin Ánimo de Lucro</option>
-                            </select>
-                        </div>
+                    <!-- 2. Información Legal y Tributaria -->
+                    <div class="pt-4 border-t border-gray-100">
+                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fas fa-file-contract"></i> Información Legal y Tributaria
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Representante Legal <span class="text-red-500">*</span></label>
+                                <input type="text" name="representante_legal" required 
+                                       value="<?php echo htmlspecialchars($perfil['representante_legal'] ?? $perfil['nombreUsuario'] ?? ''); ?>"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                            </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Forma Jurídica</label>
-                            <input type="text" name="tipo_asociacion" 
-                                   value="<?php echo htmlspecialchars($perfil['tipo_asociacion'] ?? 'S.A.S.'); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
-                                   placeholder="Ej: S.A.S., Ltda., S.A.">
-                        </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Identificación / NIT</label>
+                                <div class="flex gap-2">
+                                    <input type="text" name="nit" 
+                                           value="<?php echo htmlspecialchars($perfil['nit'] ?? ''); ?>"
+                                           class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
+                                           placeholder="Ej: 900123456">
+                                    <input type="text" name="digito_verificacion" maxlength="1"
+                                           value="<?php echo htmlspecialchars($perfil['digito_verificacion'] ?? ''); ?>"
+                                           class="w-16 text-center border border-gray-200 rounded-2xl px-2 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
+                                           placeholder="DV">
+                                </div>
+                            </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Responsabilidad IVA</label>
-                            <select name="responsable_iva" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
-                                <option value="0" <?php echo ($perfil['responsable_iva'] ?? 0) == 0 ? 'selected' : ''; ?>>No Responsable de IVA</option>
-                                <option value="1" <?php echo ($perfil['responsable_iva'] ?? 0) == 1 ? 'selected' : ''; ?>>Responsable de IVA</option>
-                            </select>
-                        </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Tipo de Persona</label>
+                                <select name="tipo_persona" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                                    <option value="juridica" <?php echo ($perfil['tipo_persona'] ?? '') === 'juridica' ? 'selected' : ''; ?>>Persona Jurídica</option>
+                                    <option value="natural" <?php echo ($perfil['tipo_persona'] ?? '') === 'natural' ? 'selected' : ''; ?>>Persona Natural</option>
+                                    <option value="esal" <?php echo ($perfil['tipo_persona'] ?? '') === 'esal' ? 'selected' : ''; ?>>ESAL / Sin Ánimo de Lucro</option>
+                                </select>
+                            </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Tamaño de Empresa</label>
-                            <select name="tamaño_empresa" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
-                                <option value="micro" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'micro' ? 'selected' : ''; ?>>Microempresa</option>
-                                <option value="pequeña" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'pequeña' ? 'selected' : ''; ?>>Pequeña Empresa</option>
-                                <option value="mediana" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'mediana' ? 'selected' : ''; ?>>Mediana Empresa</option>
-                                <option value="grande" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'grande' ? 'selected' : ''; ?>>Grande Empresa</option>
-                            </select>
-                        </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Forma Jurídica</label>
+                                <input type="text" name="tipo_asociacion" 
+                                       value="<?php echo htmlspecialchars($perfil['tipo_asociacion'] ?? 'S.A.S.'); ?>"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
+                                       placeholder="Ej: S.A.S., Ltda., S.A.">
+                            </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Ubicación / Ciudad</label>
-                            <input type="text" name="ubicacionGeografica" 
-                                   value="<?php echo htmlspecialchars($perfil['ubicacionGeografica'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
-                                   placeholder="Ej: Bogotá, Colombia">
-                        </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Responsabilidad IVA</label>
+                                <select name="responsable_iva" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                                    <option value="0" <?php echo ($perfil['responsable_iva'] ?? 0) == 0 ? 'selected' : ''; ?>>No Responsable de IVA</option>
+                                    <option value="1" <?php echo ($perfil['responsable_iva'] ?? 0) == 1 ? 'selected' : ''; ?>>Responsable de IVA</option>
+                                </select>
+                            </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Código CIIU</label>
-                            <input type="text" name="ciiu_personalizado" 
-                                   value="<?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
-                                   placeholder="Ej: 6201">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nombre Actividad Económica</label>
-                            <input type="text" name="ciiu_nombre_personalizado" 
-                                   value="<?php echo htmlspecialchars($perfil['ciiu_nombre_personalizado'] ?? ''); ?>"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]"
-                                   placeholder="Ej: Programación informática">
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nueva Contraseña <span class="text-gray-400 font-normal lowercase">(opcional)</span></label>
-                            <input type="password" name="password" placeholder="Dejar en blanco para no cambiar tu contraseña actual"
-                                   class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488]">
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Sobre la Empresa (Descripción Corporativa)</label>
-                            <textarea name="descripcion" rows="3" 
-                                      placeholder="Describe los productos, servicios, experiencia y propuesta de valor de tu empresa..."
-                                      class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] resize-none"><?php echo htmlspecialchars($perfil['descripcion'] ?? ''); ?></textarea>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Tamaño de Empresa / Estructura</label>
+                                <select name="tamaño_empresa" class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
+                                    <option value="micro" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'micro' ? 'selected' : ''; ?>>Microempresa</option>
+                                    <option value="pequeña" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'pequeña' ? 'selected' : ''; ?>>Pequeña Empresa</option>
+                                    <option value="mediana" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'mediana' ? 'selected' : ''; ?>>Mediana Empresa</option>
+                                    <option value="grande" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'grande' ? 'selected' : ''; ?>>Grande Empresa</option>
+                                    <option value="Sistema" <?php echo strtolower($perfil['tamaño_empresa'] ?? '') === 'sistema' ? 'selected' : ''; ?>>Estructura Administrativa</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                <?php endif; ?>
+
+                    <!-- 3. Actividad, Ubicación y Descripción -->
+                    <div class="pt-4 border-t border-gray-100">
+                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fas fa-map-marked-alt"></i> Actividad y Ubicación
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Código CIIU</label>
+                                <input type="text" name="ciiu_personalizado" 
+                                       value="<?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?? ''); ?>"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
+                                       placeholder="Ej: 6201">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nombre Actividad Económica</label>
+                                <input type="text" name="ciiu_nombre_personalizado" 
+                                       value="<?php echo htmlspecialchars($perfil['ciiu_nombre_personalizado'] ?? ''); ?>"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
+                                       placeholder="Ej: Programación informática">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Ubicación / Ciudad / Sede</label>
+                                <input type="text" name="ubicacionGeografica" 
+                                       value="<?php echo htmlspecialchars($perfil['ubicacionGeografica'] ?? ''); ?>"
+                                       class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
+                                       placeholder="Ej: Mosquera, Cundinamarca">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Sobre la Empresa / Descripción Corporativa</label>
+                                <textarea name="descripcion" rows="3" 
+                                          placeholder="Describe los objetivos, experiencia o propuesta de valor..."
+                                          class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 resize-none"><?php echo htmlspecialchars($perfil['descripcion'] ?? ''); ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="pt-4 border-t border-gray-100 flex flex-col-reverse sm:flex-row items-center justify-end gap-3">
                     <button type="button" onclick="cerrarModalEditarPerfil()" 

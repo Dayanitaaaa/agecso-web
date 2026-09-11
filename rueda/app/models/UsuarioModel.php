@@ -262,10 +262,22 @@ class UsuarioModel {
      * Actualizar perfil completo (Usuario + Empresa) para cualquier rol
      */
     public function actualizarPerfilCompleto($usuarioId, $data) {
+        // 1. Asegurar columnas en empresas antes de iniciar cualquier transacción
+        try {
+            $stmt_col = $this->db->query("SHOW COLUMNS FROM empresas LIKE 'descripcion'");
+            if ($stmt_col && !$stmt_col->fetch()) {
+                $this->db->exec("ALTER TABLE empresas ADD COLUMN descripcion TEXT NULL");
+            }
+            $stmt_ciiu = $this->db->query("SHOW COLUMNS FROM empresas LIKE 'ciiu_personalizado'");
+            if ($stmt_ciiu && !$stmt_ciiu->fetch()) {
+                $this->db->exec("ALTER TABLE empresas ADD COLUMN ciiu_personalizado VARCHAR(20) NULL, ADD COLUMN ciiu_nombre_personalizado VARCHAR(255) NULL");
+            }
+        } catch (Exception $e) {}
+
         try {
             $this->db->beginTransaction();
 
-            // 1. Actualizar datos de usuario
+            // 2. Actualizar datos de usuario
             if (!empty($data['email']) || !empty($data['nombreUsuario'])) {
                 $params_u = [];
                 $sql_u = "UPDATE usuarios SET ";
@@ -290,22 +302,24 @@ class UsuarioModel {
                 }
             }
 
-            // 2. Asegurar que existan columnas en la tabla empresas
-            try {
-                $stmt_col = $this->db->query("SHOW COLUMNS FROM empresas LIKE 'descripcion'");
-                if ($stmt_col && !$stmt_col->fetch()) {
-                    $this->db->exec("ALTER TABLE empresas ADD COLUMN descripcion TEXT NULL");
-                }
-                $stmt_ciiu = $this->db->query("SHOW COLUMNS FROM empresas LIKE 'ciiu_personalizado'");
-                if ($stmt_ciiu && !$stmt_ciiu->fetch()) {
-                    $this->db->exec("ALTER TABLE empresas ADD COLUMN ciiu_personalizado VARCHAR(20) NULL, ADD COLUMN ciiu_nombre_personalizado VARCHAR(255) NULL");
-                }
-            } catch (Exception $e) {}
-
-            // 3. Verificar si existe registro de empresa
+            // 3. Verificar si existe registro en la tabla empresas
             $stmt_check = $this->db->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
             $stmt_check->execute([$usuarioId]);
             $empresaId = $stmt_check->fetchColumn();
+
+            $razonSocial = !empty($data['razon_social']) ? $data['razon_social'] : ($data['nombreUsuario'] ?? 'Empresa');
+            $repLegal = !empty($data['representante_legal']) ? $data['representante_legal'] : ($data['nombreUsuario'] ?? '');
+            $nit = !empty($data['nit']) ? $data['nit'] : 'N/A';
+            $dv = !empty($data['digito_verificacion']) ? $data['digito_verificacion'] : null;
+            $tipoPersona = !empty($data['tipo_persona']) ? $data['tipo_persona'] : 'juridica';
+            $tipoAsociacion = !empty($data['tipo_asociacion']) ? $data['tipo_asociacion'] : 'S.A.S.';
+            $subTipoAsociacion = !empty($data['sub_tipo_asociacion']) ? $data['sub_tipo_asociacion'] : null;
+            $respIva = isset($data['responsable_iva']) ? (int)$data['responsable_iva'] : 0;
+            $tamano = !empty($data['tamaño_empresa']) ? $data['tamaño_empresa'] : 'micro';
+            $ubicacion = !empty($data['ubicacionGeografica']) ? $data['ubicacionGeografica'] : '';
+            $descripcion = !empty($data['descripcion']) ? $data['descripcion'] : '';
+            $ciiu = !empty($data['ciiu_personalizado']) ? $data['ciiu_personalizado'] : null;
+            $ciiuNombre = !empty($data['ciiu_nombre_personalizado']) ? $data['ciiu_nombre_personalizado'] : null;
 
             if ($empresaId) {
                 $sql_e = "UPDATE empresas SET 
@@ -325,24 +339,51 @@ class UsuarioModel {
                           WHERE id = ?";
                 $stmt_e = $this->db->prepare($sql_e);
                 $stmt_e->execute([
-                    $data['razon_social'] ?? $data['nombreUsuario'] ?? '',
-                    $data['representante_legal'] ?? '',
-                    $data['nit'] ?? '',
-                    $data['digito_verificacion'] ?? null,
-                    $data['tipo_persona'] ?? 'juridica',
-                    $data['tipo_asociacion'] ?? 'S.A.S.',
-                    $data['sub_tipo_asociacion'] ?? null,
-                    isset($data['responsable_iva']) ? (int)$data['responsable_iva'] : 0,
-                    $data['tamaño_empresa'] ?? 'micro',
-                    $data['ubicacionGeografica'] ?? '',
-                    $data['descripcion'] ?? '',
-                    $data['ciiu_personalizado'] ?? null,
-                    $data['ciiu_nombre_personalizado'] ?? null,
+                    $razonSocial,
+                    $repLegal,
+                    $nit,
+                    $dv,
+                    $tipoPersona,
+                    $tipoAsociacion,
+                    $subTipoAsociacion,
+                    $respIva,
+                    $tamano,
+                    $ubicacion,
+                    $descripcion,
+                    $ciiu,
+                    $ciiuNombre,
                     $empresaId
+                ]);
+            } else {
+                // Si el usuario (por ejemplo Admin) no tenía fila en empresas, crearla
+                $sql_e = "INSERT INTO empresas (
+                            usuarioId, razon_social, representante_legal, nit, digito_verificacion,
+                            tipo_persona, tipo_asociacion, sub_tipo_asociacion, responsable_iva,
+                            tamaño_empresa, ubicacionGeografica, descripcion, ciiu_personalizado,
+                            ciiu_nombre_personalizado, sectorId, estado_verificacion
+                          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'aprobada')";
+                $stmt_e = $this->db->prepare($sql_e);
+                $stmt_e->execute([
+                    $usuarioId,
+                    $razonSocial,
+                    $repLegal,
+                    $nit,
+                    $dv,
+                    $tipoPersona,
+                    $tipoAsociacion,
+                    $subTipoAsociacion,
+                    $respIva,
+                    $tamano,
+                    $ubicacion,
+                    $descripcion,
+                    $ciiu,
+                    $ciiuNombre
                 ]);
             }
 
-            $this->db->commit();
+            if ($this->db->inTransaction()) {
+                $this->db->commit();
+            }
             return true;
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
