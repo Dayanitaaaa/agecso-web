@@ -494,9 +494,146 @@
     }
 </style>
 
+<!-- Modal para Gestionar Cita (Vendedor) -->
+<div id="modalGestionarCita" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" onclick="cerrarModalGestionar()"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+        <div class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-gray-100 animate-modal">
+            <form action="index.php?controlador=vendedor&accion=gestionarCitaRecibida" method="POST" id="formGestionarCita">
+                <input type="hidden" name="cita_id" id="gestionar_cita_id">
+                <input type="hidden" name="accion_cita" id="accion_cita">
+                <div class="bg-white px-6 pt-6 pb-5 sm:p-7 sm:pb-6">
+                    <h3 class="text-xl leading-6 font-black text-gray-900 mb-5 flex items-center">
+                        <i class="fas fa-tasks text-[#0d9488] mr-2"></i> Gestionar Propuesta
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 p-3 rounded-xl border border-gray-100">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Comprador</p>
+                            <p class="text-sm font-black text-gray-900"><span id="gestionar_nombre_comprador"></span></p>
+                        </div>
+                        
+                        <div class="bg-teal-50/50 p-3 rounded-xl border border-teal-100">
+                            <p class="text-[10px] font-bold text-[#0d9488] uppercase tracking-wider mb-1">Fecha y Hora Propuesta</p>
+                            <p class="text-sm font-black text-gray-900" id="gestionar_fecha_actual"></p>
+                        </div>
+
+                        <div id="link_propuesto_box" class="hidden bg-sky-50/50 p-3 rounded-xl border border-sky-100">
+                            <p class="text-[10px] font-bold text-[#00a2ff] uppercase tracking-wider mb-1">Link de la Reunión Propuesto</p>
+                            <p class="text-xs font-bold text-gray-700 truncate" id="gestionar_link_actual"></p>
+                        </div>
+
+                        <div id="limite_alcanzado_msg" class="hidden">
+                            <p class="text-xs text-rose-600 font-bold bg-rose-50 px-3 py-2 rounded-xl border border-rose-100 inline-flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                Se ha alcanzado el límite máximo de contrapropuestas (4). Debes aceptar la fecha actual.
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-black text-gray-700 mb-3">¿Qué deseas hacer?</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button type="button" onclick="seleccionarAccion('aceptada')" id="btn_aceptar" class="accion-btn bg-emerald-50 text-emerald-700 py-3 rounded-xl text-xs font-black hover:bg-emerald-100 transition border-2 border-transparent">
+                                    <i class="fas fa-check mr-1"></i> Aceptar
+                                </button>
+                                <button type="button" onclick="seleccionarAccion('contraoferta')" id="btn_contraoferta" class="accion-btn bg-teal-50 text-[#0d9488] py-3 rounded-xl text-xs font-black hover:bg-teal-100 transition border-2 border-transparent">
+                                    <i class="fas fa-exchange-alt mr-1"></i> Contraofertar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="campos_aceptar" class="hidden">
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                                <p class="text-sm text-emerald-700 font-bold">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    Al aceptar, la cita quedará confirmada con la fecha y hora seleccionadas.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div id="campos_contraoferta" class="hidden space-y-3">
+                            <div>
+                                <label class="block text-xs font-black text-gray-700 uppercase tracking-wider mb-1">
+                                    Nueva Fecha y Hora <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#0d9488]">
+                                        <i class="far fa-calendar-alt text-sm"></i>
+                                    </div>
+                                    <input type="text" name="nueva_fecha" id="gestionar_fecha" placeholder="Selecciona fecha y hora..."
+                                           class="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl shadow-sm text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all cursor-pointer">
+                                </div>
+                                <p class="text-[11px] text-gray-400 font-bold mt-1.5 flex items-center gap-1">
+                                    <i class="fas fa-info-circle text-[#0d9488]"></i>
+                                    <?php if (!empty($rueda_actual['fechaInicio']) && !empty($rueda_actual['fechaFin'])): ?>
+                                        Rango disponible: <?php echo date('d/m/Y', strtotime($rueda_actual['fechaInicio'])); ?> - <?php echo date('d/m/Y', strtotime($rueda_actual['fechaFin'])); ?> (intervalos de 30 min)
+                                    <?php else: ?>
+                                        Horarios en intervalos de 30 minutos
+                                    <?php endif; ?>
+                                </p>
+                            </div>
+
+                            <?php if (($rueda_actual['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda_actual['cantidadMesas'] ?? 0) > 0): ?>
+                                <div>
+                                    <label class="block text-xs font-black text-gray-700 uppercase tracking-wider mb-1">Mesa / Stand Disponible</label>
+                                    <select name="numero_mesa" id="gestionar_mesa_select" class="block w-full bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all">
+                                        <option value="">-- Selecciona primero la hora --</option>
+                                    </select>
+                                    <p class="text-[10px] text-gray-400 font-bold mt-1" id="gestionar_mesa_info"></p>
+                                </div>
+                            <?php endif; ?>
+
+                            <div>
+                                <label class="block text-xs font-black text-gray-700 uppercase tracking-wider mb-1">Mensaje (opcional)</label>
+                                <textarea name="mensaje" rows="2" placeholder="Explica por qué propones esta nueva fecha..." 
+                                          class="block w-full bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-3 text-sm focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-6 py-4 sm:px-7 sm:flex sm:flex-row-reverse rounded-b-[2.5rem] gap-2">
+                    <button type="submit" id="btn_confirmar" class="w-full inline-flex justify-center rounded-full border border-transparent shadow-md px-5 py-2.5 bg-gray-400 text-sm font-black text-white sm:ml-3 sm:w-auto cursor-not-allowed" disabled>
+                        Confirmar Acción
+                    </button>
+                    <button type="button" onclick="cerrarModalGestionar()" class="mt-3 w-full inline-flex justify-center rounded-full border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-black text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto transition-all duration-200">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 let contadorPropuestas = 0;
 let limiteAlcanzado = false;
+let fpGestionarVendedor = null;
+
+document.addEventListener("DOMContentLoaded", function() {
+    if (document.getElementById('gestionar_fecha')) {
+        fpGestionarVendedor = flatpickr("#gestionar_fecha", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            altInput: true,
+            altFormat: "F j, Y - h:i K",
+            altInputClass: "block w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-[#0d9488] transition-all cursor-pointer",
+            locale: "es",
+            minDate: "<?php echo (!empty($rueda_actual['fechaInicio']) && strtotime($rueda_actual['fechaInicio']) > time()) ? date('Y-m-d', strtotime($rueda_actual['fechaInicio'])) : 'today'; ?>",
+            <?php if (!empty($rueda_actual['fechaFin'])): ?>
+            maxDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaFin'])); ?>",
+            <?php endif; ?>
+            time_24hr: false,
+            minuteIncrement: 30,
+            disableMobile: "true",
+            animate: true,
+            onChange: function(selectedDates, dateStr) {
+                if (document.getElementById('gestionar_mesa_select')) {
+                    cargarMesasGestionar(dateStr);
+                }
+            }
+        });
+    }
+});
 
 function abrirModalGestionar(id, nombre, fecha, contador, link) {
     document.getElementById('gestionar_cita_id').value = id;
@@ -504,11 +641,10 @@ function abrirModalGestionar(id, nombre, fecha, contador, link) {
     document.getElementById('gestionar_fecha_actual').innerText = new Date(fecha).toLocaleString('es-CO', {
         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
     });
-    document.getElementById('gestionar_fecha').value = fecha.replace(' ', 'T');
     
     const linkBox = document.getElementById('link_propuesto_box');
     const linkActual = document.getElementById('gestionar_link_actual');
-    if (link && link !== 'No proporcionado') {
+    if (link && link !== 'No proporcionado' && link !== '') {
         linkBox.classList.remove('hidden');
         linkActual.innerText = link;
     } else {
@@ -517,8 +653,6 @@ function abrirModalGestionar(id, nombre, fecha, contador, link) {
     
     contadorPropuestas = contador;
     limiteAlcanzado = contador >= 4;
-    
-    document.getElementById('numero_actual_propuesta').innerText = contador;
     
     const limiteMsg = document.getElementById('limite_alcanzado_msg');
     if (limiteAlcanzado) {
@@ -534,13 +668,18 @@ function abrirModalGestionar(id, nombre, fecha, contador, link) {
     seleccionarAccion(null);
     document.getElementById('formGestionarCita').reset();
     document.getElementById('gestionar_cita_id').value = id;
-    document.getElementById('gestionar_fecha').value = fecha.replace(' ', 'T');
+    if (fpGestionarVendedor) {
+        fpGestionarVendedor.clear();
+    }
     
     document.getElementById('modalGestionarCita').classList.remove('hidden');
 }
 
 function cerrarModalGestionar() {
     document.getElementById('modalGestionarCita').classList.add('hidden');
+    if (fpGestionarVendedor) {
+        fpGestionarVendedor.close();
+    }
 }
 
 function seleccionarAccion(accion) {
@@ -583,8 +722,8 @@ function seleccionarAccion(accion) {
         btnConfirmar.innerText = 'Enviar Contraoferta';
         btnConfirmar.disabled = false;
         
-        // Si es presencial, cargar mesas al abrir los campos
-        if (document.getElementById('gestionar_mesa_select')) {
+        // Si es presencial y hay fecha seleccionada, cargar mesas
+        if (document.getElementById('gestionar_mesa_select') && document.getElementById('gestionar_fecha').value) {
             cargarMesasGestionar(document.getElementById('gestionar_fecha').value);
         }
     }

@@ -549,16 +549,29 @@ function abrirModalEncuesta(reunionId, nombre, rueda, fecha) {
 
                         <div id="campos_contraoferta" class="hidden space-y-3">
                             <div>
-                                <label class="block text-sm font-black text-gray-700">
+                                <label class="block text-xs font-black text-gray-700 uppercase tracking-wider mb-1">
                                     Nueva Fecha y Hora <span class="text-rose-500">*</span>
                                 </label>
-                                <input type="datetime-local" name="nueva_fecha" id="nueva_fecha" 
-                                       class="mt-2 block w-full bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition-all">
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#00a2ff]">
+                                        <i class="far fa-calendar-alt text-sm"></i>
+                                    </div>
+                                    <input type="text" name="nueva_fecha" id="nueva_fecha" placeholder="Selecciona fecha y hora..."
+                                           class="block w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl shadow-sm text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition-all cursor-pointer">
+                                </div>
+                                <p class="text-[11px] text-gray-400 font-bold mt-1.5 flex items-center gap-1">
+                                    <i class="fas fa-info-circle text-[#00a2ff]"></i>
+                                    <?php if (!empty($rueda_actual['fechaInicio']) && !empty($rueda_actual['fechaFin'])): ?>
+                                        Rango disponible: <?php echo date('d/m/Y', strtotime($rueda_actual['fechaInicio'])); ?> - <?php echo date('d/m/Y', strtotime($rueda_actual['fechaFin'])); ?> (intervalos de 30 min)
+                                    <?php else: ?>
+                                        Horarios en intervalos de 30 minutos
+                                    <?php endif; ?>
+                                </p>
                             </div>
                             <div>
-                                <label class="block text-sm font-black text-gray-700">Mensaje (opcional)</label>
+                                <label class="block text-xs font-black text-gray-700 uppercase tracking-wider mb-1">Mensaje (opcional)</label>
                                 <textarea name="mensaje" rows="2" placeholder="Explica por qué propones esta nueva fecha..." 
-                                          class="mt-2 block w-full bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition-all"></textarea>
+                                          class="block w-full bg-gray-50 border border-gray-200 rounded-xl shadow-sm p-3 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition-all"></textarea>
                             </div>
                         </div>
 
@@ -588,6 +601,28 @@ function abrirModalEncuesta(reunionId, nombre, rueda, fecha) {
 <script>
 let contadorPropuestas = 0;
 let limiteAlcanzado = false;
+let fpGestionarComprador = null;
+
+document.addEventListener("DOMContentLoaded", function() {
+    if (document.getElementById('nueva_fecha')) {
+        fpGestionarComprador = flatpickr("#nueva_fecha", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            altInput: true,
+            altFormat: "F j, Y - h:i K",
+            altInputClass: "block w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl shadow-sm text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition-all cursor-pointer",
+            locale: "es",
+            minDate: "<?php echo (!empty($rueda_actual['fechaInicio']) && strtotime($rueda_actual['fechaInicio']) > time()) ? date('Y-m-d', strtotime($rueda_actual['fechaInicio'])) : 'today'; ?>",
+            <?php if (!empty($rueda_actual['fechaFin'])): ?>
+            maxDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaFin'])); ?>",
+            <?php endif; ?>
+            time_24hr: false,
+            minuteIncrement: 30,
+            disableMobile: "true",
+            animate: true
+        });
+    }
+});
 
 function abrirModalGestionar(id, nombre, fecha, contador, esContraoferta) {
     document.getElementById('gestionar_cita_id').value = id;
@@ -618,12 +653,18 @@ function abrirModalGestionar(id, nombre, fecha, contador, esContraoferta) {
     seleccionarAccion(null);
     document.getElementById('formGestionarCita').reset();
     document.getElementById('gestionar_cita_id').value = id;
+    if (fpGestionarComprador) {
+        fpGestionarComprador.clear();
+    }
     
     document.getElementById('modalGestionarCita').classList.remove('hidden');
 }
 
 function cerrarModalGestionar() {
     document.getElementById('modalGestionarCita').classList.add('hidden');
+    if (fpGestionarComprador) {
+        fpGestionarComprador.close();
+    }
 }
 
 function seleccionarAccion(accion) {
