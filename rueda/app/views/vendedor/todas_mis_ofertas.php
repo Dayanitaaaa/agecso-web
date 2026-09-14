@@ -38,10 +38,10 @@
                 <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
                     <div class="flex items-center gap-3 mb-2.5">
                         <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">1</span>
-                        <h4 class="font-black text-slate-900 text-sm">Registra tus Productos/Servicios</h4>
+                        <h4 class="font-black text-slate-900 text-sm">Publica en "Mis Ofertas"</h4>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                        Publica cada oferta con su actividad económica (CIIU) y descripción detallada para aparecer en las búsquedas de los compradores.
+                        Registra tus productos o servicios con su clasificación CIIU, precios y fotos para aparecer en las búsquedas del catálogo de compradores.
                     </p>
                 </div>
 
@@ -49,10 +49,10 @@
                 <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
                     <div class="flex items-center gap-3 mb-2.5">
                         <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">2</span>
-                        <h4 class="font-black text-slate-900 text-sm">Conecta con Demandas</h4>
+                        <h4 class="font-black text-slate-900 text-sm">Explora "Buscar Compradores"</h4>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                        Revisa los requerimientos publicados por los compradores y postula tus soluciones para solicitarles citas directas.
+                        Revisa los requerimientos de compra publicados y solicita citas de negocios directamente con las empresas que necesitan tus soluciones.
                     </p>
                 </div>
 
@@ -60,10 +60,10 @@
                 <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
                     <div class="flex items-center gap-3 mb-2.5">
                         <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">3</span>
-                        <h4 class="font-black text-slate-900 text-sm">Atiende tus Citas y Cierra Negocios</h4>
+                        <h4 class="font-black text-slate-900 text-sm">Gestiona en "Mis Citas"</h4>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                        Acepta las invitaciones de reunión de los clientes o envíales propuestas para reunirte por videollamada o presencial.
+                        Acepta las invitaciones de reunión de los clientes, gestiona contraofertas y conéctate vía link virtual o asiste a tu mesa presencial.
                     </p>
                 </div>
             </div>

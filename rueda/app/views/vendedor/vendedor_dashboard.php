@@ -69,32 +69,37 @@
         </div>
 
         <!-- GUÍA RÁPIDA (PARA USUARIOS QUE SE SIENTEN PERDIDOS) -->
-        <div class="bg-indigo-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
+        <div class="bg-gradient-to-r from-[#0d9488] via-[#115e59] to-[#042f2e] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
             <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
             <div class="relative z-10">
-                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
-                    <i class="fas fa-magic text-indigo-300"></i> ¿Cómo vender más en la rueda?
-                </h2>
+                <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+                    <h2 class="text-2xl font-black flex items-center gap-3">
+                        <i class="fas fa-magic text-teal-300"></i> ¿Cómo vender más en la rueda?
+                    </h2>
+                    <span class="bg-white/10 text-teal-100 text-[11px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full border border-white/10 backdrop-blur-sm">
+                        Guía para Proveedores
+                    </span>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-indigo-200 border border-white/20">1</div>
+                        <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0 font-black text-teal-100 border border-white/20 shadow-inner">1</div>
                         <div>
-                            <p class="font-black text-sm uppercase tracking-wider text-indigo-200 mb-1">Paso 1: Ofrece</p>
-                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Ve a <b>"Mis Productos"</b> y publica lo que vendes. Si no publicas, los compradores no podrán encontrarte.</p>
+                            <p class="font-black text-sm uppercase tracking-wider text-teal-200 mb-1">Paso 1: Publica en "Mis Ofertas"</p>
+                            <p class="text-xs text-teal-50/80 leading-relaxed font-medium">Ve a <b>"Mis Ofertas"</b> y publica tus productos o servicios con su clasificación CIIU y fotos para que los compradores puedan encontrarte en el catálogo.</p>
                         </div>
                     </div>
                     <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-indigo-200 border border-white/20">2</div>
+                        <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0 font-black text-teal-100 border border-white/20 shadow-inner">2</div>
                         <div>
-                            <p class="font-black text-sm uppercase tracking-wider text-indigo-200 mb-1">Paso 2: Busca</p>
-                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Haz clic en <b>"Buscar Clientes"</b> para ver a los compradores y solicitarles una cita.</p>
+                            <p class="font-black text-sm uppercase tracking-wider text-teal-200 mb-1">Paso 2: Explora en "Buscar Compradores"</p>
+                            <p class="text-xs text-teal-50/80 leading-relaxed font-medium">Haz clic en <b>"Buscar Compradores"</b> para consultar los requerimientos de compra y hacer clic en <b>"Solicitar Cita"</b> con tus potenciales clientes.</p>
                         </div>
                     </div>
                     <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-indigo-200 border border-white/20">3</div>
+                        <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0 font-black text-teal-100 border border-white/20 shadow-inner">3</div>
                         <div>
-                            <p class="font-black text-sm uppercase tracking-wider text-indigo-200 mb-1">Paso 3: Prepárate</p>
-                            <p class="text-xs text-indigo-100/70 leading-relaxed font-medium">Revisa <b>"Mis Citas"</b> constantemente. Cuando acepten tu solicitud, tendrás una hora fija para negociar.</p>
+                            <p class="font-black text-sm uppercase tracking-wider text-teal-200 mb-1">Paso 3: Gestiona en "Mis Citas"</p>
+                            <p class="text-xs text-teal-50/80 leading-relaxed font-medium">Revisa <b>"Mis Citas"</b> constantemente para aceptar propuestas, responder contraofertas y vincular el link virtual o consultar tu mesa asignada.</p>
                         </div>
                     </div>
                 </div>

@@ -69,32 +69,37 @@
         </div>
 
         <!-- GUÍA RÁPIDA (PARA USUARIOS QUE SE SIENTEN PERDIDOS) -->
-        <div class="bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
+        <div class="bg-gradient-to-r from-[#00a2ff] via-[#0077cc] to-[#002e53] rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
             <div class="absolute right-0 top-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
             <div class="relative z-10">
-                <h2 class="text-2xl font-black mb-6 flex items-center gap-3">
-                    <i class="fas fa-magic text-sky-200"></i> ¿Cómo empezar a hacer negocios?
-                </h2>
+                <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+                    <h2 class="text-2xl font-black flex items-center gap-3">
+                        <i class="fas fa-magic text-sky-200"></i> ¿Cómo empezar a hacer negocios?
+                    </h2>
+                    <span class="bg-white/10 text-sky-100 text-[11px] font-black uppercase tracking-wider px-3.5 py-1 rounded-full border border-white/10 backdrop-blur-sm">
+                        Guía para Compradores
+                    </span>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-sky-100 border border-white/20">1</div>
+                        <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0 font-black text-sky-100 border border-white/20 shadow-inner">1</div>
                         <div>
-                            <p class="font-black text-sm uppercase tracking-wider text-sky-100 mb-1">Paso 1: Busca</p>
-                            <p class="text-xs text-sky-50/80 leading-relaxed font-medium">Haz clic en <b>"Buscar Proveedores"</b> para ver quiénes están vendiendo lo que necesitas.</p>
+                            <p class="font-black text-sm uppercase tracking-wider text-sky-200 mb-1">Paso 1: Explora en "Buscar Proveedores"</p>
+                            <p class="text-xs text-sky-50/80 leading-relaxed font-medium">Entra a <b>"Buscar Proveedores"</b> para explorar el catálogo de vendedores inscritos y filtrar por actividad CIIU o productos que requieras.</p>
                         </div>
                     </div>
                     <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-sky-100 border border-white/20">2</div>
+                        <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0 font-black text-sky-100 border border-white/20 shadow-inner">2</div>
                         <div>
-                            <p class="font-black text-sm uppercase tracking-wider text-sky-100 mb-1">Paso 2: Agenda</p>
-                            <p class="text-xs text-sky-50/80 leading-relaxed font-medium">Dentro del catálogo, elige un vendedor y haz clic en <b>"Solicitar Reunión"</b> para proponer una hora.</p>
+                            <p class="font-black text-sm uppercase tracking-wider text-sky-200 mb-1">Paso 2: Solicita Reuniones 1 a 1</p>
+                            <p class="text-xs text-sky-50/80 leading-relaxed font-medium">Dentro del perfil de la empresa seleccionada, haz clic en <b>"Solicitar Cita"</b> y escoge la fecha y hora disponible que mejor te convenga.</p>
                         </div>
                     </div>
                     <div class="flex gap-4">
-                        <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0 font-black text-sky-100 border border-white/20">3</div>
+                        <div class="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center shrink-0 font-black text-sky-100 border border-white/20 shadow-inner">3</div>
                         <div>
-                            <p class="font-black text-sm uppercase tracking-wider text-sky-100 mb-1">Paso 3: Concreta</p>
-                            <p class="text-xs text-sky-50/80 leading-relaxed font-medium">Ve a <b>"Mis Citas"</b> para confirmar tus reuniones aceptadas y prepárate para negociar.</p>
+                            <p class="font-black text-sm uppercase tracking-wider text-sky-200 mb-1">Paso 3: Concreta en "Mis Citas"</p>
+                            <p class="text-xs text-sky-50/80 leading-relaxed font-medium">Ve a <b>"Mis Citas"</b> para responder propuestas recibidas, contraofertar horarios, acceder al link virtual o ver tu mesa física para negociar.</p>
                         </div>
                     </div>
                 </div>

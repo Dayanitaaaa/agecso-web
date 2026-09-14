@@ -69,10 +69,10 @@
                 <div class="bg-white p-5 rounded-2xl border border-sky-100/80 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all">
                     <div class="flex items-center gap-3 mb-2.5">
                         <span class="w-7 h-7 rounded-full bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center text-xs font-black">1</span>
-                        <h4 class="font-black text-slate-900 text-sm">Publica tus Demandas</h4>
+                        <h4 class="font-black text-slate-900 text-sm">Explora "Buscar Proveedores"</h4>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                        Registra qué insumos, productos o servicios busca tu empresa. Así los proveedores sabrán qué ofrecerte.
+                        Revisa los productos, servicios y empresas vendedoras registradas. Filtra por sector CIIU o busca por palabras clave.
                     </p>
                 </div>
 
@@ -80,10 +80,10 @@
                 <div class="bg-white p-5 rounded-2xl border border-sky-100/80 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all">
                     <div class="flex items-center gap-3 mb-2.5">
                         <span class="w-7 h-7 rounded-full bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center text-xs font-black">2</span>
-                        <h4 class="font-black text-slate-900 text-sm">Explora el Catálogo</h4>
+                        <h4 class="font-black text-slate-900 text-sm">Haz clic en "Solicitar Cita"</h4>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                        Revisa los productos y empresas vendedoras registradas. Filtra por sector o busca por palabras clave.
+                        Elige una empresa proveedora y envía una propuesta de fecha y hora disponible para acordar un espacio de negociación.
                     </p>
                 </div>
 
@@ -91,10 +91,10 @@
                 <div class="bg-white p-5 rounded-2xl border border-sky-100/80 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all">
                     <div class="flex items-center gap-3 mb-2.5">
                         <span class="w-7 h-7 rounded-full bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center text-xs font-black">3</span>
-                        <h4 class="font-black text-slate-900 text-sm">Agenda Citas 1 a 1</h4>
+                        <h4 class="font-black text-slate-900 text-sm">Gestiona en "Mis Citas"</h4>
                     </div>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
-                        Haz clic en <strong>"Solicitar Reunión"</strong> para apartar tu espacio comercial y reunirte por videollamada o presencial.
+                        Revisa el estado de tus citas, responde contraofertas de los vendedores y conéctate al enlace virtual o asiste a la mesa física.
                     </p>
                 </div>
             </div>
