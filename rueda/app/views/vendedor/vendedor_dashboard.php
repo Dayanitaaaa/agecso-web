@@ -326,56 +326,98 @@
                     </div>
                 <?php else: ?>
                     <div class="grid grid-cols-1 gap-6">
-                        <?php foreach ($ruedas_activas as $r): ?>
-                            <div class="bg-white rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden hover:shadow-[0_8px_30px_rgba(0,0,0,0.06)] transition-all duration-300">
-                                <div class="px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-50 bg-gradient-to-r from-gray-50/50 to-white">
-                                    <div>
-                                        <h3 class="font-extrabold text-gray-900 text-lg"><?php echo htmlspecialchars($r['tituloRueda']); ?></h3>
-                                        <div class="flex items-center mt-2.5 flex-wrap gap-2">
-                                            <?php if (($r['tipoRueda'] ?? 'evento') === 'permanente'): ?>
-                                                <span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider flex items-center gap-1">
-                                                    <i class="fas fa-infinity text-[8px]"></i> Rueda Permanente
+                        <?php foreach ($ruedas_activas as $r): 
+                            $esPermanente = (($r['tipoRueda'] ?? 'evento') === 'permanente');
+                            $totalOfertas = count($ofertas_por_rueda[$r['id']] ?? []);
+                            $totalReuniones = count($reuniones_por_rueda[$r['id']] ?? []);
+                        ?>
+                            <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-[0_10px_35px_rgba(0,0,0,0.06)] transition-all duration-300">
+                                <!-- Encabezado de la Tarjeta -->
+                                <div class="p-6 bg-gradient-to-r from-gray-50/70 via-white to-gray-50/40 border-b border-gray-100">
+                                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <!-- Título y Badges -->
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-2 flex-wrap mb-2.5">
+                                                <?php if ($esPermanente): ?>
+                                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm">
+                                                        <i class="fas fa-infinity text-[9px]"></i> Rueda Permanente
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-100 text-teal-800 border border-teal-200 shadow-sm">
+                                                        <i class="fas fa-calendar-day text-[9px]"></i> Evento Puntual
+                                                    </span>
+                                                <?php endif; ?>
+
+                                                <?php if (($r['modalidad'] ?? 'virtual') === 'virtual'): ?>
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-100">
+                                                        <i class="fas fa-video text-[9px]"></i> Virtual
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-orange-50 text-orange-700 border border-orange-100" title="Presencial: <?php echo htmlspecialchars($r['ubicacion'] ?? ''); ?>">
+                                                        <i class="fas fa-map-marker-alt text-[9px]"></i> Presencial
+                                                    </span>
+                                                <?php endif; ?>
+                                                
+                                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
+                                                    <?php echo htmlspecialchars($r['estadoInscripcion']); ?>
                                                 </span>
-                                            <?php else: ?>
-                                                <span class="text-[10px] bg-teal-50 text-teal-700 border border-teal-100 px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider flex items-center gap-1">
-                                                    <i class="fas fa-calendar-day text-[8px]"></i> Evento Puntual
-                                                </span>
-                                            <?php endif; ?>
-                                            <span class="text-[10px] bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider"><?php echo htmlspecialchars($r['estadoInscripcion']); ?></span>
-                                            <?php if (($r['modalidad'] ?? 'virtual') === 'virtual'): ?>
-                                                <span class="text-[10px] bg-purple-50 text-purple-700 border border-purple-100 px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider" title="Virtual"><i class="fas fa-video mr-1"></i>Virtual</span>
-                                            <?php else: ?>
-                                                <span class="text-[10px] bg-orange-50 text-orange-700 border border-orange-100 px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider" title="Presencial: <?php echo htmlspecialchars($r['ubicacion'] ?? ''); ?>"><i class="fas fa-map-marker-alt mr-1"></i>Presencial</span>
-                                            <?php endif; ?>
-                                            <span class="text-[10px] text-gray-500 font-extrabold uppercase tracking-wider" title="Rueda de Negocio"><i class="far fa-calendar-alt mr-1 text-[#0d9488]"></i>Evento: <?php echo date('d/m/Y', strtotime($r['fechaInicio'])); ?> al <?php echo date('d/m/Y', strtotime($r['fechaFin'])); ?></span>
-                                            <?php if (!empty($r['fechaInscripcionInicio']) && !empty($r['fechaInscripcionFin'])): ?>
-                                                <span class="text-[10px] text-gray-400 font-bold uppercase tracking-wider" title="Periodo de Registro"><i class="fas fa-edit mr-1 text-amber-500"></i>Reg: <?php echo date('d/m/Y', strtotime($r['fechaInscripcionInicio'])); ?> al <?php echo date('d/m/Y', strtotime($r['fechaInscripcionFin'])); ?></span>
-                                            <?php endif; ?>
+                                            </div>
+
+                                            <h3 class="text-xl font-black text-gray-900 tracking-tight leading-snug">
+                                                <?php echo htmlspecialchars($r['tituloRueda']); ?>
+                                            </h3>
+
+                                            <!-- Fechas limpias sin redundancias -->
+                                            <div class="mt-3 flex items-center gap-3 text-xs text-gray-500 font-semibold flex-wrap">
+                                                <?php if ($esPermanente): ?>
+                                                    <span class="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-100">
+                                                        <i class="fas fa-check-circle text-emerald-500"></i> Acceso Abierto Permanente (Vigencia <?php echo date('Y', strtotime($r['fechaInicio'])); ?>)
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="inline-flex items-center gap-1.5 text-slate-700 bg-slate-100 px-3 py-1 rounded-xl">
+                                                        <i class="far fa-calendar-alt text-[#0d9488]"></i> Evento: <?php echo date('d/m/Y', strtotime($r['fechaInicio'])); ?> al <?php echo date('d/m/Y', strtotime($r['fechaFin'])); ?>
+                                                    </span>
+                                                    <?php if (!empty($r['fechaInscripcionInicio']) && !empty($r['fechaInscripcionFin'])): ?>
+                                                        <span class="inline-flex items-center gap-1.5 text-amber-800 bg-amber-50 px-3 py-1 rounded-xl border border-amber-100">
+                                                            <i class="fas fa-edit text-amber-500"></i> Registro: <?php echo date('d/m/Y', strtotime($r['fechaInscripcionInicio'])); ?> - <?php echo date('d/m/Y', strtotime($r['fechaInscripcionFin'])); ?>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+
+                                        <!-- Resumen de Actividad -->
+                                        <div class="flex items-center gap-4 bg-white p-3.5 rounded-2xl border border-gray-200 shadow-sm shrink-0 self-start md:self-center">
+                                            <div class="text-center px-2">
+                                                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Mis Ofertas</p>
+                                                <p class="text-lg font-black text-gray-800"><?php echo $totalOfertas; ?></p>
+                                            </div>
+                                            <div class="w-px h-8 bg-gray-200"></div>
+                                            <div class="text-center px-2">
+                                                <p class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">Citas</p>
+                                                <p class="text-lg font-black text-[#0d9488]"><?php echo $totalReuniones; ?></p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="flex gap-2">
-                                        <a href="index.php?controlador=vendedor&accion=verMisOfertas&id=<?php echo $r['id']; ?>" class="text-xs bg-teal-600 text-white hover:bg-teal-700 px-6 py-3 rounded-full font-black transition-all duration-300 shadow-lg shadow-teal-500/20 flex items-center gap-2 group">
-                                            <i class="fas fa-box-open text-[10px]"></i> Mis Ofertas
+                                </div>
+
+                                <!-- Barra Inferior de Acciones -->
+                                <div class="p-4 sm:px-6 bg-white flex flex-wrap items-center justify-between gap-2.5">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <a href="index.php?controlador=vendedor&accion=verMisOfertas&id=<?php echo $r['id']; ?>" class="inline-flex items-center gap-2 bg-[#0d9488] hover:bg-[#0f766e] text-white text-xs font-black px-5 py-2.5 rounded-xl transition duration-200 shadow-md shadow-teal-500/20">
+                                            <i class="fas fa-box-open text-[11px]"></i> Mis Ofertas
                                         </a>
-                                        <a href="index.php?controlador=vendedor&accion=verCompradores&id=<?php echo $r['id']; ?>" class="text-xs bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
-                                            <i class="fas fa-users text-[10px]"></i> Buscar Clientes
+                                        <a href="index.php?controlador=vendedor&accion=verCompradores&id=<?php echo $r['id']; ?>" class="inline-flex items-center gap-1.5 bg-purple-50 text-purple-700 hover:bg-purple-600 hover:text-white border border-purple-200 text-xs font-black px-4 py-2.5 rounded-xl transition duration-200">
+                                            <i class="fas fa-users text-[10px]"></i> Buscar Compradores
                                         </a>
-                                        <a href="index.php?controlador=vendedor&accion=verReuniones" class="text-xs bg-gray-100 text-gray-700 hover:bg-gray-200 px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
-                                            <i class="far fa-calendar-check text-[10px]"></i> Agenda
-                                        </a>
-                                        <button onclick="abrirModalOferta(<?php echo $r['id']; ?>)" class="text-xs bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white px-4 py-3 rounded-full font-extrabold transition-all duration-300 shadow-sm flex items-center gap-1.5">
-                                            <i class="fas fa-plus text-[10px]"></i> Nueva Oferta
+                                        <button onclick="abrirModalOferta(<?php echo $r['id']; ?>)" class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white border border-emerald-200 text-xs font-black px-4 py-2.5 rounded-xl transition duration-200">
+                                            <i class="fas fa-plus text-[10px]"></i> Publicar Oferta
                                         </button>
                                     </div>
-                                </div>
-                                <div class="p-5 bg-gray-50/30 grid grid-cols-2 text-center divide-x divide-gray-100">
                                     <div>
-                                        <p class="text-[10px] text-gray-400 font-extrabold uppercase tracking-widest">Ofertas</p>
-                                        <p class="text-xl font-black text-gray-700 mt-1"><?php echo count($ofertas_por_rueda[$r['id']] ?? []); ?></p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-gray-400 font-extrabold uppercase tracking-widest">Solicitudes</p>
-                                        <p class="text-xl font-black text-gray-700 mt-1"><?php echo count($reuniones_por_rueda[$r['id']] ?? []); ?></p>
+                                        <a href="index.php?controlador=vendedor&accion=verReuniones" class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs font-black px-4 py-2.5 rounded-xl transition duration-200">
+                                            <i class="far fa-calendar-check text-[11px] text-[#0d9488]"></i> Mi Agenda
+                                        </a>
                                     </div>
                                 </div>
                             </div>
