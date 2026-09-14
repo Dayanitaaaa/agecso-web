@@ -359,7 +359,11 @@
                                     
                                     <?php if ($esVirtual): ?>
                                         <?php if ($esUrlValida): ?>
-                                            <?php if ($enCurso || $tiempoCumplido): ?>
+                                            <?php if ($tiempoCumplido || ($cita['estadoCita'] ?? '') === 'realizada'): ?>
+                                                <button disabled class="block w-full text-center bg-gray-100 text-gray-400 py-3 rounded-xl text-xs font-black cursor-not-allowed border border-gray-200 uppercase tracking-wider">
+                                                    <i class="fas fa-check-circle mr-2 text-teal-500"></i> Reunión Finalizada
+                                                </button>
+                                            <?php elseif ($enCurso): ?>
                                                 <a href="<?php echo htmlspecialchars($linkReunion); ?>" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-white py-3 rounded-xl text-xs font-black transition-all duration-300 shadow-md shadow-emerald-500/10 uppercase tracking-wider">
                                                     <i class="fas fa-video mr-2"></i> Unirse a Reunión
                                                 </a>
