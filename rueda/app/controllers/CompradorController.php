@@ -535,7 +535,8 @@ class CompradorController {
                     $msg = "contraoferta_enviada";
                 }
 
-                header("Location: index.php?controlador=comprador&accion=verReuniones&msg=$msg");
+                $redirect_rueda = !empty($cita['ruedaId']) ? '&rueda_id=' . $cita['ruedaId'] : '';
+                header("Location: index.php?controlador=comprador&accion=verReuniones{$redirect_rueda}&msg=$msg");
                 exit();
             } catch (Exception $e) {
                 Logger::logCurrentRoleError('Error al gestionar cita comprador', [

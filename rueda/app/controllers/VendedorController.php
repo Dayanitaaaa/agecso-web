@@ -1070,7 +1070,8 @@ class VendedorController {
                     $msg = "cita_aceptada";
                 }
 
-                header("Location: index.php?controlador=vendedor&accion=verReuniones&msg=$msg");
+                $redirect_rueda = !empty($cita['ruedaId']) ? '&rueda_id=' . $cita['ruedaId'] : '';
+                header("Location: index.php?controlador=vendedor&accion=verReuniones{$redirect_rueda}&msg=$msg");
                 exit();
             } catch (PDOException $e) {
                 Logger::logCurrentRoleError('Error al gestionar cita recibida', [

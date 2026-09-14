@@ -1,7 +1,78 @@
 <?php include __DIR__ . '/../layout/header.php'; ?>
 
 <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-    <div class="space-y-10">
+    <div class="space-y-8">
+
+        <!-- MENSAJES DE NOTIFICACIÓN / ESTADO -->
+        <?php if (!empty($_GET['msg'])): ?>
+            <?php if ($_GET['msg'] === 'contraoferta_enviada'): ?>
+                <div class="bg-gradient-to-r from-sky-50 to-blue-50 border-2 border-[#00a2ff]/30 p-5 rounded-3xl shadow-sm flex items-center justify-between animate-modal">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#00a2ff] text-white rounded-2xl flex items-center justify-center shadow-md shadow-sky-500/20 shrink-0 text-lg">
+                            <i class="fas fa-paper-plane"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-gray-900 flex items-center gap-2">
+                                ¡Contraoferta Enviada con Éxito!
+                                <span class="bg-sky-100 text-[#00a2ff] text-[10px] px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider">En Negociación</span>
+                            </h3>
+                            <p class="text-xs text-gray-600 mt-0.5 font-medium">Tu propuesta de nueva fecha y hora ha sido notificada al vendedor. Quedará en espera de su confirmación o respuesta.</p>
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-white/60 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            <?php elseif ($_GET['msg'] === 'cita_aceptada'): ?>
+                <div class="bg-gradient-to-r from-emerald-50 to-teal-50 border-2 border-emerald-300/40 p-5 rounded-3xl shadow-sm flex items-center justify-between animate-modal">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-md shadow-emerald-500/20 shrink-0 text-lg">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-gray-900 flex items-center gap-2">
+                                ¡Reunión Aceptada y Confirmada!
+                                <span class="bg-emerald-100 text-emerald-700 text-[10px] px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider">Agendada</span>
+                            </h3>
+                            <p class="text-xs text-gray-600 mt-0.5 font-medium">La reunión ha quedado formalmente programada. Puedes verla en tu columna de Citas Aceptadas.</p>
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-white/60 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            <?php elseif ($_GET['msg'] === 'cita_rechazada'): ?>
+                <div class="bg-rose-50 border-2 border-rose-200 p-5 rounded-3xl shadow-sm flex items-center justify-between animate-modal">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-rose-500 text-white rounded-2xl flex items-center justify-center shadow-md shadow-rose-500/20 shrink-0 text-lg">
+                            <i class="fas fa-ban"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-gray-900">Propuesta Cancelada</h3>
+                            <p class="text-xs text-gray-600 mt-0.5 font-medium">La propuesta de reunión ha sido cancelada y movida al historial.</p>
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-white/60 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            <?php elseif ($_GET['msg'] === 'link_agregado'): ?>
+                <div class="bg-teal-50 border-2 border-teal-200 p-5 rounded-3xl shadow-sm flex items-center justify-between animate-modal">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#0d9488] text-white rounded-2xl flex items-center justify-center shadow-md shadow-teal-500/20 shrink-0 text-lg">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-gray-900">¡Link de Reunión Vinculado!</h3>
+                            <p class="text-xs text-gray-600 mt-0.5 font-medium">El enlace virtual ha sido guardado exitosamente.</p>
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-gray-400 hover:text-gray-600 p-2 rounded-xl hover:bg-white/60 transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            <?php endif; ?>
+        <?php endif; ?>
 
         <!-- SELECTOR DE RUEDA REDISEÑADO -->
         <?php if (!empty($ruedas)): ?>
@@ -770,5 +841,51 @@ function cerrarModalLink() {
         </div>
     </div>
 </div>
+
+<?php if (!empty($_GET['msg'])): ?>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const msg = "<?php echo htmlspecialchars($_GET['msg']); ?>";
+    if (msg === 'contraoferta_enviada') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Contraoferta Enviada!',
+            text: 'Tu nueva propuesta de fecha y hora fue enviada con éxito al vendedor.',
+            confirmButtonColor: '#00a2ff',
+            confirmButtonText: 'Entendido'
+        });
+    } else if (msg === 'cita_aceptada') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Cita Confirmada!',
+            text: 'Has aceptado la reunión de negocios exitosamente.',
+            confirmButtonColor: '#10b981',
+            confirmButtonText: 'Excelente'
+        });
+    } else if (msg === 'cita_rechazada') {
+        Swal.fire({
+            icon: 'info',
+            title: 'Propuesta Cancelada',
+            text: 'La propuesta de reunión ha sido descartada.',
+            confirmButtonColor: '#ef4444',
+            confirmButtonText: 'Entendido'
+        });
+    } else if (msg === 'link_agregado') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Link Guardado!',
+            text: 'El enlace de la reunión virtual fue vinculado exitosamente.',
+            confirmButtonColor: '#0d9488',
+            confirmButtonText: 'Listo'
+        });
+    }
+    
+    // Limpiar el parametro msg de la URL sin recargar para evitar alertas repetidas
+    const url = new URL(window.location);
+    url.searchParams.delete('msg');
+    window.history.replaceState({}, document.title, url.toString());
+});
+</script>
+<?php endif; ?>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>
