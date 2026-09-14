@@ -171,7 +171,12 @@
                                                 <i class="fas fa-clock text-[10px]"></i> Reunión ya solicitada
                                             </button>
                                         <?php elseif ($estado_reunion === 'cancelada' || $estado_reunion === 'rechazada'): ?>
-                                            <button onclick="abrirModalSolicitud(<?php echo $c['id']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado')); ?>')" 
+                                            <button type="button" 
+                                                    data-id="<?php echo $c['id']; ?>"
+                                                    data-nombre="<?php echo htmlspecialchars($c['razon_social'] ?? 'N/A', ENT_QUOTES); ?>"
+                                                    data-desc="<?php echo htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado', ENT_QUOTES); ?>"
+                                                    data-mesa=""
+                                                    onclick="abrirModalSolicitudBtn(this)" 
                                                     class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 border border-rose-200 flex flex-col items-center justify-center gap-0.5">
                                                 <span class="flex items-center gap-2">
                                                     <i class="fas fa-redo text-[10px]"></i> Reintentar Solicitud
@@ -184,7 +189,12 @@
                                             </button>
                                         <?php endif; ?>
                                     <?php elseif (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0 && !empty($c['mesa_apartada'])): ?>
-                                        <button onclick="abrirModalSolicitud(<?php echo $c['id']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado')); ?>', '<?php echo $c['fecha_apartado']; ?>', '<?php echo $c['mesa_apartada']; ?>')" 
+                                        <button type="button" 
+                                                data-id="<?php echo $c['id']; ?>"
+                                                data-nombre="<?php echo htmlspecialchars($c['razon_social'] ?? 'N/A', ENT_QUOTES); ?>"
+                                                data-desc="<?php echo htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado', ENT_QUOTES); ?>"
+                                                data-mesa="<?php echo htmlspecialchars($c['mesa_apartada'] ?? '', ENT_QUOTES); ?>"
+                                                onclick="abrirModalSolicitudBtn(this)" 
                                                 class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-lg shadow-amber-500/20 flex flex-col items-center justify-center gap-0.5 group-hover:scale-[1.02] transform">
                                             <span class="flex items-center gap-2">
                                                 <i class="fas fa-calendar-check text-[10px]"></i> Solicitar a esta Mesa
@@ -192,8 +202,13 @@
                                             <span class="text-[8px] opacity-90 font-bold uppercase tracking-widest">Mesa <?php echo $c['mesa_apartada']; ?> está esperando</span>
                                         </button>
                                     <?php else: ?>
-                                        <button onclick="abrirModalSolicitud(<?php echo $c['id']; ?>, '<?php echo addslashes(htmlspecialchars($c['razon_social'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado')); ?>')" 
-                                                class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2">
+                                        <button type="button" 
+                                                data-id="<?php echo $c['id']; ?>"
+                                                data-nombre="<?php echo htmlspecialchars($c['razon_social'] ?? 'N/A', ENT_QUOTES); ?>"
+                                                data-desc="<?php echo htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado', ENT_QUOTES); ?>"
+                                                data-mesa=""
+                                                onclick="abrirModalSolicitudBtn(this)" 
+                                                class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2 cursor-pointer">
                                             <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Reunión
                                         </button>
                                     <?php endif; ?>
@@ -369,19 +384,41 @@ async function cargarMesasDisponibles(fechaHora) {
     }
 }
 
+function abrirModalSolicitudBtn(btn) {
+    const compradorId = btn.getAttribute('data-id');
+    const nombreComprador = btn.getAttribute('data-nombre');
+    const descripcionComprador = btn.getAttribute('data-desc');
+    const mesaApartada = btn.getAttribute('data-mesa') || '';
+    abrirModalSolicitud(compradorId, nombreComprador, descripcionComprador, null, mesaApartada);
+}
+
 function abrirModalSolicitud(compradorId, nombreComprador, descripcionComprador, fechaApartada = null, mesaApartada = null) {
-    document.getElementById('modal_comprador_id').value = compradorId;
-    document.getElementById('modal_nombre_comprador').innerText = nombreComprador;
-    document.getElementById('modal_descripcion_comprador').innerText = descripcionComprador;
+    const inputCompradorId = document.getElementById('modal_comprador_id');
+    const txtNombre = document.getElementById('modal_nombre_comprador');
+    const txtDesc = document.getElementById('modal_descripcion_comprador');
+    const infoMesa = document.getElementById('info_mesa_apartada');
+    const txtMesa = document.getElementById('modal_numero_mesa');
+    const modal = document.getElementById('modalSolicitud');
+
+    if (inputCompradorId) inputCompradorId.value = compradorId;
+    if (txtNombre) txtNombre.innerText = nombreComprador || 'Comprador';
+    if (txtDesc) txtDesc.innerText = descripcionComprador || '';
     
-    if (mesaApartada) {
-        document.getElementById('modal_numero_mesa').innerText = mesaApartada;
-        document.getElementById('info_mesa_apartada').classList.remove('hidden');
-    } else {
-        document.getElementById('info_mesa_apartada').classList.add('hidden');
+    if (txtMesa && mesaApartada) {
+        txtMesa.innerText = mesaApartada;
     }
     
-    document.getElementById('modalSolicitud').classList.remove('hidden');
+    if (infoMesa) {
+        if (mesaApartada) {
+            infoMesa.classList.remove('hidden');
+        } else {
+            infoMesa.classList.add('hidden');
+        }
+    }
+    
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
 }
 </script>
 

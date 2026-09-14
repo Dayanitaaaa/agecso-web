@@ -378,33 +378,46 @@ if (filtroSector) filtroSector.addEventListener('change', filtrarDemandas);
 
 // Modal de solicitud de reunión
 function solicitarReunion(compradorId, ruedaId, nombreComprador, descripcionComprador, mesaApartada = '') {
-    document.getElementById('comprador_id').value = compradorId;
-    document.getElementById('nombre_comprador').textContent = nombreComprador;
-    document.getElementById('modal_descripcion_comprador').textContent = descripcionComprador;
+    const inputComprador = document.getElementById('comprador_id');
+    const txtNombre = document.getElementById('nombre_comprador');
+    const txtDesc = document.getElementById('modal_descripcion_comprador');
+    const infoMesa = document.getElementById('info_mesa_apartada');
+    const txtMesa = document.getElementById('modal_numero_mesa');
+    const modal = document.getElementById('modalSolicitarReunion');
+
+    if (inputComprador) inputComprador.value = compradorId;
+    if (txtNombre) txtNombre.textContent = nombreComprador || 'Comprador';
+    if (txtDesc) txtDesc.textContent = descripcionComprador || '';
     
-    if (mesaApartada) {
-        document.getElementById('modal_numero_mesa').innerText = mesaApartada;
-        document.getElementById('info_mesa_apartada').classList.remove('hidden');
-    } else {
-        document.getElementById('info_mesa_apartada').classList.add('hidden');
+    if (txtMesa && mesaApartada) {
+        txtMesa.innerText = mesaApartada;
+    }
+    if (infoMesa) {
+        if (mesaApartada) {
+            infoMesa.classList.remove('hidden');
+        } else {
+            infoMesa.classList.add('hidden');
+        }
     }
 
     // Inicializar Flatpickr con 30 min
-    flatpickr("#fecha_hora_input", {
-        enableTime: true,
-        dateFormat: "Y-m-d H:i",
-        altInput: true,
-        altFormat: "F j, Y - h:i K",
-        locale: "es",
-        minDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaInicio'])); ?>",
-        maxDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaFin'])); ?>",
-        time_24hr: false,
-        minuteIncrement: 30,
-        disableMobile: "true",
-        animate: true
-    });
+    if (document.getElementById('fecha_hora_input')) {
+        flatpickr("#fecha_hora_input", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            altInput: true,
+            altFormat: "F j, Y - h:i K",
+            locale: "es",
+            minDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaInicio'])); ?>",
+            maxDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaFin'])); ?>",
+            time_24hr: false,
+            minuteIncrement: 30,
+            disableMobile: "true",
+            animate: true
+        });
+    }
     
-    document.getElementById('modalSolicitarReunion').classList.remove('hidden');
+    if (modal) modal.classList.remove('hidden');
 }
 
 function cerrarModal() {
