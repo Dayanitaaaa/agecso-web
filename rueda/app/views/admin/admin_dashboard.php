@@ -827,147 +827,195 @@
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
         
         <!-- Tarjeta de Modal Premium -->
-        <div class="inline-block align-bottom bg-white rounded-[2rem] text-left overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100/50 transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative">
+        <div class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.2)] border border-gray-100 transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full relative">
             
             <!-- Botón Cerrar (X) arriba a la derecha -->
             <button type="button" onclick="document.getElementById('modalCrearRueda').classList.add('hidden')" 
-                    class="absolute right-5 top-5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition duration-200 focus:outline-none">
+                    class="absolute right-6 top-6 text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition duration-200 focus:outline-none z-20">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
 
             <form action="index.php?controlador=admin&accion=crearRueda" method="POST" enctype="multipart/form-data">
-                <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
+                <div class="bg-white px-6 pt-8 pb-6 sm:p-9 sm:pb-7 max-h-[85vh] overflow-y-auto space-y-7">
                     <!-- Título con Icono -->
-                    <div class="flex items-center gap-2.5 mb-6 text-left">
-                        <div class="p-2 bg-slate-500/10 text-slate-600 rounded-xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                    <div class="flex items-center gap-3 text-left border-b border-gray-100 pb-5">
+                        <div class="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black text-xl shadow-md shadow-slate-900/20">
+                            <i class="fas fa-plus"></i>
                         </div>
-                        <h3 class="text-xl font-extrabold text-gray-800 tracking-tight">Nueva Rueda de Negocios</h3>
+                        <div>
+                            <h3 class="text-2xl font-black text-gray-900 tracking-tight">Nueva Rueda de Negocios</h3>
+                            <p class="text-xs text-gray-500 font-medium">Configura el formato, cronograma y modalidad del espacio de networking.</p>
+                        </div>
                     </div>
                     
-                    <div class="space-y-5 text-left">
+                    <!-- PASO 1: SELECTOR DE FORMATO / TIPO DE RUEDA -->
+                    <div>
+                        <label class="block text-xs font-black text-slate-800 uppercase tracking-wider mb-2.5">
+                            <i class="fas fa-layer-group text-sky-500 mr-1"></i> Formato de la Rueda <span class="text-red-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                            <!-- Opción 1: Evento Puntual -->
+                            <label class="relative flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-sky-500 bg-sky-50/50 shadow-sm" id="modal_card_tipo_evento">
+                                <input type="radio" name="tipoRueda" value="evento" checked onchange="toggleModalTipoRueda('evento')" class="mt-1 h-4 w-4 text-sky-600 focus:ring-sky-500">
+                                <div class="ml-3">
+                                    <span class="block text-sm font-black text-gray-900 flex items-center gap-1.5">
+                                        <i class="fas fa-calendar-day text-sky-600 text-xs"></i> Evento Puntual
+                                    </span>
+                                    <span class="block text-[11px] text-gray-500 mt-1 leading-relaxed">
+                                        1 o 2 días. Requiere periodo de inscripción previo y aprobación por el Administrador.
+                                    </span>
+                                </div>
+                            </label>
+
+                            <!-- Opción 2: Rueda Permanente -->
+                            <label class="relative flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all duration-200 border-gray-200 bg-white hover:border-emerald-300" id="modal_card_tipo_permanente">
+                                <input type="radio" name="tipoRueda" value="permanente" onchange="toggleModalTipoRueda('permanente')" class="mt-1 h-4 w-4 text-emerald-600 focus:ring-emerald-500">
+                                <div class="ml-3">
+                                    <span class="block text-sm font-black text-gray-900 flex items-center gap-1.5">
+                                        <i class="fas fa-infinity text-emerald-600 text-xs"></i> Rueda Permanente
+                                    </span>
+                                    <span class="block text-[11px] text-gray-500 mt-1 leading-relaxed">
+                                        Todo el año. Acceso directo e inmediato para compradores y vendedores activos.
+                                    </span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Banner informativo dinámico -->
+                        <div id="modal_permanente_banner" class="hidden mt-3 p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs text-emerald-900 font-medium flex items-center gap-2.5">
+                            <i class="fas fa-check-circle text-emerald-600 text-base shrink-0"></i>
+                            <span>En la <strong>Rueda Permanente</strong> no se requiere periodo de registro previo; todos los miembros verificados tienen acceso directo e inmediato.</span>
+                        </div>
+                    </div>
+
+                    <!-- PASO 2: INFORMACIÓN PRINCIPAL -->
+                    <div class="space-y-4 pt-2 border-t border-gray-100">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Título de la Rueda <span class="text-red-500">*</span></label>
-                            <input type="text" name="titulo" required 
-                                   class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200"
-                                   placeholder="Ej: Rueda Regional de Agro 2026">
+                            <input type="text" name="titulo" id="modal_titulo_rueda" required 
+                                   class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200"
+                                   placeholder="Ej: Rueda Regional Sabana Occidente 2026">
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Descripción del Evento <span class="text-red-500">*</span></label>
                             <textarea name="descripcion" rows="3" required 
-                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 resize-none" 
-                                      placeholder="Detalles sobre el alcance, sectores invitados y objetivos..."></textarea>
+                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200 resize-none" 
+                                      placeholder="Detalles sobre el alcance, sectores invitados y objetivos comerciales..."></textarea>
                         </div>
 
                         <!-- Imagen / Banner de la Rueda -->
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fas fa-image text-slate-500"></i> Imagen o Banner de la Rueda
+                                <i class="fas fa-image text-slate-500"></i> Imagen o Banner (Opcional)
                             </label>
-                            <div class="flex items-center gap-3 p-3 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50">
-                                <div id="create_previewContainer" class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 flex-shrink-0">
+                            <div class="flex items-center gap-3 p-3.5 border-2 border-dashed border-gray-200 rounded-2xl bg-gray-50/50 hover:border-slate-400 transition">
+                                <div id="create_previewContainer" class="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-200 shrink-0">
                                     <i class="fas fa-image text-gray-400 text-xl" id="create_previewPlaceholder"></i>
                                     <img id="create_imagePreview" src="" alt="Vista previa" class="w-full h-full object-cover hidden">
                                 </div>
                                 <div class="flex-1">
-                                    <input type="file" name="imagen" id="create_imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 cursor-pointer" onchange="previewCreateImage(this)">
-                                    <p class="text-[10px] text-gray-400 mt-1">Formatos: JPG, PNG, WEBP.</p>
+                                    <input type="file" name="imagen" id="create_imagen" accept="image/png, image/jpeg, image/webp" class="block w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3.5 file:rounded-full file:border-0 file:text-[11px] file:font-bold file:bg-slate-900 file:text-white hover:file:bg-black cursor-pointer" onchange="previewCreateImage(this)">
+                                    <p class="text-[10px] text-gray-400 mt-1">Formatos: JPG, PNG, WEBP. Tamaño sugerido: 800x500 px.</p>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Fechas de Inscripción -->
-                        <div class="grid grid-cols-2 gap-4">
+                    <!-- PASO 3: FECHAS Y HORARIOS -->
+                    <div class="space-y-4 pt-2 border-t border-gray-100">
+                        <p class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fas fa-calendar-alt text-sky-500"></i> Fechas y Cronograma
+                        </p>
+
+                        <!-- Fechas de Inscripción (Se oculta en Permanente) -->
+                        <div id="modal_contenedor_fechas_inscripcion" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-600">Inscripciones Inicio</label>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-600">Inscripciones Inicio <span class="text-red-500">*</span></label>
                                 <input type="text" name="fecha_inscripcion_inicio" id="fecha_inscripcion_inicio" required 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 bg-white cursor-pointer"
+                                    class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200 bg-white cursor-pointer"
                                     placeholder="Seleccionar fecha...">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-600">Inscripciones Fin</label>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-600">Inscripciones Fin <span class="text-red-500">*</span></label>
                                 <input type="text" name="fecha_inscripcion_fin" id="fecha_inscripcion_fin" required 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 bg-white cursor-pointer"
+                                    class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200 bg-white cursor-pointer"
                                     placeholder="Seleccionar fecha...">
                             </div>
                         </div>
 
-                        <!-- Fechas del Evento -->
-                        <div class="grid grid-cols-2 gap-4">
+                        <!-- Fechas del Evento / Vigencia -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Inicio de la Rueda</label>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600" id="modal_lbl_inicio">Inicio de la Rueda <span class="text-red-500">*</span></label>
                                 <input type="text" name="fecha_inicio" id="fecha_inicio" required 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-400 transition duration-200 bg-white cursor-pointer"
+                                    class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-500 transition duration-200 bg-white cursor-pointer"
                                     placeholder="Seleccionar fecha...">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Fin de la Rueda</label>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600" id="modal_lbl_fin">Fin de la Rueda <span class="text-red-500">*</span></label>
                                 <input type="text" name="fecha_fin" id="fecha_fin" required 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-400 transition duration-200 bg-white cursor-pointer"
+                                    class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-sky-500 transition duration-200 bg-white cursor-pointer"
                                     placeholder="Seleccionar fecha...">
                             </div>
                         </div>
 
                         <!-- Franja Horaria de Reuniones -->
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
                                     <i class="fas fa-clock text-emerald-500"></i> Hora Inicio Citas
                                 </label>
-                                <div class="relative">
-                                    <input type="text" name="hora_inicio" id="hora_inicio" value="08:00" required 
-                                        class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white cursor-pointer"
-                                        placeholder="08:00 AM">
-                                </div>
+                                <input type="text" name="hora_inicio" id="hora_inicio" value="08:00" required 
+                                    class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 transition duration-200 bg-white cursor-pointer"
+                                    placeholder="08:00 AM">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-emerald-600 flex items-center gap-1.5">
                                     <i class="fas fa-clock text-emerald-500"></i> Hora Fin Citas
                                 </label>
-                                <div class="relative">
-                                    <input type="text" name="hora_fin" id="hora_fin" value="18:00" required 
-                                        class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-400 transition duration-200 bg-white cursor-pointer"
-                                        placeholder="06:00 PM">
-                                </div>
+                                <input type="text" name="hora_fin" id="hora_fin" value="18:00" required 
+                                    class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-emerald-50 focus:border-emerald-500 transition duration-200 bg-white cursor-pointer"
+                                    placeholder="06:00 PM">
                             </div>
                         </div>
 
                         <!-- Duración de Citas -->
-                        <div class="bg-slate-50/60 border border-slate-200/60 rounded-2xl p-3 flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-8 h-8 rounded-xl bg-slate-500/10 text-slate-600 flex items-center justify-center font-black text-xs">
+                        <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-xs">
                                     <i class="fas fa-stopwatch"></i>
                                 </div>
                                 <div>
                                     <p class="text-xs font-extrabold text-gray-800">Duración por Cita</p>
-                                    <p class="text-[10px] text-gray-500">Minutos por reunión</p>
+                                    <p class="text-[10px] text-gray-500">Minutos asignados por cada reunión</p>
                                 </div>
                             </div>
                             <div class="relative">
                                 <select name="duracion_cita" required 
-                                        class="bg-slate-900 text-white text-[10px] font-black px-4 py-1.5 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-300 pr-7">
+                                        class="bg-slate-900 text-white text-xs font-black px-5 py-2 rounded-full shadow-sm appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-slate-300 pr-8">
                                     <option value="10">10 Minutos</option>
                                     <option value="15">15 Minutos</option>
                                     <option value="30" selected>30 Minutos</option>
                                     <option value="45">45 Minutos</option>
                                     <option value="60">1 Hora</option>
                                 </select>
-                                <div class="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-white/80">
-                                    <i class="fas fa-chevron-down text-[8px]"></i>
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-white/80">
+                                    <i class="fas fa-chevron-down text-[9px]"></i>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="grid grid-cols-2 gap-4">
+                    <!-- PASO 4: ESTADO Y MODALIDAD -->
+                    <div class="space-y-4 pt-2 border-t border-gray-100">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Estado Inicial</label>
                                 <div class="relative">
-                                    <select name="estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
+                                    <select name="estado" id="modal_estado_rueda" class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200 appearance-none bg-white font-bold text-slate-800">
                                         <option value="planeacion">Planeación</option>
                                         <option value="inscripciones">Inscripciones</option>
                                         <option value="activa">Activa</option>
@@ -981,7 +1029,7 @@
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Modalidad</label>
                                 <div class="relative">
                                     <select name="modalidad" id="modalidad_select" onchange="toggleUbicacion()" 
-                                            class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
+                                            class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 transition duration-200 appearance-none bg-white font-bold text-slate-800">
                                         <option value="virtual">Virtual</option>
                                         <option value="presencial">Presencial</option>
                                     </select>
@@ -992,40 +1040,35 @@
                             </div>
                         </div>
 
-                        <div id="ubicacion_container" class="hidden space-y-4">
+                        <div id="ubicacion_container" class="hidden space-y-4 p-4 rounded-2xl bg-amber-50/50 border border-amber-200/60">
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Lugar / Dirección del Evento <span class="text-red-500">*</span></label>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-amber-800">Lugar / Dirección del Evento <span class="text-red-500">*</span></label>
                                 <input type="text" name="ubicacion" id="ubicacion_input" 
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200" 
+                                    class="block w-full border border-gray-200 rounded-xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-100 focus:border-amber-600 transition duration-200 bg-white" 
                                     placeholder="Ej: Calle 123 # 45-67, Centro de Convenciones">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-sky-600">Cantidad de Mesas Disponibles</label>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-amber-800">Cantidad de Mesas Físicas</label>
                                 <input type="number" name="cantidad_mesas" id="cantidad_mesas_input" min="1" value="1"
-                                    class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200">
-                                <p class="text-[10px] text-gray-400 mt-1.5 ml-1">
-                                    <i class="fas fa-info-circle text-sky-400"></i>
-                                    Define el número total de mesas físicas asignadas para este evento.
-                                </p>
+                                    class="block w-full border border-gray-200 rounded-xl shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-amber-100 focus:border-amber-600 transition duration-200 bg-white">
                             </div>
                         </div>
 
-                        <div id="virtual_info" class="bg-sky-50/50 border border-sky-100 rounded-2xl p-4">
-                            <p class="text-[11px] text-sky-800 font-medium leading-relaxed">
-                                <i class="fas fa-video mr-1.5 text-sky-500"></i> <strong>Modalidad Virtual:</strong> Las reuniones se realizarán por video llamada. Los participantes agregarán sus propios links de conexión.
-                            </p>
+                        <div id="virtual_info" class="p-3.5 bg-sky-50 rounded-2xl border border-sky-100 text-xs text-sky-800 flex items-center gap-2">
+                            <i class="fas fa-video text-sky-500 text-sm shrink-0"></i>
+                            <span><strong>Modalidad Virtual:</strong> Las reuniones se realizarán por videollamada. Los participantes agregarán sus propios enlaces de conexión (Google Meet, Zoom, Teams).</span>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Acciones del Footer -->
-                <div class="bg-gray-50/50 border-t border-gray-100 px-6 py-4 sm:px-8 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 sm:px-9 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
                     <button type="button" onclick="document.getElementById('modalCrearRueda').classList.add('hidden')" 
-                            class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-sm font-bold text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
+                            class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-6 py-3 bg-white text-xs font-black text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition duration-200 focus:outline-none uppercase tracking-wider">
                         Cancelar
                     </button>
-                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center rounded-full border border-transparent px-6 py-2.5 bg-slate-900 text-sm font-extrabold text-white hover:bg-black shadow-[0_4px_15px_rgba(15,23,42,0.2)] hover:shadow-[0_6px_20px_rgba(15,23,42,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none">
-                        Crear Evento
+                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 rounded-full border border-transparent px-8 py-3 bg-slate-900 text-xs font-black text-white hover:bg-black shadow-lg shadow-slate-900/20 hover:shadow-xl hover:-translate-y-0.5 transition duration-200 transform focus:outline-none uppercase tracking-wider">
+                        <i class="fas fa-check"></i> Crear Rueda
                     </button>
                 </div>
             </form>
@@ -1102,7 +1145,67 @@
         }
     }
 
+    let fpInscInicio, fpInscFin, fpInicio, fpFin;
     let fpEditInicio, fpEditFin, fpEditHoraInicio, fpEditHoraFin;
+
+    function toggleModalTipoRueda(tipo) {
+        const cardEvento = document.getElementById('modal_card_tipo_evento');
+        const cardPermanente = document.getElementById('modal_card_tipo_permanente');
+        const contInscripcion = document.getElementById('modal_contenedor_fechas_inscripcion');
+        const bannerPermanente = document.getElementById('modal_permanente_banner');
+        const lblInicio = document.getElementById('modal_lbl_inicio');
+        const lblFin = document.getElementById('modal_lbl_fin');
+        const estadoSelect = document.getElementById('modal_estado_rueda');
+
+        const inputInscInicio = document.getElementById('fecha_inscripcion_inicio');
+        const inputInscFin = document.getElementById('fecha_inscripcion_fin');
+
+        if (tipo === 'permanente') {
+            if (cardPermanente) {
+                cardPermanente.classList.remove('border-gray-200', 'bg-white');
+                cardPermanente.classList.add('border-emerald-500', 'bg-emerald-50/50', 'shadow-sm');
+            }
+            if (cardEvento) {
+                cardEvento.classList.remove('border-sky-500', 'bg-sky-50/50', 'shadow-sm');
+                cardEvento.classList.add('border-gray-200', 'bg-white');
+            }
+
+            if (contInscripcion) contInscripcion.classList.add('hidden');
+            if (inputInscInicio) inputInscInicio.required = false;
+            if (inputInscFin) inputInscFin.required = false;
+
+            if (bannerPermanente) bannerPermanente.classList.remove('hidden');
+
+            if (lblInicio) lblInicio.innerHTML = 'Inicio de Vigencia <span class="text-red-500">*</span>';
+            if (lblFin) lblFin.innerHTML = 'Fin de Vigencia <span class="text-red-500">*</span>';
+
+            const currentYear = new Date().getFullYear();
+            if (fpInicio) fpInicio.setDate(`${currentYear}-01-01`);
+            if (fpFin) fpFin.setDate(`${currentYear}-12-31`);
+
+            if (estadoSelect) estadoSelect.value = 'activa';
+        } else {
+            if (cardEvento) {
+                cardEvento.classList.remove('border-gray-200', 'bg-white');
+                cardEvento.classList.add('border-sky-500', 'bg-sky-50/50', 'shadow-sm');
+            }
+            if (cardPermanente) {
+                cardPermanente.classList.remove('border-emerald-500', 'bg-emerald-50/50', 'shadow-sm');
+                cardPermanente.classList.add('border-gray-200', 'bg-white');
+            }
+
+            if (contInscripcion) contInscripcion.classList.remove('hidden');
+            if (inputInscInicio) inputInscInicio.required = true;
+            if (inputInscFin) inputInscFin.required = true;
+
+            if (bannerPermanente) bannerPermanente.classList.add('hidden');
+
+            if (lblInicio) lblInicio.innerHTML = 'Inicio de la Rueda <span class="text-red-500">*</span>';
+            if (lblFin) lblFin.innerHTML = 'Fin de la Rueda <span class="text-red-500">*</span>';
+
+            if (estadoSelect) estadoSelect.value = 'planeacion';
+        }
+    }
 
     function confirmarEliminarRueda(ruedaId, tituloRueda, origen = 'dashboard') {
         Swal.fire({
@@ -1208,28 +1311,28 @@
             animate: true
         };
 
-        const fpInscInicio = flatpickr("#fecha_inscripcion_inicio", {
+        fpInscInicio = flatpickr("#fecha_inscripcion_inicio", {
             ...configDate,
             onChange: function(selectedDates, dateStr) {
-                fpInscFin.set("minDate", dateStr);
+                if (fpInscFin) fpInscFin.set("minDate", dateStr);
             }
         });
 
-        const fpInscFin = flatpickr("#fecha_inscripcion_fin", {
+        fpInscFin = flatpickr("#fecha_inscripcion_fin", {
             ...configDate,
             onChange: function(selectedDates, dateStr) {
-                fpInicio.set("minDate", dateStr);
+                if (fpInicio) fpInicio.set("minDate", dateStr);
             }
         });
 
-        const fpInicio = flatpickr("#fecha_inicio", {
+        fpInicio = flatpickr("#fecha_inicio", {
             ...configDate,
             onChange: function(selectedDates, dateStr) {
-                fpFin.set("minDate", dateStr);
+                if (fpFin) fpFin.set("minDate", dateStr);
             }
         });
 
-        const fpFin = flatpickr("#fecha_fin", {
+        fpFin = flatpickr("#fecha_fin", {
             ...configDate
         });
 
