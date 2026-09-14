@@ -188,7 +188,18 @@
                                                 </div>
                                             <?php endif; ?>
                                             <div>
-                                                <div class="text-sm font-extrabold text-gray-900"><?php echo htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda')); ?></div>
+                                                <div class="text-sm font-extrabold text-gray-900 flex items-center gap-2">
+                                                    <?php echo htmlspecialchars($r['nombreRueda'] ?? ($r['tituloRueda'] ?? 'Rueda')); ?>
+                                                    <?php if (($r['tipoRueda'] ?? 'evento') === 'permanente'): ?>
+                                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm" title="Rueda Permanente - Acceso Directo">
+                                                            <i class="fas fa-infinity mr-1 text-[8px]"></i> Permanente
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200 shadow-sm" title="Evento Puntual - Con Inscripción">
+                                                            <i class="fas fa-calendar-day mr-1 text-[8px]"></i> Evento
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
                                                 <div class="text-[10px] text-gray-400 font-bold max-w-xs truncate"><?php echo htmlspecialchars($r['descripcion'] ?? ''); ?></div>
                                             </div>
                                         </div>
@@ -644,9 +655,21 @@
 
                         <div class="grid grid-cols-2 gap-4">
                             <div>
+                                <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Formato de Acceso</label>
+                                <div class="relative">
+                                    <select name="tipoRueda" id="edit_tipoRueda" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-xs font-black focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
+                                        <option value="evento">📅 Evento Puntual</option>
+                                        <option value="permanente">♾️ Rueda Permanente</option>
+                                    </select>
+                                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                        <i class="fas fa-chevron-down text-[10px]"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Estado del Evento</label>
                                 <div class="relative">
-                                    <select name="estado" id="edit_estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
+                                    <select name="estado" id="edit_estado" class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-xs font-black focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
                                         <option value="planeacion">Planeación</option>
                                         <option value="inscripciones">Inscripciones</option>
                                         <option value="activa">Activa</option>
@@ -658,11 +681,14 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Modalidad</label>
                                 <div class="relative">
                                     <select name="modalidad" id="edit_modalidad_select" onchange="toggleEditUbicacion()" 
-                                            class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-sm focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
+                                            class="block w-full border border-gray-200 rounded-full shadow-sm px-4 py-2.5 text-xs font-black focus:outline-none focus:ring-4 focus:ring-slate-50 focus:border-slate-400 transition duration-200 appearance-none bg-white">
                                         <option value="virtual">Virtual</option>
                                         <option value="presencial">Presencial</option>
                                     </select>
@@ -1130,6 +1156,7 @@
         document.getElementById('edit_titulo').value = rueda.nombreRueda || rueda.tituloRueda || '';
         document.getElementById('edit_descripcion').value = rueda.descripcion || '';
         document.getElementById('edit_estado').value = rueda.estadoRueda || 'planeacion';
+        document.getElementById('edit_tipoRueda').value = rueda.tipoRueda || 'evento';
         document.getElementById('edit_duracion_cita').value = rueda.duracionCitaMinutos || 30;
 
         const btnEliminar = document.getElementById('btn_eliminar_rueda_modal');

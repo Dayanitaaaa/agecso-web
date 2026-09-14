@@ -51,6 +51,11 @@
 
                         <!-- Contenido -->
                         <div class="p-8 pt-10">
+                            <?php if (($rueda['tipoRueda'] ?? 'evento') === 'permanente'): ?>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200 mb-2">
+                                    <i class="fas fa-infinity mr-1 text-[9px]"></i> Rueda Permanente
+                                </span>
+                            <?php endif; ?>
                             <h3 class="text-xl font-black text-gray-900 mb-3 leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($rueda['tituloRueda'] ?? ''); ?></h3>
                             <p class="text-sm text-gray-500 mb-6 line-clamp-2 font-medium leading-relaxed"><?php echo htmlspecialchars($rueda['descripcionRueda'] ?? ''); ?></p>
 

@@ -321,27 +321,37 @@ class AdminController {
                 $hora_inicio = !empty($_POST['hora_inicio']) ? $_POST['hora_inicio'] : '08:00:00';
                 $hora_fin = !empty($_POST['hora_fin']) ? $_POST['hora_fin'] : '18:00:00';
                 $duracion_cita = !empty($_POST['duracion_cita']) ? (int)$_POST['duracion_cita'] : 30;
-                $estado = $_POST['estado']; // planeacion, inscripciones, activa, finalizada, cancelada
+                $estado = $_POST['estado'] ?? 'planeacion'; // planeacion, inscripciones, activa, finalizada, cancelada
+                $tipoRueda = $_POST['tipoRueda'] ?? 'evento'; // evento | permanente
                 $modalidad = $_POST['modalidad'] ?? 'virtual';
                 $ubicacion = $_POST['ubicacion'] ?? 'Virtual';
                 $cantidad_mesas = $_POST['cantidad_mesas'] ?? 1;
                 $usuario_id = $_SESSION['usuario_id'];
+
+                // Si es permanente y no se definieron fechas de inscripción, no son estrictas
+                if ($tipoRueda === 'permanente' && empty($fecha_inscripcion_inicio)) {
+                    $fecha_inscripcion_inicio = $fecha_inicio;
+                    $fecha_inscripcion_fin = $fecha_fin;
+                }
 
                 // Validaciones simplificadas para esquema base
                 if (strtotime($fecha_fin) < strtotime($fecha_inicio)) {
                     throw new Exception("La fecha de finalización no puede ser anterior a la fecha de inicio.");
                 }
 
-                // Asegurar columnas de horario, mesas, modalidad e imagen en ruedas_negocios
+                // Asegurar columnas de horario, mesas, modalidad, imagen y tipoRueda en ruedas_negocios
                 try {
                     $cols = [
+                        'tipoRueda' => "VARCHAR(30) DEFAULT 'evento'",
                         'horaInicio' => "TIME DEFAULT '08:00:00'",
                         'horaFin' => "TIME DEFAULT '18:00:00'",
                         'duracionCitaMinutos' => "INT DEFAULT 30",
                         'modalidad' => "VARCHAR(50) DEFAULT 'virtual'",
                         'ubicacion' => "VARCHAR(255) DEFAULT 'Virtual'",
                         'cantidadMesas' => "INT DEFAULT 1",
-                        'imagen' => "VARCHAR(255) DEFAULT NULL"
+                        'imagen' => "VARCHAR(255) DEFAULT NULL",
+                        'fechaInscripcionInicio' => "DATE DEFAULT NULL",
+                        'fechaInscripcionFin' => "DATE DEFAULT NULL"
                     ];
                     foreach ($cols as $col => $def) {
                         $stmt_check = $this->pdo->query("SHOW COLUMNS FROM ruedas_negocios LIKE '$col'");
@@ -371,10 +381,10 @@ class AdminController {
                     }
                 }
 
-                $sql = "INSERT INTO ruedas_negocios (nombreRueda, descripcion, fechaInicio, fechaFin, horaInicio, horaFin, duracionCitaMinutos, modalidad, ubicacion, cantidadMesas, estadoRueda, organizadorId, imagen) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO ruedas_negocios (nombreRueda, descripcion, fechaInicio, fechaFin, horaInicio, horaFin, duracionCitaMinutos, modalidad, ubicacion, cantidadMesas, estadoRueda, organizadorId, imagen, tipoRueda, fechaInscripcionInicio, fechaInscripcionFin) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $this->pdo->prepare($sql);
-                $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $usuario_id, $imagen_path]);
+                $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $usuario_id, $imagen_path, $tipoRueda, $fecha_inscripcion_inicio, $fecha_inscripcion_fin]);
 
                 Logger::log("Rueda de Negocios Creada: '$titulo' (ID: " . $this->pdo->lastInsertId() . ") por Admin ID: $usuario_id", 'business');
 
@@ -409,7 +419,8 @@ class AdminController {
                 $hora_inicio = !empty($_POST['hora_inicio']) ? $_POST['hora_inicio'] : '08:00:00';
                 $hora_fin = !empty($_POST['hora_fin']) ? $_POST['hora_fin'] : '18:00:00';
                 $duracion_cita = !empty($_POST['duracion_cita']) ? (int)$_POST['duracion_cita'] : 30;
-                $estado = $_POST['estado']; // planeacion, inscripciones, activa, finalizada, cancelada
+                $estado = $_POST['estado'] ?? 'planeacion'; // planeacion, inscripciones, activa, finalizada, cancelada
+                $tipoRueda = $_POST['tipoRueda'] ?? 'evento'; // evento | permanente
                 $modalidad = $_POST['modalidad'] ?? 'virtual';
                 $ubicacion = $_POST['ubicacion'] ?? 'Virtual';
                 $cantidad_mesas = $_POST['cantidad_mesas'] ?? 1;
@@ -422,13 +433,16 @@ class AdminController {
                 // Asegurar columnas
                 try {
                     $cols = [
+                        'tipoRueda' => "VARCHAR(30) DEFAULT 'evento'",
                         'horaInicio' => "TIME DEFAULT '08:00:00'",
                         'horaFin' => "TIME DEFAULT '18:00:00'",
                         'duracionCitaMinutos' => "INT DEFAULT 30",
                         'modalidad' => "VARCHAR(50) DEFAULT 'virtual'",
                         'ubicacion' => "VARCHAR(255) DEFAULT 'Virtual'",
                         'cantidadMesas' => "INT DEFAULT 1",
-                        'imagen' => "VARCHAR(255) DEFAULT NULL"
+                        'imagen' => "VARCHAR(255) DEFAULT NULL",
+                        'fechaInscripcionInicio' => "DATE DEFAULT NULL",
+                        'fechaInscripcionFin' => "DATE DEFAULT NULL"
                     ];
                     foreach ($cols as $col => $def) {
                         $stmt_check = $this->pdo->query("SHOW COLUMNS FROM ruedas_negocios LIKE '$col'");
@@ -462,18 +476,18 @@ class AdminController {
                     $sql = "UPDATE ruedas_negocios 
                             SET nombreRueda = ?, descripcion = ?, fechaInicio = ?, fechaFin = ?, 
                                 horaInicio = ?, horaFin = ?, duracionCitaMinutos = ?, 
-                                modalidad = ?, ubicacion = ?, cantidadMesas = ?, estadoRueda = ?, imagen = ? 
+                                modalidad = ?, ubicacion = ?, cantidadMesas = ?, estadoRueda = ?, tipoRueda = ?, imagen = ? 
                             WHERE id = ?";
                     $stmt = $this->pdo->prepare($sql);
-                    $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $nueva_imagen, $rueda_id]);
+                    $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $tipoRueda, $nueva_imagen, $rueda_id]);
                 } else {
                     $sql = "UPDATE ruedas_negocios 
                             SET nombreRueda = ?, descripcion = ?, fechaInicio = ?, fechaFin = ?, 
                                 horaInicio = ?, horaFin = ?, duracionCitaMinutos = ?, 
-                                modalidad = ?, ubicacion = ?, cantidadMesas = ?, estadoRueda = ? 
+                                modalidad = ?, ubicacion = ?, cantidadMesas = ?, estadoRueda = ?, tipoRueda = ? 
                             WHERE id = ?";
                     $stmt = $this->pdo->prepare($sql);
-                    $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $rueda_id]);
+                    $stmt->execute([$titulo, $descripcion, $fecha_inicio, $fecha_fin, $hora_inicio, $hora_fin, $duracion_cita, $modalidad, $ubicacion, $cantidad_mesas, $estado, $tipoRueda, $rueda_id]);
                 }
 
                 Logger::log("Rueda de Negocios ID $rueda_id actualizada por Admin ID: $usuario_id", 'business');

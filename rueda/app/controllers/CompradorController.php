@@ -48,13 +48,29 @@ class CompradorController {
             */
             // --------------------------------------------
 
+            // Auto-habilitar acceso directo a Ruedas Permanentes activas
+            try {
+                $stmt_perm = $this->pdo->query("SELECT id FROM ruedas_negocios WHERE tipoRueda = 'permanente' AND estadoRueda IN ('activa', 'inscripciones')");
+                if ($stmt_perm) {
+                    $ruedas_perm = $stmt_perm->fetchAll(PDO::FETCH_COLUMN);
+                    foreach ($ruedas_perm as $rPermId) {
+                        $stmt_chk = $this->pdo->prepare("SELECT id FROM inscripciones_ruedas WHERE ruedaId = ? AND empresaId = ?");
+                        $stmt_chk->execute([$rPermId, $empresa['id']]);
+                        if (!$stmt_chk->fetch()) {
+                            $this->pdo->prepare("INSERT INTO inscripciones_ruedas (ruedaId, empresaId, estadoInscripcion, createdAt) VALUES (?, ?, 'aceptada', NOW())")
+                                      ->execute([$rPermId, $empresa['id']]);
+                        }
+                    }
+                }
+            } catch (Exception $e) {}
+
             // Obtener mis inscripciones a ruedas (Aceptadas, Pendientes, etc.)
             $stmt_mis_ruedas = $this->pdo->prepare("
                 SELECT rn.*, ir.estadoInscripcion, rn.nombreRueda as tituloRueda, rn.descripcion as descripcionRueda
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ? AND rn.estadoRueda NOT IN ('finalizada', 'cancelada')
-                ORDER BY CASE WHEN rn.estadoRueda = 'activa' THEN 0 WHEN rn.estadoRueda = 'inscripciones' THEN 1 ELSE 2 END, rn.fechaInicio DESC
+                ORDER BY CASE WHEN rn.tipoRueda = 'permanente' THEN 0 WHEN rn.estadoRueda = 'activa' THEN 1 WHEN rn.estadoRueda = 'inscripciones' THEN 2 ELSE 3 END, rn.fechaInicio DESC
             ");
             $stmt_mis_ruedas->execute([$empresa['id']]);
             $mis_ruedas = $stmt_mis_ruedas->fetchAll();
@@ -211,21 +227,34 @@ class CompradorController {
         try {
             $ruedaId = isset($_GET['id']) ? $_GET['id'] : null;
 
-            // Si no llega ID por URL, buscar la primera rueda inscrita y aceptada del comprador
-            // (necesario para que funcione el menú "Mercado de Ofertas" del sidebar)
-            if (empty($ruedaId)) {
-                // Primero buscamos en qué ruedas está inscrita la empresa
-                $stmt_empresa = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
-                $stmt_empresa->execute([$_SESSION['usuario_id']]);
-                $miEmpresa = $stmt_empresa->fetch();
+            // Primero buscamos la empresa del usuario
+            $stmt_empresa = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
+            $stmt_empresa->execute([$_SESSION['usuario_id']]);
+            $miEmpresa = $stmt_empresa->fetch();
 
-                if (!$miEmpresa) {
-                    throw new Exception("No se encontró información de tu empresa. Por favor completa tu perfil.");
+            if (!$miEmpresa) {
+                throw new Exception("No se encontró información de tu empresa. Por favor completa tu perfil.");
+            }
+            $miEmpresaId = $miEmpresa['id'];
+
+            // Si se pasa ruedaId, verificar si es permanente y auto-habilitar
+            if (!empty($ruedaId)) {
+                $stmt_r_chk = $this->pdo->prepare("SELECT tipoRueda FROM ruedas_negocios WHERE id = ?");
+                $stmt_r_chk->execute([$ruedaId]);
+                $tipoRuedaChk = $stmt_r_chk->fetchColumn();
+                if ($tipoRuedaChk === 'permanente') {
+                    $stmt_ci = $this->pdo->prepare("SELECT id FROM inscripciones_ruedas WHERE ruedaId = ? AND empresaId = ?");
+                    $stmt_ci->execute([$ruedaId, $miEmpresaId]);
+                    if (!$stmt_ci->fetch()) {
+                        $this->pdo->prepare("INSERT INTO inscripciones_ruedas (ruedaId, empresaId, estadoInscripcion, createdAt) VALUES (?, ?, 'aceptada', NOW())")
+                                  ->execute([$ruedaId, $miEmpresaId]);
+                    }
                 }
+            }
 
-                $miEmpresaId = $miEmpresa['id'];
-
-                // Buscamos una rueda activa donde esté aceptado
+            // Si no llega ID por URL, buscar la primera rueda inscrita y aceptada del comprador (priorizando permanentes o activas)
+            if (empty($ruedaId)) {
+                // Buscamos una rueda activa o permanente donde esté aceptado
                 $stmt_primera_rueda = $this->pdo->prepare("
                     SELECT rn.id
                     FROM ruedas_negocios rn
@@ -233,7 +262,7 @@ class CompradorController {
                     WHERE ir.empresaId = ?
                       AND ir.estadoInscripcion = 'aceptada'
                       AND rn.estadoRueda IN ('activa', 'inscripciones', 'planeacion')
-                    ORDER BY rn.fechaInicio DESC
+                    ORDER BY CASE WHEN rn.tipoRueda = 'permanente' THEN 0 ELSE 1 END, rn.fechaInicio DESC
                     LIMIT 1
                 ");
                 $stmt_primera_rueda->execute([$miEmpresaId]);
@@ -278,9 +307,9 @@ class CompradorController {
             $stmt_inscripcion = $this->pdo->prepare("
                 SELECT estadoInscripcion, empresaId
                 FROM inscripciones_ruedas
-                WHERE ruedaId = ? AND empresaId = (SELECT id FROM empresas WHERE usuarioId = ?) AND estadoInscripcion = 'aceptada'
+                WHERE ruedaId = ? AND empresaId = ? AND estadoInscripcion = 'aceptada'
             ");
-            $stmt_inscripcion->execute([$ruedaId, $_SESSION['usuario_id']]);
+            $stmt_inscripcion->execute([$ruedaId, $miEmpresaId]);
             $inscripcion = $stmt_inscripcion->fetch();
 
             if (!$inscripcion) {

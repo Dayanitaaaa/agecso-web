@@ -22,7 +22,7 @@
                             <p class="hero-desc lead mb-5 text-white-75 animate__animated animate__fadeInUp animate__delay-1s">
                                 AGECSO impulsa la conexión empresarial, la visibilidad, el networking y la generación de oportunidades estratégicas para sus miembros.
                             </p>
-                            <div class="d-flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
+                        <div class="d-flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
                                 <a href="<?= APP_URL ?>/?page=servicios" class="btn btn-premium-light btn-lg px-5 py-3">Conocer servicios</a>
                                 <a href="<?= BUSINESS_PLATFORM_URL ?>" class="btn btn-premium-blue btn-lg px-5 py-3">Rueda de Negocios</a>
                             </div>

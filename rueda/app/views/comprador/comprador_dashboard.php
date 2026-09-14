@@ -318,7 +318,16 @@
                                     <div>
                                         <h3 class="font-extrabold text-gray-900 text-lg"><?php echo htmlspecialchars($r['tituloRueda']); ?></h3>
                                         <div class="flex items-center mt-2.5 flex-wrap gap-2">
-                                            <span class="text-[10px] bg-sky-50 text-[#00a2ff] border border-sky-100 px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider"><?php echo htmlspecialchars($r['estadoInscripcion']); ?></span>
+                                            <?php if (($r['tipoRueda'] ?? 'evento') === 'permanente'): ?>
+                                                <span class="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider flex items-center gap-1">
+                                                    <i class="fas fa-infinity text-[8px]"></i> Rueda Permanente
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="text-[10px] bg-sky-50 text-sky-700 border border-sky-100 px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider flex items-center gap-1">
+                                                    <i class="fas fa-calendar-day text-[8px]"></i> Evento Puntual
+                                                </span>
+                                            <?php endif; ?>
+                                            <span class="text-[10px] bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider"><?php echo htmlspecialchars($r['estadoInscripcion']); ?></span>
                                             <?php if (($r['modalidad'] ?? 'virtual') === 'virtual'): ?>
                                                 <span class="text-[10px] bg-purple-50 text-purple-700 border border-purple-100 px-2.5 py-0.5 rounded-full font-extrabold uppercase tracking-wider" title="Virtual"><i class="fas fa-video mr-1"></i>Virtual</span>
                                             <?php else: ?>
@@ -374,6 +383,7 @@
                         <?php foreach ($ruedas as $rd): ?>
                             <?php if (!isset($mis_inscripciones[$rd['id']])): ?>
                                 <?php
+                                    $esPermanente = (($rd['tipoRueda'] ?? 'evento') === 'permanente');
                                     $hoy = date('Y-m-d', strtotime(SYSTEM_TIME));
                                     $inicioInsc = !empty($rd['fechaInscripcionInicio']) ? $rd['fechaInscripcionInicio'] : null;
                                     $finInsc = !empty($rd['fechaInscripcionFin']) ? $rd['fechaInscripcionFin'] : null;
@@ -383,7 +393,11 @@
                                     $badgeEstado = 'Inscripciones Abiertas';
                                     $badgeColor = 'bg-emerald-50 text-emerald-600 border-emerald-100/50';
 
-                                    if ($inicioInsc && $finInsc) {
+                                    if ($esPermanente) {
+                                        $badgeEstado = '♾️ Acceso Permanente';
+                                        $badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                                        $mensajeInscripcion = 'Acceso continuo sin inscripción previa';
+                                    } elseif ($inicioInsc && $finInsc) {
                                         if ($hoy < $inicioInsc) {
                                             $inscripcionAbierta = false;
                                             $badgeEstado = 'Inscripciones Próximas';
@@ -402,16 +416,21 @@
                                     }
                                 ?>
                                 <div class="bg-gradient-to-br from-white to-gray-50/50 p-5 rounded-3xl border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all duration-300">
-                                    <h4 class="font-extrabold text-gray-800 text-sm tracking-tight"><?php echo htmlspecialchars($rd['tituloRueda']); ?></h4>
+                                    <div class="flex items-start justify-between gap-2">
+                                        <h4 class="font-extrabold text-gray-800 text-sm tracking-tight"><?php echo htmlspecialchars($rd['tituloRueda']); ?></h4>
+                                        <?php if ($esPermanente): ?>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200 shrink-0">Permanente</span>
+                                        <?php endif; ?>
+                                    </div>
                                     <p class="text-[11px] text-gray-500 mt-1.5 leading-relaxed line-clamp-2"><?php echo htmlspecialchars($rd['descripcionRueda']); ?></p>
                                     
                                     <!-- Fechas de Inscripción Informativas -->
                                     <div class="mt-3.5 bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-[11px] text-gray-500 font-semibold space-y-1">
                                         <div class="flex items-center justify-between">
-                                            <span>Rueda de Negocio:</span>
-                                            <span class="font-bold text-gray-700"><?php echo date('d/m/Y', strtotime($rd['fechaInicio'])); ?></span>
+                                            <span><?php echo $esPermanente ? 'Vigencia:' : 'Rueda de Negocio:'; ?></span>
+                                            <span class="font-bold text-gray-700"><?php echo date('d/m/Y', strtotime($rd['fechaInicio'])); ?> al <?php echo date('d/m/Y', strtotime($rd['fechaFin'])); ?></span>
                                         </div>
-                                        <?php if ($inicioInsc && $finInsc): ?>
+                                        <?php if (!$esPermanente && $inicioInsc && $finInsc): ?>
                                             <div class="flex items-center justify-between text-[10px]">
                                                 <span>Inscripciones:</span>
                                                 <span class="font-bold text-gray-600"><?php echo date('d/m/Y', strtotime($inicioInsc)); ?> al <?php echo date('d/m/Y', strtotime($finInsc)); ?></span>
@@ -428,9 +447,13 @@
                                         <span class="text-[10px] font-bold border px-2 py-0.5 rounded-full uppercase tracking-wider <?php echo $badgeColor; ?>"><?php echo $badgeEstado; ?></span>
                                     </div>
                                     <div class="mt-4">
-                                        <?php if ($inscripcionAbierta): ?>
+                                        <?php if ($esPermanente): ?>
+                                            <a href="index.php?controlador=comprador&accion=verParticipantes&id=<?php echo $rd['id']; ?>" class="w-full block text-center text-xs bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-full font-black shadow-md shadow-emerald-500/10 hover:shadow-lg transition-all duration-300">
+                                                <i class="fas fa-sign-in-alt mr-1"></i> Ingresar Directamente
+                                            </a>
+                                        <?php elseif ($inscripcionAbierta): ?>
                                             <a href="index.php?controlador=comprador&accion=inscribirseRueda&id=<?php echo $rd['id']; ?>" class="w-full block text-center text-xs bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 rounded-full font-extrabold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/20 transition-all duration-300">
-                                                <i class="fas fa-user-plus mr-1"></i> Inscribirse
+                                                <i class="fas fa-user-plus mr-1"></i> Inscribirme
                                             </a>
                                         <?php else: ?>
                                             <button disabled class="w-full block text-center text-xs bg-gray-200 text-gray-400 py-2.5 rounded-full font-extrabold cursor-not-allowed border border-gray-300/30" title="<?php echo htmlspecialchars($mensajeInscripcion); ?>">

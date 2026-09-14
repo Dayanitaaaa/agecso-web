@@ -328,7 +328,18 @@
                                 <?php foreach ($ruedas as $r): ?>
                                     <tr class="group hover:bg-slate-50/80 transition-all duration-300">
                                         <td class="px-8 py-5">
-                                            <p class="text-sm font-black text-slate-900"><?php echo htmlspecialchars($r['tituloRueda'] ?? 'Sin título'); ?></p>
+                                            <div class="flex items-center gap-2">
+                                                <p class="text-sm font-black text-slate-900"><?php echo htmlspecialchars($r['tituloRueda'] ?? 'Sin título'); ?></p>
+                                                <?php if (($r['tipoRueda'] ?? 'evento') === 'permanente'): ?>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm shrink-0">
+                                                        <i class="fas fa-infinity mr-1 text-[8px]"></i> Permanente
+                                                    </span>
+                                                <?php else: ?>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200 shadow-sm shrink-0">
+                                                        <i class="fas fa-calendar-day mr-1 text-[8px]"></i> Evento
+                                                    </span>
+                                                <?php endif; ?>
+                                            </div>
                                         </td>
                                         <td class="px-8 py-5">
                                             <div class="inline-flex items-center px-3 py-1.5 bg-slate-100 rounded-xl text-[11px] font-black text-slate-600 border border-slate-200">

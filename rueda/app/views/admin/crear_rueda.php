@@ -20,6 +20,49 @@
         <div class="bg-white p-8 rounded-[2rem] shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100">
             <form action="index.php?controlador=admin&accion=crearRueda" method="POST" enctype="multipart/form-data" class="space-y-6">
                 
+                <!-- Selector de Formato de la Rueda (Evento vs Permanente) -->
+                <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/5 rounded-full blur-xl"></div>
+                    <label class="block text-xs font-black uppercase tracking-widest text-slate-300 mb-3 flex items-center gap-2 relative z-10">
+                        <i class="fas fa-layer-group text-sky-400"></i> Modalidad de Acceso a la Rueda <span class="text-rose-400">*</span>
+                    </label>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                        <!-- Opción 1: Evento Puntual -->
+                        <label class="relative flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 bg-white/10 border-white/20 hover:bg-white/15" id="card_tipo_evento">
+                            <input type="radio" name="tipoRueda" value="evento" checked onchange="toggleTipoRueda()" class="mt-1 h-4 w-4 text-sky-500 focus:ring-sky-400">
+                            <div class="ml-3">
+                                <span class="block text-sm font-black text-white flex items-center gap-2">
+                                    <i class="fas fa-calendar-day text-sky-400 text-xs"></i> 1. Evento Puntual (1 o 2 Días)
+                                </span>
+                                <span class="block text-xs text-slate-300 mt-1.5 leading-relaxed">
+                                    Requiere periodo de inscripción previo, fechas de registro y aprobación de cupos por el Administrador.
+                                </span>
+                            </div>
+                        </label>
+
+                        <!-- Opción 2: Rueda Permanente -->
+                        <label class="relative flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all duration-300 bg-white/5 border-white/10 hover:bg-white/15" id="card_tipo_permanente">
+                            <input type="radio" name="tipoRueda" value="permanente" onchange="toggleTipoRueda()" class="mt-1 h-4 w-4 text-emerald-500 focus:ring-emerald-400">
+                            <div class="ml-3">
+                                <span class="block text-sm font-black text-white flex items-center gap-2">
+                                    <i class="fas fa-infinity text-emerald-400 text-xs"></i> 2. Rueda Permanente / Abierta
+                                    <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[9px] font-black uppercase px-2 py-0.5 rounded-full">Acceso Directo</span>
+                                </span>
+                                <span class="block text-xs text-slate-300 mt-1.5 leading-relaxed">
+                                    Vigente por meses o un año. Las empresas ingresan de inmediato sin inscripción previa para aprovechar su membresía.
+                                </span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Mensaje informativo dinámico para Permanente -->
+                    <div id="permanente_info_banner" class="hidden mt-4 pt-4 border-t border-white/10 text-xs text-emerald-200 flex items-center gap-2.5">
+                        <i class="fas fa-check-circle text-emerald-400 text-sm shrink-0"></i>
+                        <span>En la <strong>Rueda Permanente</strong> no se requiere periodo de inscripción previo; los compradores y vendedores podrán ingresar directamente y agendar citas desde su activación.</span>
+                    </div>
+                </div>
+
                 <!-- Título y Descripción -->
                 <div class="space-y-4">
                     <div>
@@ -53,8 +96,8 @@
                         </div>
                     </div>
 
-                    <!-- Fechas de Inscripción -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Fechas de Inscripción (Solo obligatorias para Evento Puntual) -->
+                    <div id="contenedor_fechas_inscripcion" class="grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-300">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 ml-1 mb-1.5 uppercase tracking-wider text-slate-700">Inscripciones Inicio <span class="text-red-500">*</span></label>
                             <input type="text" name="fecha_inscripcion_inicio" id="fecha_inscripcion_inicio" required 
@@ -207,6 +250,46 @@ function previewImage(input) {
     }
 }
 
+function toggleTipoRueda() {
+    const radios = document.getElementsByName('tipoRueda');
+    let seleccionado = 'evento';
+    for (const r of radios) {
+        if (r.checked) {
+            seleccionado = r.value;
+            break;
+        }
+    }
+
+    const cardEvento = document.getElementById('card_tipo_evento');
+    const cardPermanente = document.getElementById('card_tipo_permanente');
+    const bannerInfo = document.getElementById('permanente_info_banner');
+    const contenedorInsc = document.getElementById('contenedor_fechas_inscripcion');
+    const inputInscInicio = document.getElementById('fecha_inscripcion_inicio');
+    const inputInscFin = document.getElementById('fecha_inscripcion_fin');
+
+    if (seleccionado === 'permanente') {
+        cardPermanente.classList.add('bg-white/15', 'border-emerald-400');
+        cardPermanente.classList.remove('bg-white/5', 'border-white/10');
+        cardEvento.classList.remove('bg-white/15', 'border-white/20');
+        cardEvento.classList.add('bg-white/5', 'border-white/10');
+        
+        bannerInfo.classList.remove('hidden');
+        contenedorInsc.classList.add('hidden');
+        if (inputInscInicio) inputInscInicio.required = false;
+        if (inputInscFin) inputInscFin.required = false;
+    } else {
+        cardEvento.classList.add('bg-white/15', 'border-white/20');
+        cardEvento.classList.remove('bg-white/5', 'border-white/10');
+        cardPermanente.classList.remove('bg-white/15', 'border-emerald-400');
+        cardPermanente.classList.add('bg-white/5', 'border-white/10');
+        
+        bannerInfo.classList.add('hidden');
+        contenedorInsc.classList.remove('hidden');
+        if (inputInscInicio) inputInscInicio.required = true;
+        if (inputInscFin) inputInscFin.required = true;
+    }
+}
+
 function toggleUbicacion() {
     const modalidad = document.getElementById('modalidad_select').value;
     const container = document.getElementById('ubicacion_container');
@@ -228,6 +311,7 @@ function toggleUbicacion() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    toggleTipoRueda();
     toggleUbicacion();
 
     const configDate = {
