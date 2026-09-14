@@ -343,7 +343,7 @@ class CompradorController {
                 SELECT o.*, e.razon_social, s.nombreSector, e.ubicacionGeografica, e.ciiu_personalizado, e.ciiu_nombre_personalizado
                 FROM ofertas o
                 JOIN empresas e ON o.empresaId = e.id
-                JOIN sectores s ON o.sectorId = s.id
+                LEFT JOIN sectores s ON o.sectorId = s.id
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
                 WHERE o.isActive = 1
                   AND ir.ruedaId = ?
@@ -354,8 +354,9 @@ class CompradorController {
             $params_ofertas = [$ruedaId, $ruedaId, $miEmpresaId];
 
             if (!empty($busqueda)) {
-                $sql_ofertas .= " AND (o.tituloOferta LIKE ? OR o.descripcionOferta LIKE ? OR e.razon_social LIKE ? OR e.ciiu_personalizado LIKE ? OR e.ciiu_nombre_personalizado LIKE ?)";
+                $sql_ofertas .= " AND (o.tituloOferta LIKE ? OR o.descripcionOferta LIKE ? OR e.razon_social LIKE ? OR e.ciiu_personalizado LIKE ? OR e.ciiu_nombre_personalizado LIKE ? OR o.tags LIKE ?)";
                 $search_term = "%$busqueda%";
+                $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;
                 $params_ofertas[] = $search_term;
@@ -364,8 +365,18 @@ class CompradorController {
             }
 
             if (!empty($sector_filtro)) {
-                $sql_ofertas .= " AND o.sectorId = ?";
-                $params_ofertas[] = $sector_filtro;
+                if (strpos($sector_filtro, 'ciiu:') === 0) {
+                    $sql_ofertas .= " AND e.ciiu_personalizado = ?";
+                    $params_ofertas[] = substr($sector_filtro, 5);
+                } elseif (strpos($sector_filtro, 'sec:') === 0) {
+                    $sql_ofertas .= " AND o.sectorId = ?";
+                    $params_ofertas[] = (int)substr($sector_filtro, 4);
+                } else {
+                    $sql_ofertas .= " AND (o.sectorId = ? OR e.ciiu_personalizado = ? OR e.ciiu_nombre_personalizado LIKE ?)";
+                    $params_ofertas[] = $sector_filtro;
+                    $params_ofertas[] = $sector_filtro;
+                    $params_ofertas[] = "%$sector_filtro%";
+                }
             }
 
             $sql_ofertas .= " ORDER BY CASE WHEN o.sectorId = ? THEN 0 ELSE 1 END, o.createdAt DESC";
@@ -392,7 +403,7 @@ class CompradorController {
                 SELECT DISTINCT e.*, s.nombreSector, u.nombreUsuario as representante
                 FROM empresas e
                 JOIN usuarios u ON e.usuarioId = u.id
-                JOIN sectores s ON e.sectorId = s.id
+                LEFT JOIN sectores s ON e.sectorId = s.id
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
                 WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' AND u.roleId = 3
                 ORDER BY e.razon_social ASC
@@ -400,18 +411,40 @@ class CompradorController {
             $stmt_participantes->execute([$ruedaId]);
             $participantes = $stmt_participantes->fetchAll();
 
-            // Obtener todos los sectores CIIU para el filtro, organizados por sección
-            $stmt_sectores = $this->pdo->query("
-                SELECT 
-                    s.id, 
-                    s.nombreSector, 
-                    s.ciiu_clase,
-                    CONCAT(s.ciiu_clase, ' - ', s.nombreSector) as display_text
-                FROM sectores s 
-                WHERE s.ciiu_clase IS NOT NULL
-                ORDER BY s.ciiu_clase
+            // 4. Obtener sectores y categorías empresariales representadas en esta rueda
+            $stmt_sectores = $this->pdo->prepare("
+                SELECT DISTINCT s.id as secId, s.nombreSector, e.ciiu_personalizado, e.ciiu_nombre_personalizado
+                FROM ofertas o
+                JOIN empresas e ON o.empresaId = e.id
+                LEFT JOIN sectores s ON o.sectorId = s.id
+                WHERE o.ruedaId = ? AND o.isActive = 1
             ");
-            $todos_sectores = $stmt_sectores->fetchAll();
+            $stmt_sectores->execute([$ruedaId]);
+            $sectores_raw = $stmt_sectores->fetchAll();
+
+            $todos_sectores = [];
+            $nombres_vistos = [];
+            $sectores_excluidos = ['Asalariados', 'Sin actividad económica, solo para personas naturales', 'Personas naturales subsidiadas por terceros', 'Sin actividad económica'];
+
+            foreach ($sectores_raw as $secItem) {
+                $label = '';
+                $val = '';
+                if (!empty($secItem['ciiu_nombre_personalizado']) && !in_array($secItem['ciiu_nombre_personalizado'], $sectores_excluidos)) {
+                    $label = $secItem['ciiu_nombre_personalizado'];
+                    $val = 'ciiu:' . ($secItem['ciiu_personalizado'] ?? '');
+                } elseif (!empty($secItem['nombreSector']) && !in_array($secItem['nombreSector'], $sectores_excluidos)) {
+                    $label = $secItem['nombreSector'];
+                    $val = 'sec:' . $secItem['secId'];
+                }
+
+                if (!empty($label) && !isset($nombres_vistos[$label])) {
+                    $nombres_vistos[$label] = true;
+                    $todos_sectores[] = [
+                        'valor' => $val,
+                        'nombre' => $label
+                    ];
+                }
+            }
 
             // 4. Obtener demandas del comprador para esta rueda
             $stmt_demandas = $this->pdo->prepare("

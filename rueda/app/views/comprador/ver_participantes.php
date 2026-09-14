@@ -221,104 +221,128 @@
         <?php endif; ?>
 
         <!-- FILTROS DE BÚSQUEDA REDISEÑADOS -->
-        <div class="bg-white p-6 rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 mb-10">
-            <form method="GET" action="" class="flex flex-col md:flex-row gap-4">
+        <div class="bg-white p-5 sm:p-7 rounded-[2.5rem] shadow-[0_10px_35px_rgba(0,0,0,0.03)] border border-gray-100/80 mb-12">
+            <form method="GET" action="" class="flex flex-col md:flex-row gap-3.5">
                 <input type="hidden" name="controlador" value="comprador">
                 <input type="hidden" name="accion" value="verParticipantes">
                 <input type="hidden" name="id" value="<?php echo $ruedaId; ?>">
                 
                 <div class="flex-1 relative group">
                     <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#00a2ff] transition-colors">
-                        <i class="fas fa-search text-xs"></i>
+                        <i class="fas fa-search text-sm"></i>
                     </div>
                     <input type="text" name="busqueda" value="<?php echo htmlspecialchars($_GET['busqueda'] ?? ''); ?>" 
-                           placeholder="Buscar ofertas, empresas o descripciones..." 
-                           class="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-11 pr-4 py-3.5 text-sm font-bold text-gray-700 focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition-all shadow-inner">
+                           placeholder="Buscar por producto, servicio, proveedor o palabra clave..." 
+                           class="w-full bg-slate-50/70 border border-gray-200/80 rounded-2xl pl-11 pr-4 py-3.5 text-xs sm:text-sm font-bold text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] focus:bg-white transition-all">
                 </div>
-                <div class="md:w-64 relative group">
-                    <select name="sector_id" class="appearance-none w-full bg-gray-50 border border-gray-200 rounded-2xl px-5 py-3.5 text-sm font-bold text-gray-700 focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition-all cursor-pointer shadow-inner">
-                        <option value="">Todos los sectores</option>
+                
+                <?php if (!empty($todos_sectores)): ?>
+                <div class="md:w-72 relative group">
+                    <select name="sector_id" class="appearance-none w-full bg-slate-50/70 border border-gray-200/80 rounded-2xl pl-4 pr-10 py-3.5 text-xs sm:text-sm font-bold text-gray-700 focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] focus:bg-white transition-all cursor-pointer">
+                        <option value="">Todas las actividades</option>
                         <?php foreach ($todos_sectores as $sec): ?>
-                            <option value="<?php echo $sec['id']; ?>" <?php echo ($_GET['sector_id'] ?? '') == $sec['id'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($sec['nombreSector']); ?>
+                            <option value="<?php echo htmlspecialchars($sec['valor']); ?>" <?php echo ($_GET['sector_id'] ?? '') === $sec['valor'] ? 'selected' : ''; ?>>
+                                <?php echo htmlspecialchars($sec['nombre']); ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff] group-hover:scale-110 transition-transform">
+                    <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[#00a2ff] group-hover:scale-110 transition-transform">
                         <i class="fas fa-chevron-down text-xs"></i>
                     </div>
                 </div>
-                <button type="submit" class="bg-[#00a2ff] hover:bg-[#008ae0] text-white px-8 py-3.5 rounded-2xl font-black text-sm transition-all duration-300 shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2">
-                    <i class="fas fa-filter text-xs"></i> Filtrar
-                </button>
-                <?php if (!empty($_GET['busqueda']) || !empty($_GET['sector_id'])): ?>
-                    <a href="index.php?controlador=comprador&accion=verParticipantes&id=<?php echo $ruedaId; ?>" class="bg-gray-100 text-gray-500 px-6 py-3.5 rounded-2xl font-black text-sm hover:bg-gray-200 transition-all duration-300 text-center flex items-center justify-center">
-                        <i class="fas fa-times mr-2 text-xs"></i> Limpiar
-                    </a>
                 <?php endif; ?>
+
+                <div class="flex items-center gap-2">
+                    <button type="submit" class="w-full md:w-auto bg-[#00a2ff] hover:bg-[#008ae0] text-white px-7 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition-all duration-300 shadow-md shadow-sky-500/20 hover:shadow-lg hover:shadow-sky-500/30 flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+                        <i class="fas fa-filter text-xs"></i> Filtrar
+                    </button>
+                    <?php if (!empty($_GET['busqueda']) || !empty($_GET['sector_id'])): ?>
+                        <a href="index.php?controlador=comprador&accion=verParticipantes&id=<?php echo $ruedaId; ?>" class="bg-gray-100 text-gray-500 px-5 py-3.5 rounded-2xl font-black text-xs hover:bg-gray-200 transition-all duration-300 text-center flex items-center justify-center uppercase tracking-wider">
+                            <i class="fas fa-times text-xs"></i>
+                        </a>
+                    <?php endif; ?>
+                </div>
             </form>
         </div>
 
         <!-- GRID PRINCIPAL: OFERTAS REDISEÑADO -->
         <div class="mb-14">
             <div class="flex items-center justify-between mb-8">
-                <h2 class="text-sm font-black text-gray-400 uppercase tracking-[0.2em] flex items-center gap-3">
-                    <i class="fas fa-box-open text-[#00a2ff]"></i> Ofertas Disponibles
-                </h2>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-50 flex items-center justify-center text-[#00a2ff] border border-sky-100 shadow-sm">
+                        <i class="fas fa-box-open text-base"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-black text-gray-900 leading-none">Ofertas Disponibles</h2>
+                        <p class="text-[11px] font-bold text-gray-400 mt-1 uppercase tracking-wider">Catálogo de proveedores listos para agendar</p>
+                    </div>
+                </div>
                 <div class="bg-sky-50 px-4 py-1.5 rounded-full border border-sky-100">
-                    <span class="text-[10px] font-black text-[#00a2ff] uppercase tracking-wider"><?php echo count($ofertas); ?> resultados</span>
+                    <span class="text-[10px] font-black text-[#00a2ff] uppercase tracking-wider"><?php echo count($ofertas); ?> disponibles</span>
                 </div>
             </div>
             
             <?php if (empty($ofertas)): ?>
-                <div class="bg-gray-50/50 border-2 border-dashed border-gray-200 rounded-[2.5rem] p-16 text-center">
-                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-gray-100">
-                        <i class="fas fa-search text-gray-200 text-3xl"></i>
+                <div class="bg-white border-2 border-dashed border-gray-200 rounded-[2.5rem] p-16 text-center shadow-sm">
+                    <div class="w-20 h-20 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-sky-100 text-[#00a2ff]">
+                        <i class="fas fa-search text-3xl"></i>
                     </div>
                     <p class="text-gray-900 font-black text-lg">No se encontraron ofertas</p>
-                    <p class="text-gray-400 text-sm font-bold mt-2">Prueba ajustando tus filtros de búsqueda o cambiando de sector.</p>
+                    <p class="text-gray-400 text-sm font-bold mt-2">Prueba ajustando tus términos de búsqueda o limpiando los filtros.</p>
                 </div>
             <?php else: ?>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <?php foreach ($ofertas as $oferta): ?>
-                        <div class="bg-white rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden hover:shadow-xl hover:border-sky-100 transition-all duration-500 flex flex-col group">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                    <?php foreach ($ofertas as $oferta): 
+                        // Determinar categoría/sector visual limpio (evitar Asalariados y textos crudos de DB)
+                        $categoriaVisual = '';
+                        $sectoresExcluidos = ['Asalariados', 'Sin actividad económica, solo para personas naturales', 'Personas naturales subsidiadas por terceros', 'Sin actividad económica'];
+                        
+                        if (!empty($oferta['ciiu_nombre_personalizado']) && !in_array($oferta['ciiu_nombre_personalizado'], $sectoresExcluidos)) {
+                            $categoriaVisual = $oferta['ciiu_nombre_personalizado'];
+                        } elseif (!empty($oferta['nombreSector']) && !in_array($oferta['nombreSector'], $sectoresExcluidos)) {
+                            $categoriaVisual = $oferta['nombreSector'];
+                        } elseif (!empty($oferta['tags'])) {
+                            $tagsList = array_filter(array_map('trim', explode(',', $oferta['tags'])));
+                            if (!empty($tagsList)) $categoriaVisual = reset($tagsList);
+                        }
+                        if (empty($categoriaVisual)) $categoriaVisual = 'Oferta Empresarial';
+                    ?>
+                        <div class="bg-white rounded-[2.2rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden hover:shadow-2xl hover:border-sky-200 transition-all duration-500 flex flex-col justify-between group">
                             <div class="p-7 flex-1">
-                                <div class="flex items-start justify-between mb-5">
-                                    <div class="flex flex-wrap gap-2">
-                                        <span class="text-[9px] bg-sky-50 text-[#00a2ff] px-3 py-1 rounded-full font-black uppercase tracking-wider border border-sky-100/50">
-                                            <i class="fas fa-tag mr-1 opacity-60"></i> <?php echo htmlspecialchars($oferta['nombreSector'] ?? 'N/A'); ?>
+                                <!-- Badge superior de sector / match -->
+                                <div class="flex items-start justify-between gap-2 mb-4">
+                                    <span class="inline-flex items-center gap-1.5 text-[10px] bg-sky-50 text-[#00a2ff] px-3.5 py-1.5 rounded-full font-black uppercase tracking-wider border border-sky-100/70 shadow-sm max-w-full truncate">
+                                        <i class="fas fa-tag text-[9px] opacity-75 shrink-0"></i>
+                                        <span class="truncate"><?php echo htmlspecialchars($categoriaVisual); ?></span>
+                                    </span>
+                                    
+                                    <?php if (!empty($miCiiuMatch) && !empty($oferta['ciiu_personalizado']) && $oferta['ciiu_personalizado'] == $miCiiuMatch): ?>
+                                        <span class="text-[9px] bg-amber-500 text-white px-2.5 py-1 rounded-full font-black uppercase tracking-wider shadow-sm shrink-0 flex items-center gap-1">
+                                            <i class="fas fa-star text-[8px]"></i> Match
                                         </span>
-                                        <?php if ($oferta['sectorId'] == $miSectorId): ?>
-                                            <span class="text-[9px] bg-emerald-500 text-white px-3 py-1 rounded-full font-black uppercase tracking-wider shadow-sm">
-                                                <i class="fas fa-check-circle mr-1"></i> Match Sector
-                                            </span>
-                                        <?php endif; ?>
-                                        <?php if (!empty($miCiiuMatch) && $oferta['ciiu_personalizado'] == $miCiiuMatch): ?>
-                                            <span class="text-[9px] bg-amber-500 text-white px-3 py-1 rounded-full font-black uppercase tracking-wider shadow-sm">
-                                                <i class="fas fa-star mr-1"></i> Match CIIU
-                                            </span>
-                                        <?php endif; ?>
-                                    </div>
+                                    <?php endif; ?>
                                 </div>
                                 
-                                <h3 class="font-black text-gray-900 text-lg mb-3 leading-tight group-hover:text-[#00a2ff] transition-colors"><?php echo htmlspecialchars($oferta['tituloOferta'] ?? 'N/A'); ?></h3>
-                                <p class="text-xs text-gray-500 leading-relaxed font-medium line-clamp-4 mb-6"><?php echo htmlspecialchars($oferta['descripcionOferta'] ?? 'N/A'); ?></p>
+                                <!-- Título y Descripción -->
+                                <h3 class="font-black text-gray-900 text-lg mb-2.5 leading-tight group-hover:text-[#00a2ff] transition-colors line-clamp-2"><?php echo htmlspecialchars($oferta['tituloOferta'] ?? 'N/A'); ?></h3>
+                                <p class="text-xs text-gray-500 leading-relaxed font-medium line-clamp-3 mb-6"><?php echo htmlspecialchars($oferta['descripcionOferta'] ?? 'N/A'); ?></p>
                                 
-                                <div class="space-y-3 pt-6 border-t border-gray-50">
-                                    <div class="flex items-center text-xs">
-                                        <div class="w-8 h-8 rounded-full bg-sky-50 flex items-center justify-center mr-3 border border-sky-100/50 shrink-0">
-                                            <i class="fas fa-building text-[#00a2ff] text-[10px]"></i>
+                                <!-- Bloque de Datos del Proveedor -->
+                                <div class="bg-slate-50/80 rounded-2xl p-4 border border-slate-100/80 space-y-2.5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-white shadow-sm flex items-center justify-center border border-gray-100 shrink-0 text-[#00a2ff]">
+                                            <i class="fas fa-building text-xs"></i>
                                         </div>
-                                        <div class="min-w-0">
+                                        <div class="min-w-0 flex-1">
                                             <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Proveedor</p>
-                                            <p class="font-black text-gray-800 leading-none truncate"><?php echo htmlspecialchars($oferta['razon_social'] ?? 'N/A'); ?></p>
+                                            <p class="font-black text-gray-900 text-xs leading-tight truncate"><?php echo htmlspecialchars($oferta['razon_social'] ?? 'N/A'); ?></p>
                                         </div>
                                     </div>
                                     
                                     <?php if (!empty($oferta['ubicacionGeografica'])): ?>
-                                    <div class="flex items-center text-xs text-gray-400">
-                                        <i class="fas fa-map-marker-alt w-8 text-center text-[10px] mr-0.5 shrink-0"></i>
-                                        <span class="font-bold tracking-tight italic truncate"><?php echo htmlspecialchars($oferta['ubicacionGeografica']); ?></span>
+                                    <div class="flex items-center text-[11px] text-gray-500 font-semibold pt-2 border-t border-gray-100/80">
+                                        <i class="fas fa-map-marker-alt text-gray-400 text-[10px] mr-1.5 shrink-0"></i>
+                                        <span class="truncate"><?php echo htmlspecialchars($oferta['ubicacionGeografica']); ?></span>
                                     </div>
                                     <?php endif; ?>
                                 </div>
@@ -360,7 +384,7 @@
                                     </div>
                                 <?php else: ?>
                                     <button type="button" 
-                                            onclick="abrirModalSolicitar(<?php echo (int)$oferta['empresaId']; ?>, '<?php echo htmlspecialchars(addslashes($oferta['razon_social'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['tituloOferta'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['nombreSector'] ?? '')); ?>')"
+                                            onclick="abrirModalSolicitar(<?php echo (int)$oferta['empresaId']; ?>, '<?php echo htmlspecialchars(addslashes($oferta['razon_social'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['tituloOferta'])); ?>', '<?php echo htmlspecialchars(addslashes($categoriaVisual)); ?>')"
                                             class="w-full bg-[#00a2ff] hover:bg-[#008ae0] text-white py-3.5 px-4 rounded-2xl text-xs font-black transition-all duration-300 shadow-md shadow-sky-500/15 flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-sky-500/25 transform hover:-translate-y-0.5 uppercase tracking-wider">
                                         <i class="fas fa-calendar-plus text-sm"></i> Solicitar Cita
                                     </button>
