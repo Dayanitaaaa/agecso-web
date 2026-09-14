@@ -1074,7 +1074,8 @@ class CompradorController {
 
                 Logger::log("Comprador agregó link de reunión a cita ID $cita_id", 'business');
 
-                header("Location: index.php?controlador=comprador&accion=verReuniones&msg=link_agregado");
+                $redirect_rueda = !empty($cita['ruedaId']) ? '&rueda_id=' . $cita['ruedaId'] : '';
+                header("Location: index.php?controlador=comprador&accion=verReuniones{$redirect_rueda}&msg=link_agregado");
                 exit();
             } catch (Exception $e) {
                 Logger::logCurrentRoleError('Error al agregar link de reunión', [

@@ -881,6 +881,22 @@ function descargarICS(nombreSocio, fechaHora, link, ubicacion) {
 
 <?php require_once __DIR__ . '/../layout/modal_encuesta.php'; ?>
 
+<script>
+function abrirModalLink(reunionId) {
+    const input = document.getElementById('link_cita_id');
+    if (input) input.value = reunionId;
+    const linkInput = document.getElementById('link_input');
+    if (linkInput) linkInput.value = '';
+    const modal = document.getElementById('modalAgregarLink');
+    if (modal) modal.classList.remove('hidden');
+}
+
+function cerrarModalLink() {
+    const modal = document.getElementById('modalAgregarLink');
+    if (modal) modal.classList.add('hidden');
+}
+</script>
+
 <!-- Modal para registrar link de reunión -->
 <div id="modalAgregarLink" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
