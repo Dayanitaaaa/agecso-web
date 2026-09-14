@@ -710,14 +710,30 @@ class CompradorController {
                     $estado = 'mesa_apartada';
                 }
 
+                $duracion = (int)($c['duracionCitaMinutos'] ?? ($rueda_actual['duracionCitaMinutos'] ?? 30));
+                if ($duracion <= 0) $duracion = 30;
+                $fechaFinTs = strtotime($c['fechaHora']) + ($duracion * 60);
+                $tiempoCumplido = (time() >= $fechaFinTs);
+
                 if ($estado === 'mesa_apartada') {
                     // Mesas apartadas sin propuesta de vendedor aún
                     $citas_programadas[] = $c;
+                } elseif (in_array($estado, ['cancelada', 'rechazada', 'realizada'])) {
+                    $citas_historial[] = $c;
+                } elseif ($tiempoCumplido) {
+                    // Si el tiempo de la cita ya concluyó
+                    if (in_array($estado, ['aceptada', 'agendada'])) {
+                        $c['estadoCita'] = 'realizada';
+                        try {
+                            $this->pdo->prepare("UPDATE reuniones SET estadoCita = 'realizada' WHERE id = ? AND estadoCita IN ('aceptada', 'agendada')")->execute([$c['id']]);
+                        } catch (Exception $e) {}
+                    }
+                    $citas_historial[] = $c;
                 } elseif (in_array($estado, ['pendiente', 'negociando'])) {
                     // Cita pendiente: El comprador siempre puede Gestionar (Aceptar / Proponer hora / Rechazar)
                     $citas_por_aceptar[] = $c;
                 } elseif (in_array($estado, ['aceptada', 'agendada'])) {
-                    // Cita confirmada
+                    // Cita confirmada vigente
                     $citas_programadas[] = $c;
                 } else {
                     // Finalizadas, canceladas o rechazadas

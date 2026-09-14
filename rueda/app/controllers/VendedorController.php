@@ -422,7 +422,23 @@ class VendedorController {
                     // Fallback si fallan las columnas de turno
                 }
 
-                if ($debeActuarVendedor) {
+                $duracion = (int)($c['duracionCitaMinutos'] ?? ($rueda_actual['duracionCitaMinutos'] ?? 30));
+                if ($duracion <= 0) $duracion = 30;
+                $fechaFinTs = strtotime($c['fechaHora']) + ($duracion * 60);
+                $tiempoCumplido = (time() >= $fechaFinTs);
+
+                if (in_array($c['estadoCita'], ['cancelada', 'rechazada', 'realizada'])) {
+                    $citas_historial[] = $c;
+                } elseif ($tiempoCumplido) {
+                    // Si el tiempo de la cita ya concluyó
+                    if (in_array($c['estadoCita'], ['aceptada', 'agendada'])) {
+                        $c['estadoCita'] = 'realizada';
+                        try {
+                            $this->pdo->prepare("UPDATE reuniones SET estadoCita = 'realizada' WHERE id = ? AND estadoCita IN ('aceptada', 'agendada')")->execute([$c['id']]);
+                        } catch (Exception $e) {}
+                    }
+                    $citas_historial[] = $c;
+                } elseif ($debeActuarVendedor) {
                     // El comprador envió una propuesta o contraoferta que el vendedor debe responder
                     $stmt_hist = $this->pdo->prepare("
                         SELECT * FROM reunion_negociaciones 
@@ -439,8 +455,6 @@ class VendedorController {
                     $citas_pendientes_comprador[] = $c;
                 } elseif (in_array($c['estadoCita'], ['aceptada', 'agendada'])) {
                     $citas_programadas[] = $c;
-                } elseif (in_array($c['estadoCita'], ['cancelada', 'rechazada', 'realizada'])) {
-                    $citas_historial[] = $c;
                 } else {
                     $citas_historial[] = $c;
                 }

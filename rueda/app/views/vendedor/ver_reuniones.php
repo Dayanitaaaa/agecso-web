@@ -505,8 +505,8 @@
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <?php 
-                                            $ya_paso = (date('Y-m-d', strtotime($cita['fechaHora'])) < date('Y-m-d', strtotime(SYSTEM_TIME)));
-                                            if (($ya_paso || $cita['estadoCita'] == 'realizada') && $cita['estadoCita'] != 'cancelada'): 
+                                            $ya_paso = (strtotime($cita['fechaHora']) <= time());
+                                            if (($ya_paso || $cita['estadoCita'] == 'realizada') && !in_array($cita['estadoCita'], ['cancelada', 'rechazada'])): 
                                         ?>
                                             <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_comprador'] ?? 'N/A')); ?>', '<?php echo date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'])); ?>', 'satisfaccion')" 
                                                     class="text-[10px] font-black text-[#0d9488] hover:text-white bg-teal-50 hover:bg-[#0d9488] border border-teal-100 px-4 py-2 rounded-full transition-all duration-300 uppercase tracking-wider">

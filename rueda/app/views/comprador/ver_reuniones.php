@@ -447,8 +447,8 @@
                                     </td>
                                     <td class="px-6 py-4 text-center">
                                         <?php 
-                                            $ya_paso = (date('Y-m-d', strtotime($cita['fechaHora'])) < date('Y-m-d', strtotime(SYSTEM_TIME)));
-                                            if (($ya_paso || $cita['estadoCita'] == 'realizada') && $cita['estadoCita'] != 'cancelada'): 
+                                            $ya_paso = (strtotime($cita['fechaHora']) <= time());
+                                            if (($ya_paso || $cita['estadoCita'] == 'realizada') && !in_array($cita['estadoCita'], ['cancelada', 'rechazada'])): 
                                         ?>
                                             <button onclick="abrirModalEncuesta(<?php echo $cita['id']; ?>, '<?php echo addslashes(htmlspecialchars($cita['nombre_vendedor'] ?? 'N/A')); ?>', '<?php echo addslashes(htmlspecialchars($cita['tituloRueda'])); ?>', '<?php echo date('d/m/Y H:i', strtotime($cita['fechaHora'])); ?>')" 
                                                     class="text-[10px] font-black text-[#00a2ff] hover:text-white bg-sky-50 hover:bg-[#00a2ff] border border-sky-100 px-4 py-2 rounded-full transition-all duration-300 uppercase tracking-wider">
