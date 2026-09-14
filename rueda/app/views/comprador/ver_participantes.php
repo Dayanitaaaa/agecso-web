@@ -4,8 +4,23 @@
     <div class="px-4 py-6 sm:px-0">
         
         <!-- Mensajes -->
-        <?php if (isset($_GET['msg']) && $_GET['msg'] === 'demanda_registrada'): ?>
-            <div class="mb-6 p-4 bg-green-100 border border-green-300 rounded-lg flex items-center">
+        <?php if (isset($_GET['msg']) && $_GET['msg'] === 'reunion_solicitada'): ?>
+            <div class="mb-6 p-5 bg-gradient-to-r from-sky-50 to-blue-50 border-2 border-[#00a2ff]/30 rounded-3xl shadow-sm flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-[#00a2ff] text-white rounded-2xl flex items-center justify-center shadow-md shadow-sky-500/20 shrink-0 text-lg">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-black text-gray-900">¡Solicitud de Cita Enviada con Éxito!</h3>
+                        <p class="text-xs text-gray-600 mt-0.5 font-medium">Tu propuesta de reunión ha sido enviada al proveedor. Puedes darle seguimiento desde tu sección de <b>"Mis Citas"</b>.</p>
+                    </div>
+                </div>
+                <a href="index.php?controlador=comprador&accion=verReuniones&rueda_id=<?php echo $ruedaId; ?>" class="bg-[#00a2ff] hover:bg-[#008ae0] text-white text-xs font-black px-4 py-2 rounded-xl transition-all shadow-sm shrink-0">
+                    Ver Mis Citas
+                </a>
+            </div>
+        <?php elseif (isset($_GET['msg']) && $_GET['msg'] === 'demanda_registrada'): ?>
+            <div class="mb-6 p-4 bg-green-100 border border-green-300 rounded-2xl flex items-center">
                 <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
                 <div>
                     <p class="font-bold text-green-800">¡Demanda registrada exitosamente!</p>
@@ -291,24 +306,32 @@
                                 
                                 <div class="space-y-3 pt-6 border-t border-gray-50">
                                     <div class="flex items-center text-xs">
-                                        <div class="w-8 h-8 rounded-full bg-sky-50 flex items-center justify-center mr-3 border border-sky-100/50">
+                                        <div class="w-8 h-8 rounded-full bg-sky-50 flex items-center justify-center mr-3 border border-sky-100/50 shrink-0">
                                             <i class="fas fa-building text-[#00a2ff] text-[10px]"></i>
                                         </div>
-                                        <div>
+                                        <div class="min-w-0">
                                             <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Proveedor</p>
-                                            <p class="font-black text-gray-800 leading-none"><?php echo htmlspecialchars($oferta['razon_social'] ?? 'N/A'); ?></p>
+                                            <p class="font-black text-gray-800 leading-none truncate"><?php echo htmlspecialchars($oferta['razon_social'] ?? 'N/A'); ?></p>
                                         </div>
                                     </div>
                                     
                                     <?php if (!empty($oferta['ubicacionGeografica'])): ?>
                                     <div class="flex items-center text-xs text-gray-400">
-                                        <i class="fas fa-map-marker-alt w-8 text-center text-[10px] mr-0.5"></i>
-                                        <span class="font-bold tracking-tight italic"><?php echo htmlspecialchars($oferta['ubicacionGeografica']); ?></span>
+                                        <i class="fas fa-map-marker-alt w-8 text-center text-[10px] mr-0.5 shrink-0"></i>
+                                        <span class="font-bold tracking-tight italic truncate"><?php echo htmlspecialchars($oferta['ubicacionGeografica']); ?></span>
                                     </div>
                                     <?php endif; ?>
                                 </div>
                             </div>
-                            
+
+                            <!-- Botón Agendar Cita con Proveedor -->
+                            <div class="p-6 pt-0">
+                                <button type="button" 
+                                        onclick="abrirModalSolicitar(<?php echo (int)$oferta['empresaId']; ?>, '<?php echo htmlspecialchars(addslashes($oferta['razon_social'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['tituloOferta'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['nombreSector'] ?? '')); ?>')"
+                                        class="w-full bg-[#00a2ff] hover:bg-[#008ae0] text-white py-3.5 px-4 rounded-2xl text-xs font-black transition-all duration-300 shadow-md shadow-sky-500/15 flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-sky-500/25 transform hover:-translate-y-0.5 uppercase tracking-wider">
+                                    <i class="fas fa-calendar-plus text-sm"></i> Solicitar Cita
+                                </button>
+                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -332,19 +355,27 @@
             </button>
             
             <div id="grid_empresas" class="hidden mt-10">
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <?php foreach ($participantes as $p): ?>
-                        <div class="bg-white p-5 rounded-[1.5rem] border border-gray-100 shadow-sm hover:shadow-md hover:border-sky-100 transition-all text-center group">
-                            <div class="w-12 h-12 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-3 border border-gray-50 group-hover:bg-sky-50 transition-colors">
-                                <i class="fas fa-building text-gray-300 text-sm group-hover:text-sky-400 transition-colors"></i>
+                        <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg hover:border-sky-100 transition-all text-center flex flex-col justify-between group">
+                            <div>
+                                <div class="w-14 h-14 bg-sky-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-sky-100/50 group-hover:bg-[#00a2ff] group-hover:text-white transition-colors">
+                                    <i class="fas fa-building text-[#00a2ff] group-hover:text-white text-lg transition-colors"></i>
+                                </div>
+                                <p class="text-xs font-black text-gray-900 line-clamp-2 uppercase tracking-tight"><?php echo htmlspecialchars($p['razon_social']); ?></p>
+                                <p class="text-[10px] font-bold text-sky-500 mt-1 uppercase tracking-tighter">
+                                    CIIU: <?php echo htmlspecialchars($p['ciiu_personalizado'] ?: ($p['ciiu_clase'] ?? 'N/A')); ?>
+                                </p>
+                                <?php if (!empty($p['ciiu_nombre_personalizado'])): ?>
+                                    <p class="text-[9px] text-gray-400 font-medium line-clamp-1 italic mt-0.5"><?php echo htmlspecialchars($p['ciiu_nombre_personalizado']); ?></p>
+                                <?php endif; ?>
                             </div>
-                            <p class="text-[10px] font-black text-gray-900 line-clamp-2 uppercase tracking-tight"><?php echo htmlspecialchars($p['razon_social']); ?></p>
-                            <p class="text-[9px] font-bold text-sky-500 mt-1 uppercase tracking-tighter">
-                                CIIU: <?php echo htmlspecialchars($p['ciiu_personalizado'] ?: ($p['ciiu_clase'] ?? 'N/A')); ?>
-                            </p>
-                            <?php if (!empty($p['ciiu_nombre_personalizado'])): ?>
-                                <p class="text-[8px] text-gray-400 font-medium line-clamp-1 italic mt-0.5"><?php echo htmlspecialchars($p['ciiu_nombre_personalizado']); ?></p>
-                            <?php endif; ?>
+
+                            <button type="button" 
+                                    onclick="abrirModalSolicitar(<?php echo (int)$p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['razon_social'])); ?>', '', '<?php echo htmlspecialchars(addslashes($p['nombreSector'] ?? '')); ?>')"
+                                    class="mt-4 w-full bg-sky-50 hover:bg-[#00a2ff] text-[#00a2ff] hover:text-white py-2.5 px-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fas fa-calendar-plus text-xs"></i> Solicitar Cita
+                            </button>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -444,18 +475,207 @@
     </div>
 </div>
 
+<!-- Modal Solicitar Cita con Proveedor -->
+<div id="modalSolicitudCita" class="hidden fixed z-50 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Overlay oscuro premium -->
+        <div class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="cerrarModalSolicitar()"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen">&#8203;</span>
+        
+        <!-- Tarjeta de Modal Premium -->
+        <div class="inline-block align-bottom bg-white rounded-[2.5rem] text-left overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative animate-modal">
+            
+            <!-- Botón Cerrar (X) -->
+            <button type="button" onclick="cerrarModalSolicitar()" 
+                    class="absolute right-5 top-5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition duration-200 focus:outline-none z-10">
+                <i class="fas fa-times text-sm"></i>
+            </button>
+
+            <form action="index.php?controlador=comprador&accion=solicitarReunion" method="POST">
+                <input type="hidden" name="rueda_id" value="<?php echo $ruedaId; ?>">
+                <input type="hidden" name="comprador_id" value="<?php echo $miEmpresaId; ?>">
+                <input type="hidden" name="vendedor_id" id="modal_vendedor_id">
+                <input type="hidden" name="redirect_to" value="verParticipantes">
+                
+                <div class="bg-white px-6 pt-7 pb-5 sm:p-8 sm:pb-6">
+                    <!-- Título con Icono -->
+                    <div class="flex items-center gap-3 mb-5 text-left">
+                        <div class="w-11 h-11 bg-sky-50 text-[#00a2ff] rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+                            <i class="fas fa-calendar-plus text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-gray-900 tracking-tight">Agendar Cita de Negocios</h3>
+                            <p class="text-xs text-gray-400 font-bold">Propón fecha y hora al proveedor</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta de Detalles del Proveedor -->
+                    <div class="bg-gradient-to-br from-sky-50/50 to-blue-50/30 border border-sky-100 p-5 rounded-2xl mb-6 text-left">
+                        <div class="flex items-start gap-3">
+                            <div class="p-2.5 bg-white text-[#00a2ff] rounded-xl shadow-sm shrink-0">
+                                <i class="fas fa-building text-sm"></i>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="text-[9px] font-black text-[#00a2ff] tracking-wider uppercase">Empresa Proveedora</p>
+                                <p id="modal_vendedor_nombre" class="font-black text-gray-900 text-base mt-0.5 truncate"></p>
+                                <p id="modal_vendedor_contexto" class="text-xs text-gray-500 mt-1 font-medium line-clamp-2"></p>
+                            </div>
+                        </div>
+
+                        <!-- Información de Mesa (Si es presencial) -->
+                        <?php if (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0): ?>
+                            <div class="mt-4 pt-3 border-t border-sky-100/60">
+                                <?php if (!empty($miMesaApartada)): ?>
+                                    <input type="hidden" name="numero_mesa" value="<?php echo $miMesaApartada; ?>">
+                                    <div class="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200 font-bold">
+                                        <i class="fas fa-map-marker-alt text-amber-500"></i>
+                                        <span>Tu mesa asignada: <strong class="text-amber-900 font-black">Mesa #<?php echo $miMesaApartada; ?></strong></span>
+                                    </div>
+                                <?php else: ?>
+                                    <div>
+                                        <label class="block text-xs font-black text-gray-700 mb-1.5 uppercase tracking-wider">
+                                            <i class="fas fa-chair text-amber-500 mr-1"></i> Asigna tu mesa para esta rueda <span class="text-red-500">*</span>
+                                        </label>
+                                        <select name="numero_mesa" required class="block w-full border border-gray-200 rounded-xl px-3.5 py-2.5 text-xs font-bold bg-white focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff]">
+                                            <option value="">Selecciona una mesa disponible...</option>
+                                            <?php for ($m = 1; $m <= ($rueda['cantidadMesas'] ?? 0); $m++): ?>
+                                                <?php if (!in_array($m, $mesas_ocupadas ?? [])): ?>
+                                                    <option value="<?php echo $m; ?>">Mesa #<?php echo $m; ?> (Disponible)</option>
+                                                <?php endif; ?>
+                                            <?php endfor; ?>
+                                        </select>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <!-- Campos del Formulario -->
+                    <div class="space-y-4 text-left">
+                        <div>
+                            <label class="block text-xs font-black text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">
+                                Fecha y Hora Propuesta <span class="text-rose-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text" name="fecha_hora" id="fecha_hora_solicitud" required 
+                                       class="block w-full border border-gray-200 rounded-2xl shadow-sm pl-11 pr-4 py-3 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 bg-gray-50 cursor-pointer"
+                                       placeholder="Seleccionar fecha y hora...">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#00a2ff]">
+                                    <i class="far fa-calendar-alt text-base"></i>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-gray-400 mt-1.5 ml-1 flex items-center gap-1 font-bold">
+                                <i class="fas fa-info-circle text-[#00a2ff]"></i>
+                                Bloques de 30 minutos dentro del horario oficial de la rueda.
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-black text-gray-700 ml-1 mb-1.5 uppercase tracking-wider">Mensaje o Interés Comercial (Opcional)</label>
+                            <textarea name="mensaje" rows="3" 
+                                      class="block w-full border border-gray-200 rounded-2xl shadow-sm px-4 py-3 text-xs focus:outline-none focus:ring-4 focus:ring-sky-50 focus:border-[#00a2ff] transition duration-200 resize-none bg-gray-50 font-medium" 
+                                      placeholder="Ej: Hola, nos interesa conocer sus precios y cotizar para el próximo mes..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Acciones del Footer -->
+                <div class="bg-gray-50/50 border-t border-gray-100 px-6 py-4 sm:px-8 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                    <button type="button" onclick="cerrarModalSolicitar()" 
+                            class="w-full sm:w-auto inline-flex justify-center rounded-full border border-gray-200 px-5 py-2.5 bg-white text-xs font-black text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition duration-200 focus:outline-none">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center gap-2 rounded-full border border-transparent px-7 py-2.5 bg-[#00a2ff] text-xs font-black text-white hover:bg-[#008ae0] shadow-[0_4px_15px_rgba(0,162,255,0.2)] hover:shadow-[0_6px_20px_rgba(0,162,255,0.35)] hover:-translate-y-0.5 transition duration-200 transform focus:outline-none uppercase tracking-wider">
+                        <i class="fas fa-paper-plane text-xs"></i> Enviar Solicitud de Cita
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+let flatpickrInstanceSolicitud = null;
+
+function abrirModalSolicitar(vendedorId, razonSocial, ofertaTitulo = '', sector = '') {
+    document.getElementById('modal_vendedor_id').value = vendedorId;
+    document.getElementById('modal_vendedor_nombre').innerText = razonSocial;
+    
+    let contexto = '';
+    if (ofertaTitulo) {
+        contexto = 'Oferta de interés: ' + ofertaTitulo;
+    } else if (sector) {
+        contexto = 'Sector: ' + sector;
+    } else {
+        contexto = 'Reunión de vinculación comercial';
+    }
+    document.getElementById('modal_vendedor_contexto').innerText = contexto;
+
+    const modal = document.getElementById('modalSolicitudCita');
+    if (modal) modal.classList.remove('hidden');
+
+    // Inicializar o actualizar Flatpickr
+    const inputFecha = document.getElementById('fecha_hora_solicitud');
+    if (inputFecha && typeof flatpickr !== 'undefined') {
+        if (!flatpickrInstanceSolicitud) {
+            flatpickrInstanceSolicitud = flatpickr(inputFecha, {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                altInput: true,
+                altFormat: "j \\de F, Y - h:i K",
+                time_24hr: false,
+                minuteIncrement: 30,
+                locale: "es",
+                minDate: "<?php echo date('Y-m-d H:i', max(strtotime(SYSTEM_TIME), strtotime($rueda['fechaInicio'] . ' ' . ($rueda['horaInicio'] ?? '08:00:00')))); ?>",
+                maxDate: "<?php echo date('Y-m-d 23:59', strtotime($rueda['fechaFin'] . ' ' . ($rueda['horaFin'] ?? '18:00:00'))); ?>",
+                defaultHour: 9,
+                defaultMinute: 0
+            });
+        }
+    }
+}
+
+function cerrarModalSolicitar() {
+    const modal = document.getElementById('modalSolicitudCita');
+    if (modal) modal.classList.add('hidden');
+}
+
 function toggleParticipantes() {
     const seccion = document.getElementById('grid_empresas');
     const icono = document.querySelector('button[onclick*="grid_empresas"] i');
-    if (seccion.classList.contains('hidden')) {
-        seccion.classList.remove('hidden');
-        if (icono) icono.classList.add('rotate-180');
-    } else {
-        seccion.classList.add('hidden');
-        if (icono) icono.classList.remove('rotate-180');
+    if (seccion) {
+        seccion.classList.toggle('hidden');
+        if (icono) icono.classList.toggle('rotate-180');
     }
 }
+
+<?php if (!empty($_GET['msg'])): ?>
+document.addEventListener("DOMContentLoaded", function() {
+    const msg = "<?php echo htmlspecialchars($_GET['msg']); ?>";
+    if (msg === 'reunion_solicitada') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Solicitud de Cita Enviada!',
+            text: 'Tu propuesta de reunión fue enviada exitosamente al proveedor. Podrás ver su respuesta en "Mis Citas".',
+            confirmButtonColor: '#00a2ff',
+            confirmButtonText: 'Excelente'
+        });
+    } else if (msg === 'demanda_registrada') {
+        Swal.fire({
+            icon: 'success',
+            title: '¡Demanda Registrada!',
+            text: 'Tu requerimiento ha sido publicado con éxito en esta rueda.',
+            confirmButtonColor: '#10b981',
+            confirmButtonText: 'Listo'
+        });
+    }
+    
+    // Limpiar el parametro msg de la URL sin recargar
+    const url = new URL(window.location);
+    url.searchParams.delete('msg');
+    window.history.replaceState({}, document.title, url.toString());
+});
+<?php endif; ?>
 </script>
 
 <?php include __DIR__ . '/../layout/footer.php'; ?>

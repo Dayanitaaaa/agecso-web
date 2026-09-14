@@ -422,6 +422,29 @@ class CompradorController {
             $stmt_demandas->execute([$miEmpresaId, $ruedaId]);
             $demandas_rueda = $stmt_demandas->fetchAll();
 
+            // 5. Obtener mesa asignada previamente si la rueda es presencial
+            $stmt_mi_mesa = $this->pdo->prepare("
+                SELECT numero_mesa FROM reuniones 
+                WHERE ruedaId = ? AND compradorId = ? 
+                AND numero_mesa IS NOT NULL 
+                AND estadoCita NOT IN ('cancelada', 'rechazada') 
+                LIMIT 1
+            ");
+            $stmt_mi_mesa->execute([$ruedaId, $miEmpresaId]);
+            $miMesaApartada = $stmt_mi_mesa->fetchColumn();
+
+            // Listar mesas ocupadas
+            $mesas_ocupadas = [];
+            if (!empty($rueda['cantidadMesas']) && ($rueda['modalidad'] ?? 'virtual') !== 'virtual') {
+                $stmt_mesas = $this->pdo->prepare("
+                    SELECT DISTINCT numero_mesa FROM reuniones 
+                    WHERE ruedaId = ? AND numero_mesa IS NOT NULL 
+                    AND estadoCita NOT IN ('cancelada', 'rechazada')
+                ");
+                $stmt_mesas->execute([$ruedaId]);
+                $mesas_ocupadas = $stmt_mesas->fetchAll(PDO::FETCH_COLUMN);
+            }
+
             require_once '../app/views/comprador/ver_participantes.php';
         } catch (Exception $e) {
             $error_msg = $e->getMessage();
@@ -995,7 +1018,12 @@ class CompradorController {
 
                 Logger::log("Comprador ID $comprador_id solicitó reunión con Vendedor ID $vendedor_id", 'business');
 
-                header("Location: index.php?controlador=comprador&accion=dashboard&msg=reunion_solicitada");
+                $redirect_to = $_POST['redirect_to'] ?? '';
+                if ($redirect_to === 'verParticipantes') {
+                    header("Location: index.php?controlador=comprador&accion=verParticipantes&id={$rueda_id}&msg=reunion_solicitada");
+                } else {
+                    header("Location: index.php?controlador=comprador&accion=verReuniones&rueda_id={$rueda_id}&msg=reunion_solicitada");
+                }
                 exit();
             } catch (Exception $e) {
                 Logger::logCurrentRoleError('Error al solicitar reunión desde comprador', [
