@@ -21,60 +21,138 @@
             </div>
         </div>
 
+        <!-- GUÍA RÁPIDA: ¿CÓMO FUNCIONA LA RUEDA PARA VENDEDORES? -->
+        <div class="bg-gradient-to-br from-white via-teal-50/40 to-emerald-50/60 rounded-[2.5rem] p-6 sm:p-8 border border-teal-100 shadow-[0_4px_25px_rgba(13,148,136,0.06)]">
+            <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-[#0d9488] text-white flex items-center justify-center font-black shadow-md shadow-teal-500/20 text-base">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-900 tracking-tight">¿Cómo concretar negocios en esta rueda?</h3>
+                        <p class="text-xs text-slate-500 font-semibold">Tus ofertas son tu vitrina comercial para que los compradores soliciten reuniones contigo.</p>
+                    </div>
+                </div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-100 text-teal-800 border border-teal-200">
+                    <i class="fas fa-check-circle text-[#0d9488]"></i> Pasos para Vender
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Paso 1 -->
+                <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">1</span>
+                        <h4 class="font-black text-slate-900 text-sm">Publica tus Ofertas</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Registra cada producto o servicio con su CIIU y descripción para aparecer en las búsquedas de los compradores.
+                    </p>
+                </div>
+
+                <!-- Paso 2 -->
+                <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">2</span>
+                        <h4 class="font-black text-slate-900 text-sm">Revisa Demandas de Clientes</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Explora qué están buscando comprar las empresas participantes y contáctalas directamente.
+                    </p>
+                </div>
+
+                <!-- Paso 3 -->
+                <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">3</span>
+                        <h4 class="font-black text-slate-900 text-sm">Agenda y Cierra Citas</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Acepta solicitudes de compradores o envíales invitaciones a reuniones para presentar tus soluciones.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- ======================================================
              SECCIÓN: MIS OFERTAS (TARJETA REDISEÑADA)
              ====================================================== -->
-        <div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+        <div class="bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
             <!-- Header Tarjeta -->
             <div class="bg-gradient-to-r from-[#0d9488] to-[#14b8a6] px-8 py-6">
-                <div class="flex items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex items-center">
                         <div class="p-3 bg-white/20 rounded-2xl backdrop-blur-md mr-4 shadow-sm">
                             <i class="fas fa-box-open text-white text-xl"></i>
                         </div>
                         <div>
-                            <h2 class="text-white font-black text-xl tracking-tight">Mis Ofertas</h2>
-                            <p class="text-white/80 text-xs font-bold uppercase tracking-wider mt-0.5">Promociona tus productos/servicios en esta rueda</p>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-white font-black text-xl tracking-tight">Mis Ofertas en esta Rueda</h2>
+                                <span class="bg-white/20 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full backdrop-blur-sm">
+                                    <?php echo count($ofertas_rueda ?? []); ?> activas
+                                </span>
+                            </div>
+                            <p class="text-white/80 text-xs font-semibold mt-0.5">Productos y servicios visibles para los compradores de esta rueda</p>
                         </div>
                     </div>
                     <button onclick="document.getElementById('cita_rueda_id_oferta').value = '<?php echo $ruedaId; ?>'; document.getElementById('modalOferta').classList.remove('hidden')" 
-                            class="bg-white text-[#0d9488] px-6 py-3 rounded-full font-black text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center shadow-md">
-                        <i class="fas fa-plus mr-2 text-xs"></i> Nueva Oferta
+                            class="bg-white text-[#0d9488] px-6 py-3 rounded-full font-black text-xs uppercase tracking-wider hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 shadow-md shrink-0">
+                        <i class="fas fa-plus text-[10px]"></i> Publicar Nueva Oferta
                     </button>
                 </div>
             </div>
             
             <!-- Lista de Ofertas Existentes -->
-            <div class="p-8">
+            <div class="p-6 sm:p-8">
                 <?php if (empty($ofertas_rueda)): ?>
-                    <div class="text-center py-12 bg-teal-50/30 rounded-[2rem] border-2 border-dashed border-teal-100 group hover:border-teal-200 transition-colors">
-                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm border border-teal-50">
-                            <i class="fas fa-box-open text-teal-300 text-3xl group-hover:scale-110 transition-transform"></i>
+                    <div class="text-center py-12 px-6 bg-gradient-to-b from-teal-50/50 to-white rounded-[2rem] border-2 border-dashed border-teal-200/80">
+                        <div class="w-16 h-16 bg-teal-100 text-[#0d9488] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                            <i class="fas fa-box-open text-2xl"></i>
                         </div>
-                        <p class="text-teal-900 font-black text-lg">No has registrado ofertas todavía</p>
-                        <p class="text-teal-600/70 text-sm font-bold mt-2">Haz clic en "Nueva Oferta" para promocionar tus productos y ser visible para los compradores.</p>
+                        <h4 class="text-slate-900 font-black text-base">Aún no has registrado ofertas en esta rueda</h4>
+                        <p class="text-slate-500 text-xs font-medium mt-1.5 max-w-md mx-auto leading-relaxed">
+                            Al publicar tus ofertas, los compradores podrán encontrar tu empresa en el catálogo y agendar citas de negocio contigo.
+                        </p>
+                        <button onclick="document.getElementById('cita_rueda_id_oferta').value = '<?php echo $ruedaId; ?>'; document.getElementById('modalOferta').classList.remove('hidden')" 
+                                class="mt-5 inline-flex items-center gap-2 bg-[#0d9488] hover:bg-[#0f766e] text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-full shadow-lg shadow-teal-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
+                            <i class="fas fa-plus"></i> Publicar Mi Primera Oferta
+                        </button>
                     </div>
                 <?php else: ?>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <?php foreach ($ofertas_rueda as $oferta): ?>
                             <?php 
                                 $tags = json_decode($oferta['tagsBusqueda'] ?? '[]', true);
                                 $tags_str = is_array($tags) ? implode(', ', $tags) : '';
                             ?>
-                            <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:border-teal-100 hover:shadow-md transition-all duration-300 group">
-                                <div class="flex items-start justify-between mb-3">
-                                    <h3 class="font-black text-gray-900 text-base leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($oferta['tituloOferta']); ?></h3>
-                                    <div class="bg-gray-50 px-2 py-1 rounded-lg">
-                                        <span class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">
+                            <div class="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80 hover:border-teal-300 hover:bg-white hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-start justify-between gap-3 mb-2">
+                                        <h3 class="font-black text-gray-900 text-sm leading-snug group-hover:text-[#0d9488] transition-colors">
+                                            <?php echo htmlspecialchars($oferta['tituloOferta']); ?>
+                                        </h3>
+                                        <span class="text-[9px] font-black text-gray-400 bg-white px-2 py-0.5 rounded-md border border-gray-200 shrink-0 uppercase">
                                             <?php echo date('d M', strtotime($oferta['createdAt'])); ?>
                                         </span>
                                     </div>
+
+                                    <?php if (!empty($oferta['ciiu_personalizado']) || !empty($oferta['ciiu_nombre_personalizado'])): ?>
+                                        <div class="mb-2">
+                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-teal-50 text-[#0d9488] border border-teal-100">
+                                                <i class="fas fa-barcode text-[8px] opacity-70"></i>
+                                                <span><?php echo htmlspecialchars(($oferta['ciiu_personalizado'] ? $oferta['ciiu_personalizado'] . ' - ' : '') . ($oferta['ciiu_nombre_personalizado'] ?? '')); ?></span>
+                                            </span>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <p class="text-gray-600 text-xs leading-relaxed mb-3 line-clamp-3 font-medium">
+                                        <?php echo htmlspecialchars($oferta['descripcionOferta']); ?>
+                                    </p>
                                 </div>
-                                <p class="text-gray-500 text-xs leading-relaxed mb-4 line-clamp-3 font-medium"><?php echo htmlspecialchars($oferta['descripcionOferta']); ?></p>
-                                <?php if ($tags_str): ?>
-                                    <div class="flex flex-wrap gap-1.5 mt-auto">
+                                <?php if (!empty($tags)): ?>
+                                    <div class="flex flex-wrap gap-1.5 pt-2 border-t border-gray-100">
                                         <?php foreach ($tags as $tag): ?>
-                                            <span class="px-3 py-1 bg-teal-50 text-[#0d9488] rounded-full text-[9px] font-black uppercase tracking-wider border border-teal-100/50">
+                                            <span class="px-2.5 py-0.5 bg-white text-[#0d9488] rounded-full text-[9px] font-bold border border-teal-100 shadow-2xs">
                                                 #<?php echo htmlspecialchars($tag); ?>
                                             </span>
                                         <?php endforeach; ?>

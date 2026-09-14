@@ -47,69 +47,128 @@
             </div>
         </div>
 
-        <div class="bg-blue-50/50 border border-blue-100 p-4 rounded-2xl mb-8 flex items-start gap-4">
-            <div class="p-2 bg-blue-100 text-blue-600 rounded-xl shrink-0">
-                <i class="fas fa-lightbulb text-sm"></i>
+        <!-- GUÍA RÁPIDA: ¿CÓMO FUNCIONA LA RUEDA DE NEGOCIOS? -->
+        <div class="bg-gradient-to-br from-white via-sky-50/40 to-blue-50/60 rounded-[2.5rem] p-6 sm:p-8 border border-sky-100 shadow-[0_4px_25px_rgba(0,162,255,0.06)] mb-8">
+            <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-sky-600 text-white flex items-center justify-center font-black shadow-md shadow-sky-500/20 text-base">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-900 tracking-tight">¿Cómo concretar negocios en esta rueda?</h3>
+                        <p class="text-xs text-slate-500 font-semibold">Sigue estos 3 pasos clave para conectar con proveedores y agendar citas.</p>
+                    </div>
+                </div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-100 text-sky-800 border border-sky-200">
+                    <i class="fas fa-check-circle text-sky-600"></i> Flujo Recomendado
+                </span>
             </div>
-            <p class="text-xs text-blue-800 font-bold leading-relaxed">
-                <b>Tip para negociar:</b> Usa el buscador para filtrar empresas por su nombre o producto. Haz clic en <b>"Solicitar Reunión"</b> en el proveedor que te interese para empezar a agendar tu cita comercial.
-            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Paso 1 -->
+                <div class="bg-white p-5 rounded-2xl border border-sky-100/80 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center text-xs font-black">1</span>
+                        <h4 class="font-black text-slate-900 text-sm">Publica tus Demandas</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Registra qué insumos, productos o servicios busca tu empresa. Así los proveedores sabrán qué ofrecerte.
+                    </p>
+                </div>
+
+                <!-- Paso 2 -->
+                <div class="bg-white p-5 rounded-2xl border border-sky-100/80 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center text-xs font-black">2</span>
+                        <h4 class="font-black text-slate-900 text-sm">Explora el Catálogo</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Revisa los productos y empresas vendedoras registradas. Filtra por sector o busca por palabras clave.
+                    </p>
+                </div>
+
+                <!-- Paso 3 -->
+                <div class="bg-white p-5 rounded-2xl border border-sky-100/80 shadow-sm relative overflow-hidden group hover:border-sky-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center text-xs font-black">3</span>
+                        <h4 class="font-black text-slate-900 text-sm">Agenda Citas 1 a 1</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Haz clic en <strong>"Solicitar Reunión"</strong> para apartar tu espacio comercial y reunirte por videollamada o presencial.
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- ======================================================
              SECCIÓN: MIS DEMANDAS / REQUERIMIENTOS (TARJETA REDISEÑADA)
              ====================================================== -->
-        <div class="max-w-4xl mx-auto bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden">
+        <div class="bg-white rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 overflow-hidden mb-10">
             <!-- Header Tarjeta -->
             <div class="bg-gradient-to-r from-[#00a2ff] to-[#4dbfff] px-8 py-6">
-                <div class="flex items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div class="flex items-center">
                         <div class="p-3 bg-white/20 rounded-2xl backdrop-blur-md mr-4 shadow-sm">
                             <i class="fas fa-bullhorn text-white text-xl"></i>
                         </div>
                         <div>
-                            <h2 class="text-white font-black text-xl tracking-tight">Mis Demandas / Requerimientos</h2>
-                            <p class="text-white/80 text-xs font-bold uppercase tracking-wider mt-0.5">Comunica qué necesitas comprar en esta rueda</p>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-white font-black text-xl tracking-tight">Mis Demandas / Requerimientos</h2>
+                                <span class="bg-white/20 text-white text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full backdrop-blur-sm">
+                                    <?php echo count($demandas_rueda ?? []); ?> activas
+                                </span>
+                            </div>
+                            <p class="text-white/80 text-xs font-semibold mt-0.5">Comunica a los proveedores qué necesitas adquirir en esta rueda</p>
                         </div>
                     </div>
                     <button onclick="document.getElementById('modalNuevaDemanda').classList.remove('hidden')" 
-                            class="bg-white text-[#00a2ff] px-6 py-3 rounded-full font-black text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex items-center shadow-md">
-                        <i class="fas fa-plus mr-2 text-xs"></i> Nueva Demanda
+                            class="bg-white text-[#00a2ff] px-6 py-3 rounded-full font-black text-xs uppercase tracking-wider hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2 shadow-md shrink-0">
+                        <i class="fas fa-plus text-[10px]"></i> Publicar Demanda
                     </button>
                 </div>
             </div>
             
             <!-- Lista de Demandas Existentes -->
-            <div class="p-8">
+            <div class="p-6 sm:p-8">
                 <?php if (empty($demandas_rueda)): ?>
-                    <div class="text-center py-12 bg-sky-50/30 rounded-[2rem] border-2 border-dashed border-sky-100 group hover:border-sky-200 transition-colors">
-                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm border border-sky-50">
-                            <i class="fas fa-clipboard-list text-sky-300 text-3xl group-hover:scale-110 transition-transform"></i>
+                    <div class="text-center py-12 px-6 bg-gradient-to-b from-sky-50/50 to-white rounded-[2rem] border-2 border-dashed border-sky-200/80">
+                        <div class="w-16 h-16 bg-sky-100 text-sky-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                            <i class="fas fa-clipboard-check text-2xl"></i>
                         </div>
-                        <p class="text-sky-900 font-black text-lg">No has registrado demandas todavía</p>
-                        <p class="text-sky-600/70 text-sm font-bold mt-2">Haz clic en "Nueva Demanda" para comunicar tus necesidades y ser visible para los vendedores.</p>
+                        <h4 class="text-slate-900 font-black text-base">Aún no has publicado demandas de compra</h4>
+                        <p class="text-slate-500 text-xs font-medium mt-1.5 max-w-md mx-auto leading-relaxed">
+                            Al registrar tus requerimientos, los vendedores podrán preparar propuestas personalizadas para tus reuniones de negocios.
+                        </p>
+                        <button onclick="document.getElementById('modalNuevaDemanda').classList.remove('hidden')" 
+                                class="mt-5 inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-black uppercase tracking-wider px-6 py-3 rounded-full shadow-lg shadow-sky-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
+                            <i class="fas fa-plus"></i> Publicar Mi Primer Requerimiento
+                        </button>
                     </div>
                 <?php else: ?>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <?php foreach ($demandas_rueda as $demanda): ?>
                             <?php 
                                 $tags = json_decode($demanda['tagsRequerimiento'] ?? '[]', true);
                                 $tags_str = is_array($tags) ? implode(', ', $tags) : '';
                             ?>
-                            <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 hover:border-sky-100 hover:shadow-md transition-all duration-300 group">
-                                <div class="flex items-start justify-between mb-3">
-                                    <h3 class="font-black text-gray-900 text-base leading-tight group-hover:text-[#00a2ff] transition-colors"><?php echo htmlspecialchars($demanda['tituloDemanda']); ?></h3>
-                                    <div class="bg-gray-50 px-2 py-1 rounded-lg">
-                                        <span class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">
+                            <div class="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80 hover:border-sky-300 hover:bg-white hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
+                                <div>
+                                    <div class="flex items-start justify-between gap-3 mb-2">
+                                        <h3 class="font-black text-gray-900 text-sm leading-snug group-hover:text-[#00a2ff] transition-colors">
+                                            <?php echo htmlspecialchars($demanda['tituloDemanda']); ?>
+                                        </h3>
+                                        <span class="text-[9px] font-black text-gray-400 bg-white px-2 py-0.5 rounded-md border border-gray-200 shrink-0 uppercase">
                                             <?php echo date('d M', strtotime($demanda['createdAt'])); ?>
                                         </span>
                                     </div>
+                                    <p class="text-gray-600 text-xs leading-relaxed mb-3 line-clamp-3 font-medium">
+                                        <?php echo htmlspecialchars($demanda['descripcionDemanda']); ?>
+                                    </p>
                                 </div>
-                                <p class="text-gray-500 text-xs leading-relaxed mb-4 line-clamp-3 font-medium"><?php echo htmlspecialchars($demanda['descripcionDemanda']); ?></p>
-                                <?php if ($tags_str): ?>
-                                    <div class="flex flex-wrap gap-1.5 mt-auto">
+                                <?php if (!empty($tags)): ?>
+                                    <div class="flex flex-wrap gap-1.5 pt-2 border-t border-gray-100">
                                         <?php foreach ($tags as $tag): ?>
-                                            <span class="px-3 py-1 bg-sky-50 text-[#00a2ff] rounded-full text-[9px] font-black uppercase tracking-wider border border-sky-100/50">
+                                            <span class="px-2.5 py-0.5 bg-white text-[#00a2ff] rounded-full text-[9px] font-bold border border-sky-100 shadow-2xs">
                                                 #<?php echo htmlspecialchars($tag); ?>
                                             </span>
                                         <?php endforeach; ?>

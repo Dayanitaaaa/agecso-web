@@ -16,12 +16,65 @@
             </div>
         </div>
 
+        <!-- GUÍA RÁPIDA: ¿CÓMO CONCRETAR NEGOCIOS COMO VENDEDOR? -->
+        <div class="bg-gradient-to-br from-white via-teal-50/40 to-emerald-50/60 rounded-[2.5rem] p-6 sm:p-8 border border-teal-100 shadow-[0_4px_25px_rgba(13,148,136,0.06)]">
+            <div class="flex items-center justify-between gap-4 mb-6 flex-wrap">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-[#0d9488] text-white flex items-center justify-center font-black shadow-md shadow-teal-500/20 text-base">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-black text-slate-900 tracking-tight">¿Por qué es clave registrar tus ofertas?</h3>
+                        <p class="text-xs text-slate-500 font-semibold">Tus ofertas son tu vitrina comercial para que los compradores soliciten reuniones contigo.</p>
+                    </div>
+                </div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-teal-100 text-teal-800 border border-teal-200">
+                    <i class="fas fa-check-circle text-[#0d9488]"></i> Pasos para Vender
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Paso 1 -->
+                <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">1</span>
+                        <h4 class="font-black text-slate-900 text-sm">Registra tus Productos/Servicios</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Publica cada oferta con su actividad económica (CIIU) y descripción detallada para aparecer en las búsquedas de los compradores.
+                    </p>
+                </div>
+
+                <!-- Paso 2 -->
+                <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">2</span>
+                        <h4 class="font-black text-slate-900 text-sm">Conecta con Demandas</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Revisa los requerimientos publicados por los compradores y postula tus soluciones para solicitarles citas directas.
+                    </p>
+                </div>
+
+                <!-- Paso 3 -->
+                <div class="bg-white p-5 rounded-2xl border border-teal-100/80 shadow-sm relative overflow-hidden group hover:border-teal-300 transition-all">
+                    <div class="flex items-center gap-3 mb-2.5">
+                        <span class="w-7 h-7 rounded-full bg-teal-50 text-[#0d9488] border border-teal-200 flex items-center justify-center text-xs font-black">3</span>
+                        <h4 class="font-black text-slate-900 text-sm">Atiende tus Citas y Cierra Negocios</h4>
+                    </div>
+                    <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                        Acepta las invitaciones de reunión de los clientes o envíales propuestas para reunirte por videollamada o presencial.
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <!-- RESUMEN GENERAL -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div class="bg-white p-6 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300">
                 <div class="flex items-center gap-4">
-                    <div class="p-4 bg-teal-50 text-[#0d9488] rounded-2xl">
-                        <i class="fas fa-box text-2xl"></i>
+                    <div class="w-14 h-14 bg-teal-50 text-[#0d9488] rounded-2xl flex items-center justify-center text-2xl border border-teal-100">
+                        <i class="fas fa-box"></i>
                     </div>
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Ofertas</p>
@@ -31,8 +84,8 @@
             </div>
             <div class="bg-white p-6 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300">
                 <div class="flex items-center gap-4">
-                    <div class="p-4 bg-emerald-50 text-emerald-500 rounded-2xl">
-                        <i class="fas fa-calendar-alt text-2xl"></i>
+                    <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center text-2xl border border-emerald-100">
+                        <i class="fas fa-calendar-alt"></i>
                     </div>
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Ruedas Activas</p>
@@ -42,8 +95,8 @@
             </div>
             <div class="bg-white p-6 rounded-3xl shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all duration-300">
                 <div class="flex items-center gap-4">
-                    <div class="p-4 bg-amber-50 text-amber-500 rounded-2xl">
-                        <i class="fas fa-layer-group text-2xl"></i>
+                    <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center text-2xl border border-amber-100">
+                        <i class="fas fa-layer-group"></i>
                     </div>
                     <div>
                         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider">Ruedas con Ofertas</p>
@@ -55,15 +108,27 @@
 
         <!-- LISTA DE OFERTAS POR RUEDA -->
         <?php if (empty($ofertas_por_rueda)): ?>
-            <div class="bg-teal-50/40 border-2 border-dashed border-teal-200 rounded-[2.5rem] p-16 text-center">
-                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-teal-50">
-                    <i class="fas fa-box-open text-teal-300 text-3xl"></i>
+            <div class="bg-gradient-to-b from-teal-50/50 to-white border-2 border-dashed border-teal-200 rounded-[2.5rem] p-12 text-center">
+                <div class="w-20 h-20 bg-teal-100 text-[#0d9488] rounded-3xl flex items-center justify-center mx-auto mb-5 shadow-sm border border-teal-200">
+                    <i class="fas fa-box-open text-3xl"></i>
                 </div>
-                <p class="text-teal-900 font-black text-lg">No has registrado ofertas todavía</p>
-                <p class="text-teal-600 text-sm font-bold mt-2 max-w-md mx-auto">Inscríbete en una rueda de negocios y comienza a promocionar tus productos para ser visible para los compradores.</p>
-                <a href="index.php?controlador=vendedor&accion=dashboard" class="inline-flex items-center mt-6 bg-[#0d9488] hover:bg-[#0f766e] text-white px-8 py-3 rounded-full font-black text-sm transition-all duration-300 shadow-lg shadow-teal-500/20">
-                    <i class="fas fa-plus mr-2"></i> Explorar Ruedas
-                </a>
+                <h3 class="text-slate-900 font-black text-xl">Aún no has registrado ofertas de productos o servicios</h3>
+                <p class="text-slate-500 text-xs font-medium mt-2 max-w-lg mx-auto leading-relaxed">
+                    <?php if (!empty($ruedas_inscrito)): ?>
+                        Ya estás habilitado en ruedas activas. Utiliza el formulario a continuación para publicar tus ofertas y comenzar a agendar citas.
+                    <?php else: ?>
+                        Inscríbete en una rueda de negocios disponible para comenzar a promocionar tus productos y conectar con compradores.
+                    <?php endif; ?>
+                </p>
+                <?php if (!empty($ruedas_inscrito)): ?>
+                    <a href="#seccion_nueva_oferta" class="inline-flex items-center gap-2 mt-6 bg-[#0d9488] hover:bg-[#0f766e] text-white px-8 py-3.5 rounded-full font-black text-xs uppercase tracking-wider transition-all duration-200 shadow-lg shadow-teal-500/20 hover:shadow-xl hover:-translate-y-0.5">
+                        <i class="fas fa-plus"></i> Completar Formulario de Oferta
+                    </a>
+                <?php else: ?>
+                    <a href="index.php?controlador=vendedor&accion=dashboard" class="inline-flex items-center gap-2 mt-6 bg-[#0d9488] hover:bg-[#0f766e] text-white px-8 py-3.5 rounded-full font-black text-xs uppercase tracking-wider transition-all duration-200 shadow-lg shadow-teal-500/20 hover:shadow-xl hover:-translate-y-0.5">
+                        <i class="fas fa-search"></i> Explorar Ruedas Disponibles
+                    </a>
+                <?php endif; ?>
             </div>
         <?php else: ?>
             <div class="space-y-8">
@@ -149,10 +214,15 @@
 
         <!-- SECCIÓN: AGREGAR NUEVA OFERTA -->
         <?php if (!empty($ruedas_inscrito)): ?>
-            <div class="bg-gradient-to-br from-white to-gray-50/50 rounded-[2.5rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 p-8">
-                <h2 class="text-xl font-extrabold text-gray-900 mb-6 flex items-center tracking-tight">
-                    <i class="fas fa-plus-circle text-[#0d9488] mr-2.5"></i> Agregar Nueva Oferta
-                </h2>
+            <div id="seccion_nueva_oferta" class="bg-gradient-to-br from-white to-gray-50/50 rounded-[2.5rem] shadow-[0_4px_25px_rgba(0,0,0,0.03)] border border-gray-100 p-8 scroll-mt-6">
+                <div class="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-100 flex-wrap">
+                    <div>
+                        <h2 class="text-xl font-black text-gray-900 tracking-tight flex items-center">
+                            <i class="fas fa-plus-circle text-[#0d9488] mr-2.5"></i> Agregar Nueva Oferta de Producto o Servicio
+                        </h2>
+                        <p class="text-xs text-gray-500 font-medium mt-1">Completa los datos para que tus productos aparezcan en el catálogo de los compradores.</p>
+                    </div>
+                </div>
                 
                 <form action="index.php?controlador=vendedor&accion=registrarOferta" method="POST">
                     <input type="hidden" name="empresa_id" value="<?php echo $empresa['id']; ?>">
