@@ -352,7 +352,8 @@ class VendedorController {
 
             // Obtener ruedas en las que está inscrito el vendedor
             $stmt_ruedas = $this->pdo->prepare("
-                SELECT rn.id, rn.nombreRueda as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin, rn.modalidad, rn.ubicacion, rn.cantidadMesas
+                SELECT rn.id, rn.nombreRueda as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin, 
+                       rn.horaInicio, rn.horaFin, rn.duracionCitaMinutos, rn.modalidad, rn.ubicacion, rn.cantidadMesas
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ? AND ir.estadoInscripcion = 'aceptada'
@@ -383,7 +384,8 @@ class VendedorController {
             // Obtener citas del vendedor FILTRADAS POR RUEDA
             $sql_citas = "
                 SELECT r.*, e.razon_social as nombre_comprador, rn.nombreRueda as tituloRueda, 
-                       rn.id as ruedaId, rn.modalidad, rn.cantidadMesas
+                       rn.id as ruedaId, rn.duracionCitaMinutos, rn.horaInicio, rn.horaFin, 
+                       rn.modalidad, rn.cantidadMesas
                 FROM reuniones r
                 JOIN empresas e ON r.compradorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id

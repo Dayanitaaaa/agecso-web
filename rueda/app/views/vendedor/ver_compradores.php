@@ -337,7 +337,7 @@ document.addEventListener("DOMContentLoaded", function() {
             minDate: "<?php echo date('Y-m-d', strtotime($rueda['fechaInicio'])); ?>",
             maxDate: "<?php echo date('Y-m-d', strtotime($rueda['fechaFin'])); ?>",
             time_24hr: false,
-            minuteIncrement: 30,
+            minuteIncrement: <?php echo (int)($rueda['duracionCitaMinutos'] ?? 30); ?>,
             disableMobile: "true",
             animate: true,
             onChange: function(selectedDates, dateStr) {

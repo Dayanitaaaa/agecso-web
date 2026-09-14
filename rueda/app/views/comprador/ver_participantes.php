@@ -566,7 +566,7 @@
                             </div>
                             <p class="text-[10px] text-gray-400 mt-1.5 ml-1 flex items-center gap-1 font-bold">
                                 <i class="fas fa-info-circle text-[#00a2ff]"></i>
-                                Bloques de 30 minutos dentro del horario oficial de la rueda.
+                                Bloques de <?php echo (int)($rueda['duracionCitaMinutos'] ?? 30); ?> minutos dentro del horario oficial de la rueda.
                             </p>
                         </div>
 
@@ -624,7 +624,7 @@ function abrirModalSolicitar(vendedorId, razonSocial, ofertaTitulo = '', sector 
                 altInput: true,
                 altFormat: "j \\de F, Y - h:i K",
                 time_24hr: false,
-                minuteIncrement: 30,
+                minuteIncrement: <?php echo (int)($rueda['duracionCitaMinutos'] ?? 30); ?>,
                 locale: "es",
                 minDate: "<?php echo date('Y-m-d H:i', max(strtotime(SYSTEM_TIME), strtotime($rueda['fechaInicio'] . ' ' . ($rueda['horaInicio'] ?? '08:00:00')))); ?>",
                 maxDate: "<?php echo date('Y-m-d 23:59', strtotime($rueda['fechaFin'] . ' ' . ($rueda['horaFin'] ?? '18:00:00'))); ?>",

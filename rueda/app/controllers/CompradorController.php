@@ -472,7 +472,7 @@ class CompradorController {
                 $miEmpresa = $stmt_v->fetch();
 
                 $stmt_cita = $this->pdo->prepare("
-                    SELECT r.*, rn.fechaFin 
+                    SELECT r.*, rn.fechaFin, rn.duracionCitaMinutos, rn.horaInicio, rn.horaFin 
                     FROM reuniones r 
                     JOIN ruedas_negocios rn ON r.ruedaId = rn.id 
                     WHERE r.id = ?
@@ -540,6 +540,46 @@ class CompradorController {
                         throw new Exception("Debes proporcionar una nueva fecha y hora para la contraoferta.");
                     }
 
+                    // VALIDACIÓN DINÁMICA: Separación entre citas según configuración de la rueda
+                    $duracion = (int)($cita['duracionCitaMinutos'] ?? 30);
+                    $buffer = max(1, $duracion - 1);
+                    $fechaBase = strtotime($nueva_fecha);
+                    $horaInicio = date('Y-m-d H:i:s', strtotime("-$buffer minutes", $fechaBase));
+                    $horaFin = date('Y-m-d H:i:s', strtotime("+$buffer minutes", $fechaBase));
+
+                    $vendedor_id = $cita['vendedorId'];
+                    $comprador_id = $cita['compradorId'];
+                    $rueda_id = $cita['ruedaId'];
+                    $cita_id_actual = $cita['id'];
+
+                    // Verificar para el comprador (excluyendo la cita actual)
+                    $stmt_disp_c = $this->pdo->prepare("
+                        SELECT COUNT(*) as ocupado FROM reuniones 
+                        WHERE (vendedorId = ? OR compradorId = ?) 
+                        AND fechaHora BETWEEN ? AND ?
+                        AND ruedaId = ? 
+                        AND estadoCita NOT IN ('cancelada', 'rechazada', 'mesa_apartada')
+                        AND id != ?
+                    ");
+                    $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id, $cita_id_actual]);
+                    if ($stmt_disp_c->fetch()['ocupado'] > 0) {
+                        throw new Exception("Ya tienes una cita agendada en este bloque de tiempo ($duracion min). Por favor elige otro horario.");
+                    }
+
+                    // Verificar para el vendedor (excluyendo la cita actual)
+                    $stmt_disp_v = $this->pdo->prepare("
+                        SELECT COUNT(*) as ocupado FROM reuniones 
+                        WHERE (vendedorId = ? OR compradorId = ?) 
+                        AND fechaHora BETWEEN ? AND ?
+                        AND ruedaId = ? 
+                        AND estadoCita NOT IN ('cancelada', 'rechazada', 'mesa_apartada')
+                        AND id != ?
+                    ");
+                    $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id, $cita_id_actual]);
+                    if ($stmt_disp_v->fetch()['ocupado'] > 0) {
+                        throw new Exception("El vendedor ya tiene una cita agendada en este bloque de tiempo ($duracion min).");
+                    }
+
                     $nuevo_contador = $cita['contadorContrapropuestas'] + 1;
 
                     // Actualizar reunión con la nueva fecha y turno para el vendedor
@@ -585,7 +625,9 @@ class CompradorController {
 
             // Obtener ruedas en las que está inscrito el comprador
             $stmt_ruedas = $this->pdo->prepare("
-                SELECT rn.id, COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, rn.estadoRueda, rn.fechaInicio, rn.fechaFin, rn.modalidad, rn.ubicacion, rn.cantidadMesas
+                SELECT rn.id, COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, 
+                       rn.estadoRueda, rn.fechaInicio, rn.fechaFin, rn.horaInicio, rn.horaFin, 
+                       rn.duracionCitaMinutos, rn.modalidad, rn.ubicacion, rn.cantidadMesas
                 FROM ruedas_negocios rn
                 JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
                 WHERE ir.empresaId = ? AND ir.estadoInscripcion = 'aceptada'
@@ -617,7 +659,8 @@ class CompradorController {
             $sql_citas = "
                 SELECT r.*, e.razon_social as nombre_vendedor, 
                        COALESCE(rn.nombreRueda, rn.tituloRueda, 'Rueda de Negocios') as tituloRueda, 
-                       rn.id as ruedaId, rn.modalidad, rn.cantidadMesas
+                       rn.id as ruedaId, rn.duracionCitaMinutos, rn.horaInicio, rn.horaFin, 
+                       rn.modalidad, rn.cantidadMesas
                 FROM reuniones r
                 LEFT JOIN empresas e ON r.vendedorId = e.id
                 JOIN ruedas_negocios rn ON r.ruedaId = rn.id
@@ -937,7 +980,7 @@ class CompradorController {
                 }
 
                 // VALIDACIÓN: La fecha debe estar dentro del rango de la rueda y el estado debe ser 'activa'
-                $stmt_rueda = $this->pdo->prepare("SELECT fechaInicio, fechaFin, estadoRueda FROM ruedas_negocios WHERE id = ?");
+                $stmt_rueda = $this->pdo->prepare("SELECT fechaInicio, fechaFin, estadoRueda, duracionCitaMinutos, horaInicio, horaFin FROM ruedas_negocios WHERE id = ?");
                 $stmt_rueda->execute([$rueda_id]);
                 $rueda = $stmt_rueda->fetch();
                 if ($rueda) {
@@ -951,10 +994,12 @@ class CompradorController {
                     }
                 }
 
-                // VALIDACIÓN: 30 minutos de duración de citas para AMBAS empresas
+                // VALIDACIÓN DINÁMICA: Separación entre citas según configuración de la rueda
+                $duracion = (int)($rueda['duracionCitaMinutos'] ?? 30);
+                $buffer = max(1, $duracion - 1);
                 $fechaBase = strtotime($fecha_hora);
-                $horaInicio = date('Y-m-d H:i:s', strtotime('-29 minutes', $fechaBase));
-                $horaFin = date('Y-m-d H:i:s', strtotime('+29 minutes', $fechaBase));
+                $horaInicio = date('Y-m-d H:i:s', strtotime("-$buffer minutes", $fechaBase));
+                $horaFin = date('Y-m-d H:i:s', strtotime("+$buffer minutes", $fechaBase));
                 
                 // Verificar para el comprador
                 $stmt_disp_c = $this->pdo->prepare("
@@ -966,7 +1011,7 @@ class CompradorController {
                 ");
                 $stmt_disp_c->execute([$comprador_id, $comprador_id, $horaInicio, $horaFin, $rueda_id]);
                 if ($stmt_disp_c->fetch()['ocupado'] > 0) {
-                    throw new Exception("Ya tienes una cita agendada en un horario que coincide. Las reuniones tienen una duración de 30 minutos.");
+                    throw new Exception("Ya tienes una cita agendada en este bloque de tiempo ($duracion min). Por favor elige otro horario.");
                 }
                 
                 // Verificar para el vendedor
@@ -979,7 +1024,7 @@ class CompradorController {
                 ");
                 $stmt_disp_v->execute([$vendedor_id, $vendedor_id, $horaInicio, $horaFin, $rueda_id]);
                 if ($stmt_disp_v->fetch()['ocupado'] > 0) {
-                    throw new Exception("El vendedor seleccionado ya tiene una cita agendada en ese horario (bloques de 30 minutos).");
+                    throw new Exception("El vendedor seleccionado ya tiene una cita agendada en este bloque de tiempo ($duracion min).");
                 }
 
                 // OBTENER MESA ASIGNADA PREVIAMENTE (SI EXISTE)

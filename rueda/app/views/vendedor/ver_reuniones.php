@@ -679,7 +679,7 @@ document.addEventListener("DOMContentLoaded", function() {
             maxDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaFin'])); ?>",
             <?php endif; ?>
             time_24hr: false,
-            minuteIncrement: 30,
+            minuteIncrement: <?php echo (int)($rueda_actual['duracionCitaMinutos'] ?? 30); ?>,
             disableMobile: "true",
             animate: true,
             onChange: function(selectedDates, dateStr) {
@@ -847,9 +847,9 @@ function toggleCalendarDropdown(btn) {
     }
 }
 
-function descargarICS(nombreSocio, fechaHora, link, ubicacion) {
+function descargarICS(nombreSocio, fechaHora, link, ubicacion, duracionMin = <?php echo (int)($rueda_actual['duracionCitaMinutos'] ?? 30); ?>) {
     const start = new Date(fechaHora);
-    const end = new Date(start.getTime() + 30 * 60000); // 30 mins
+    const end = new Date(start.getTime() + duracionMin * 60000);
     
     const formatDate = (date) => {
         return date.toISOString().replace(/-|:|\.\d+/g, "");
@@ -876,6 +876,7 @@ function descargarICS(nombreSocio, fechaHora, link, ubicacion) {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
 }
 </script>
 

@@ -411,7 +411,7 @@ function solicitarReunion(compradorId, ruedaId, nombreComprador, descripcionComp
             minDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaInicio'])); ?>",
             maxDate: "<?php echo date('Y-m-d', strtotime($rueda_actual['fechaFin'])); ?>",
             time_24hr: false,
-            minuteIncrement: 30,
+            minuteIncrement: <?php echo (int)($rueda_actual['duracionCitaMinutos'] ?? 30); ?>,
             disableMobile: "true",
             animate: true
         });
