@@ -445,6 +445,23 @@ class CompradorController {
                 $mesas_ocupadas = $stmt_mesas->fetchAll(PDO::FETCH_COLUMN);
             }
 
+            // 6. Obtener citas activas del comprador con proveedores en esta rueda
+            $stmt_citas_activas = $this->pdo->prepare("
+                SELECT vendedorId, estadoCita, fechaHora, id as citaId
+                FROM reuniones 
+                WHERE ruedaId = ? AND compradorId = ? 
+                AND estadoCita NOT IN ('cancelada', 'rechazada')
+            ");
+            $stmt_citas_activas->execute([$ruedaId, $miEmpresaId]);
+            $citas_activas_raw = $stmt_citas_activas->fetchAll();
+
+            $citas_por_vendedor = [];
+            foreach ($citas_activas_raw as $cAct) {
+                if (!empty($cAct['vendedorId'])) {
+                    $citas_por_vendedor[$cAct['vendedorId']] = $cAct;
+                }
+            }
+
             require_once '../app/views/comprador/ver_participantes.php';
         } catch (Exception $e) {
             $error_msg = $e->getMessage();
@@ -972,6 +989,19 @@ class CompradorController {
                 $check_ins = $stmt_ins_check->fetch();
                 if ($check_ins['inscritos'] < 2) {
                     throw new Exception("Ambas empresas deben estar inscritas y aceptadas en la rueda de negocios.");
+                }
+
+                // VALIDACIÓN: Evitar duplicar citas activas con la misma empresa en la misma rueda
+                $stmt_check_dup = $this->pdo->prepare("
+                    SELECT id, estadoCita FROM reuniones 
+                    WHERE ruedaId = ? AND compradorId = ? AND vendedorId = ? 
+                    AND estadoCita NOT IN ('cancelada', 'rechazada')
+                    LIMIT 1
+                ");
+                $stmt_check_dup->execute([$rueda_id, $comprador_id, $vendedor_id]);
+                $cita_existente = $stmt_check_dup->fetch();
+                if ($cita_existente) {
+                    throw new Exception("Ya tienes una cita activa o en proceso con esta empresa en esta rueda de negocios.");
                 }
 
                 // VALIDACIÓN: No permitir fechas pasadas

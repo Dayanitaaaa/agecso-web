@@ -324,13 +324,47 @@
                                 </div>
                             </div>
 
-                            <!-- Botón Agendar Cita con Proveedor -->
+                            <!-- Botón Agendar Cita con Proveedor o Estado si ya tiene cita -->
                             <div class="p-6 pt-0">
-                                <button type="button" 
-                                        onclick="abrirModalSolicitar(<?php echo (int)$oferta['empresaId']; ?>, '<?php echo htmlspecialchars(addslashes($oferta['razon_social'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['tituloOferta'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['nombreSector'] ?? '')); ?>')"
-                                        class="w-full bg-[#00a2ff] hover:bg-[#008ae0] text-white py-3.5 px-4 rounded-2xl text-xs font-black transition-all duration-300 shadow-md shadow-sky-500/15 flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-sky-500/25 transform hover:-translate-y-0.5 uppercase tracking-wider">
-                                    <i class="fas fa-calendar-plus text-sm"></i> Solicitar Cita
-                                </button>
+                                <?php 
+                                $citaExistente = $citas_por_vendedor[$oferta['empresaId']] ?? null;
+                                if ($citaExistente): 
+                                    $est = $citaExistente['estadoCita'] ?? 'pendiente';
+                                    $txtEstado = 'Cita Agendada';
+                                    $colorBadge = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                                    $colorIcon = 'bg-emerald-500';
+                                    if ($est === 'pendiente') {
+                                        $txtEstado = 'Cita Solicitada';
+                                        $colorBadge = 'bg-sky-50 text-[#00a2ff] border-sky-200';
+                                        $colorIcon = 'bg-[#00a2ff]';
+                                    } elseif ($est === 'negociando') {
+                                        $txtEstado = 'En Negociación';
+                                        $colorBadge = 'bg-amber-50 text-amber-700 border-amber-200';
+                                        $colorIcon = 'bg-amber-500';
+                                    } elseif ($est === 'aceptada' || $est === 'agendada') {
+                                        $txtEstado = 'Cita Confirmada';
+                                        $colorBadge = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+                                        $colorIcon = 'bg-emerald-500';
+                                    }
+                                ?>
+                                    <div class="w-full <?php echo $colorBadge; ?> border-2 py-3 px-4 rounded-2xl text-xs font-bold flex items-center justify-between shadow-sm">
+                                        <div class="flex items-center gap-2.5">
+                                            <span class="w-2.5 h-2.5 rounded-full <?php echo $colorIcon; ?> animate-pulse"></span>
+                                            <span class="font-black text-gray-900"><?php echo $txtEstado; ?></span>
+                                        </div>
+                                        <a href="index.php?controlador=comprador&accion=verReuniones&rueda_id=<?php echo $ruedaId; ?>" 
+                                           class="text-[#00a2ff] hover:text-[#008ae0] font-black text-[11px] flex items-center gap-1 hover:underline">
+                                            <span>Gestionar</span>
+                                            <i class="fas fa-arrow-right text-[9px]"></i>
+                                        </a>
+                                    </div>
+                                <?php else: ?>
+                                    <button type="button" 
+                                            onclick="abrirModalSolicitar(<?php echo (int)$oferta['empresaId']; ?>, '<?php echo htmlspecialchars(addslashes($oferta['razon_social'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['tituloOferta'])); ?>', '<?php echo htmlspecialchars(addslashes($oferta['nombreSector'] ?? '')); ?>')"
+                                            class="w-full bg-[#00a2ff] hover:bg-[#008ae0] text-white py-3.5 px-4 rounded-2xl text-xs font-black transition-all duration-300 shadow-md shadow-sky-500/15 flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-sky-500/25 transform hover:-translate-y-0.5 uppercase tracking-wider">
+                                        <i class="fas fa-calendar-plus text-sm"></i> Solicitar Cita
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -356,7 +390,9 @@
             
             <div id="grid_empresas" class="hidden mt-10">
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <?php foreach ($participantes as $p): ?>
+                    <?php foreach ($participantes as $p): 
+                        $citaExistenteP = $citas_por_vendedor[$p['id']] ?? null;
+                    ?>
                         <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-lg hover:border-sky-100 transition-all text-center flex flex-col justify-between group">
                             <div>
                                 <div class="w-14 h-14 bg-sky-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-sky-100/50 group-hover:bg-[#00a2ff] group-hover:text-white transition-colors">
@@ -371,11 +407,18 @@
                                 <?php endif; ?>
                             </div>
 
-                            <button type="button" 
-                                    onclick="abrirModalSolicitar(<?php echo (int)$p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['razon_social'])); ?>', '', '<?php echo htmlspecialchars(addslashes($p['nombreSector'] ?? '')); ?>')"
-                                    class="mt-4 w-full bg-sky-50 hover:bg-[#00a2ff] text-[#00a2ff] hover:text-white py-2.5 px-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-1.5 shadow-sm">
-                                <i class="fas fa-calendar-plus text-xs"></i> Solicitar Cita
-                            </button>
+                            <?php if ($citaExistenteP): ?>
+                                <a href="index.php?controlador=comprador&accion=verReuniones&rueda_id=<?php echo $ruedaId; ?>" 
+                                   class="mt-4 w-full bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 py-2.5 px-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-1.5 shadow-sm">
+                                    <i class="fas fa-check-circle text-emerald-500"></i> Cita Agendada
+                                </a>
+                            <?php else: ?>
+                                <button type="button" 
+                                        onclick="abrirModalSolicitar(<?php echo (int)$p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['razon_social'])); ?>', '', '<?php echo htmlspecialchars(addslashes($p['nombreSector'] ?? '')); ?>')"
+                                        class="mt-4 w-full bg-sky-50 hover:bg-[#00a2ff] text-[#00a2ff] hover:text-white py-2.5 px-3 rounded-xl text-xs font-black transition-all duration-200 flex items-center justify-center gap-1.5 shadow-sm">
+                                    <i class="fas fa-calendar-plus text-xs"></i> Solicitar Cita
+                                </button>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
