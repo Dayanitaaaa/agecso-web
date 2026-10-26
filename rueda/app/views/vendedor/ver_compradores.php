@@ -152,6 +152,22 @@
                                     <span class="text-xs text-gray-600 font-medium"><?php echo htmlspecialchars($c['ubicacionGeografica'] ?? 'Ubicación no especificada'); ?></span>
                                 </div>
 
+                                <!-- Teléfono y Web -->
+                                <div class="flex flex-wrap gap-3 mb-3">
+                                    <?php if (!empty($c['telefono_contacto'])): ?>
+                                        <div class="flex items-center gap-1.5 text-xs text-gray-600">
+                                            <i class="fas fa-phone text-teal-500"></i>
+                                            <span class="font-medium"><?php echo htmlspecialchars($c['telefono_contacto']); ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($c['pagina_web'])): ?>
+                                        <a href="<?php echo htmlspecialchars($c['pagina_web']); ?>" target="_blank" class="flex items-center gap-1.5 text-xs text-[#0d9488] hover:underline">
+                                            <i class="fas fa-globe"></i>
+                                            <span class="font-medium">Visitar Web</span>
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+
                                 <!-- Demandas -->
                                 <?php if (!empty($c['demandas'])): ?>
                                     <div class="flex-1">

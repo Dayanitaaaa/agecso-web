@@ -104,6 +104,8 @@ class UsuarioController {
                         'responsable_iva' => $_POST['responsable_iva'],
                         'tamaño_empresa' => $_POST['tamaño_empresa'],
                         'ubicacion_geografica' => $_POST['ubicacion_geografica'],
+                        'telefono_contacto' => $_POST['telefono_contacto'] ?? '',
+                        'pagina_web' => $_POST['pagina_web'] ?? '',
                         'tipo_asociacion' => $_POST['tipo_asociacion'],
                         'sub_tipo_asociacion' => $_POST['sub_tipo_asociacion'] ?? '',
                         'representante_legal' => $_POST['representante_legal'],
@@ -168,10 +170,10 @@ class UsuarioController {
                     }
 
                     $registro = $this->usuarioModel->registrar(
-                        $regData['representante_legal'], 
-                        $email, 
-                        $password, 
-                        $realRoleId, 
+                        $regData['representante_legal'],
+                        $email,
+                        $password,
+                        $realRoleId,
                         $regData['sector_id'],
                         $regData['razon_social'],
                         $regData['tipo_asociacion'],
@@ -183,6 +185,8 @@ class UsuarioController {
                             'responsable_iva' => $regData['responsable_iva'],
                             'tamaño_empresa' => $regData['tamaño_empresa'],
                             'ubicacion_geografica' => $regData['ubicacion_geografica'],
+                            'telefono_contacto' => $regData['telefono_contacto'] ?? '',
+                            'pagina_web' => $regData['pagina_web'] ?? '',
                             'sub_tipo_asociacion' => $regData['sub_tipo_asociacion'],
                             'ciiu_personalizado' => $regData['ciiu_personalizado'],
                             'ciiu_nombre_personalizado' => $regData['ciiu_nombre_personalizado']

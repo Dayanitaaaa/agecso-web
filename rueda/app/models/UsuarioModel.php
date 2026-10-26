@@ -17,19 +17,19 @@ class UsuarioModel {
             $usuarioId = $this->db->lastInsertId();
 
             $sql_empresa = "INSERT INTO empresas (
-                usuarioId, sectorId, ciiu_personalizado, ciiu_nombre_personalizado, razon_social, tipo_persona, 
-                tipo_asociacion, sub_tipo_asociacion, nit, 
-                digito_verificacion, responsable_iva, tamaño_empresa, 
-                representante_legal, ubicacionGeografica
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            
+                usuarioId, sectorId, ciiu_personalizado, ciiu_nombre_personalizado, razon_social, tipo_persona,
+                tipo_asociacion, sub_tipo_asociacion, nit,
+                digito_verificacion, responsable_iva, tamaño_empresa,
+                representante_legal, ubicacionGeografica, telefono_contacto, pagina_web
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
             $stmt_empresa = $this->db->prepare($sql_empresa);
             $stmt_empresa->execute([
-                $usuarioId, 
-                $sectorId, 
+                $usuarioId,
+                $sectorId,
                 $extraData['ciiu_personalizado'] ?? NULL,
                 $extraData['ciiu_nombre_personalizado'] ?? NULL,
-                $razonSocial, 
+                $razonSocial,
                 $extraData['tipo_persona'] ?? 'juridica',
                 $tipoAsociacion,
                 $extraData['sub_tipo_asociacion'] ?? NULL,
@@ -38,7 +38,9 @@ class UsuarioModel {
                 $extraData['responsable_iva'] ?? 0,
                 $extraData['tamaño_empresa'] ?? 'micro',
                 $representanteLegal,
-                $extraData['ubicacion_geografica'] ?? NULL
+                $extraData['ubicacion_geografica'] ?? NULL,
+                $extraData['telefono_contacto'] ?? NULL,
+                $extraData['pagina_web'] ?? NULL
             ]);
 
             $this->db->commit();

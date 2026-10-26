@@ -338,13 +338,29 @@
                                             <p class="font-black text-gray-900 text-xs leading-tight truncate"><?php echo htmlspecialchars($oferta['razon_social'] ?? 'N/A'); ?></p>
                                         </div>
                                     </div>
-                                    
+
                                     <?php if (!empty($oferta['ubicacionGeografica'])): ?>
                                     <div class="flex items-center text-[11px] text-gray-500 font-semibold pt-2 border-t border-gray-100/80">
                                         <i class="fas fa-map-marker-alt text-gray-400 text-[10px] mr-1.5 shrink-0"></i>
                                         <span class="truncate"><?php echo htmlspecialchars($oferta['ubicacionGeografica']); ?></span>
                                     </div>
                                     <?php endif; ?>
+
+                                    <!-- Teléfono y Web -->
+                                    <div class="flex flex-wrap gap-3 pt-2 border-t border-gray-100/80">
+                                        <?php if (!empty($oferta['telefono_contacto'])): ?>
+                                            <div class="flex items-center gap-1.5 text-[11px] text-gray-600">
+                                                <i class="fas fa-phone text-[#00a2ff]"></i>
+                                                <span class="font-medium"><?php echo htmlspecialchars($oferta['telefono_contacto']); ?></span>
+                                            </div>
+                                        <?php endif; ?>
+                                        <?php if (!empty($oferta['pagina_web'])): ?>
+                                            <a href="<?php echo htmlspecialchars($oferta['pagina_web']); ?>" target="_blank" class="flex items-center gap-1.5 text-[11px] text-[#00a2ff] hover:underline">
+                                                <i class="fas fa-globe"></i>
+                                                <span class="font-medium">Web</span>
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
                                 </div>
                             </div>
 

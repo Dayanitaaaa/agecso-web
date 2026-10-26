@@ -163,11 +163,41 @@ $regData = $_SESSION['reg_data'] ?? [];
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
                                 <i class="fas fa-location-dot text-xs"></i>
                             </div>
-                            <input id="ubicacion_geografica" name="ubicacion_geografica" type="text" required 
+                            <input id="ubicacion_geografica" name="ubicacion_geografica" type="text" required
                                 value="<?php echo htmlspecialchars($regData['ubicacion_geografica'] ?? ''); ?>"
-                                class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium" 
+                                class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium"
                                 placeholder="Ej: Bogotá, Colombia">
                         </div>
+                    </div>
+                </div>
+
+                <!-- Teléfono y Página Web (Nuevos campos) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label for="telefono_contacto" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Teléfono de Contacto</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <i class="fas fa-phone text-xs"></i>
+                            </div>
+                            <input id="telefono_contacto" name="telefono_contacto" type="tel"
+                                value="<?php echo htmlspecialchars($regData['telefono_contacto'] ?? ''); ?>"
+                                class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium"
+                                placeholder="Ej: +57 300 123 4567">
+                        </div>
+                        <p class="mt-1.5 text-[10px] text-gray-400 ml-1">Número directo para comunicación comercial (opcional)</p>
+                    </div>
+                    <div>
+                        <label for="pagina_web" class="block text-sm font-bold text-gray-700 mb-1.5 ml-1">Página Web</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                <i class="fas fa-globe text-xs"></i>
+                            </div>
+                            <input id="pagina_web" name="pagina_web" type="url"
+                                value="<?php echo htmlspecialchars($regData['pagina_web'] ?? ''); ?>"
+                                class="block w-full pl-9 pr-3 py-3 border border-gray-200 rounded-xl bg-gray-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all text-sm font-medium"
+                                placeholder="Ej: https://www.miempresa.com">
+                        </div>
+                        <p class="mt-1.5 text-[10px] text-gray-400 ml-1">Sitio web oficial de la empresa (opcional)</p>
                     </div>
                 </div>
 
