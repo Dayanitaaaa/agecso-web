@@ -107,59 +107,81 @@
                     <p class="text-gray-400 text-sm font-bold mt-2">Prueba ajustando tus filtros de búsqueda o cambiando de sector.</p>
                 </div>
             <?php else: ?>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach ($compradores as $c): ?>
-                        <div class="bg-white rounded-[2rem] shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden hover:shadow-xl hover:border-teal-100 transition-all duration-500 flex flex-col group">
-                            <div class="p-7 flex-1">
-                                <div class="flex items-start justify-between mb-5">
-                                    <div class="flex flex-wrap gap-2">
-                                        <span class="text-[9px] bg-teal-50 text-[#0d9488] px-3 py-1 rounded-full font-black uppercase tracking-wider border border-teal-100/50">
-                                            <i class="fas fa-building mr-1 opacity-60"></i> <?php echo htmlspecialchars($c['razon_social'] ?? 'N/A'); ?>
-                                        </span>
+                        <div class="bg-white rounded-2xl shadow-[0_2px_15px_rgba(0,0,0,0.04)] border border-gray-100 overflow-hidden hover:shadow-xl hover:border-teal-200 transition-all duration-300 flex flex-col group">
+                            <!-- Header de la tarjeta -->
+                            <div class="bg-gradient-to-r from-teal-50 to-emerald-50 px-5 py-4 border-b border-teal-100">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="font-black text-gray-900 text-base leading-tight group-hover:text-[#0d9488] transition-colors truncate">
+                                            <?php echo htmlspecialchars($c['razon_social'] ?? ''); ?>
+                                        </h3>
+                                        <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                            <span class="text-[9px] font-bold text-teal-600 uppercase tracking-tighter">
+                                                <i class="fas fa-barcode mr-1 text-[8px]"></i> <?php echo htmlspecialchars($c['ciiu_personalizado'] ?: ($c['ciiu_clase'] ?? 'N/A')); ?>
+                                            </span>
+                                            <?php if (!empty($c['ciiu_nombre_personalizado'])): ?>
+                                                <span class="text-[9px] text-gray-500 font-medium truncate max-w-[150px]">
+                                                    - <?php echo htmlspecialchars($c['ciiu_nombre_personalizado']); ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <!-- Badges de estado -->
+                                    <div class="flex flex-wrap gap-1.5 shrink-0">
                                         <?php if (!empty($miCiiuMatch) && $c['ciiu_personalizado'] == $miCiiuMatch): ?>
-                                            <span class="text-[9px] bg-amber-500 text-white px-3 py-1 rounded-full font-black uppercase tracking-wider shadow-sm">
-                                                <i class="fas fa-star mr-1"></i> Match CIIU
+                                            <span class="text-[8px] bg-amber-400 text-white px-2 py-0.5 rounded-full font-black uppercase tracking-wider shadow-sm">
+                                                <i class="fas fa-star mr-0.5 text-[7px]"></i> Match
                                             </span>
                                         <?php endif; ?>
                                         <?php if (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0 && !empty($c['mesa_apartada'])): ?>
-                                            <span class="text-[9px] bg-amber-50 text-amber-600 px-3 py-1 rounded-full font-black uppercase tracking-wider border border-amber-100 flex items-center gap-1.5 shadow-sm">
-                                                <i class="fas fa-chair text-[10px] animate-pulse"></i> 
-                                                Mesa <?php echo htmlspecialchars($c['mesa_apartada']); ?> Apartada
+                                            <span class="text-[8px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-black uppercase tracking-wider border border-amber-200 shadow-sm">
+                                                <i class="fas fa-chair mr-0.5 text-[7px]"></i> Mesa <?php echo htmlspecialchars($c['mesa_apartada']); ?>
                                             </span>
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                                
-                                <?php if (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0 && !empty($c['mesa_apartada'])): ?>
-                                        <div class="flex items-center gap-2 mb-2">
-                                            <span class="bg-amber-100 text-amber-700 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-tighter border border-amber-200 shadow-sm">
-                                                <i class="fas fa-chair mr-1"></i> Ubicado en Mesa: <?php echo htmlspecialchars($c['mesa_apartada']); ?>
-                                            </span>
-                                        </div>
-                                    <?php endif; ?>
-                                    <h3 class="font-black text-gray-900 text-lg mb-2 leading-tight group-hover:text-[#0d9488] transition-colors"><?php echo htmlspecialchars($c['razon_social'] ?? ''); ?></h3>
-                                    <div class="mb-4">
-                                        <p class="text-[10px] font-bold text-teal-600 uppercase tracking-tighter">CIIU: <?php echo htmlspecialchars($c['ciiu_personalizado'] ?: ($c['ciiu_clase'] ?? 'N/A')); ?></p>
-                                        <?php if (!empty($c['ciiu_nombre_personalizado'])): ?>
-                                            <p class="text-[9px] text-gray-400 font-medium line-clamp-1 italic"><?php echo htmlspecialchars($c['ciiu_nombre_personalizado']); ?></p>
-                                        <?php endif; ?>
-                                    </div>
-                                
+                            </div>
+
+                            <!-- Contenido principal -->
+                            <div class="p-5 flex-1 flex flex-col">
+                                <!-- Ubicación -->
+                                <div class="flex items-center gap-2 mb-3">
+                                    <i class="fas fa-map-marker-alt text-gray-400 text-xs"></i>
+                                    <span class="text-xs text-gray-600 font-medium"><?php echo htmlspecialchars($c['ubicacionGeografica'] ?? 'Ubicación no especificada'); ?></span>
+                                </div>
+
+                                <!-- Demandas -->
                                 <?php if (!empty($c['demandas'])): ?>
-                                    <div class="space-y-3 pt-6 border-t border-gray-50">
-                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Demandas:</p>
-                                        <?php foreach ($c['demandas'] as $demanda): ?>
-                                            <div class="bg-gray-50 p-3 rounded-xl">
-                                                <p class="text-xs font-black text-gray-800 leading-tight"><?php echo htmlspecialchars($demanda['tituloDemanda']); ?></p>
-                                                <p class="text-[10px] text-gray-500 mt-1 line-clamp-2"><?php echo htmlspecialchars($demanda['descripcionDemanda']); ?></p>
-                                            </div>
-                                        <?php endforeach; ?>
+                                    <div class="flex-1">
+                                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                            <i class="fas fa-shopping-cart text-[9px]"></i> Demandas (<?php echo count($c['demandas']); ?>)
+                                        </p>
+                                        <div class="space-y-2">
+                                            <?php foreach (array_slice($c['demandas'], 0, 2) as $demanda): ?>
+                                                <div class="bg-gray-50 p-2.5 rounded-lg border border-gray-100 hover:border-teal-200 transition-colors">
+                                                    <p class="text-xs font-black text-gray-800 leading-tight line-clamp-1"><?php echo htmlspecialchars($demanda['tituloDemanda']); ?></p>
+                                                    <p class="text-[10px] text-gray-500 mt-0.5 line-clamp-2"><?php echo htmlspecialchars($demanda['descripcionDemanda']); ?></p>
+                                                </div>
+                                            <?php endforeach; ?>
+                                            <?php if (count($c['demandas']) > 2): ?>
+                                                <p class="text-[10px] text-teal-600 font-bold text-center">
+                                                    +<?php echo count($c['demandas']) - 2; ?> más
+                                                </p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="flex-1 flex items-center justify-center py-4">
+                                        <p class="text-xs text-gray-400 font-medium italic">Sin demandas registradas</p>
                                     </div>
                                 <?php endif; ?>
                             </div>
-                            
-                            <div class="px-7 pb-7">
-                                <?php 
+
+                            <!-- Botón de acción -->
+                            <div class="px-5 pb-5 pt-2 border-t border-gray-50">
+                                <?php
                                     $tiene_reunion = isset($reuniones_index[$c['id']]);
                                     $estado_reunion = $tiene_reunion ? $reuniones_index[$c['id']] : null;
                                 ?>
@@ -167,54 +189,48 @@
                                 <?php if ($rueda['estadoRueda'] === 'activa'): ?>
                                     <?php if ($tiene_reunion): ?>
                                         <?php if (in_array($estado_reunion, ['pendiente', 'aceptada', 'agendada', 'negociando'])): ?>
-                                            <button disabled class="w-full bg-gray-50 text-gray-400 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-gray-100 flex items-center justify-center gap-2">
-                                                <i class="fas fa-clock text-[10px]"></i> Reunión ya solicitada
+                                            <button disabled class="w-full bg-gray-100 text-gray-400 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-not-allowed border border-gray-200 flex items-center justify-center gap-1.5">
+                                                <i class="fas fa-clock text-[9px]"></i> Solicitada
                                             </button>
                                         <?php elseif ($estado_reunion === 'cancelada' || $estado_reunion === 'rechazada'): ?>
-                                            <button type="button" 
+                                            <button type="button"
                                                     data-id="<?php echo $c['id']; ?>"
                                                     data-nombre="<?php echo htmlspecialchars($c['razon_social'] ?? 'N/A', ENT_QUOTES); ?>"
                                                     data-desc="<?php echo htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado', ENT_QUOTES); ?>"
                                                     data-mesa=""
-                                                    onclick="abrirModalSolicitudBtn(this)" 
-                                                    class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 border border-rose-200 flex flex-col items-center justify-center gap-0.5">
-                                                <span class="flex items-center gap-2">
-                                                    <i class="fas fa-redo text-[10px]"></i> Reintentar Solicitud
-                                                </span>
-                                                <span class="text-[8px] opacity-90 font-bold uppercase tracking-widest">(Anterior fue <?php echo $estado_reunion; ?>)</span>
+                                                    onclick="abrirModalSolicitudBtn(this)"
+                                                    class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 border border-rose-200 flex items-center justify-center gap-1.5">
+                                                <i class="fas fa-redo text-[9px]"></i> Reintentar
                                             </button>
                                         <?php else: ?>
-                                            <button disabled class="w-full bg-blue-50 text-blue-400 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-blue-100 flex items-center justify-center gap-2">
-                                                <i class="fas fa-check-circle text-[10px]"></i> Reunión <?php echo ucfirst($estado_reunion); ?>
+                                            <button disabled class="w-full bg-blue-50 text-blue-400 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-not-allowed border border-blue-100 flex items-center justify-center gap-1.5">
+                                                <i class="fas fa-check-circle text-[9px]"></i> <?php echo ucfirst($estado_reunion); ?>
                                             </button>
                                         <?php endif; ?>
                                     <?php elseif (($rueda['modalidad'] ?? 'virtual') !== 'virtual' && ($rueda['cantidadMesas'] ?? 0) > 0 && !empty($c['mesa_apartada'])): ?>
-                                        <button type="button" 
+                                        <button type="button"
                                                 data-id="<?php echo $c['id']; ?>"
                                                 data-nombre="<?php echo htmlspecialchars($c['razon_social'] ?? 'N/A', ENT_QUOTES); ?>"
                                                 data-desc="<?php echo htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado', ENT_QUOTES); ?>"
                                                 data-mesa="<?php echo htmlspecialchars($c['mesa_apartada'] ?? '', ENT_QUOTES); ?>"
-                                                onclick="abrirModalSolicitudBtn(this)" 
-                                                class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-lg shadow-amber-500/20 flex flex-col items-center justify-center gap-0.5 group-hover:scale-[1.02] transform">
-                                            <span class="flex items-center gap-2">
-                                                <i class="fas fa-calendar-check text-[10px]"></i> Solicitar a esta Mesa
-                                            </span>
-                                            <span class="text-[8px] opacity-90 font-bold uppercase tracking-widest">Mesa <?php echo $c['mesa_apartada']; ?> está esperando</span>
+                                                onclick="abrirModalSolicitudBtn(this)"
+                                                class="w-full bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shadow-md shadow-amber-500/20 flex items-center justify-center gap-1.5">
+                                            <i class="fas fa-calendar-check text-[9px]"></i> Mesa <?php echo $c['mesa_apartada']; ?>
                                         </button>
                                     <?php else: ?>
-                                        <button type="button" 
+                                        <button type="button"
                                                 data-id="<?php echo $c['id']; ?>"
                                                 data-nombre="<?php echo htmlspecialchars($c['razon_social'] ?? 'N/A', ENT_QUOTES); ?>"
                                                 data-desc="<?php echo htmlspecialchars($c['nombreSector'] ?? 'Sin sector especificado', ENT_QUOTES); ?>"
                                                 data-mesa=""
-                                                onclick="abrirModalSolicitudBtn(this)" 
-                                                class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] transition-all duration-300 shadow-md shadow-teal-500/10 flex items-center justify-center gap-2 cursor-pointer">
-                                            <i class="fas fa-calendar-plus text-[10px]"></i> Solicitar Reunión
+                                                onclick="abrirModalSolicitudBtn(this)"
+                                                class="w-full bg-[#0d9488] hover:bg-[#0f766e] text-white py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 shadow-md shadow-teal-500/20 flex items-center justify-center gap-1.5">
+                                            <i class="fas fa-calendar-plus text-[9px]"></i> Solicitar Cita
                                         </button>
                                     <?php endif; ?>
                                 <?php else: ?>
-                                    <button disabled class="w-full bg-gray-50 text-gray-300 py-3.5 rounded-2xl text-xs font-black uppercase tracking-[0.1em] cursor-not-allowed border border-gray-100 flex items-center justify-center gap-2">
-                                        <i class="fas fa-lock text-[10px]"></i> Agendamiento Cerrado
+                                    <button disabled class="w-full bg-gray-100 text-gray-300 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider cursor-not-allowed border border-gray-200 flex items-center justify-center gap-1.5">
+                                        <i class="fas fa-lock text-[9px]"></i> Cerrado
                                     </button>
                                 <?php endif; ?>
                             </div>

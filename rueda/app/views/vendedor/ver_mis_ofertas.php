@@ -119,43 +119,49 @@
                         </button>
                     </div>
                 <?php else: ?>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                         <?php foreach ($ofertas_rueda as $oferta): ?>
-                            <?php 
+                            <?php
                                 $tags = json_decode($oferta['tagsBusqueda'] ?? '[]', true);
                                 $tags_str = is_array($tags) ? implode(', ', $tags) : '';
                             ?>
-                            <div class="bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80 hover:border-teal-300 hover:bg-white hover:shadow-md transition-all duration-200 group flex flex-col justify-between">
-                                <div>
-                                    <div class="flex items-start justify-between gap-3 mb-2">
-                                        <h3 class="font-black text-gray-900 text-sm leading-snug group-hover:text-[#0d9488] transition-colors">
-                                            <?php echo htmlspecialchars($oferta['tituloOferta']); ?>
-                                        </h3>
-                                        <span class="text-[9px] font-black text-gray-400 bg-white px-2 py-0.5 rounded-md border border-gray-200 shrink-0 uppercase">
-                                            <?php echo date('d M', strtotime($oferta['createdAt'])); ?>
+                            <div class="bg-white p-5 rounded-2xl border border-gray-100 hover:border-teal-200 hover:shadow-lg transition-all duration-300 group flex flex-col">
+                                <!-- Header con título y fecha -->
+                                <div class="flex items-start justify-between gap-3 mb-3">
+                                    <h3 class="font-black text-gray-900 text-sm leading-snug group-hover:text-[#0d9488] transition-colors flex-1 line-clamp-2">
+                                        <?php echo htmlspecialchars($oferta['tituloOferta']); ?>
+                                    </h3>
+                                    <span class="text-[9px] font-black text-gray-400 bg-gray-50 px-2 py-0.5 rounded-md border border-gray-200 shrink-0 uppercase whitespace-nowrap">
+                                        <?php echo date('d M', strtotime($oferta['createdAt'])); ?>
+                                    </span>
+                                </div>
+
+                                <!-- Badge CIIU -->
+                                <?php if (!empty($oferta['ciiu_personalizado']) || !empty($oferta['ciiu_nombre_personalizado'])): ?>
+                                    <div class="mb-3">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-teal-50 text-[#0d9488] border border-teal-100">
+                                            <i class="fas fa-barcode text-[8px] opacity-70"></i>
+                                            <span class="truncate max-w-[200px]"><?php echo htmlspecialchars(($oferta['ciiu_personalizado'] ? $oferta['ciiu_personalizado'] . ' - ' : '') . ($oferta['ciiu_nombre_personalizado'] ?? '')); ?></span>
                                         </span>
                                     </div>
+                                <?php endif; ?>
 
-                                    <?php if (!empty($oferta['ciiu_personalizado']) || !empty($oferta['ciiu_nombre_personalizado'])): ?>
-                                        <div class="mb-2">
-                                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-teal-50 text-[#0d9488] border border-teal-100">
-                                                <i class="fas fa-barcode text-[8px] opacity-70"></i>
-                                                <span><?php echo htmlspecialchars(($oferta['ciiu_personalizado'] ? $oferta['ciiu_personalizado'] . ' - ' : '') . ($oferta['ciiu_nombre_personalizado'] ?? '')); ?></span>
-                                            </span>
-                                        </div>
-                                    <?php endif; ?>
+                                <!-- Descripción -->
+                                <p class="text-gray-600 text-xs leading-relaxed mb-4 line-clamp-3 font-medium flex-1">
+                                    <?php echo htmlspecialchars($oferta['descripcionOferta']); ?>
+                                </p>
 
-                                    <p class="text-gray-600 text-xs leading-relaxed mb-3 line-clamp-3 font-medium">
-                                        <?php echo htmlspecialchars($oferta['descripcionOferta']); ?>
-                                    </p>
-                                </div>
+                                <!-- Tags -->
                                 <?php if (!empty($tags)): ?>
-                                    <div class="flex flex-wrap gap-1.5 pt-2 border-t border-gray-100">
-                                        <?php foreach ($tags as $tag): ?>
-                                            <span class="px-2.5 py-0.5 bg-white text-[#0d9488] rounded-full text-[9px] font-bold border border-teal-100 shadow-2xs">
+                                    <div class="flex flex-wrap gap-1.5 pt-3 border-t border-gray-100">
+                                        <?php foreach (array_slice($tags, 0, 3) as $tag): ?>
+                                            <span class="px-2.5 py-0.5 bg-teal-50 text-[#0d9488] rounded-full text-[9px] font-bold border border-teal-100">
                                                 #<?php echo htmlspecialchars($tag); ?>
                                             </span>
                                         <?php endforeach; ?>
+                                        <?php if (count($tags) > 3): ?>
+                                            <span class="text-[9px] text-gray-400 font-medium">+<?php echo count($tags) - 3; ?></span>
+                                        <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>
