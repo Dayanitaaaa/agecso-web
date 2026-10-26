@@ -291,7 +291,7 @@
                     <p class="text-gray-400 text-sm font-bold mt-2">Prueba ajustando tus términos de búsqueda o limpiando los filtros.</p>
                 </div>
             <?php else: ?>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach ($ofertas as $oferta): 
                         // Determinar categoría/sector visual limpio (evitar Asalariados y textos crudos de DB)
                         $categoriaVisual = '';
