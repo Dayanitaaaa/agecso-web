@@ -210,6 +210,16 @@ $badgeColors = [
 
             <!-- Columna Derecha: Datos de Contacto y Rol -->
             <div class="space-y-8">
+                <!-- Logo de empresa -->
+                <?php if (!empty($perfil['logoPath'])): ?>
+                <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 p-8 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 text-center">
+                    <h2 class="text-md font-black text-gray-800 mb-4 flex items-center justify-center gap-1.5"><i class="fas fa-image <?php echo $textColors[$theme]; ?>"></i> Logo de la Empresa</h2>
+                    <div class="w-32 h-32 mx-auto rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden p-2">
+                        <img src="<?php echo APP_URL; ?>/uploads/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo de <?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario']); ?>" class="w-full h-full object-contain">
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 p-8 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300">
                     <h2 class="text-md font-black text-gray-800 mb-6 flex items-center gap-1.5"><i class="fas fa-address-card <?php echo $textColors[$theme]; ?>"></i> Información de Contacto</h2>
                     <div class="space-y-5">
@@ -222,6 +232,28 @@ $badgeColors = [
                                 <p class="text-xs text-gray-800 font-bold mt-0.5 break-all"><?php echo htmlspecialchars($perfil['email']); ?></p>
                             </div>
                         </div>
+                        <?php if (!empty($perfil['telefono_contacto'])): ?>
+                        <div class="flex items-start gap-4">
+                            <div class="w-9 h-9 rounded-xl <?php echo $iconBgColors[$theme]; ?> flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-phone text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-wider">Teléfono</p>
+                                <p class="text-xs text-gray-800 font-bold mt-0.5"><?php echo htmlspecialchars($perfil['telefono_contacto']); ?></p>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <?php if (!empty($perfil['pagina_web'])): ?>
+                        <div class="flex items-start gap-4">
+                            <div class="w-9 h-9 rounded-xl <?php echo $iconBgColors[$theme]; ?> flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-globe text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-black text-gray-400 uppercase tracking-wider">Página Web</p>
+                                <a href="<?php echo htmlspecialchars($perfil['pagina_web']); ?>" target="_blank" class="text-xs text-gray-800 font-bold mt-0.5 hover:underline break-all"><?php echo htmlspecialchars($perfil['pagina_web']); ?></a>
+                            </div>
+                        </div>
+                        <?php endif; ?>
                         <div class="flex items-start gap-4">
                             <div class="w-9 h-9 rounded-xl <?php echo $iconBgColors[$theme]; ?> flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-calendar-alt text-xs"></i>
@@ -326,7 +358,7 @@ $badgeColors = [
                 </button>
             </div>
 
-            <form action="index.php?controlador=usuario&accion=actualizarPerfil" method="POST" class="p-6 sm:p-8 space-y-6">
+            <form action="index.php?controlador=usuario&accion=actualizarPerfil" method="POST" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-6">
                 
                 <div class="space-y-6">
                     <!-- 1. Información General y de Cuenta -->
@@ -431,7 +463,7 @@ $badgeColors = [
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Código CIIU</label>
-                                <input type="text" name="ciiu_personalizado" 
+                                <input type="text" name="ciiu_personalizado"
                                        value="<?php echo htmlspecialchars($perfil['ciiu_personalizado'] ?? ''); ?>"
                                        class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
                                        placeholder="Ej: 6201">
@@ -439,7 +471,7 @@ $badgeColors = [
 
                             <div>
                                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Nombre Actividad Económica</label>
-                                <input type="text" name="ciiu_nombre_personalizado" 
+                                <input type="text" name="ciiu_nombre_personalizado"
                                        value="<?php echo htmlspecialchars($perfil['ciiu_nombre_personalizado'] ?? ''); ?>"
                                        class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
                                        placeholder="Ej: Programación informática">
@@ -447,7 +479,7 @@ $badgeColors = [
 
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Ubicación / Ciudad / Sede</label>
-                                <input type="text" name="ubicacionGeografica" 
+                                <input type="text" name="ubicacionGeografica"
                                        value="<?php echo htmlspecialchars($perfil['ubicacionGeografica'] ?? ''); ?>"
                                        class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
                                        placeholder="Ej: Mosquera, Cundinamarca">
@@ -455,9 +487,66 @@ $badgeColors = [
 
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Sobre la Empresa / Descripción Corporativa</label>
-                                <textarea name="descripcion" rows="3" 
+                                <textarea name="descripcion" rows="3"
                                           placeholder="Describe los objetivos, experiencia o propuesta de valor..."
                                           class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 resize-none"><?php echo htmlspecialchars($perfil['descripcion'] ?? ''); ?></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Logo y Contacto (Nuevos campos) -->
+                    <div class="pt-4 border-t border-gray-100">
+                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fas fa-image"></i> Logo y Contacto
+                        </h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Logo -->
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Logo de la Empresa</label>
+                                <div class="flex items-center gap-4">
+                                    <?php if (!empty($perfil['logoPath'])): ?>
+                                        <div class="w-20 h-20 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
+                                            <img src="<?php echo APP_URL; ?>/uploads/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo actual" class="w-full h-full object-contain">
+                                        </div>
+                                    <?php else: ?>
+                                        <div class="w-20 h-20 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
+                                            <i class="fas fa-image text-gray-400 text-2xl"></i>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="flex-1">
+                                        <input type="file" name="logo" accept="image/*"
+                                               class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-slate-50 file:text-slate-700 hover:file:bg-slate-100">
+                                        <p class="text-[10px] text-gray-400 mt-1">Formatos: JPG, PNG. Máximo 2MB (opcional)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Teléfono -->
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Teléfono de Contacto</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-phone text-xs"></i>
+                                    </div>
+                                    <input type="tel" name="telefono_contacto"
+                                           value="<?php echo htmlspecialchars($perfil['telefono_contacto'] ?? ''); ?>"
+                                           class="w-full pl-9 pr-3 py-3 border border-gray-200 rounded-2xl text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
+                                           placeholder="Ej: +57 300 123 4567">
+                                </div>
+                            </div>
+
+                            <!-- Página Web -->
+                            <div>
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Página Web</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <i class="fas fa-globe text-xs"></i>
+                                    </div>
+                                    <input type="url" name="pagina_web"
+                                           value="<?php echo htmlspecialchars($perfil['pagina_web'] ?? ''); ?>"
+                                           class="w-full pl-9 pr-3 py-3 border border-gray-200 rounded-2xl text-sm font-bold text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800"
+                                           placeholder="Ej: https://www.miempresa.com">
+                                </div>
                             </div>
                         </div>
                     </div>

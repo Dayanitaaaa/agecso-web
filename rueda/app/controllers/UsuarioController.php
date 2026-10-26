@@ -355,8 +355,40 @@ class UsuarioController {
                     'ubicacionGeografica' => trim($_POST['ubicacionGeografica'] ?? ''),
                     'descripcion' => trim($_POST['descripcion'] ?? ''),
                     'ciiu_personalizado' => trim($_POST['ciiu_personalizado'] ?? ''),
-                    'ciiu_nombre_personalizado' => trim($_POST['ciiu_nombre_personalizado'] ?? '')
+                    'ciiu_nombre_personalizado' => trim($_POST['ciiu_nombre_personalizado'] ?? ''),
+                    'telefono_contacto' => trim($_POST['telefono_contacto'] ?? ''),
+                    'pagina_web' => trim($_POST['pagina_web'] ?? '')
                 ];
+
+                // Procesar subida de logo si se proporciona
+                if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+                    $logoFile = $_FILES['logo'];
+                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                    $maxSize = 2 * 1024 * 1024; // 2MB
+
+                    if (!in_array($logoFile['type'], $allowedTypes)) {
+                        throw new Exception("El logo debe ser una imagen JPG, PNG o GIF.");
+                    }
+
+                    if ($logoFile['size'] > $maxSize) {
+                        throw new Exception("El logo no puede superar 2MB.");
+                    }
+
+                    // Generar nombre único
+                    $extension = pathinfo($logoFile['name'], PATHINFO_EXTENSION);
+                    $logoFileName = 'logo_' . $usuarioId . '_' . time() . '.' . $extension;
+                    $uploadDir = __DIR__ . '/../../uploads/';
+                    
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0755, true);
+                    }
+
+                    if (move_uploaded_file($logoFile['tmp_name'], $uploadDir . $logoFileName)) {
+                        $data['logoPath'] = $logoFileName;
+                    } else {
+                        throw new Exception("Error al subir el logo. Por favor intenta de nuevo.");
+                    }
+                }
 
                 if (!empty($password)) {
                     if (strlen($password) < 6) {

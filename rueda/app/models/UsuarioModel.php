@@ -322,6 +322,9 @@ class UsuarioModel {
             $descripcion = !empty($data['descripcion']) ? $data['descripcion'] : '';
             $ciiu = !empty($data['ciiu_personalizado']) ? $data['ciiu_personalizado'] : null;
             $ciiuNombre = !empty($data['ciiu_nombre_personalizado']) ? $data['ciiu_nombre_personalizado'] : null;
+            $telefono = !empty($data['telefono_contacto']) ? $data['telefono_contacto'] : null;
+            $paginaWeb = !empty($data['pagina_web']) ? $data['pagina_web'] : null;
+            $logoPath = !empty($data['logoPath']) ? $data['logoPath'] : null;
 
             if ($empresaId) {
                 $sql_e = "UPDATE empresas SET 
@@ -337,10 +340,17 @@ class UsuarioModel {
                             ubicacionGeografica = ?, 
                             descripcion = ?,
                             ciiu_personalizado = ?,
-                            ciiu_nombre_personalizado = ?
-                          WHERE id = ?";
-                $stmt_e = $this->db->prepare($sql_e);
-                $stmt_e->execute([
+                            ciiu_nombre_personalizado = ?,
+                            telefono_contacto = ?,
+                            pagina_web = ?";
+
+                if ($logoPath) {
+                    $sql_e .= ", logoPath = ?";
+                }
+
+                $sql_e .= " WHERE id = ?";
+                
+                $params_e = [
                     $razonSocial,
                     $repLegal,
                     $nit,
@@ -354,16 +364,26 @@ class UsuarioModel {
                     $descripcion,
                     $ciiu,
                     $ciiuNombre,
-                    $empresaId
-                ]);
+                    $telefono,
+                    $paginaWeb
+                ];
+
+                if ($logoPath) {
+                    $params_e[] = $logoPath;
+                }
+
+                $params_e[] = $empresaId;
+
+                $stmt_e = $this->db->prepare($sql_e);
+                $stmt_e->execute($params_e);
             } else {
                 // Si el usuario (por ejemplo Admin) no tenía fila en empresas, crearla
                 $sql_e = "INSERT INTO empresas (
                             usuarioId, razon_social, representante_legal, nit, digito_verificacion,
                             tipo_persona, tipo_asociacion, sub_tipo_asociacion, responsable_iva,
                             tamaño_empresa, ubicacionGeografica, descripcion, ciiu_personalizado,
-                            ciiu_nombre_personalizado, sectorId, estado_verificacion
-                          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'aprobada')";
+                            ciiu_nombre_personalizado, telefono_contacto, pagina_web, sectorId, estado_verificacion
+                          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 'aprobada')";
                 $stmt_e = $this->db->prepare($sql_e);
                 $stmt_e->execute([
                     $usuarioId,
@@ -379,7 +399,10 @@ class UsuarioModel {
                     $ubicacion,
                     $descripcion,
                     $ciiu,
-                    $ciiuNombre
+                    $ciiuNombre,
+                    $telefono,
+                    $paginaWeb,
+                    1, // sectorId por defecto
                 ]);
             }
 
