@@ -70,6 +70,15 @@ if ($userRole === 'admin') {
                 </a>
             <?php endforeach; ?>
 
+            <!-- Notificaciones -->
+            <a href="index.php?controlador=notificacion&accion=panel" class="flex items-center p-3 text-sm font-bold rounded-2xl text-white/80 hover:bg-white/10 hover:text-white transition-all">
+                <div class="relative">
+                    <i class="fas fa-bell w-5 text-lg"></i>
+                    <span id="notif-contador" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center hidden">0</span>
+                </div>
+                <span class="ml-3">Notificaciones</span>
+            </a>
+
             <!-- Módulo de Mensajes (Solo Roles de Socio) -->
             <?php if ($userRole !== 'admin'): ?>
                 <a href="#" class="flex items-center p-3 text-sm font-bold rounded-2xl text-white/40 cursor-not-allowed group">
@@ -104,4 +113,20 @@ function toggleSidebar() {
     sidebar.classList.toggle('-translate-x-full');
     overlay.classList.toggle('hidden');
 }
+
+// Cargar contador de notificaciones al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('index.php?controlador=notificacion&accion=contador')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.contador > 0) {
+                const contador = document.getElementById('notif-contador');
+                if (contador) {
+                    contador.textContent = data.contador;
+                    contador.classList.remove('hidden');
+                }
+            }
+        })
+        .catch(error => console.error('Error cargando contador de notificaciones:', error));
+});
 </script>
