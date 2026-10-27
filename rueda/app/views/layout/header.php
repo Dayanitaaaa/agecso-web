@@ -24,6 +24,18 @@
     if(isset($_SESSION['usuario_id'])) {
         include __DIR__ . '/sidebar.php';
     }
+    
+    // Cargar logoPath del usuario si está logueado
+    $logoPath = null;
+    if(isset($_SESSION['usuario_id'])) {
+        require_once __DIR__ . '/../../config/db.php';
+        $stmt = $pdo->prepare("SELECT logoPath FROM empresas WHERE usuarioId = ?");
+        $stmt->execute([$_SESSION['usuario_id']]);
+        $empresa = $stmt->fetch();
+        if ($empresa) {
+            $logoPath = $empresa['logoPath'];
+        }
+    }
     ?>
     
     <div class="flex-grow flex flex-col <?php echo isset($_SESSION['usuario_id']) ? 'md:ml-64' : ''; ?> transition-all duration-300">
@@ -61,9 +73,13 @@
                             </div>
                             
                             <div class="hidden sm:flex items-center gap-3 px-4 py-1.5 bg-white/10 rounded-full border border-white/10 backdrop-blur-sm">
-                                <div class="w-7 h-7 bg-white text-[#00a2ff] rounded-full flex items-center justify-center text-[10px] font-black">
-                                    <?php echo strtoupper(substr($_SESSION['nombreUsuario'] ?? 'U', 0, 1)); ?>
-                                </div>
+                                <?php if (!empty($logoPath)): ?>
+                                    <img src="uploads/logos/<?php echo htmlspecialchars($logoPath); ?>" alt="Logo" class="w-7 h-7 rounded-full object-contain bg-white">
+                                <?php else: ?>
+                                    <div class="w-7 h-7 bg-white text-[#00a2ff] rounded-full flex items-center justify-center text-[10px] font-black">
+                                        <?php echo strtoupper(substr($_SESSION['nombreUsuario'] ?? 'U', 0, 1)); ?>
+                                    </div>
+                                <?php endif; ?>
                                 <span class="text-xs font-black text-white"><?php echo htmlspecialchars($_SESSION['nombreUsuario'] ?? 'Usuario'); ?></span>
                             </div>
                         <?php else: ?>
