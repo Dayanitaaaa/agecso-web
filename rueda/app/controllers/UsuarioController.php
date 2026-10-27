@@ -708,10 +708,6 @@ class UsuarioController {
             if (!$perfil) {
                 throw new Exception("No se encontró información del perfil para esta empresa.");
             }
-            
-            // Debug temporal para verificar logoPath
-            error_log("LogoPath en perfil: " . ($perfil['logoPath'] ?? 'NULL'));
-            
             require_once __DIR__ . '/../views/usuario/perfil.php';
         } catch (Exception $e) {
             $mensaje = "<div class='bg-red-100 p-3 rounded mb-4'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
