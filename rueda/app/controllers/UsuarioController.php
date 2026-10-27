@@ -377,7 +377,7 @@ class UsuarioController {
                     // Generar nombre único
                     $extension = pathinfo($logoFile['name'], PATHINFO_EXTENSION);
                     $logoFileName = 'logo_' . $usuarioId . '_' . time() . '.' . $extension;
-                    $uploadDir = __DIR__ . '/../../uploads/';
+                    $uploadDir = __DIR__ . '/../public/uploads/';
                     
                     if (!is_dir($uploadDir)) {
                         mkdir($uploadDir, 0755, true);

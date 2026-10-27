@@ -215,7 +215,7 @@ $badgeColors = [
                 <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 p-8 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 text-center">
                     <h2 class="text-md font-black text-gray-800 mb-4 flex items-center justify-center gap-1.5"><i class="fas fa-image <?php echo $textColors[$theme]; ?>"></i> Logo de la Empresa</h2>
                     <div class="w-32 h-32 mx-auto rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden p-2">
-                        <img src="../../uploads/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo de <?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario']); ?>" class="w-full h-full object-contain">
+                        <img src="uploads/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo de <?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario']); ?>" class="w-full h-full object-contain">
                     </div>
                 </div>
                 <?php endif; ?>
@@ -506,7 +506,7 @@ $badgeColors = [
                                 <div class="flex items-center gap-4">
                                     <?php if (!empty($perfil['logoPath'])): ?>
                                         <div class="w-20 h-20 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
-                                            <img src="../../uploads/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo actual" class="w-full h-full object-contain">
+                                            <img src="uploads/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo actual" class="w-full h-full object-contain">
                                         </div>
                                     <?php else: ?>
                                         <div class="w-20 h-20 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
