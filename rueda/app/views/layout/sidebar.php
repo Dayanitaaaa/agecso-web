@@ -70,13 +70,13 @@ if ($userRole === 'admin') {
                 </a>
             <?php endforeach; ?>
 
-            <!-- Notificaciones -->
-            <a href="index.php?controlador=notificacion&accion=panel" class="flex items-center p-3 text-sm font-bold rounded-2xl text-white/80 hover:bg-white/10 hover:text-white transition-all">
+            <!-- Notificaciones (Badge simple) -->
+            <a href="#" class="flex items-center p-3 text-sm font-bold rounded-2xl text-white/80 hover:bg-white/10 hover:text-white transition-all">
                 <div class="relative">
                     <i class="fas fa-bell w-5 text-lg"></i>
                     <span id="notif-contador" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center hidden">0</span>
                 </div>
-                <span class="ml-3">Notificaciones</span>
+                <span class="ml-3">Alertas</span>
             </a>
 
             <!-- Módulo de Mensajes (Solo Roles de Socio) -->
@@ -114,9 +114,9 @@ function toggleSidebar() {
     overlay.classList.toggle('hidden');
 }
 
-// Cargar contador de notificaciones al cargar la página
+// Cargar contador de alertas basado en datos reales (inscripciones pendientes, citas por gestionar, etc.)
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('index.php?controlador=notificacion&accion=contador')
+    fetch('index.php?controlador=usuario&accion=obtenerAlertas')
         .then(response => response.json())
         .then(data => {
             if (data.success && data.contador > 0) {
@@ -127,6 +127,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         })
-        .catch(error => console.error('Error cargando contador de notificaciones:', error));
+        .catch(error => console.error('Error cargando contador de alertas:', error));
 });
 </script>

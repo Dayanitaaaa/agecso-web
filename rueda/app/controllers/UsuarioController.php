@@ -454,6 +454,78 @@ class UsuarioController {
     }
 
     /**
+     * Obtener contador de alertas basado en datos reales (sin tabla de notificaciones)
+     */
+    public function obtenerAlertas() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        
+        if (!isset($_SESSION['usuario_id'])) {
+            echo json_encode(['success' => false, 'contador' => 0]);
+            exit;
+        }
+
+        try {
+            $usuarioId = $_SESSION['usuario_id'];
+            $role = strtolower($_SESSION['slugRole'] ?? '');
+            $contador = 0;
+
+            if ($role === 'admin') {
+                // Admin: inscripciones pendientes
+                $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM inscripciones_ruedas WHERE estadoInscripcion = 'pendiente'");
+                $stmt->execute();
+                $contador += $stmt->fetch()['total'];
+            } elseif ($role === 'vendedor' || $role === 'proveedor') {
+                // Vendedor: citas por gestionar + encuestas pendientes
+                $stmt = $this->pdo->prepare("
+                    SELECT COUNT(*) as total FROM reuniones 
+                    WHERE vendedorId = ? 
+                    AND estadoCita IN ('pendiente', 'negociando') 
+                    AND ultimaAccionPor = 'comprador'
+                ");
+                $stmt->execute([$usuarioId]);
+                $contador += $stmt->fetch()['total'];
+
+                // Encuestas pendientes
+                $stmt_enc = $this->pdo->prepare("
+                    SELECT COUNT(*) as total FROM encuestas_satisfaccion s
+                    JOIN reuniones r ON s.reunionId = r.id
+                    WHERE r.vendedorId = ? 
+                    AND (r.estadoCita = 'realizada' OR (r.estadoCita IN ('aceptada', 'agendada') AND DATE(r.fechaHora) < DATE(?)))
+                    AND s.usuarioId IS NULL
+                ");
+                $stmt_enc->execute([$usuarioId, SYSTEM_TIME]);
+                $contador += $stmt_enc->fetch()['total'];
+            } elseif ($role === 'comprador') {
+                // Comprador: citas por gestionar + encuestas pendientes
+                $stmt = $this->pdo->prepare("
+                    SELECT COUNT(*) as total FROM reuniones 
+                    WHERE compradorId = ? 
+                    AND estadoCita IN ('pendiente', 'negociando') 
+                    AND ultimaAccionPor = 'vendedor'
+                ");
+                $stmt->execute([$usuarioId]);
+                $contador += $stmt->fetch()['total'];
+
+                // Encuestas pendientes
+                $stmt_enc = $this->pdo->prepare("
+                    SELECT COUNT(*) as total FROM encuestas_satisfaccion s
+                    JOIN reuniones r ON s.reunionId = r.id
+                    WHERE r.compradorId = ? 
+                    AND (r.estadoCita = 'realizada' OR (r.estadoCita IN ('aceptada', 'agendada') AND DATE(r.fechaHora) < DATE(?)))
+                    AND s.usuarioId IS NULL
+                ");
+                $stmt_enc->execute([$usuarioId, SYSTEM_TIME]);
+                $contador += $stmt_enc->fetch()['total'];
+            }
+
+            echo json_encode(['success' => true, 'contador' => $contador]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'contador' => 0]);
+        }
+        exit;
+    }
+
+    /**
      * Olvidé mi contraseña - Formulario y envío de correo
      */
     public function forgotPassword() {
