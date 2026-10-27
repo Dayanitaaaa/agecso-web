@@ -270,6 +270,10 @@ class UsuarioController {
                         $_SESSION['slugRole'] = strtolower(trim($usuario['slugRole']));
                         $_SESSION['nombreRole'] = $usuario['nombreRole'];
                         $_SESSION['login_time'] = time();
+                        
+                        // Cargar logoPath de la empresa si existe
+                        $perfil = $this->usuarioModel->obtenerPerfilEmpresa($usuario['id']);
+                        $_SESSION['logoPath'] = $perfil['logoPath'] ?? null;
 
                         // LOG DE REDIRECCIÓN
                         try {
@@ -412,6 +416,10 @@ class UsuarioController {
 
                 if ($resultado === true) {
                     $_SESSION['nombreUsuario'] = $nombreUsuario;
+                    // Actualizar logoPath en sesión si se cambió
+                    if (isset($data['logoPath'])) {
+                        $_SESSION['logoPath'] = $data['logoPath'];
+                    }
                     header("Location: index.php?controlador=usuario&accion=perfil&msg=perfil_actualizado");
                 } else {
                     throw new Exception("Error al guardar cambios: " . $resultado);

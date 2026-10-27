@@ -25,11 +25,8 @@
         include __DIR__ . '/sidebar.php';
     }
     
-    // Cargar logoPath del usuario si está logueado (forma segura)
-    $logoPath = null;
-    if(isset($_SESSION['usuario_id']) && isset($perfil) && !empty($perfil['logoPath'])) {
-        $logoPath = $perfil['logoPath'];
-    }
+    // Cargar logoPath del usuario si está logueado
+    $logoPath = $_SESSION['logoPath'] ?? null;
     ?>
     
     <div class="flex-grow flex flex-col <?php echo isset($_SESSION['usuario_id']) ? 'md:ml-64' : ''; ?> transition-all duration-300">
