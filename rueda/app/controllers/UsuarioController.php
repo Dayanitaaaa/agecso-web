@@ -470,52 +470,50 @@ class UsuarioController {
             $contador = 0;
 
             if ($role === 'admin') {
-                // Admin: inscripciones pendientes
+                // Admin: inscripciones pendientes + nuevas demandas + nuevas ofertas
                 $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM inscripciones_ruedas WHERE estadoInscripcion = 'pendiente'");
                 $stmt->execute();
                 $contador += $stmt->fetch()['total'];
+
+                // Nuevas demandas (del último día)
+                $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM demandas WHERE createdAt >= DATE_SUB(?, INTERVAL 1 DAY)");
+                $stmt->execute([SYSTEM_TIME]);
+                $contador += $stmt->fetch()['total'];
+
+                // Nuevas ofertas (del último día)
+                $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM ofertas WHERE createdAt >= DATE_SUB(?, INTERVAL 1 DAY)");
+                $stmt->execute([SYSTEM_TIME]);
+                $contador += $stmt->fetch()['total'];
             } elseif ($role === 'vendedor' || $role === 'proveedor') {
-                // Vendedor: citas por gestionar + encuestas pendientes
+                // Vendedor: reuniones agendadas (citas nuevas) + nuevas demandas
                 $stmt = $this->pdo->prepare("
                     SELECT COUNT(*) as total FROM reuniones 
                     WHERE vendedorId = ? 
-                    AND estadoCita IN ('pendiente', 'negociando') 
-                    AND ultimaAccionPor = 'comprador'
+                    AND estadoCita = 'agendada'
+                    AND createdAt >= DATE_SUB(?, INTERVAL 1 DAY)
                 ");
-                $stmt->execute([$usuarioId]);
+                $stmt->execute([$usuarioId, SYSTEM_TIME]);
                 $contador += $stmt->fetch()['total'];
 
-                // Encuestas pendientes
-                $stmt_enc = $this->pdo->prepare("
-                    SELECT COUNT(*) as total FROM encuestas_satisfaccion s
-                    JOIN reuniones r ON s.reunionId = r.id
-                    WHERE r.vendedorId = ? 
-                    AND (r.estadoCita = 'realizada' OR (r.estadoCita IN ('aceptada', 'agendada') AND DATE(r.fechaHora) < DATE(?)))
-                    AND s.usuarioId IS NULL
-                ");
-                $stmt_enc->execute([$usuarioId, SYSTEM_TIME]);
-                $contador += $stmt_enc->fetch()['total'];
+                // Nuevas demandas del último día
+                $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM demandas WHERE createdAt >= DATE_SUB(?, INTERVAL 1 DAY)");
+                $stmt->execute([SYSTEM_TIME]);
+                $contador += $stmt->fetch()['total'];
             } elseif ($role === 'comprador') {
-                // Comprador: citas por gestionar + encuestas pendientes
+                // Comprador: reuniones agendadas (citas nuevas) + nuevas ofertas
                 $stmt = $this->pdo->prepare("
                     SELECT COUNT(*) as total FROM reuniones 
                     WHERE compradorId = ? 
-                    AND estadoCita IN ('pendiente', 'negociando') 
-                    AND ultimaAccionPor = 'vendedor'
+                    AND estadoCita = 'agendada'
+                    AND createdAt >= DATE_SUB(?, INTERVAL 1 DAY)
                 ");
-                $stmt->execute([$usuarioId]);
+                $stmt->execute([$usuarioId, SYSTEM_TIME]);
                 $contador += $stmt->fetch()['total'];
 
-                // Encuestas pendientes
-                $stmt_enc = $this->pdo->prepare("
-                    SELECT COUNT(*) as total FROM encuestas_satisfaccion s
-                    JOIN reuniones r ON s.reunionId = r.id
-                    WHERE r.compradorId = ? 
-                    AND (r.estadoCita = 'realizada' OR (r.estadoCita IN ('aceptada', 'agendada') AND DATE(r.fechaHora) < DATE(?)))
-                    AND s.usuarioId IS NULL
-                ");
-                $stmt_enc->execute([$usuarioId, SYSTEM_TIME]);
-                $contador += $stmt_enc->fetch()['total'];
+                // Nuevas ofertas del último día
+                $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM ofertas WHERE createdAt >= DATE_SUB(?, INTERVAL 1 DAY)");
+                $stmt->execute([SYSTEM_TIME]);
+                $contador += $stmt->fetch()['total'];
             }
 
             echo json_encode(['success' => true, 'contador' => $contador]);

@@ -70,15 +70,6 @@ if ($userRole === 'admin') {
                 </a>
             <?php endforeach; ?>
 
-            <!-- Notificaciones (Badge simple) -->
-            <a href="#" class="flex items-center p-3 text-sm font-bold rounded-2xl text-white/80 hover:bg-white/10 hover:text-white transition-all">
-                <div class="relative">
-                    <i class="fas fa-bell w-5 text-lg"></i>
-                    <span id="notif-contador" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center hidden">0</span>
-                </div>
-                <span class="ml-3">Alertas</span>
-            </a>
-
             <!-- Módulo de Mensajes (Solo Roles de Socio) -->
             <?php if ($userRole !== 'admin'): ?>
                 <a href="#" class="flex items-center p-3 text-sm font-bold rounded-2xl text-white/40 cursor-not-allowed group">
