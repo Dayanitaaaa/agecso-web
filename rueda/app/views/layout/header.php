@@ -51,7 +51,7 @@
                                 
                                 <!-- Dropdown de alertas -->
                                 <div id="dropdown-alertas" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
-                                    <div class="bg-gradient-to-r from-[#00a2ff] to-[#4dbfff] px-4 py-3">
+                                    <div class="<?php echo $header_bg ?? 'bg-gradient-to-r from-[#00a2ff] to-[#4dbfff]'; ?> px-4 py-3">
                                         <h3 class="text-white font-black text-sm">Alertas</h3>
                                     </div>
                                     <div id="alertas-lista" class="max-h-64 overflow-y-auto p-2">
@@ -138,22 +138,35 @@ function renderizarAlertas() {
     const lista = document.getElementById('alertas-lista');
     
     if (!alertasData || alertasData.length === 0) {
-        lista.innerHTML = '<p class="text-gray-500 text-sm text-center py-4">No tienes alertas pendientes</p>';
+        lista.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-8">
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                    <i class="fas fa-bell-slash text-gray-400 text-xl"></i>
+                </div>
+                <p class="text-gray-500 text-sm font-medium">No tienes alertas pendientes</p>
+            </div>
+        `;
         return;
     }
     
     let html = '';
     alertasData.forEach(alerta => {
+        const icono = alerta.tipo === 'reuniones' ? 'calendar-check' : (alerta.tipo === 'demandas' ? 'shopping-cart' : 'box');
+        const color = alerta.tipo === 'reuniones' ? 'bg-blue-50 text-blue-500' : (alerta.tipo === 'demandas' ? 'bg-amber-50 text-amber-500' : 'bg-purple-50 text-purple-500');
+        
         html += `
-            <a href="${alerta.link}" class="block p-3 hover:bg-gray-50 rounded-xl transition-colors mb-1 last:mb-0">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-                        <i class="fas fa-${alerta.tipo === 'reuniones' ? 'calendar-check' : (alerta.tipo === 'demandas' ? 'shopping-cart' : 'box')} text-blue-500 text-sm"></i>
+            <a href="${alerta.link}" class="block p-4 hover:bg-gray-50 rounded-xl transition-all duration-200 mb-2 last:mb-0 border border-gray-100 hover:border-gray-200">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-xl ${color} flex items-center justify-center shrink-0">
+                        <i class="fas fa-${icono} text-lg"></i>
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-gray-900 text-sm font-bold truncate">${alerta.mensaje}</p>
+                        <p class="text-gray-400 text-xs mt-1">Click para ver detalles</p>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
+                        <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                    </div>
                 </div>
             </a>
         `;
