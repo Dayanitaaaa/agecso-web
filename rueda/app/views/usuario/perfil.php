@@ -215,7 +215,7 @@ $badgeColors = [
                 <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.01)] border border-gray-100 p-8 hover:shadow-[0_8px_30px_rgba(0,0,0,0.02)] transition-all duration-300 text-center">
                     <h2 class="text-md font-black text-gray-800 mb-4 flex items-center justify-center gap-1.5"><i class="fas fa-image <?php echo $textColors[$theme]; ?>"></i> Logo de la Empresa</h2>
                     <div class="w-32 h-32 mx-auto rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center overflow-hidden p-2">
-                        <img src="uploads/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo de <?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario']); ?>" class="w-full h-full object-contain">
+                        <img src="uploads/logos/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo de <?php echo htmlspecialchars($perfil['razon_social'] ?? $perfil['nombreUsuario']); ?>" class="w-full h-full object-contain">
                     </div>
                 </div>
                 <?php endif; ?>
@@ -504,19 +504,18 @@ $badgeColors = [
                             <div class="md:col-span-2">
                                 <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Logo de la Empresa</label>
                                 <div class="flex items-center gap-4">
-                                    <?php if (!empty($perfil['logoPath'])): ?>
-                                        <div class="w-20 h-20 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
-                                            <img src="uploads/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo actual" class="w-full h-full object-contain">
-                                        </div>
-                                    <?php else: ?>
-                                        <div class="w-20 h-20 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
+                                    <div id="logo-preview-container" class="w-20 h-20 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
+                                        <?php if (!empty($perfil['logoPath'])): ?>
+                                            <img id="logo-preview" src="uploads/logos/<?php echo htmlspecialchars($perfil['logoPath']); ?>" alt="Logo actual" class="w-full h-full object-contain">
+                                        <?php else: ?>
                                             <i class="fas fa-image text-gray-400 text-2xl"></i>
-                                        </div>
-                                    <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
                                     <div class="flex-1">
-                                        <input type="file" name="logo" accept="image/*"
-                                               class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-slate-50 file:text-slate-700 hover:file:bg-slate-100">
-                                        <p class="text-[10px] text-gray-400 mt-1">Formatos: JPG, PNG. Máximo 2MB (opcional)</p>
+                                        <input type="file" name="logo" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp,image/svg+xml"
+                                               class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-slate-50 file:text-slate-700 hover:file:bg-slate-100"
+                                               onchange="previewLogo(event)">
+                                        <p class="text-[10px] text-gray-400 mt-1">Formatos: JPG, PNG, GIF, WEBP, SVG. Máximo 5MB (opcional)</p>
                                     </div>
                                 </div>
                             </div>
@@ -679,6 +678,29 @@ function confirmarComprador() {
             document.getElementById('formConvertirComprador').submit();
         }
     });
+}
+
+function previewLogo(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('logo-preview');
+            const container = document.getElementById('logo-preview-container');
+            
+            if (preview) {
+                preview.src = e.target.result;
+            } else {
+                const img = document.createElement('img');
+                img.id = 'logo-preview';
+                img.src = e.target.result;
+                img.className = 'w-full h-full object-contain';
+                container.innerHTML = '';
+                container.appendChild(img);
+            }
+        }
+        reader.readAsDataURL(file);
+    }
 }
 </script>
 

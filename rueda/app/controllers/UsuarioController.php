@@ -363,24 +363,35 @@ class UsuarioController {
                 // Procesar subida de logo si se proporciona
                 if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
                     $logoFile = $_FILES['logo'];
-                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-                    $maxSize = 2 * 1024 * 1024; // 2MB
+                    $allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+                    $maxSize = 5 * 1024 * 1024; // 5MB
 
                     if (!in_array($logoFile['type'], $allowedTypes)) {
-                        throw new Exception("El logo debe ser una imagen JPG, PNG o GIF.");
+                        throw new Exception("El logo debe ser una imagen JPG, PNG, GIF, WEBP o SVG.");
                     }
 
                     if ($logoFile['size'] > $maxSize) {
-                        throw new Exception("El logo no puede superar 2MB.");
+                        throw new Exception("El logo no puede superar 5MB.");
                     }
 
                     // Generar nombre único
                     $extension = pathinfo($logoFile['name'], PATHINFO_EXTENSION);
                     $logoFileName = 'logo_' . $usuarioId . '_' . time() . '.' . $extension;
-                    $uploadDir = __DIR__ . '/../public/uploads/';
-                    
+                    $uploadDir = __DIR__ . '/../public/uploads/logos/';
+
                     if (!is_dir($uploadDir)) {
                         mkdir($uploadDir, 0755, true);
+                    }
+
+                    // Eliminar logo anterior si existe
+                    $stmt = $this->pdo->prepare("SELECT logoPath FROM empresas WHERE usuarioId = ?");
+                    $stmt->execute([$usuarioId]);
+                    $empresa = $stmt->fetch();
+                    if ($empresa && !empty($empresa['logoPath'])) {
+                        $logoAnterior = $uploadDir . $empresa['logoPath'];
+                        if (file_exists($logoAnterior)) {
+                            unlink($logoAnterior);
+                        }
                     }
 
                     if (move_uploaded_file($logoFile['tmp_name'], $uploadDir . $logoFileName)) {
