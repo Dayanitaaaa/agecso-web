@@ -13,20 +13,25 @@
             <div class="absolute -right-10 -top-10 w-60 h-60 bg-white/10 rounded-full blur-3xl"></div>
             <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
             
-            <div class="relative z-10">
-                <div class="inline-flex items-center px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
-                    <span class="relative flex h-2 w-2 mr-2">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                    </span>
-                    Panel Vendedor Activo
+            <div class="relative z-10 flex items-center gap-6">
+                <?php if (!empty($_SESSION['logoPath'])): ?>
+                    <img src="uploads/logos/<?php echo htmlspecialchars($_SESSION['logoPath']); ?>" alt="Logo" class="w-16 h-16 rounded-2xl object-contain bg-white/20 backdrop-blur-sm border border-white/30 p-2">
+                <?php endif; ?>
+                <div>
+                    <div class="inline-flex items-center px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                        <span class="relative flex h-2 w-2 mr-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                        </span>
+                        Panel Vendedor Activo
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl font-black tracking-tight leading-tight">
+                        ¡Hola, <?php echo explode(' ', htmlspecialchars($nombreSesion))[0]; ?>! 
+                    </h1>
+                    <p class="text-white/80 mt-4 flex items-center text-base sm:text-lg font-bold">
+                        <i class="fas fa-building mr-2.5 opacity-70"></i> <?php echo htmlspecialchars($razon_social); ?>
+                    </p>
                 </div>
-                <h1 class="text-4xl sm:text-5xl font-black tracking-tight leading-tight">
-                    ¡Hola, <?php echo explode(' ', htmlspecialchars($nombreSesion))[0]; ?>! 
-                </h1>
-                <p class="text-white/80 mt-4 flex items-center text-base sm:text-lg font-bold">
-                    <i class="fas fa-building mr-2.5 opacity-70"></i> <?php echo htmlspecialchars($razon_social); ?>
-                </p>
             </div>
             
             <div class="relative z-10 grid grid-cols-2 gap-4">
