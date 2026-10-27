@@ -460,7 +460,7 @@ class UsuarioController {
         if (session_status() === PHP_SESSION_NONE) session_start();
         
         if (!isset($_SESSION['usuario_id'])) {
-            echo json_encode(['success' => false, 'contador' => 0]);
+            echo json_encode(['success' => false, 'contador' => 0, 'alertas' => []]);
             exit;
         }
 
@@ -468,22 +468,35 @@ class UsuarioController {
             $usuarioId = $_SESSION['usuario_id'];
             $role = strtolower($_SESSION['slugRole'] ?? '');
             $contador = 0;
+            $alertas = [];
 
             if ($role === 'admin') {
                 // Admin: inscripciones pendientes + nuevas demandas + nuevas ofertas
                 $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM inscripciones_ruedas WHERE estadoInscripcion = 'pendiente'");
                 $stmt->execute();
-                $contador += $stmt->fetch()['total'];
+                $inscripciones = $stmt->fetch()['total'];
+                if ($inscripciones > 0) {
+                    $contador += $inscripciones;
+                    $alertas[] = ['tipo' => 'inscripciones', 'mensaje' => "$inscripciones inscripciones pendientes", 'link' => 'index.php?controlador=admin&accion=verRegistrosPaneles'];
+                }
 
                 // Nuevas demandas (del último día)
                 $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM demandas WHERE createdAt >= DATE_SUB(?, INTERVAL 1 DAY)");
                 $stmt->execute([SYSTEM_TIME]);
-                $contador += $stmt->fetch()['total'];
+                $demandas = $stmt->fetch()['total'];
+                if ($demandas > 0) {
+                    $contador += $demandas;
+                    $alertas[] = ['tipo' => 'demandas', 'mensaje' => "$demandas nuevas demandas", 'link' => 'index.php?controlador=admin&accion=verRegistrosPaneles'];
+                }
 
                 // Nuevas ofertas (del último día)
                 $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM ofertas WHERE createdAt >= DATE_SUB(?, INTERVAL 1 DAY)");
                 $stmt->execute([SYSTEM_TIME]);
-                $contador += $stmt->fetch()['total'];
+                $ofertas = $stmt->fetch()['total'];
+                if ($ofertas > 0) {
+                    $contador += $ofertas;
+                    $alertas[] = ['tipo' => 'ofertas', 'mensaje' => "$ofertas nuevas ofertas", 'link' => 'index.php?controlador=admin&accion=verRegistrosPaneles'];
+                }
             } elseif ($role === 'vendedor' || $role === 'proveedor') {
                 // Vendedor: reuniones agendadas (citas nuevas) + nuevas demandas
                 $stmt = $this->pdo->prepare("
@@ -493,12 +506,20 @@ class UsuarioController {
                     AND createdAt >= DATE_SUB(?, INTERVAL 1 DAY)
                 ");
                 $stmt->execute([$usuarioId, SYSTEM_TIME]);
-                $contador += $stmt->fetch()['total'];
+                $reuniones = $stmt->fetch()['total'];
+                if ($reuniones > 0) {
+                    $contador += $reuniones;
+                    $alertas[] = ['tipo' => 'reuniones', 'mensaje' => "$reuniones reuniones agendadas", 'link' => 'index.php?controlador=vendedor&accion=verReuniones'];
+                }
 
                 // Nuevas demandas del último día
                 $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM demandas WHERE createdAt >= DATE_SUB(?, INTERVAL 1 DAY)");
                 $stmt->execute([SYSTEM_TIME]);
-                $contador += $stmt->fetch()['total'];
+                $demandas = $stmt->fetch()['total'];
+                if ($demandas > 0) {
+                    $contador += $demandas;
+                    $alertas[] = ['tipo' => 'demandas', 'mensaje' => "$demandas nuevas demandas", 'link' => 'index.php?controlador=vendedor&accion=explorarDemandas'];
+                }
             } elseif ($role === 'comprador') {
                 // Comprador: reuniones agendadas (citas nuevas) + nuevas ofertas
                 $stmt = $this->pdo->prepare("
@@ -508,17 +529,25 @@ class UsuarioController {
                     AND createdAt >= DATE_SUB(?, INTERVAL 1 DAY)
                 ");
                 $stmt->execute([$usuarioId, SYSTEM_TIME]);
-                $contador += $stmt->fetch()['total'];
+                $reuniones = $stmt->fetch()['total'];
+                if ($reuniones > 0) {
+                    $contador += $reuniones;
+                    $alertas[] = ['tipo' => 'reuniones', 'mensaje' => "$reuniones reuniones agendadas", 'link' => 'index.php?controlador=comprador&accion=verReuniones'];
+                }
 
                 // Nuevas ofertas del último día
                 $stmt = $this->pdo->prepare("SELECT COUNT(*) as total FROM ofertas WHERE createdAt >= DATE_SUB(?, INTERVAL 1 DAY)");
                 $stmt->execute([SYSTEM_TIME]);
-                $contador += $stmt->fetch()['total'];
+                $ofertas = $stmt->fetch()['total'];
+                if ($ofertas > 0) {
+                    $contador += $ofertas;
+                    $alertas[] = ['tipo' => 'ofertas', 'mensaje' => "$ofertas nuevas ofertas", 'link' => 'index.php?controlador=comprador&accion=verParticipantes'];
+                }
             }
 
-            echo json_encode(['success' => true, 'contador' => $contador]);
+            echo json_encode(['success' => true, 'contador' => $contador, 'alertas' => $alertas]);
         } catch (Exception $e) {
-            echo json_encode(['success' => false, 'contador' => 0]);
+            echo json_encode(['success' => false, 'contador' => 0, 'alertas' => []]);
         }
         exit;
     }

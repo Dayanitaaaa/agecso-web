@@ -42,11 +42,23 @@
 
                     <div class="flex items-center gap-4">
                         <?php if(isset($_SESSION['usuario_id'])): ?>
-                            <!-- Campanita de notificaciones -->
-                            <button id="btn-notificaciones" class="relative p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all" onclick="mostrarAlertas()">
-                                <i class="fas fa-bell text-lg"></i>
-                                <span id="notif-contador" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center hidden">0</span>
-                            </button>
+                            <!-- Campanita de notificaciones con dropdown -->
+                            <div class="relative">
+                                <button id="btn-notificaciones" class="relative p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all" onclick="toggleDropdownAlertas()">
+                                    <i class="fas fa-bell text-lg"></i>
+                                    <span id="notif-contador" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center hidden">0</span>
+                                </button>
+                                
+                                <!-- Dropdown de alertas -->
+                                <div id="dropdown-alertas" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                                    <div class="bg-gradient-to-r from-[#00a2ff] to-[#4dbfff] px-4 py-3">
+                                        <h3 class="text-white font-black text-sm">Alertas</h3>
+                                    </div>
+                                    <div id="alertas-lista" class="max-h-64 overflow-y-auto p-2">
+                                        <p class="text-gray-500 text-sm text-center py-4">Cargando alertas...</p>
+                                    </div>
+                                </div>
+                            </div>
                             
                             <div class="hidden sm:flex items-center gap-3 px-4 py-1.5 bg-white/10 rounded-full border border-white/10 backdrop-blur-sm">
                                 <div class="w-7 h-7 bg-white text-[#00a2ff] rounded-full flex items-center justify-center text-[10px] font-black">
@@ -68,17 +80,24 @@
         <main class="flex-grow <?php echo (isset($login_layout) && $login_layout) ? '' : 'p-4 md:p-8'; ?>">
 
 <script>
+let alertasData = null;
+
 // Cargar contador de notificaciones al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('notif-contador')) {
         fetch('index.php?controlador=usuario&accion=obtenerAlertas')
             .then(response => response.json())
             .then(data => {
-                if (data.success && data.contador > 0) {
+                if (data.success) {
+                    alertasData = data.alertas;
                     const contador = document.getElementById('notif-contador');
                     if (contador) {
                         contador.textContent = data.contador;
-                        contador.classList.remove('hidden');
+                        if (data.contador > 0) {
+                            contador.classList.remove('hidden');
+                        } else {
+                            contador.classList.add('hidden');
+                        }
                     }
                 }
             })
@@ -86,27 +105,72 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Mostrar alertas al hacer click en la campanita
-function mostrarAlertas() {
-    const role = "<?php echo strtolower($_SESSION['slugRole'] ?? ''); ?>";
-    let mensaje = '';
+// Toggle del dropdown de alertas
+function toggleDropdownAlertas() {
+    const dropdown = document.getElementById('dropdown-alertas');
+    const lista = document.getElementById('alertas-lista');
     
-    if (role === 'admin') {
-        mensaje = 'Tienes alertas pendientes:\n\n• Inscripciones pendientes\n• Nuevas demandas\n• Nuevas ofertas\n\nRevisa tu panel de administrador para más detalles.';
-    } else if (role === 'vendedor' || role === 'proveedor') {
-        mensaje = 'Tienes alertas pendientes:\n\n• Reuniones agendadas\n• Nuevas demandas de compradores\n\nRevisa tu panel de vendedor para más detalles.';
-    } else if (role === 'comprador') {
-        mensaje = 'Tienes alertas pendientes:\n\n• Reuniones agendadas\n• Nuevas ofertas de proveedores\n\nRevisa tu panel de comprador para más detalles.';
+    if (dropdown.classList.contains('hidden')) {
+        // Abrir dropdown
+        dropdown.classList.remove('hidden');
+        
+        // Cargar alertas si no están cargadas
+        if (alertasData === null) {
+            fetch('index.php?controlador=usuario&accion=obtenerAlertas')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alertasData = data.alertas;
+                        renderizarAlertas();
+                    }
+                });
+        } else {
+            renderizarAlertas();
+        }
     } else {
-        mensaje = 'Tienes alertas pendientes. Revisa tu panel.';
+        // Cerrar dropdown
+        dropdown.classList.add('hidden');
+    }
+}
+
+// Renderizar las alertas en el dropdown
+function renderizarAlertas() {
+    const lista = document.getElementById('alertas-lista');
+    
+    if (!alertasData || alertasData.length === 0) {
+        lista.innerHTML = '<p class="text-gray-500 text-sm text-center py-4">No tienes alertas pendientes</p>';
+        return;
     }
     
-    Swal.fire({
-        title: 'Alertas',
-        text: mensaje,
-        icon: 'info',
-        confirmButtonText: 'Entendido',
-        confirmButtonColor: '#00a2ff'
+    let html = '';
+    alertasData.forEach(alerta => {
+        html += `
+            <a href="${alerta.link}" class="block p-3 hover:bg-gray-50 rounded-xl transition-colors mb-1 last:mb-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                        <i class="fas fa-${alerta.tipo === 'reuniones' ? 'calendar-check' : (alerta.tipo === 'demandas' ? 'shopping-cart' : 'box')} text-blue-500 text-sm"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-gray-900 text-sm font-bold truncate">${alerta.mensaje}</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+                </div>
+            </a>
+        `;
     });
+    
+    lista.innerHTML = html;
 }
+
+// Cerrar dropdown al hacer click fuera
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('dropdown-alertas');
+    const button = document.getElementById('btn-notificaciones');
+    
+    if (dropdown && !dropdown.classList.contains('hidden')) {
+        if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    }
+});
 </script>">
