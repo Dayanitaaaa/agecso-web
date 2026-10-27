@@ -697,6 +697,9 @@ class UsuarioController {
                             'responsable_iva' => 0,
                             'representante_legal' => $usuario['nombreUsuario'],
                             'descripcion' => 'Cuenta administrativa oficial encargada de la supervisión técnica, soporte y mantenimiento de la plataforma de matchmaking empresarial AGECSO.',
+                            'logoPath' => '',
+                            'telefono_contacto' => '',
+                            'pagina_web' => '',
                             'createdAt' => $usuario['createdAt']
                         ];
                     }
@@ -705,6 +708,10 @@ class UsuarioController {
             if (!$perfil) {
                 throw new Exception("No se encontró información del perfil para esta empresa.");
             }
+            
+            // Debug temporal para verificar logoPath
+            error_log("LogoPath en perfil: " . ($perfil['logoPath'] ?? 'NULL'));
+            
             require_once __DIR__ . '/../views/usuario/perfil.php';
         } catch (Exception $e) {
             $mensaje = "<div class='bg-red-100 p-3 rounded mb-4'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
