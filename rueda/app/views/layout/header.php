@@ -25,16 +25,10 @@
         include __DIR__ . '/sidebar.php';
     }
     
-    // Cargar logoPath del usuario si está logueado
+    // Cargar logoPath del usuario si está logueado (forma segura)
     $logoPath = null;
-    if(isset($_SESSION['usuario_id'])) {
-        require_once __DIR__ . '/../../config/db.php';
-        $stmt = $pdo->prepare("SELECT logoPath FROM empresas WHERE usuarioId = ?");
-        $stmt->execute([$_SESSION['usuario_id']]);
-        $empresa = $stmt->fetch();
-        if ($empresa) {
-            $logoPath = $empresa['logoPath'];
-        }
+    if(isset($_SESSION['usuario_id']) && isset($perfil) && !empty($perfil['logoPath'])) {
+        $logoPath = $perfil['logoPath'];
     }
     ?>
     
