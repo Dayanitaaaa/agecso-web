@@ -42,6 +42,12 @@
 
                     <div class="flex items-center gap-4">
                         <?php if(isset($_SESSION['usuario_id'])): ?>
+                            <!-- Campanita de notificaciones -->
+                            <button id="btn-notificaciones" class="relative p-2 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-all" onclick="mostrarAlertas()">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span id="notif-contador" class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center hidden">0</span>
+                            </button>
+                            
                             <div class="hidden sm:flex items-center gap-3 px-4 py-1.5 bg-white/10 rounded-full border border-white/10 backdrop-blur-sm">
                                 <div class="w-7 h-7 bg-white text-[#00a2ff] rounded-full flex items-center justify-center text-[10px] font-black">
                                     <?php echo strtoupper(substr($_SESSION['nombreUsuario'] ?? 'U', 0, 1)); ?>
@@ -60,3 +66,47 @@
         </nav>
         
         <main class="flex-grow <?php echo (isset($login_layout) && $login_layout) ? '' : 'p-4 md:p-8'; ?>">
+
+<script>
+// Cargar contador de notificaciones al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('notif-contador')) {
+        fetch('index.php?controlador=usuario&accion=obtenerAlertas')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.contador > 0) {
+                    const contador = document.getElementById('notif-contador');
+                    if (contador) {
+                        contador.textContent = data.contador;
+                        contador.classList.remove('hidden');
+                    }
+                }
+            })
+            .catch(error => console.error('Error cargando contador de alertas:', error));
+    }
+});
+
+// Mostrar alertas al hacer click en la campanita
+function mostrarAlertas() {
+    const role = "<?php echo strtolower($_SESSION['slugRole'] ?? ''); ?>";
+    let mensaje = '';
+    
+    if (role === 'admin') {
+        mensaje = 'Tienes alertas pendientes:\n\n• Inscripciones pendientes\n• Nuevas demandas\n• Nuevas ofertas\n\nRevisa tu panel de administrador para más detalles.';
+    } else if (role === 'vendedor' || role === 'proveedor') {
+        mensaje = 'Tienes alertas pendientes:\n\n• Reuniones agendadas\n• Nuevas demandas de compradores\n\nRevisa tu panel de vendedor para más detalles.';
+    } else if (role === 'comprador') {
+        mensaje = 'Tienes alertas pendientes:\n\n• Reuniones agendadas\n• Nuevas ofertas de proveedores\n\nRevisa tu panel de comprador para más detalles.';
+    } else {
+        mensaje = 'Tienes alertas pendientes. Revisa tu panel.';
+    }
+    
+    Swal.fire({
+        title: 'Alertas',
+        text: mensaje,
+        icon: 'info',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: '#00a2ff'
+    });
+}
+</script>">
