@@ -6,6 +6,53 @@ include __DIR__ . '/../layout/header.php';
 ?>
 
 <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Definir variables CSS según el rol -->
+    <style>
+        :root {
+            --form-primary: <?php 
+                $role = strtolower($_SESSION['slugRole'] ?? '');
+                switch($role) {
+                    case 'admin': echo '#1e293b'; break;
+                    case 'vendedor':
+                    case 'proveedor': echo '#0d9488'; break;
+                    case 'comprador': echo '#00a2ff'; break;
+                    default: echo '#00a2ff';
+                }
+            ?>;
+            --form-secondary: <?php 
+                switch($role) {
+                    case 'admin': echo '#334155'; break;
+                    case 'vendedor':
+                    case 'proveedor': echo '#14b8a6'; break;
+                    case 'comprador': echo '#4dbfff'; break;
+                    default: echo '#4dbfff';
+                }
+            ?>;
+            --form-accent: <?php 
+                switch($role) {
+                    case 'admin': echo '#3b82f6'; break;
+                    case 'vendedor':
+                    case 'proveedor': echo '#0f766e'; break;
+                    case 'comprador': echo '#008ae0'; break;
+                    default: echo '#008ae0';
+                }
+            ?>;
+        }
+        
+        .form-input-focus:focus {
+            border-color: var(--form-primary) !important;
+            ring-color: var(--form-secondary) !important;
+        }
+        
+        .form-section-icon {
+            background: linear-gradient(135deg, var(--form-primary), var(--form-secondary)) !important;
+        }
+        
+        .form-button {
+            background: linear-gradient(135deg, var(--form-primary), var(--form-secondary)) !important;
+        }
+    </style>
+
     <div class="space-y-6">
         <!-- Header -->
         <div class="flex items-center justify-between">
@@ -37,7 +84,7 @@ include __DIR__ . '/../layout/header.php';
                 <!-- Información básica -->
                 <div class="space-y-5">
                     <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00a2ff] to-[#4dbfff] flex items-center justify-center text-white shadow-lg">
+                        <div class="w-10 h-10 rounded-xl form-section-icon flex items-center justify-center text-white shadow-lg">
                             <i class="fas fa-info-circle"></i>
                         </div>
                         <h3 class="text-lg font-black text-gray-900">Información de la Pauta</h3>
@@ -47,21 +94,21 @@ include __DIR__ . '/../layout/header.php';
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Título de la Pauta *</label>
                             <input type="text" name="titulo" required maxlength="255"
-                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300"
+                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 form-input-focus"
                                    placeholder="Ej: Soluciones Tecnológicas para tu Negocio">
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Descripción *</label>
                             <textarea name="descripcion" required rows="5"
-                                      class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 resize-none"
+                                      class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 resize-none form-input-focus"
                                       placeholder="Describe brevemente tu empresa o producto..."></textarea>
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Enlace al Sitio Web (opcional)</label>
                             <input type="url" name="link_destino"
-                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300"
+                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 form-input-focus"
                                    placeholder="https://tu-sitio-web.com">
                         </div>
                     </div>
@@ -70,7 +117,7 @@ include __DIR__ . '/../layout/header.php';
                 <!-- Imagen -->
                 <div class="space-y-5">
                     <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00a2ff] to-[#4dbfff] flex items-center justify-center text-white shadow-lg">
+                        <div class="w-10 h-10 rounded-xl form-section-icon flex items-center justify-center text-white shadow-lg">
                             <i class="fas fa-image"></i>
                         </div>
                         <h3 class="text-lg font-black text-gray-900">Imagen de la Pauta</h3>
@@ -94,7 +141,7 @@ include __DIR__ . '/../layout/header.php';
                 <!-- Fechas -->
                 <div class="space-y-5">
                     <div class="flex items-center gap-3 pb-3 border-b border-gray-100">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00a2ff] to-[#4dbfff] flex items-center justify-center text-white shadow-lg">
+                        <div class="w-10 h-10 rounded-xl form-section-icon flex items-center justify-center text-white shadow-lg">
                             <i class="fas fa-calendar-alt"></i>
                         </div>
                         <h3 class="text-lg font-black text-gray-900">Fechas de Publicación</h3>
@@ -104,13 +151,13 @@ include __DIR__ . '/../layout/header.php';
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Fecha de Inicio *</label>
                             <input type="text" name="fecha_inicio" id="fecha_inicio" required placeholder="Selecciona fecha"
-                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 cursor-pointer">
+                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 cursor-pointer form-input-focus">
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Fecha de Fin *</label>
                             <input type="text" name="fecha_fin" id="fecha_fin" required placeholder="Selecciona fecha"
-                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 cursor-pointer">
+                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 cursor-pointer form-input-focus">
                         </div>
                     </div>
                 </div>
@@ -130,7 +177,7 @@ include __DIR__ . '/../layout/header.php';
 
                 <!-- Botones -->
                 <div class="flex items-center gap-4 pt-4">
-                    <button type="submit" class="flex-1 bg-gradient-to-r from-[#00a2ff] via-[#4dbfff] to-[#008ae0] text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+                    <button type="submit" class="flex-1 form-button text-white px-8 py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                         <i class="fas fa-paper-plane mr-2"></i> Enviar Solicitud
                     </button>
                     <a href="index.php?controlador=pauta&accion=misPautas" class="text-gray-500 text-sm font-medium hover:text-gray-700 transition-colors">
@@ -145,36 +192,11 @@ include __DIR__ . '/../layout/header.php';
 <script>
 // Personalizar calendario con Flatpickr según el panel
 document.addEventListener('DOMContentLoaded', function() {
-    const role = "<?php echo strtolower($_SESSION['slugRole'] ?? ''); ?>";
-    
-    let primaryColor, secondaryColor, accentColor, bgColor;
-    
-    switch(role) {
-        case 'admin':
-            primaryColor = '#1e293b'; // slate-900
-            secondaryColor = '#334155'; // slate-700
-            accentColor = '#3b82f6'; // blue-500
-            bgColor = '#f8fafc'; // slate-50
-            break;
-        case 'vendedor':
-        case 'proveedor':
-            primaryColor = '#0d9488'; // teal-700
-            secondaryColor = '#14b8a6'; // teal-500
-            accentColor = '#0f766e'; // teal-800
-            bgColor = '#f0fdfa'; // teal-50
-            break;
-        case 'comprador':
-            primaryColor = '#00a2ff'; // blue-500
-            secondaryColor = '#4dbfff'; // blue-400
-            accentColor = '#008ae0'; // blue-600
-            bgColor = '#eff6ff'; // blue-50
-            break;
-        default:
-            primaryColor = '#00a2ff';
-            secondaryColor = '#4dbfff';
-            accentColor = '#008ae0';
-            bgColor = '#eff6ff';
-    }
+    // Usar las variables CSS ya definidas
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--form-primary').trim();
+    const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--form-secondary').trim();
+    const accentColor = getComputedStyle(document.documentElement).getPropertyValue('--form-accent').trim();
+    const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--form-secondary').trim() + '20';
     
     // Inicializar Flatpickr
     if (typeof flatpickr !== 'undefined') {
