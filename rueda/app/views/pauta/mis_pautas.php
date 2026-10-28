@@ -78,9 +78,10 @@ include __DIR__ . '/../layout/header.php';
                     <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden">
                         <!-- Imagen -->
                         <div class="h-40 bg-gray-100 relative">
-                            <img src="../../public/uploads/pautas/<?php echo htmlspecialchars($pauta['imagen']); ?>" 
+                            <img src="../../../public/uploads/pautas/<?php echo htmlspecialchars($pauta['imagen']); ?>" 
                                  alt="<?php echo htmlspecialchars($pauta['titulo']); ?>" 
-                                 class="w-full h-full object-cover">
+                                 class="w-full h-full object-cover"
+                                 onerror="this.src='https://via.placeholder.com/400x200?text=Imagen+no+disponible';">
                             <div class="absolute top-3 right-3">
                                 <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider <?php echo $color; ?>">
                                     <?php echo htmlspecialchars($pauta['estado']); ?>
