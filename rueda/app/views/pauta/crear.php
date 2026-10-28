@@ -103,14 +103,14 @@ include __DIR__ . '/../layout/header.php';
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Fecha de Inicio *</label>
-                            <input type="date" name="fecha_inicio" required
-                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300">
+                            <input type="text" name="fecha_inicio" id="fecha_inicio" required placeholder="Selecciona fecha"
+                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 cursor-pointer">
                         </div>
                         
                         <div>
                             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Fecha de Fin *</label>
-                            <input type="date" name="fecha_fin" required
-                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300">
+                            <input type="text" name="fecha_fin" id="fecha_fin" required placeholder="Selecciona fecha"
+                                   class="w-full border-2 border-gray-200 rounded-2xl px-5 py-4 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-300 cursor-pointer">
                         </div>
                     </div>
                 </div>
@@ -143,59 +143,131 @@ include __DIR__ . '/../layout/header.php';
 </div>
 
 <script>
-// Personalizar calendario según el panel
+// Personalizar calendario con Flatpickr según el panel
 document.addEventListener('DOMContentLoaded', function() {
     const role = "<?php echo strtolower($_SESSION['slugRole'] ?? ''); ?>";
     
-    let primaryColor, secondaryColor, accentColor;
+    let primaryColor, secondaryColor, accentColor, bgColor;
     
     switch(role) {
         case 'admin':
             primaryColor = '#1e293b'; // slate-900
             secondaryColor = '#334155'; // slate-700
             accentColor = '#3b82f6'; // blue-500
+            bgColor = '#f8fafc'; // slate-50
             break;
         case 'vendedor':
         case 'proveedor':
             primaryColor = '#0d9488'; // teal-700
             secondaryColor = '#14b8a6'; // teal-500
             accentColor = '#0f766e'; // teal-800
+            bgColor = '#f0fdfa'; // teal-50
             break;
         case 'comprador':
             primaryColor = '#00a2ff'; // blue-500
             secondaryColor = '#4dbfff'; // blue-400
             accentColor = '#008ae0'; // blue-600
+            bgColor = '#eff6ff'; // blue-50
             break;
         default:
             primaryColor = '#00a2ff';
             secondaryColor = '#4dbfff';
             accentColor = '#008ae0';
+            bgColor = '#eff6ff';
     }
     
-    // Agregar estilos CSS dinámicos para el calendario nativo
+    // Inicializar Flatpickr
+    if (typeof flatpickr !== 'undefined') {
+        const config = {
+            dateFormat: 'd/m/Y',
+            locale: 'es',
+            minDate: 'today',
+            disableMobile: true,
+            onOpen: function(selectedDates, dateStr, instance) {
+                const calendar = instance.calendarContainer;
+                calendar.style.setProperty('--flatpickr-primary', primaryColor);
+                calendar.style.setProperty('--flatpickr-secondary', secondaryColor);
+                calendar.style.setProperty('--flatpickr-accent', accentColor);
+                calendar.style.setProperty('--flatpickr-bg', bgColor);
+            }
+        };
+        
+        flatpickr('#fecha_inicio', config);
+        flatpickr('#fecha_fin', config);
+    }
+    
+    // Agregar estilos CSS para Flatpickr
     const style = document.createElement('style');
     style.textContent = `
-        /* Estilos para el calendario nativo */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            cursor: pointer;
-            padding: 0.5rem;
-            background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor});
-            border-radius: 8px;
-            color: white;
-            margin-right: 0.5rem;
+        .flatpickr-calendar {
+            border: 2px solid var(--flatpickr-primary, #00a2ff) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15) !important;
+            background: var(--flatpickr-bg, #eff6ff) !important;
         }
         
-        input[type="date"]::-webkit-calendar-picker-indicator:hover {
-            opacity: 0.8;
-            transform: scale(1.05);
+        .flatpickr-months .flatpickr-month,
+        .flatpickr-current-month .flatpickr-monthDropdown-months,
+        .flatpickr-current-month input.cur-year {
+            color: var(--flatpickr-primary, #00a2ff) !important;
+            font-weight: bold !important;
         }
         
-        /* Firefox */
-        input[type="date"]::-moz-calendar-picker-indicator {
-            cursor: pointer;
-            background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor});
-            border-radius: 8px;
-            color: white;
+        .flatpickr-weekday {
+            color: var(--flatpickr-secondary, #4dbfff) !important;
+            font-weight: bold !important;
+        }
+        
+        .flatpickr-day.selected,
+        .flatpickr-day.startRange,
+        .flatpickr-day.endRange,
+        .flatpickr-day.selected.inRange,
+        .flatpickr-day.startRange.inRange,
+        .flatpickr-day.endRange.inRange,
+        .flatpickr-day.selected:focus,
+        .flatpickr-day.startRange:focus,
+        .flatpickr-day.endRange:focus,
+        .flatpickr-day.selected:hover,
+        .flatpickr-day.startRange:hover,
+        .flatpickr-day.endRange:hover,
+        .flatpickr-day.selected.prevMonthDay,
+        .flatpickr-day.startRange.prevMonthDay,
+        .flatpickr-day.endRange.prevMonthDay,
+        .flatpickr-day.selected.nextMonthDay,
+        .flatpickr-day.startRange.nextMonthDay,
+        .flatpickr-day.endRange.nextMonthDay {
+            background: var(--flatpickr-primary, #00a2ff) !important;
+            border-color: var(--flatpickr-primary, #00a2ff) !important;
+            color: white !important;
+        }
+        
+        .flatpickr-day.today {
+            border-color: var(--flatpickr-secondary, #4dbfff) !important;
+            font-weight: bold !important;
+        }
+        
+        .flatpickr-day:hover:not(.selected):not(.startRange):not(.endRange) {
+            background: var(--flatpickr-secondary, #4dbfff) !important;
+            color: white !important;
+        }
+        
+        .flatpickr-months .flatpickr-prev-month,
+        .flatpickr-months .flatpickr-next-month {
+            color: var(--flatpickr-primary, #00a2ff) !important;
+        }
+        
+        .flatpickr-months .flatpickr-prev-month:hover,
+        .flatpickr-months .flatpickr-next-month:hover {
+            color: var(--flatpickr-accent, #008ae0) !important;
+        }
+        
+        .flatpickr-monthSelect-months .flatpickr-month {
+            color: var(--flatpickr-primary, #00a2ff) !important;
+        }
+        
+        .flatpickr-monthSelect-months .flatpickr-month:hover {
+            background: var(--flatpickr-secondary, #4dbfff) !important;
+            color: white !important;
         }
     `;
     document.head.appendChild(style);
