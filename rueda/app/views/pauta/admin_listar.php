@@ -89,7 +89,6 @@ include __DIR__ . '/../layout/header.php';
                                     <p class="text-xs text-gray-500">
                                         <?php echo date('d M, Y', strtotime($pauta['fecha_inicio'])); ?> - <?php echo date('d M, Y', strtotime($pauta['fecha_fin'])); ?>
                                     </p>
-                                    <p class="text-[10px] text-gray-400">Posición <?php echo $pauta['posicion']; ?></p>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider 

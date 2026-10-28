@@ -72,9 +72,9 @@ include __DIR__ . '/../layout/header.php';
                     </div>
                 </div>
 
-                <!-- Fechas y posición -->
+                <!-- Fechas -->
                 <div class="space-y-4">
-                    <h3 class="text-lg font-black text-gray-900">Fechas y Posición</h3>
+                    <h3 class="text-lg font-black text-gray-900">Fechas de Publicación</h3>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -88,17 +88,6 @@ include __DIR__ . '/../layout/header.php';
                             <input type="date" name="fecha_fin" required
                                    class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
                         </div>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">Posición de Display</label>
-                        <select name="posicion"
-                                class="w-full border border-gray-200 rounded-2xl px-4 py-3 text-sm font-medium text-gray-800 focus:outline-none focus:ring-4 focus:ring-slate-100 focus:border-slate-800">
-                            <option value="1">Posición 1 (Principal)</option>
-                            <option value="2">Posición 2</option>
-                            <option value="3">Posición 3</option>
-                        </select>
-                        <p class="text-[10px] text-gray-400 mt-1">Las posiciones se muestran en orden. Si está ocupada, el administrador te contactará.</p>
                     </div>
                 </div>
 

@@ -89,11 +89,6 @@ class PautaController {
                     throw new Exception("Error al subir la imagen. Por favor intenta de nuevo.");
                 }
                 
-                // Verificar disponibilidad de posición
-                if (!$this->pautaModel->verificarDisponibilidad($posicion, $fechaInicio, $fechaFin)) {
-                    throw new Exception("La posición seleccionada ya está ocupada en esas fechas.");
-                }
-                
                 // Guardar pauta
                 $data = [
                     'empresaId' => $usuarioId,
@@ -103,7 +98,7 @@ class PautaController {
                     'link_destino' => $linkDestino,
                     'fecha_inicio' => $fechaInicio,
                     'fecha_fin' => $fechaFin,
-                    'posicion' => $posicion
+                    'posicion' => 1 // Siempre posición 1
                 ];
                 
                 if ($this->pautaModel->crear($data)) {

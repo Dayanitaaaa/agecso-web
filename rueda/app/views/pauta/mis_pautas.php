@@ -95,7 +95,6 @@ include __DIR__ . '/../layout/header.php';
                             
                             <div class="flex items-center justify-between text-xs text-gray-400 mb-4">
                                 <span><i class="fas fa-calendar mr-1"></i> <?php echo date('d M, Y', strtotime($pauta['fecha_inicio'])); ?></span>
-                                <span>Posición <?php echo $pauta['posicion']; ?></span>
                             </div>
                             
                             <?php if ($pauta['estado'] === 'rechazada' && !empty($pauta['comentario_rechazo'])): ?>
