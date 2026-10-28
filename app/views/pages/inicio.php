@@ -275,6 +275,93 @@
     </div>
 </section>
 
+<?php
+// Cargar pautas activas para mostrar en el home
+require_once __DIR__ . '/../../rueda/config/db.php';
+require_once __DIR__ . '/../../rueda/app/models/PautaModel.php';
+$pautaModel = new PautaModel($pdo);
+$pautasActivas = $pautaModel->obtenerActivas();
+?>
+
+<?php if (!empty($pautasActivas)): ?>
+<!-- SECCIÓN: PAUTAS PUBLICITARIAS DESTACADAS -->
+<section class="section-padding bg-white position-relative">
+    <div class="container">
+        <!-- Section Header -->
+        <div class="text-center mb-5">
+            <span class="text-uppercase tracking-wider fw-bold text-primary mb-2 d-inline-block" style="font-size: 0.85rem; letter-spacing: 0.2em;">
+                <i class="fas fa-bullhorn me-2"></i> Publicidad
+            </span>
+            <h2 class="display-5 fw-black text-dark mt-2">Empresas Destacadas</h2>
+            <div class="mx-auto mt-3" style="width: 50px; height: 4px; background: linear-gradient(90deg, #f59e0b, #d97706); border-radius: 2px;"></div>
+        </div>
+
+        <!-- Carrusel de Pautas -->
+        <div id="pautasCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner">
+                <?php foreach ($pautasActivas as $index => $pauta): ?>
+                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                        <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="max-width: 800px; margin: 0 auto;">
+                            <div class="row g-0">
+                                <div class="col-md-5 position-relative">
+                                    <img src="rueda/public/uploads/pautas/<?php echo htmlspecialchars($pauta['imagen']); ?>" 
+                                         alt="<?php echo htmlspecialchars($pauta['titulo']); ?>" 
+                                         class="img-fluid h-100 object-cover" style="min-height: 300px;">
+                                    <?php if (!empty($pauta['logoPath'])): ?>
+                                        <div class="position-absolute bottom-3 left-3">
+                                            <img src="rueda/public/uploads/logos/<?php echo htmlspecialchars($pauta['logoPath']); ?>" 
+                                                 alt="Logo" 
+                                                 class="rounded-circle border-2 border-white shadow" 
+                                                 style="width: 50px; height: 50px; object-fit: contain;">
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="card-body p-5 d-flex flex-column h-100">
+                                        <div class="mb-3">
+                                            <span class="badge bg-warning text-dark px-3 py-1 rounded-pill font-monospace fw-bold text-uppercase" style="font-size: 0.75rem;">
+                                                Patrocinado
+                                            </span>
+                                        </div>
+                                        <h3 class="card-title fw-black text-dark mb-3" style="font-size: 1.75rem;">
+                                            <?php echo htmlspecialchars($pauta['titulo']); ?>
+                                        </h3>
+                                        <p class="card-text text-muted mb-4 flex-grow">
+                                            <?php echo htmlspecialchars($pauta['descripcion']); ?>
+                                        </p>
+                                        <div class="mt-auto">
+                                            <p class="text-muted small mb-3">
+                                                <i class="fas fa-building me-2"></i> <?php echo htmlspecialchars($pauta['razon_social']); ?>
+                                            </p>
+                                            <?php if (!empty($pauta['link_destino'])): ?>
+                                                <a href="<?php echo htmlspecialchars($pauta['link_destino']); ?>" target="_blank" 
+                                                   class="btn btn-primary rounded-pill px-5 py-2.5 fw-bold">
+                                                    <i class="fas fa-external-link-alt me-2"></i> Visitar Sitio Web
+                                                </a>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            
+            <!-- Controles del carrusel -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#pautasCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#pautasCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
 <?php if (!empty($data['agenda'])): ?>
 <!-- SECCIÓN: AGENDA Y ACTIVIDADES DESTACADAS (DISEÑO AZUL OSCURO ELEGANTE) -->
 <section class="agenda-activas-section py-5 position-relative" style="background: linear-gradient(135deg, #091322 0%, #0f2742 50%, #091322 100%); color: white; border-top: 1px solid rgba(0,162,255,0.15); border-bottom: 1px solid rgba(0,162,255,0.15);">
