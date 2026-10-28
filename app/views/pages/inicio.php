@@ -304,13 +304,13 @@ $pautasActivas = $pautaModel->obtenerActivas();
                         <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="max-width: 800px; margin: 0 auto;">
                             <div class="row g-0">
                                 <div class="col-md-5 position-relative">
-                                    <img src="<?= APP_URL ?>/rueda/public/uploads/pautas/<?php echo htmlspecialchars($pauta['imagen']); ?>" 
+                                    <img src="/rueda/public/uploads/pautas/<?php echo htmlspecialchars($pauta['imagen']); ?>" 
                                          alt="<?php echo htmlspecialchars($pauta['titulo']); ?>" 
                                          class="img-fluid h-100 object-cover" style="min-height: 300px;"
                                          onerror="this.src='assets/img/placeholder.jpg';">
                                     <?php if (!empty($pauta['logoPath'])): ?>
                                         <div class="position-absolute bottom-3 left-3">
-                                            <img src="<?= APP_URL ?>/rueda/public/uploads/logos/<?php echo htmlspecialchars($pauta['logoPath']); ?>" 
+                                            <img src="/rueda/public/uploads/logos/<?php echo htmlspecialchars($pauta['logoPath']); ?>" 
                                                  alt="Logo" 
                                                  class="rounded-circle border-2 border-white shadow" 
                                                  style="width: 50px; height: 50px; object-fit: contain;"
