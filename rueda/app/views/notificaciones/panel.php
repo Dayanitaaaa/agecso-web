@@ -10,142 +10,140 @@ include __DIR__ . '/../layout/header.php';
         <!-- Header -->
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Notificaciones</h1>
-                <p class="text-gray-500 text-sm mt-1">Mantente al día con las actividades de tu cuenta</p>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight">Mis Notificaciones</h1>
+                <p class="text-gray-500 text-sm mt-1">Mantente al día con las actividades importantes</p>
             </div>
-            <button onclick="marcarTodasLeidas()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-2">
-                <i class="fas fa-check-double"></i> Marcar todas como leídas
-            </button>
+            <?php if (!empty($noLeidas)): ?>
+                <button onclick="marcarTodasLeidas()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition">
+                    Marcar todas como leídas
+                </button>
+            <?php endif; ?>
         </div>
 
         <!-- Lista de notificaciones -->
-        <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100 overflow-hidden">
-            <?php if (empty($notificaciones)): ?>
-                <div class="p-12 text-center">
-                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-bell-slash text-gray-400 text-2xl"></i>
-                    </div>
-                    <p class="text-gray-500 font-medium">No tienes notificaciones</p>
+        <?php if (empty($notificaciones)): ?>
+            <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100 p-12 text-center">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-bell text-gray-400 text-2xl"></i>
                 </div>
-            <?php else: ?>
-                <div class="divide-y divide-gray-50">
-                    <?php foreach ($notificaciones as $notif): ?>
-                        <?php 
-                            $esNoLeida = $notif['leida'] == 0;
-                            $icono = 'fa-info-circle';
-                            $colorIcono = 'text-blue-500';
-                            $colorFondo = 'bg-blue-50';
-                            
-                            // Iconos según tipo
-                            switch($notif['tipo']) {
-                                case 'nueva_inscripcion':
-                                    $icono = 'fa-user-plus';
-                                    $colorIcono = 'text-emerald-500';
-                                    $colorFondo = 'bg-emerald-50';
-                                    break;
-                                case 'nueva_demanda':
-                                    $icono = 'fa-shopping-cart';
-                                    $colorIcono = 'text-amber-500';
-                                    $colorFondo = 'bg-amber-50';
-                                    break;
-                                case 'nueva_oferta':
-                                    $icono = 'fa-box';
-                                    $colorIcono = 'text-purple-500';
-                                    $colorFondo = 'bg-purple-50';
-                                    break;
-                                case 'cita_agendada':
-                                    $icono = 'fa-calendar-check';
-                                    $colorIcono = 'text-sky-500';
-                                    $colorFondo = 'bg-sky-50';
-                                    break;
-                                case 'cita_aceptada':
-                                    $icono = 'fa-check-circle';
-                                    $colorIcono = 'text-green-500';
-                                    $colorFondo = 'bg-green-50';
-                                    break;
-                                case 'cita_rechazada':
-                                    $icono = 'fa-times-circle';
-                                    $colorIcono = 'text-red-500';
-                                    $colorFondo = 'bg-red-50';
-                                    break;
-                                case 'encuesta_completada':
-                                    $icono = 'fa-star';
-                                    $colorIcono = 'text-yellow-500';
-                                    $colorFondo = 'bg-yellow-50';
-                                    break;
-                            }
-                        ?>
-                        <div class="p-5 flex items-start gap-4 hover:bg-gray-50 transition-colors <?php echo $esNoLeida ? 'bg-blue-50/30' : ''; ?>">
-                            <div class="w-10 h-10 rounded-xl <?php echo $colorFondo; ?> flex items-center justify-center flex-shrink-0">
-                                <i class="fas <?php echo $icono; ?> <?php echo $colorIcono; ?>"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <div class="flex items-start justify-between gap-2">
-                                    <h3 class="font-bold text-gray-900 text-sm <?php echo $esNoLeida ? 'font-extrabold' : ''; ?>">
+                <p class="text-gray-500 font-medium">No tienes notificaciones</p>
+            </div>
+        <?php else: ?>
+            <div class="space-y-3">
+                <?php foreach ($notificaciones as $notif): ?>
+                    <?php 
+                        $icono = 'fa-info-circle';
+                        $color = 'bg-blue-50 text-blue-600';
+                        
+                        switch ($notif['tipo']) {
+                            case 'nueva_inscripcion':
+                                $icono = 'fa-user-plus';
+                                $color = 'bg-emerald-50 text-emerald-600';
+                                break;
+                            case 'nueva_demanda':
+                                $icono = 'fa-shopping-cart';
+                                $color = 'bg-amber-50 text-amber-600';
+                                break;
+                            case 'nueva_oferta':
+                                $icono = 'fa-tags';
+                                $color = 'bg-purple-50 text-purple-600';
+                                break;
+                            case 'cita_agendada':
+                            case 'cita_aceptada':
+                                $icono = 'fa-calendar-check';
+                                $color = 'bg-blue-50 text-blue-600';
+                                break;
+                            case 'cita_rechazada':
+                                $icono = 'fa-calendar-times';
+                                $color = 'bg-red-50 text-red-600';
+                                break;
+                            case 'encuesta_completada':
+                                $icono = 'fa-clipboard-check';
+                                $color = 'bg-teal-50 text-teal-600';
+                                break;
+                            case 'nueva_pauta':
+                                $icono = 'fa-bullhorn';
+                                $color = 'bg-orange-50 text-orange-600';
+                                break;
+                            case 'pauta_aprobada':
+                                $icono = 'fa-check-circle';
+                                $color = 'bg-emerald-50 text-emerald-600';
+                                break;
+                            case 'pauta_rechazada':
+                                $icono = 'fa-times-circle';
+                                $color = 'bg-red-50 text-red-600';
+                                break;
+                        }
+                    ?>
+                    <div class="bg-white rounded-2xl shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100 p-5 flex items-start gap-4 <?php echo $notif['leida'] == 0 ? 'bg-blue-50/30' : ''; ?>">
+                        <div class="p-3 <?php echo $color; ?> rounded-xl shrink-0">
+                            <i class="fas <?php echo $icono; ?>"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <h3 class="font-black text-gray-900 text-sm <?php echo $notif['leida'] == 0 ? 'font-bold' : 'font-medium'; ?>">
                                         <?php echo htmlspecialchars($notif['titulo']); ?>
                                     </h3>
-                                    <?php if ($esNoLeida): ?>
-                                        <span class="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
-                                    <?php endif; ?>
+                                    <p class="text-gray-500 text-xs mt-1">
+                                        <?php echo htmlspecialchars($notif['mensaje']); ?>
+                                    </p>
                                 </div>
-                                <p class="text-gray-600 text-sm mt-1"><?php echo htmlspecialchars($notif['mensaje']); ?></p>
-                                <div class="flex items-center justify-between mt-3">
-                                    <span class="text-xs text-gray-400">
-                                        <?php echo date('d M, Y - h:i A', strtotime($notif['createdAt'])); ?>
-                                    </span>
-                                    <?php if (!empty($notif['link_destino'])): ?>
-                                        <a href="<?php echo htmlspecialchars($notif['link_destino']); ?>" class="text-sm text-blue-600 font-bold hover:underline">
-                                            Ver detalle
-                                        </a>
-                                    <?php endif; ?>
-                                </div>
+                                <?php if ($notif['leida'] == 0): ?>
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full shrink-0 mt-2"></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-[10px] text-gray-400">
+                                    <?php echo date('d M, Y - H:i', strtotime($notif['createdAt'])); ?>
+                                </span>
+                                <?php if (!empty($notif['link_destino'])): ?>
+                                    <a href="<?php echo htmlspecialchars($notif['link_destino']); ?>" 
+                                       onclick="marcarLeida(<?php echo $notif['id']; ?>)"
+                                       class="text-[#00a2ff] text-xs font-bold hover:underline">
+                                        Ver detalles
+                                    </a>
+                                <?php elseif ($notif['leida'] == 0): ?>
+                                    <button onclick="marcarLeida(<?php echo $notif['id']; ?>)" class="text-gray-400 text-xs hover:text-gray-600">
+                                        Marcar como leída
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
-        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 
 <script>
-function marcarTodasLeidas() {
-    fetch('index.php?controlador=notificacion&accion=marcarTodasLeidas', {
+function marcarLeida(id) {
+    fetch('index.php?controlador=notificacion&accion=marcarLeida', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-        }
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'id=' + id
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             location.reload();
-        } else {
-            alert('Error al marcar notificaciones');
         }
     });
 }
 
-function marcarComoLeida(id) {
-    fetch('index.php?controlador=notificacion&accion=marcarLeida', {
+function marcarTodasLeidas() {
+    fetch('index.php?controlador=notificacion&accion=marcarTodasLeidas', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: id })
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Actualizar contador en el DOM
-            const contadorElement = document.getElementById('notif-contador');
-            if (contadorElement) {
-                contadorElement.textContent = data.contador;
-                if (data.contador == 0) {
-                    contadorElement.style.display = 'none';
-                }
-            }
-            // Recargar la notificación visual
             location.reload();
         }
     });

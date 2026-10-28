@@ -21,6 +21,30 @@ class NotificacionController {
     }
 
     /**
+     * Obtener notificaciones no leídas (vía AJAX para dropdown)
+     */
+    public function obtenerNoLeidas() {
+        try {
+            $usuarioId = $_SESSION['usuario_id'];
+            $notificaciones = $this->notificacionModel->obtenerNoLeidas($usuarioId);
+            
+            $result = [];
+            foreach ($notificaciones as $notif) {
+                $result[] = [
+                    'tipo' => $notif['tipo'],
+                    'mensaje' => $notif['titulo'] . ': ' . $notif['mensaje'],
+                    'link' => $notif['link_destino'] ?? '#'
+                ];
+            }
+            
+            echo json_encode(['success' => true, 'notificaciones' => $result]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'notificaciones' => []]);
+        }
+        exit;
+    }
+
+    /**
      * Mostrar panel de notificaciones
      */
     public function panel() {

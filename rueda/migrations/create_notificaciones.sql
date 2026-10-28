@@ -1,12 +1,12 @@
 -- =====================================================
 -- Migration: Crear tabla de notificaciones
--- Fecha: 2026-10-27
+-- Fecha: 2026-10-28
 -- =====================================================
 
 CREATE TABLE IF NOT EXISTS `notificaciones` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `usuarioId` int(10) UNSIGNED NOT NULL COMMENT 'Usuario destinatario de la notificación',
-  `tipo` varchar(50) NOT NULL COMMENT 'Tipo de notificación: nueva_inscripcion, nueva_demanda, nueva_oferta, cita_agendada, cita_aceptada, cita_rechazada, encuesta_completada',
+  `tipo` varchar(50) NOT NULL COMMENT 'Tipo de notificación: nueva_inscripcion, nueva_demanda, nueva_oferta, cita_agendada, cita_aceptada, cita_rechazada, encuesta_completada, nueva_pauta, pauta_aprobada, pauta_rechazada',
   `titulo` varchar(255) NOT NULL COMMENT 'Título corto de la notificación',
   `mensaje` text NOT NULL COMMENT 'Mensaje completo de la notificación',
   `link_destino` varchar(255) NULL COMMENT 'Enlace para redirigir al hacer clic',

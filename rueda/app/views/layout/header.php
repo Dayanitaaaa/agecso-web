@@ -92,11 +92,10 @@ let alertasData = null;
 // Cargar contador de notificaciones al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('notif-contador')) {
-        fetch('index.php?controlador=usuario&accion=obtenerAlertas')
+        fetch('index.php?controlador=notificacion&accion=contador')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alertasData = data.alertas;
                     const contador = document.getElementById('notif-contador');
                     if (contador) {
                         contador.textContent = data.contador;
@@ -108,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             })
-            .catch(error => console.error('Error cargando contador de alertas:', error));
+            .catch(error => console.error('Error cargando contador de notificaciones:', error));
     }
 });
 
@@ -123,11 +122,11 @@ function toggleDropdownAlertas() {
         
         // Cargar alertas si no están cargadas
         if (alertasData === null) {
-            fetch('index.php?controlador=usuario&accion=obtenerAlertas')
+            fetch('index.php?controlador=notificacion&accion=obtenerNoLeidas')
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alertasData = data.alertas;
+                        alertasData = data.notificaciones;
                         renderizarAlertas();
                     }
                 });
@@ -158,14 +157,31 @@ function renderizarAlertas() {
     
     let html = '';
     alertasData.forEach(alerta => {
-        const icono = alerta.tipo === 'reuniones' ? 'calendar-check' : (alerta.tipo === 'demandas' ? 'shopping-cart' : 'box');
-        const color = alerta.tipo === 'reuniones' ? 'bg-blue-50 text-blue-500' : (alerta.tipo === 'demandas' ? 'bg-amber-50 text-amber-500' : 'bg-purple-50 text-purple-500');
+        let icono = 'fa-info-circle';
+        let color = 'bg-blue-50 text-blue-500';
+        
+        if (alerta.tipo.includes('pauta')) {
+            icono = 'fa-bullhorn';
+            color = 'bg-orange-50 text-orange-500';
+        } else if (alerta.tipo.includes('cita')) {
+            icono = 'fa-calendar-check';
+            color = 'bg-blue-50 text-blue-500';
+        } else if (alerta.tipo.includes('demanda')) {
+            icono = 'fa-shopping-cart';
+            color = 'bg-amber-50 text-amber-500';
+        } else if (alerta.tipo.includes('oferta')) {
+            icono = 'fa-tags';
+            color = 'bg-purple-50 text-purple-500';
+        } else if (alerta.tipo.includes('inscripcion')) {
+            icono = 'fa-user-plus';
+            color = 'bg-emerald-50 text-emerald-500';
+        }
         
         html += `
             <a href="${alerta.link}" class="block p-4 hover:bg-gray-50 rounded-xl transition-all duration-200 mb-2 last:mb-0 border border-gray-100 hover:border-gray-200">
                 <div class="flex items-center gap-4">
                     <div class="w-10 h-10 rounded-xl ${color} flex items-center justify-center shrink-0">
-                        <i class="fas fa-${icono} text-lg"></i>
+                        <i class="fas ${icono} text-lg"></i>
                     </div>
                     <div class="flex-1 min-w-0">
                         <p class="text-gray-900 text-sm font-bold truncate">${alerta.mensaje}</p>

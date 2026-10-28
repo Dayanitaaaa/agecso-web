@@ -15,6 +15,7 @@ if ($userRole === 'admin') {
         ['label' => 'Empresas y Registros', 'icon' => 'fas fa-building', 'accion' => 'verRegistrosPaneles', 'controlador' => 'admin'],
         ['label' => 'Ruedas de Negocios', 'icon' => 'fas fa-calendar-alt', 'accion' => 'crearRueda', 'controlador' => 'admin'],
         ['label' => 'Pautas Publicitarias', 'icon' => 'fas fa-bullhorn', 'accion' => 'listarAdmin', 'controlador' => 'pauta'],
+        ['label' => 'Notificaciones', 'icon' => 'fas fa-bell', 'accion' => 'panel', 'controlador' => 'notificacion'],
         ['label' => 'Estadísticas', 'icon' => 'fas fa-chart-bar', 'accion' => 'verEstadisticas', 'controlador' => 'admin'],
     ];
     $sidebar_bg = 'bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900';
@@ -26,6 +27,7 @@ if ($userRole === 'admin') {
         ['label' => 'Mis Citas', 'icon' => 'fas fa-calendar-check', 'accion' => 'verReuniones', 'controlador' => 'comprador'],
         ['label' => 'Buscar Proveedores', 'icon' => 'fas fa-search', 'accion' => 'verParticipantes', 'controlador' => 'comprador'],
         ['label' => 'Pautas Publicitarias', 'icon' => 'fas fa-bullhorn', 'accion' => 'misPautas', 'controlador' => 'pauta'],
+        ['label' => 'Notificaciones', 'icon' => 'fas fa-bell', 'accion' => 'panel', 'controlador' => 'notificacion'],
         ['label' => 'Encuestas', 'icon' => 'fas fa-clipboard-check', 'accion' => 'verEncuestas', 'controlador' => 'comprador'],
     ];
     $sidebar_bg = 'bg-gradient-to-b from-[#00a2ff] via-[#4dbfff] to-[#008ae0]';
@@ -38,6 +40,7 @@ if ($userRole === 'admin') {
         ['label' => 'Mis Ofertas', 'icon' => 'fas fa-tags', 'accion' => 'verTodasMisOfertas', 'controlador' => 'vendedor'],
         ['label' => 'Buscar Compradores', 'icon' => 'fas fa-search', 'accion' => 'explorarDemandas', 'controlador' => 'vendedor'],
         ['label' => 'Pautas Publicitarias', 'icon' => 'fas fa-bullhorn', 'accion' => 'misPautas', 'controlador' => 'pauta'],
+        ['label' => 'Notificaciones', 'icon' => 'fas fa-bell', 'accion' => 'panel', 'controlador' => 'notificacion'],
         ['label' => 'Encuestas', 'icon' => 'fas fa-clipboard-check', 'accion' => 'verEncuestas', 'controlador' => 'vendedor'],
     ];
     $sidebar_bg = 'bg-gradient-to-b from-[#0d9488] via-[#14b8a6] to-[#0f766e]';
