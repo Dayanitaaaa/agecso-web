@@ -277,8 +277,8 @@
 
 <?php
 // Cargar pautas activas para mostrar en el home
-require_once __DIR__ . '/../../rueda/config/db.php';
-require_once __DIR__ . '/../../rueda/app/models/PautaModel.php';
+require_once __DIR__ . '/../../../rueda/config/db.php';
+require_once __DIR__ . '/../../../rueda/app/models/PautaModel.php';
 $pautaModel = new PautaModel($pdo);
 $pautasActivas = $pautaModel->obtenerActivas();
 ?>
