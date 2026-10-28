@@ -1,6 +1,5 @@
 <?php
 require_once __DIR__ . '/../models/PautaModel.php';
-require_once __DIR__ . '/../models/NotificacionModel.php';
 require_once __DIR__ . '/../../includes/Logger.php';
 
 class PautaController {
@@ -10,7 +9,6 @@ class PautaController {
     public function __construct($pdo) {
         $this->pdo = $pdo;
         $this->pautaModel = new PautaModel($this->pdo);
-        $this->notificacionModel = new NotificacionModel($this->pdo);
         
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -104,14 +102,6 @@ class PautaController {
                 ];
                 
                 if ($this->pautaModel->crear($data)) {
-                    // Notificar a los administradores sobre la nueva pauta
-                    $this->notificacionModel->notificarAdmins(
-                        'nueva_pauta',
-                        'Nueva Pauta Publicitaria',
-                        "La empresa ha solicitado una pauta: \"$titulo\"",
-                        'index.php?controlador=pauta&accion=listarAdmin&estado=pendiente'
-                    );
-                    
                     header("Location: index.php?controlador=pauta&accion=misPautas&msg=creada");
                 } else {
                     throw new Exception("Error al guardar la pauta.");
@@ -179,15 +169,6 @@ class PautaController {
             $pauta = $this->pautaModel->obtenerPorId($id);
             
             if ($this->pautaModel->actualizarEstado($id, 'activa')) {
-                // Notificar al dueño de la pauta
-                $this->notificacionModel->crear(
-                    $pauta['empresaId'],
-                    'pauta_aprobada',
-                    '¡Pauta Aprobada!',
-                    "Tu pauta \"$pauta[titulo]\" ha sido aprobada y está activa en la página principal.",
-                    'index.php?controlador=pauta&accion=misPautas'
-                );
-                
                 header("Location: index.php?controlador=pauta&accion=listarAdmin&msg=aprobada");
             } else {
                 throw new Exception("Error al aprobar la pauta.");
@@ -223,15 +204,6 @@ class PautaController {
             $pauta = $this->pautaModel->obtenerPorId($id);
             
             if ($this->pautaModel->actualizarEstado($id, 'rechazada', $comentario)) {
-                // Notificar al dueño de la pauta
-                $this->notificacionModel->crear(
-                    $pauta['empresaId'],
-                    'pauta_rechazada',
-                    'Pauta Rechazada',
-                    "Tu pauta \"$pauta[titulo]\" ha sido rechazada. Motivo: $comentario",
-                    'index.php?controlador=pauta&accion=misPautas'
-                );
-                
                 header("Location: index.php?controlador=pauta&accion=listarAdmin&msg=rechazada");
             } else {
                 throw new Exception("Error al rechazar la pauta.");
