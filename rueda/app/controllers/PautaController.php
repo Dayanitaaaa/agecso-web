@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/PautaModel.php';
+require_once __DIR__ . '/../models/NotificacionModel.php';
 require_once __DIR__ . '/../../includes/Logger.php';
 
 class PautaController {
@@ -9,6 +10,7 @@ class PautaController {
     public function __construct($pdo) {
         $this->pdo = $pdo;
         $this->pautaModel = new PautaModel($this->pdo);
+        $this->notificacionModel = new NotificacionModel($this->pdo);
         
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -102,6 +104,14 @@ class PautaController {
                 ];
                 
                 if ($this->pautaModel->crear($data)) {
+                    // Notificar a los administradores sobre la nueva pauta
+                    $this->notificacionModel->notificarAdmins(
+                        'nueva_pauta',
+                        'Nueva Pauta Publicitaria',
+                        "La empresa ha solicitado una pauta: \"$titulo\"",
+                        'index.php?controlador=pauta&accion=listarAdmin&estado=pendiente'
+                    );
+                    
                     header("Location: index.php?controlador=pauta&accion=misPautas&msg=creada");
                 } else {
                     throw new Exception("Error al guardar la pauta.");
