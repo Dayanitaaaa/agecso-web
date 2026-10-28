@@ -120,6 +120,24 @@ function toggleDropdownAlertas() {
         // Abrir dropdown
         dropdown.classList.remove('hidden');
         
+        // Marcar todas las notificaciones como leídas
+        fetch('index.php?controlador=notificacion&accion=marcarTodasLeidas', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Ocultar el contador
+                const contador = document.getElementById('notif-contador');
+                if (contador) {
+                    contador.classList.add('hidden');
+                }
+            }
+        });
+        
         // Cargar alertas si no están cargadas
         if (alertasData === null) {
             fetch('index.php?controlador=notificacion&accion=obtenerNoLeidas')
