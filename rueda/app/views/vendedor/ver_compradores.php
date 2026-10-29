@@ -7,7 +7,7 @@
         <div class="bg-gradient-to-r from-[#0d9488] via-[#14b8a6] to-[#0f766e] rounded-3xl p-6 sm:p-8 shadow-[0_10px_30px_rgba(13,148,136,0.15)] text-white relative overflow-hidden flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
             <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
-            <div class="relative z-10">
+            <div class="relative z-10 flex-1">
                 <nav class="flex mb-4" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-3 text-[10px] font-black uppercase tracking-widest text-white/60">
                         <li class="inline-flex items-center">
@@ -22,9 +22,21 @@
                     </ol>
                 </nav>
                 <h1 class="text-3xl sm:text-4xl font-black tracking-tight leading-tight">Directorio de Compradores</h1>
-                <p class="text-white/90 mt-2 flex items-center text-sm sm:text-base font-medium">
-                    <i class="fas fa-shopping-basket mr-2 text-white/80"></i> <?php echo htmlspecialchars($rueda['tituloRueda']); ?>
-                </p>
+                <div class="flex items-center gap-3 mt-2">
+                    <p class="text-white/90 flex items-center text-sm sm:text-base font-medium">
+                        <i class="fas fa-shopping-basket mr-2 text-white/80"></i> <?php echo htmlspecialchars($rueda['tituloRueda']); ?>
+                    </p>
+                    <?php if (!empty($otras_ruedas)): ?>
+                        <select onchange="window.location.href='index.php?controlador=vendedor&accion=verCompradores&id='+this.value" class="bg-white/20 border border-white/30 text-white text-xs font-bold px-3 py-1.5 rounded-lg cursor-pointer backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50">
+                            <option value="<?php echo $ruedaId; ?>" selected>Cambiar rueda</option>
+                            <?php foreach ($otras_ruedas as $or): ?>
+                                <option value="<?php echo $or['id']; ?>">
+                                    <?php echo htmlspecialchars($or['tituloRueda']); ?> (<?php echo $or['estadoRueda']; ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="relative z-10 flex flex-wrap gap-3.5">
                 <a href="index.php?controlador=vendedor&accion=dashboard" class="bg-white/15 hover:bg-white/25 text-white border border-white/20 px-6 py-3 rounded-full font-bold text-sm transition-all duration-300 flex items-center gap-2 backdrop-blur-sm">

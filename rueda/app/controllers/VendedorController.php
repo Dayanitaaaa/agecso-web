@@ -947,6 +947,18 @@ class VendedorController {
                 $reuniones_index[$reunion['compradorId']] = $reunion['estadoCita'];
             }
 
+            // Obtener otras ruedas donde el vendedor está inscrito para el selector
+            $stmt_otras = $this->pdo->prepare("
+                SELECT rn.id, rn.nombreRueda as tituloRueda, rn.estadoRueda
+                FROM ruedas_negocios rn
+                JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
+                WHERE ir.empresaId = ? AND ir.estadoInscripcion = 'aceptada'
+                  AND rn.id != ?
+                ORDER BY rn.fechaInicio DESC
+            ");
+            $stmt_otras->execute([$miEmpresa['id'], $ruedaId]);
+            $otras_ruedas = $stmt_otras->fetchAll();
+
             require_once '../app/views/vendedor/ver_compradores.php';
         } catch (Exception $e) {
             $error_msg = $e->getMessage();
