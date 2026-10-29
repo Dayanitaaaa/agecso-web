@@ -1134,6 +1134,23 @@ class VendedorController {
                     ");
                     $stmt_hist->execute([$cita_id, $nueva_fecha, $mensaje, $nuevo_contador]);
 
+                    // Notificar al comprador sobre la contrapropuesta
+                    try {
+                        require_once '../app/models/NotificacionModel.php';
+                        $notifModel = new NotificacionModel($this->pdo);
+                        $stmt_emp = $this->pdo->prepare("SELECT razon_social FROM empresas WHERE id = ?");
+                        $stmt_emp->execute([$cita['vendedorId']]);
+                        $nombreVend = $stmt_emp->fetchColumn() ?: 'El proveedor';
+                        $fechaFmt = date('d/m/Y H:i', strtotime($nueva_fecha));
+                        $notifModel->notificarEmpresa(
+                            $cita['compradorId'],
+                            'cita_agendada',
+                            'Propuesta de Nuevo Horario',
+                            "La empresa \"$nombreVend\" ha propuesto un nuevo horario para la reunión: $fechaFmt.",
+                            'index.php?controlador=comprador&accion=verReuniones'
+                        );
+                    } catch (Exception $eN) {}
+
                     $msg = "contraoferta_enviada";
 
                 } elseif ($accion == 'aceptada') {
@@ -1153,6 +1170,23 @@ class VendedorController {
                         WHERE reunionId = ? AND respuesta = 'pendiente'
                     ");
                     $stmt_hist->execute([$cita_id]);
+
+                    // Notificar al comprador de la aceptación
+                    try {
+                        require_once '../app/models/NotificacionModel.php';
+                        $notifModel = new NotificacionModel($this->pdo);
+                        $stmt_emp = $this->pdo->prepare("SELECT razon_social FROM empresas WHERE id = ?");
+                        $stmt_emp->execute([$cita['vendedorId']]);
+                        $nombreVend = $stmt_emp->fetchColumn() ?: 'El proveedor';
+                        $fechaFmt = date('d/m/Y H:i', strtotime($cita['fechaHora']));
+                        $notifModel->notificarEmpresa(
+                            $cita['compradorId'],
+                            'cita_aceptada',
+                            'Cita Confirmada',
+                            "La empresa \"$nombreVend\" ha aceptado la reunión para el $fechaFmt.",
+                            'index.php?controlador=comprador&accion=verReuniones'
+                        );
+                    } catch (Exception $eN) {}
 
                     $msg = "cita_aceptada";
                 }

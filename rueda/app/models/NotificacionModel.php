@@ -75,4 +75,21 @@ class NotificacionModel {
             $this->crear($admin['id'], $tipo, $titulo, $mensaje, $linkDestino);
         }
     }
+
+    /**
+     * Notificar directamente a una empresa por su empresaId
+     */
+    public function notificarEmpresa($empresaId, $tipo, $titulo, $mensaje, $linkDestino = null) {
+        try {
+            $stmt = $this->db->prepare("SELECT usuarioId FROM empresas WHERE id = ? LIMIT 1");
+            $stmt->execute([$empresaId]);
+            $usuarioId = $stmt->fetchColumn();
+            if ($usuarioId) {
+                return $this->crear($usuarioId, $tipo, $titulo, $mensaje, $linkDestino);
+            }
+        } catch (Exception $e) {
+            error_log('[NOTIFICACION_ERROR] Error al notificar empresa: ' . $e->getMessage());
+        }
+        return false;
+    }
 }

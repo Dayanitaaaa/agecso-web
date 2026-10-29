@@ -21,6 +21,59 @@ class NotificacionController {
     }
 
     /**
+     * Obtener notificaciones recientes (leídas y no leídas) para el dropdown de la campanita
+     */
+    public function obtenerRecientes() {
+        try {
+            $usuarioId = $_SESSION['usuario_id'];
+            $notificaciones = $this->notificacionModel->obtenerTodas($usuarioId, 10);
+            $contadorNoLeidas = $this->notificacionModel->contarNoLeidas($usuarioId);
+
+            $result = [];
+            foreach ($notificaciones as $notif) {
+                $result[] = [
+                    'id' => (int)$notif['id'],
+                    'tipo' => $notif['tipo'],
+                    'titulo' => $notif['titulo'],
+                    'mensaje' => $notif['mensaje'],
+                    'link' => !empty($notif['link_destino']) ? $notif['link_destino'] : 'index.php?controlador=notificacion&accion=panel',
+                    'leida' => (int)$notif['leida'],
+                    'tiempo' => $this->tiempoRelativo($notif['createdAt'] ?? '')
+                ];
+            }
+
+            echo json_encode([
+                'success' => true,
+                'notificaciones' => $result,
+                'contador' => (int)$contadorNoLeidas
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'notificaciones' => [],
+                'contador' => 0,
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit;
+    }
+
+    /**
+     * Helper para tiempo amigable
+     */
+    private function tiempoRelativo($fechaStr) {
+        if (empty($fechaStr)) return '';
+        $ts = strtotime($fechaStr);
+        if (!$ts) return '';
+        $diff = time() - $ts;
+        if ($diff < 60) return 'Hace un momento';
+        if ($diff < 3600) return 'Hace ' . max(1, floor($diff / 60)) . ' min';
+        if ($diff < 86400) return 'Hace ' . floor($diff / 3600) . ' h';
+        if ($diff < 172800) return 'Ayer ' . date('H:i', $ts);
+        return date('d/m/Y H:i', $ts);
+    }
+
+    /**
      * Obtener notificaciones no leídas (vía AJAX para dropdown)
      */
     public function obtenerNoLeidas() {
@@ -31,9 +84,13 @@ class NotificacionController {
             $result = [];
             foreach ($notificaciones as $notif) {
                 $result[] = [
+                    'id' => (int)$notif['id'],
                     'tipo' => $notif['tipo'],
-                    'mensaje' => $notif['titulo'] . ': ' . $notif['mensaje'],
-                    'link' => $notif['link_destino'] ?? '#'
+                    'titulo' => $notif['titulo'],
+                    'mensaje' => $notif['mensaje'],
+                    'link' => !empty($notif['link_destino']) ? $notif['link_destino'] : 'index.php?controlador=notificacion&accion=panel',
+                    'leida' => (int)$notif['leida'],
+                    'tiempo' => $this->tiempoRelativo($notif['createdAt'] ?? '')
                 ];
             }
             
