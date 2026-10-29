@@ -71,11 +71,8 @@ class PautaModel {
                 FROM pautas_publicitarias p
                 JOIN empresas e ON p.empresaId = e.usuarioId
                 WHERE p.estado = 'activa'
-                AND p.fecha_inicio <= ?
-                AND p.fecha_fin >= ?
-                ORDER BY p.posicion ASC, p.createdAt DESC";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$hoy, $hoy]);
+                ORDER BY p.createdAt DESC";
+        $stmt = $this->db->query($sql);
         return $stmt->fetchAll();
     }
 

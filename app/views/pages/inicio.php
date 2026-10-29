@@ -283,8 +283,16 @@ try {
     require_once __DIR__ . '/../../../rueda/app/models/PautaModel.php';
     $pautaModel = new PautaModel($pdo);
     $pautasActivas = $pautaModel->obtenerActivas();
+    
+    // Debug temporal - eliminar después
+    if (empty($pautasActivas)) {
+        error_log("DEBUG: No se encontraron pautas activas. Fecha actual: " . date('Y-m-d'));
+    } else {
+        error_log("DEBUG: Se encontraron " . count($pautasActivas) . " pautas activas");
+    }
 } catch (Exception $e) {
     // Si hay error, no mostrar pautas
+    error_log("DEBUG: Error cargando pautas: " . $e->getMessage());
     $pautasActivas = [];
 }
 ?>
