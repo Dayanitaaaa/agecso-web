@@ -48,7 +48,7 @@
 
         <!-- SECCIÓN: ¿QUÉ DESEAS HACER HOY? (INTERACTIVA) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <a href="index.php?controlador=comprador&accion=seleccionarRuedaParticipantes" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(0,162,255,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
+            <a href="index.php?controlador=comprador&accion=verParticipantes" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(0,162,255,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
                 <h3 class="text-xl font-black text-gray-900 mb-2">Buscar Proveedores</h3>
                 <p class="text-gray-500 text-sm font-medium leading-relaxed">Explora el catálogo de empresas y productos disponibles en las ruedas activas.</p>
                 <div class="mt-6 flex items-center text-[#00a2ff] font-black text-xs uppercase tracking-widest">

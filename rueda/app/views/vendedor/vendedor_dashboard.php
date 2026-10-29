@@ -48,7 +48,7 @@
 
         <!-- SECCIÓN: ¿QUÉ DESEAS HACER HOY? (INTERACTIVA VENDEDOR) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <a href="index.php?controlador=vendedor&accion=seleccionarRuedaCompradores" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(13,148,136,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
+            <a href="index.php?controlador=vendedor&accion=verCompradores" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(13,148,136,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
                 <h3 class="text-xl font-black text-gray-900 mb-2">Buscar Clientes</h3>
                 <p class="text-gray-500 text-sm font-medium leading-relaxed">Encuentra compradores interesados y solicita reuniones para presentar tus ofertas.</p>
                 <div class="mt-6 flex items-center text-[#0d9488] font-black text-xs uppercase tracking-widest">
@@ -56,7 +56,7 @@
                 </div>
             </a>
 
-            <a href="index.php?controlador=vendedor&accion=seleccionarRuedaMisOfertas" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(20,184,166,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
+            <a href="index.php?controlador=vendedor&accion=verMisOfertas" class="group bg-white p-8 rounded-[2rem] border border-gray-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_50px_rgba(20,184,166,0.1)] transition-all duration-500 flex flex-col items-center text-center transform hover:-translate-y-2">
                 <h3 class="text-xl font-black text-gray-900 mb-2">Mis Productos</h3>
                 <p class="text-gray-500 text-sm font-medium leading-relaxed">Publica y gestiona lo que ofreces para que los compradores puedan encontrarte.</p>
                 <div class="mt-6 flex items-center text-emerald-500 font-black text-xs uppercase tracking-widest">

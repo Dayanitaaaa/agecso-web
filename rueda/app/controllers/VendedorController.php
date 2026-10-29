@@ -767,21 +767,7 @@ class VendedorController {
 
     public function verCompradores() {
         try {
-            $ruedaId = $_GET['id'] ?? null;
-            
-            if (!$ruedaId) {
-                throw new Exception("ID de rueda no especificado.");
-            }
-
-            // LIMPIEZA AUTOMÁTICA DE REGISTROS CORRUPTOS (Bug anterior: compradorId == vendedorId)
-            // Esto asegura que si existía un registro erróneo que bloqueaba la vista, se corrija ahora.
-            $this->pdo->prepare("
-                UPDATE reuniones 
-                SET vendedorId = NULL, estadoCita = 'mesa_apartada' 
-                WHERE ruedaId = ? 
-                AND compradorId = vendedorId 
-                AND estadoCita != 'mesa_apartada'
-            ")->execute([$ruedaId]);
+            $ruedaId = isset($_GET['id']) ? $_GET['id'] : null;
 
             // Obtener datos de la empresa del vendedor
             $stmt = $this->pdo->prepare("SELECT * FROM empresas WHERE usuarioId = ?");
@@ -791,6 +777,67 @@ class VendedorController {
             if (!$miEmpresa) {
                 throw new Exception("No se encontró información de tu empresa.");
             }
+
+            // Si no llega ID por URL, buscar la primera rueda inscrita y aceptada del vendedor (priorizando permanentes o activas)
+            if (empty($ruedaId)) {
+                // Buscamos una rueda activa o permanente donde esté aceptado
+                $stmt_primera_rueda = $this->pdo->prepare("
+                    SELECT rn.id
+                    FROM ruedas_negocios rn
+                    JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
+                    WHERE ir.empresaId = ?
+                      AND ir.estadoInscripcion = 'aceptada'
+                      AND rn.estadoRueda IN ('activa', 'inscripciones', 'planeacion')
+                    ORDER BY CASE WHEN rn.tipoRueda = 'permanente' THEN 0 ELSE 1 END, rn.fechaInicio DESC
+                    LIMIT 1
+                ");
+                $stmt_primera_rueda->execute([$miEmpresa['id']]);
+                $primera_rueda = $stmt_primera_rueda->fetch();
+
+                if ($primera_rueda) {
+                    $ruedaId = $primera_rueda['id'];
+                } else {
+                    // Si no hay activa donde esté aceptado, buscamos cualquier rueda histórica donde esté aceptado
+                    $stmt_cualquier_rueda = $this->pdo->prepare("
+                        SELECT rn.id
+                        FROM ruedas_negocios rn
+                        JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
+                        WHERE ir.empresaId = ?
+                          AND ir.estadoInscripcion = 'aceptada'
+                        ORDER BY rn.fechaInicio DESC
+                        LIMIT 1
+                    ");
+                    $stmt_cualquier_rueda->execute([$miEmpresa['id']]);
+                    $cualquier_rueda = $stmt_cualquier_rueda->fetch();
+
+                    if ($cualquier_rueda) {
+                        $ruedaId = $cualquier_rueda['id'];
+                    } else {
+                        // Si no está aceptado en ninguna, verificar si tiene inscripción pendiente
+                        $stmt_pendiente = $this->pdo->prepare("SELECT estadoInscripcion FROM inscripciones_ruedas WHERE empresaId = ? LIMIT 1");
+                        $stmt_pendiente->execute([$miEmpresa['id']]);
+                        $inscripcion_status = $stmt_pendiente->fetch();
+
+                        if ($inscripcion_status && $inscripcion_status['estadoInscripcion'] === 'pendiente') {
+                            header("Location: index.php?controlador=vendedor&accion=dashboard&msg=inscripcion_pendiente_revision");
+                            exit();
+                        }
+
+                        header("Location: index.php?controlador=vendedor&accion=dashboard&msg=inscribete_primero");
+                        exit();
+                    }
+                }
+            }
+
+            // LIMPIEZA AUTOMÁTICA DE REGISTROS CORRUPTOS (Bug anterior: compradorId == vendedorId)
+            // Esto asegura que si existía un registro erróneo que bloqueaba la vista, se corrija ahora.
+            $this->pdo->prepare("
+                UPDATE reuniones
+                SET vendedorId = NULL, estadoCita = 'mesa_apartada'
+                WHERE ruedaId = ?
+                AND compradorId = vendedorId
+                AND estadoCita != 'mesa_apartada'
+            ")->execute([$ruedaId]);
 
             // Obtener datos de la rueda
             $stmt_rueda = $this->pdo->prepare("SELECT * FROM ruedas_negocios WHERE id = ?");
@@ -815,6 +862,10 @@ class VendedorController {
             $stmt_mi_ciiu = $this->pdo->prepare("SELECT ciiu_personalizado FROM empresas WHERE id = ?");
             $stmt_mi_ciiu->execute([$miEmpresa['id']]);
             $miCiiuMatch = $stmt_mi_ciiu->fetchColumn();
+
+            // Filtros de búsqueda
+            $busqueda = isset($_GET['busqueda']) ? trim($_GET['busqueda']) : '';
+            $sector_id = isset($_GET['sector_id']) ? trim($_GET['sector_id']) : '';
 
             // Obtener todos los sectores para filtros
             $stmt_sectores = $this->pdo->query("SELECT * FROM sectores ORDER BY nombreSector ASC");
@@ -853,11 +904,11 @@ class VendedorController {
             foreach ($compradores as &$c) {
                 // Demandas
                 $stmt_dem = $this->pdo->prepare("
-                    SELECT tituloDemanda, descripcionDemanda 
-                    FROM demandas 
+                    SELECT tituloDemanda, descripcionDemanda
+                    FROM demandas
                     WHERE empresaId = ? AND ruedaId = ?
                 ");
-                $stmt_dem->execute([$c['empresaId'], $ruedaId]);
+                $stmt_dem->execute([$c['id'], $ruedaId]);
                 $c['demandas'] = $stmt_dem->fetchAll();
 
                 // Verificar mesa apartada o asignada
@@ -1301,12 +1352,7 @@ class VendedorController {
      */
     public function verMisOfertas() {
         try {
-            if (!isset($_GET['id'])) {
-                header("Location: index.php?controlador=vendedor&accion=dashboard");
-                exit();
-            }
-
-            $ruedaId = $_GET['id'];
+            $ruedaId = isset($_GET['id']) ? $_GET['id'] : null;
 
             // Obtener datos de la empresa
             $stmt_emp = $this->pdo->prepare("SELECT id FROM empresas WHERE usuarioId = ?");
@@ -1315,6 +1361,57 @@ class VendedorController {
 
             if (!$miEmpresaId) {
                 throw new Exception("Empresa no encontrada.");
+            }
+
+            // Si no llega ID por URL, buscar la primera rueda inscrita y aceptada del vendedor (priorizando permanentes o activas)
+            if (empty($ruedaId)) {
+                // Buscamos una rueda activa o permanente donde esté aceptado
+                $stmt_primera_rueda = $this->pdo->prepare("
+                    SELECT rn.id
+                    FROM ruedas_negocios rn
+                    JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
+                    WHERE ir.empresaId = ?
+                      AND ir.estadoInscripcion = 'aceptada'
+                      AND rn.estadoRueda IN ('activa', 'inscripciones', 'planeacion')
+                    ORDER BY CASE WHEN rn.tipoRueda = 'permanente' THEN 0 ELSE 1 END, rn.fechaInicio DESC
+                    LIMIT 1
+                ");
+                $stmt_primera_rueda->execute([$miEmpresaId]);
+                $primera_rueda = $stmt_primera_rueda->fetch();
+
+                if ($primera_rueda) {
+                    $ruedaId = $primera_rueda['id'];
+                } else {
+                    // Si no hay activa donde esté aceptado, buscamos cualquier rueda histórica donde esté aceptado
+                    $stmt_cualquier_rueda = $this->pdo->prepare("
+                        SELECT rn.id
+                        FROM ruedas_negocios rn
+                        JOIN inscripciones_ruedas ir ON rn.id = ir.ruedaId
+                        WHERE ir.empresaId = ?
+                          AND ir.estadoInscripcion = 'aceptada'
+                        ORDER BY rn.fechaInicio DESC
+                        LIMIT 1
+                    ");
+                    $stmt_cualquier_rueda->execute([$miEmpresaId]);
+                    $cualquier_rueda = $stmt_cualquier_rueda->fetch();
+
+                    if ($cualquier_rueda) {
+                        $ruedaId = $cualquier_rueda['id'];
+                    } else {
+                        // Si no está aceptado en ninguna, verificar si tiene inscripción pendiente
+                        $stmt_pendiente = $this->pdo->prepare("SELECT estadoInscripcion FROM inscripciones_ruedas WHERE empresaId = ? LIMIT 1");
+                        $stmt_pendiente->execute([$miEmpresaId]);
+                        $inscripcion_status = $stmt_pendiente->fetch();
+
+                        if ($inscripcion_status && $inscripcion_status['estadoInscripcion'] === 'pendiente') {
+                            header("Location: index.php?controlador=vendedor&accion=dashboard&msg=inscripcion_pendiente_revision");
+                            exit();
+                        }
+
+                        header("Location: index.php?controlador=vendedor&accion=dashboard&msg=inscribete_primero");
+                        exit();
+                    }
+                }
             }
 
             // Verificar si es rueda permanente
@@ -1329,7 +1426,7 @@ class VendedorController {
                               ->execute([$ruedaId, $miEmpresaId]);
                 }
             }
-            
+
             // SEGURIDAD: Validar que el vendedor está inscrito y ACEPTADO
             $stmt_inscripcion = $this->pdo->prepare("
                 SELECT estadoInscripcion, empresaId
