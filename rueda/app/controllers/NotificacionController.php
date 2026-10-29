@@ -52,13 +52,14 @@ class NotificacionController {
             $usuarioId = $_SESSION['usuario_id'];
             $notificaciones = $this->notificacionModel->obtenerTodas($usuarioId, 50);
             $noLeidas = $this->notificacionModel->obtenerNoLeidas($usuarioId);
-            
+
             require_once __DIR__ . '/../views/notificaciones/panel.php';
         } catch (Exception $e) {
             Logger::logRoleError($_SESSION['slugRole'] ?? 'guest', 'Error cargando panel de notificaciones', [
                 'error' => $e->getMessage()
             ]);
-            die("Error al cargar notificaciones. Por favor intenta más tarde.");
+            // Mostrar error específico para debug
+            die("Error al cargar notificaciones: " . $e->getMessage());
         }
     }
 
