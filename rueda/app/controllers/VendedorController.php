@@ -914,15 +914,15 @@ class VendedorController {
                 // Verificar mesa apartada o asignada
                 $stmt_mesa = $this->pdo->prepare("
                     SELECT numero_mesa, fechaHora, id as reunionId
-                    FROM reuniones 
-                    WHERE compradorId = ? 
-                    AND ruedaId = ? 
+                    FROM reuniones
+                    WHERE compradorId = ?
+                    AND ruedaId = ?
                     AND numero_mesa IS NOT NULL
                     AND estadoCita NOT IN ('cancelada', 'rechazada')
                     ORDER BY (estadoCita = 'mesa_apartada') DESC, id ASC
                     LIMIT 1
                 ");
-                $stmt_mesa->execute([$c['empresaId'], $ruedaId]);
+                $stmt_mesa->execute([$c['id'], $ruedaId]);
                 $mesaInfo = $stmt_mesa->fetch();
                 $c['mesa_apartada'] = $mesaInfo ? $mesaInfo['numero_mesa'] : null;
                 $c['fecha_apartado'] = $mesaInfo ? $mesaInfo['fechaHora'] : null;
