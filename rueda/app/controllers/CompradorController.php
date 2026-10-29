@@ -344,10 +344,8 @@ class CompradorController {
                 FROM ofertas o
                 JOIN empresas e ON o.empresaId = e.id
                 LEFT JOIN sectores s ON o.sectorId = s.id
-                JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
                 WHERE o.isActive = 1
-                  AND ir.ruedaId = ?
-                  AND ir.estadoInscripcion = 'aceptada'
+                  AND EXISTS (SELECT 1 FROM inscripciones_ruedas ir WHERE ir.empresaId = e.id AND ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada')
                   AND o.ruedaId = ?
                   AND e.id != ?
             ";
@@ -483,9 +481,10 @@ class CompradorController {
                 SELECT vendedorId, estadoCita, fechaHora, id as citaId
                 FROM reuniones 
                 WHERE ruedaId = ? AND compradorId = ? 
-                AND estadoCita NOT IN ('cancelada', 'rechazada')
+                AND estadoCita NOT IN ('cancelada', 'rechazada', 'realizada')
+                AND NOT (estadoCita IN ('aceptada', 'agendada') AND fechaHora < ?)
             ");
-            $stmt_citas_activas->execute([$ruedaId, $miEmpresaId]);
+            $stmt_citas_activas->execute([$ruedaId, $miEmpresaId, SYSTEM_TIME]);
             $citas_activas_raw = $stmt_citas_activas->fetchAll();
 
             $citas_por_vendedor = [];
@@ -1044,10 +1043,11 @@ class CompradorController {
                 $stmt_check_dup = $this->pdo->prepare("
                     SELECT id, estadoCita FROM reuniones 
                     WHERE ruedaId = ? AND compradorId = ? AND vendedorId = ? 
-                    AND estadoCita NOT IN ('cancelada', 'rechazada')
+                    AND estadoCita NOT IN ('cancelada', 'rechazada', 'realizada')
+                    AND NOT (estadoCita IN ('aceptada', 'agendada') AND fechaHora < ?)
                     LIMIT 1
                 ");
-                $stmt_check_dup->execute([$rueda_id, $comprador_id, $vendedor_id]);
+                $stmt_check_dup->execute([$rueda_id, $comprador_id, $vendedor_id, SYSTEM_TIME]);
                 $cita_existente = $stmt_check_dup->fetch();
                 if ($cita_existente) {
                     throw new Exception("Ya tienes una cita activa o en proceso con esta empresa en esta rueda de negocios.");
