@@ -877,8 +877,10 @@ class VendedorController {
                        (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND numero_mesa IS NOT NULL AND estadoCita NOT IN ('cancelada', 'rechazada') LIMIT 1) as mesa_apartada
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
+                JOIN usuarios u ON e.usuarioId = u.id
                 LEFT JOIN sectores s ON e.sectorId = s.id
-                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' 
+                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada'
+                AND u.roleId = 2
                 AND e.id != ?
             ";
             
