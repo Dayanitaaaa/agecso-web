@@ -29,9 +29,9 @@ class NotificacionModel {
      * Obtener todas las notificaciones de un usuario
      */
     public function obtenerTodas($usuarioId, $limite = 20) {
-        $sql = "SELECT * FROM notificaciones WHERE usuarioId = ? ORDER BY createdAt DESC LIMIT ?";
+        $sql = "SELECT * FROM notificaciones WHERE usuarioId = ? ORDER BY createdAt DESC LIMIT " . intval($limite);
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([$usuarioId, $limite]);
+        $stmt->execute([$usuarioId]);
         return $stmt->fetchAll();
     }
 

@@ -58,8 +58,7 @@ class NotificacionController {
             Logger::logRoleError($_SESSION['slugRole'] ?? 'guest', 'Error cargando panel de notificaciones', [
                 'error' => $e->getMessage()
             ]);
-            // Mostrar error específico para debug
-            die("Error al cargar notificaciones: " . $e->getMessage());
+            die("Error al cargar notificaciones. Por favor intenta más tarde.");
         }
     }
 
