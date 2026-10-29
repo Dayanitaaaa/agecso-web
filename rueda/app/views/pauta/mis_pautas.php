@@ -3,6 +3,27 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 include __DIR__ . '/../layout/header.php';
+
+// Detectar rol y configurar tema visual (Verde para vendedor/proveedor por defecto)
+$role = strtolower($_SESSION['slugRole'] ?? '');
+$isComprador = ($role === 'comprador');
+
+if ($isComprador) {
+    $themeGradient = 'from-[#00a2ff] to-[#4dbfff]';
+    $themeBtnShadow = 'shadow-sky-500/20 hover:shadow-sky-500/35';
+    $themeIconBg = 'bg-sky-50 border border-sky-100/80';
+    $themeIconColor = 'text-[#00a2ff]';
+    $themeLink = 'text-[#00a2ff] hover:text-[#008ae0]';
+    $themeLinkBg = 'bg-sky-50/70 hover:bg-sky-100/70 border border-sky-100';
+} else {
+    // Vendedor, proveedor o general: TEMA VERDE AGECSO
+    $themeGradient = 'from-[#0d9488] via-[#14b8a6] to-[#0f766e]';
+    $themeBtnShadow = 'shadow-teal-500/25 hover:shadow-teal-500/40';
+    $themeIconBg = 'bg-teal-50 border border-teal-100/80';
+    $themeIconColor = 'text-[#0d9488]';
+    $themeLink = 'text-[#0d9488] hover:text-[#0f766e]';
+    $themeLinkBg = 'bg-teal-50/70 hover:bg-teal-100/70 border border-teal-100';
+}
 ?>
 
 <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -13,8 +34,9 @@ include __DIR__ . '/../layout/header.php';
                 <h1 class="text-3xl font-black text-gray-900 tracking-tight">Mis Pautas Publicitarias</h1>
                 <p class="text-gray-500 text-sm mt-1">Gestiona tus pautas publicitarias activas y pendientes</p>
             </div>
-            <a href="index.php?controlador=pauta&accion=crear" class="bg-gradient-to-r from-[#00a2ff] to-[#4dbfff] text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg hover:shadow-xl transition-all">
-                + Nueva Pauta
+            <a href="index.php?controlador=pauta&accion=crear" class="bg-gradient-to-r <?php echo $themeGradient; ?> text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg <?php echo $themeBtnShadow; ?> transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2">
+                <i class="fas fa-plus text-xs"></i>
+                <span>Nueva Pauta</span>
             </a>
         </div>
 
@@ -53,13 +75,15 @@ include __DIR__ . '/../layout/header.php';
 
         <!-- Lista de pautas -->
         <?php if (empty($pautas)): ?>
-            <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100 p-12 text-center">
-                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-bullhorn text-gray-400 text-2xl"></i>
+            <div class="bg-white rounded-3xl shadow-[0_4px_25px_rgba(0,0,0,0.02)] border border-gray-100 p-14 text-center">
+                <div class="w-16 h-16 <?php echo $themeIconBg; ?> rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                    <i class="fas fa-bullhorn <?php echo $themeIconColor; ?> text-2xl"></i>
                 </div>
-                <p class="text-gray-500 font-medium">No tienes pautas publicitarias</p>
-                <a href="index.php?controlador=pauta&accion=crear" class="inline-block mt-4 text-[#00a2ff] font-bold text-sm hover:underline">
-                    Crear mi primera pauta
+                <p class="text-gray-900 font-extrabold text-base">No tienes pautas publicitarias</p>
+                <p class="text-gray-400 text-xs font-medium mt-1">Crea tu primera pauta para promocionar tu empresa en AGECSO</p>
+                <a href="index.php?controlador=pauta&accion=crear" class="inline-flex items-center gap-1.5 mt-5 <?php echo $themeLink; ?> font-black text-xs uppercase tracking-wider py-2.5 px-5 rounded-xl <?php echo $themeLinkBg; ?> transition-all">
+                    <i class="fas fa-plus-circle text-sm"></i>
+                    <span>Crear mi primera pauta</span>
                 </a>
             </div>
         <?php else: ?>

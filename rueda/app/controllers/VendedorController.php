@@ -537,6 +537,12 @@ class VendedorController {
                 $tags_array = array_filter(array_map('trim', explode(',', $tags_input)));
                 $tags_json = json_encode(array_values($tags_array));
 
+                $stmt_dup = $this->pdo->prepare("SELECT id FROM ofertas WHERE empresaId = ? AND ruedaId = ? AND isActive = 1 AND TRIM(tituloOferta) = TRIM(?) LIMIT 1");
+                $stmt_dup->execute([$empresa_id, $rueda_id, $titulo]);
+                if ($stmt_dup->fetch()) {
+                    throw new Exception("Ya registraste una oferta con el nombre \"$titulo\" en esta rueda de negocios.");
+                }
+
                 try {
                     $stmt = $this->pdo->prepare("INSERT INTO ofertas (empresaId, ruedaId, sectorId, tituloOferta, descripcionOferta, tagsBusqueda, ciiu_personalizado, ciiu_nombre_personalizado, isActive) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)");
                     $stmt->execute([$empresa_id, $rueda_id, $sector_id, $titulo, $descripcion, $tags_json, $ciiu_personalizado, $ciiu_nombre_personalizado]);

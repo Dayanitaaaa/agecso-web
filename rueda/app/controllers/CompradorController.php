@@ -348,6 +348,7 @@ class CompradorController {
                   AND EXISTS (SELECT 1 FROM inscripciones_ruedas ir WHERE ir.empresaId = e.id AND ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada')
                   AND o.ruedaId = ?
                   AND e.id != ?
+                  AND o.id = (SELECT MIN(o2.id) FROM ofertas o2 WHERE o2.empresaId = o.empresaId AND o2.ruedaId = o.ruedaId AND o2.isActive = 1 AND TRIM(o2.tituloOferta) = TRIM(o.tituloOferta))
             ";
             $params_ofertas = [$ruedaId, $ruedaId, $miEmpresaId];
 
