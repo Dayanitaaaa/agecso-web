@@ -277,10 +277,16 @@
 
 <?php
 // Cargar pautas activas para mostrar en el home
-require_once __DIR__ . '/../../../rueda/config/db.php';
-require_once __DIR__ . '/../../../rueda/app/models/PautaModel.php';
-$pautaModel = new PautaModel($pdo);
-$pautasActivas = $pautaModel->obtenerActivas();
+$pautasActivas = [];
+try {
+    require_once __DIR__ . '/../../../rueda/config/db.php';
+    require_once __DIR__ . '/../../../rueda/app/models/PautaModel.php';
+    $pautaModel = new PautaModel($pdo);
+    $pautasActivas = $pautaModel->obtenerActivas();
+} catch (Exception $e) {
+    // Si hay error, no mostrar pautas
+    $pautasActivas = [];
+}
 ?>
 
 <?php if (!empty($pautasActivas)): ?>
