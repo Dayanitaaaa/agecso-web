@@ -873,7 +873,7 @@ class VendedorController {
 
             // Obtener compradores con sus demandas y número de mesa si tienen
             $sql = "
-                SELECT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.ciiu_personalizado, e.ciiu_nombre_personalizado, s.ciiu_clase, s.nombreSector,
+                SELECT DISTINCT e.id, e.razon_social, e.ubicacionGeografica, e.sectorId, e.ciiu_personalizado, e.ciiu_nombre_personalizado, s.ciiu_clase, s.nombreSector,
                        (SELECT numero_mesa FROM reuniones WHERE compradorId = e.id AND ruedaId = ? AND numero_mesa IS NOT NULL AND estadoCita NOT IN ('cancelada', 'rechazada') LIMIT 1) as mesa_apartada
                 FROM empresas e
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
