@@ -405,7 +405,7 @@ class CompradorController {
                 JOIN usuarios u ON e.usuarioId = u.id
                 LEFT JOIN sectores s ON e.sectorId = s.id
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
-                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' AND u.roleId = 3
+                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' AND u.roleId = 4
                 ORDER BY e.razon_social ASC
             ");
             $stmt_participantes->execute([$ruedaId]);

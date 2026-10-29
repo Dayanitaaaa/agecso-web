@@ -880,7 +880,7 @@ class VendedorController {
                 JOIN usuarios u ON e.usuarioId = u.id
                 LEFT JOIN sectores s ON e.sectorId = s.id
                 WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada'
-                AND u.roleId = 2
+                AND u.roleId = 3
                 AND e.id != ?
             ";
 
@@ -901,32 +901,6 @@ class VendedorController {
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
             $compradores = $stmt->fetchAll();
-
-            // DEBUG: Log para verificar qué está pasando
-            Logger::logCurrentRoleError('Debug verCompradores', [
-                'ruedaId' => $ruedaId,
-                'miEmpresaId' => $miEmpresa['id'],
-                'total_compradores' => count($compradores),
-                'sql' => $sql,
-                'params' => $params
-            ]);
-
-            // DEBUG: Consulta adicional para ver TODOS los inscritos en la rueda
-            $stmt_debug = $this->pdo->prepare("
-                SELECT e.id, e.razon_social, u.roleId, u.nombreUsuario, ir.estadoInscripcion
-                FROM empresas e
-                JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
-                JOIN usuarios u ON e.usuarioId = u.id
-                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada'
-            ");
-            $stmt_debug->execute([$ruedaId]);
-            $todos_inscritos = $stmt_debug->fetchAll();
-
-            Logger::logCurrentRoleError('Debug todos_inscritos en rueda', [
-                'ruedaId' => $ruedaId,
-                'total_inscritos' => count($todos_inscritos),
-                'inscritos' => $todos_inscritos
-            ]);
 
             // Obtener demandas y verificar si tiene mesa apartada
             foreach ($compradores as &$c) {
@@ -1544,7 +1518,7 @@ class VendedorController {
                 JOIN usuarios u ON e.usuarioId = u.id
                 JOIN sectores s ON e.sectorId = s.id
                 JOIN inscripciones_ruedas ir ON e.id = ir.empresaId
-                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' AND u.roleId = 2
+                WHERE ir.ruedaId = ? AND ir.estadoInscripcion = 'aceptada' AND u.roleId = 3
                 ORDER BY e.razon_social ASC
             ");
             $stmt_participantes->execute([$ruedaId]);
